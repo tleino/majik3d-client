@@ -172,6 +172,7 @@ Protocol::parseCommand(char *input)
 		 if (ob->id == id) {
 			debug->put(data);
 			ob->puhe->setLabel(debug->string("%s", data));
+			ob->puhe->reveal();
 			break;
 		 }
 		 ob = ob->next;
