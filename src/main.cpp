@@ -52,7 +52,7 @@ main(int argc, char *argv[])
    // Open the screen
    display->openScreen();
    
-   // Set event filter and filter states
+   // Set event filter and event states
    SDL_SetEventFilter(FilterEvents);
    SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_IGNORE);
    SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);

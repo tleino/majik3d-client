@@ -26,11 +26,9 @@ void SDLMesaContext::makeContext(SDL_Surface *buffer)
    GLenum format;
    
    if(SDL_MUSTLOCK(buffer))
-	 {
-		Error(ERROR_FATAL, "Surface is not safe for writes (%s)",
-			  "surface requires locking");
-	 }
-      
+	 Error(ERROR_FATAL, "Surface is not safe for writes (%s)",
+		   "surface requires locking");
+	       
    format = -1;
    switch(buffer->format->BytesPerPixel)
 	 {
@@ -67,18 +65,14 @@ void SDLMesaContext::makeContext(SDL_Surface *buffer)
    surface = buffer;
    context = OSMesaCreateContext(format, NULL);
    if(context == NULL)
-	 {
-		Error(ERROR_FATAL, "OSMesaCreateContext() failed");
-	 }
+	 Error(ERROR_FATAL, "OSMesaCreateContext() failed");
 }
 
 void SDLMesaContext::makeCurrent()
 {
    if(!OSMesaMakeCurrent(context, surface->pixels, GL_UNSIGNED_BYTE, 
 						 surface->w, surface->h))
-	 {
-		Error(ERROR_FATAL, "OSMesaMakeCurrent() failed");
-	 }
-
+	 Error(ERROR_FATAL, "OSMesaMakeCurrent() failed");
+   
    OSMesaPixelStore(OSMESA_Y_UP, 0);
 }
