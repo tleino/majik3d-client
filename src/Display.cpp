@@ -21,6 +21,64 @@
 #include <pu.h>
 #include "Majik.hpp"
 
+puText *fps_text;
+puMenuBar *main_menu_bar;
+int flat;
+
+void exit_cb(puObject *);
+void flat_cb(puObject *);
+void smooth_cb(puObject *);
+void lighting_cb(puObject *);
+void nolighting_cb(puObject *);
+void fog_cb(puObject *);
+void nofog_cb(puObject *);
+
+char *majik_submenu[] = { "Exit", "========", "Smooth", "Flat", "Lighting", "No Lighting", "Fog", "No Fog", NULL };
+puCallback majik_submenu_cb[] = { exit_cb, NULL, smooth_cb, flat_cb, lighting_cb, nolighting_cb, fog_cb, nofog_cb, NULL };
+
+void
+lighting_cb(puObject *)
+{
+   glEnable(GL_LIGHTING);
+}
+
+void
+nolighting_cb(puObject *)
+{
+   glDisable(GL_LIGHTING);
+}
+
+void
+fog_cb(puObject *)
+{
+   glEnable(GL_FOG);
+}
+
+void
+nofog_cb(puObject *)
+{
+   glDisable(GL_FOG);
+}
+
+void
+flat_cb(puObject *)
+{
+   glShadeModel(GL_FLAT);
+}
+
+void
+smooth_cb(puObject *)
+{
+   glShadeModel(GL_SMOOTH);
+}
+
+void
+exit_cb(puObject *)
+{
+   printf ("exit!\n");
+   exit(0);
+}
+
 Display::Display()
 {
    width = 800;
@@ -83,6 +141,23 @@ Display::openScreen()
    puInit();
    puShowCursor();
    
+   /* PLIB: Font Library */
+   fntTexFont *fnt = new fntTexFont;
+   fnt->load ("gfx/sorority.txf");
+   puFont sorority (fnt, 12);
+   puSetDefaultFonts (sorority, PUFONT_8_BY_13);
+   puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
+   puSetDefaultColourScheme (1.0, 1.0, 1.0, 0.6f);
+   
+   fps_text = new puText (300, 10);
+   fps_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
+   
+   main_menu_bar = new puMenuBar();
+     {
+	main_menu_bar->add_submenu ("Majik", majik_submenu, majik_submenu_cb);
+     }
+   main_menu_bar->close();
+   
    landscape->init();
    // cursor->init();
    
@@ -126,6 +201,9 @@ Display::updateScreen()
    landscape->drawLandscape();
    
    /* Draw menus etc using PUI (part of PLIB) */
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+   glAlphaFunc(GL_GREATER,0.1f);
    puDisplay();
 
    /* Display the cursor. FIXME: Should be displayed only if using hardware

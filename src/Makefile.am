@@ -8,6 +8,7 @@ Perlin.cpp Perlin.hpp Texture.cpp Texture.hpp main.cpp
 INCLUDES = -I/usr/include/GL -I/usr/local/include -I/usr/local/plib/include
 CLEANFILES = *.debug
 LDADD = -L/usr/X11R6/lib -L/usr/local/lib -L/usr/local/plib/lib \
--lX11 -lXext -lXmu -lXt -lXi -lICE -lglut -lMesaGLU -lMesaGL -lpng -lpu -lm
+-lX11 -lXext -lXmu -lXt -lXi -lICE -lglut -lMesaGLU -lMesaGL -lpng -lpu \
+-lfnt -lm
 toilet  :
 	@-wc *.cpp *.hpp

@@ -38,6 +38,7 @@ class Display
    static void idle();
  public: 
    int width, height, bpp;
+   int flat; /* FIXME: Temporary kludge to test one feature */
    Cursor *cursor;
 };
    
