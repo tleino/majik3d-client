@@ -169,32 +169,28 @@ ssgEntity *mcSky::Draw()
    for (y = 0; y < m_skyHeight - 1; y++)
 	 {
 		p = 0;
-		v = &m_sky[y * m_skyWidth + x + 1];
-		sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
-		sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
-		p++;
-		
+
 		for (x = 0; x < m_skyWidth; x++)
-		  {
-			 v = &m_sky[(y + 1) * m_skyWidth + x + 1];
+		  { 
+			 v = &m_sky[y * m_skyWidth + x + 1];
 			 sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
 			 sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
 			 p++;
-			 
-			 v = &m_sky[y * m_skyWidth + x + 1];
+
+			 v = &m_sky[(y + 1) * m_skyWidth + x + 1];
 			 sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
 			 sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
 			 p++;
 		  }	
 		
-		v = &m_sky[(y + 1) * m_skyWidth + 1];
-		sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
-		sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
-		p++;
-		
 		v = &m_sky[y * m_skyWidth + 1];
 		sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
 		sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
+		p++;
+
+		v = &m_sky[(y + 1) * m_skyWidth + 1];
+		sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
+		sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
 		
 		m_strips[y]->recalcBSphere();
 	 }
@@ -401,10 +397,10 @@ void mcSky::createSphere(int x_segs, int y_segs)
    for (y = 1; y <= y_segs; y++)
    {
 	   m_strips[y] = new ssgVTable(GL_TRIANGLE_STRIP,
-									x_segs * 2 + 3, m_scoords[y],
+									x_segs * 2 + 2, m_scoords[y],
 									0, NULL,
 									0, NULL,
-									x_segs * 2 + 3, m_scolors[y]);
+									x_segs * 2 + 2, m_scolors[y]);
 	   m_strips[y]->setState(m_state);
 	   m_strips[y]->setCullFace(TRUE);
 	   m_skydome->addKid(m_strips[y]);
