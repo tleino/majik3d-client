@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "Object.hpp"
 
 Object::Object()
@@ -15,7 +16,10 @@ Object::~Object()
 {
    if(next != NULL)
 	 {
-		delete next;
+		free(next);
 		next = NULL;
 	 }
+   #ifdef DEBUG
+	 Debug("Object destructor: id=%d", id);
+   #endif
 }

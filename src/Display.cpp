@@ -20,7 +20,7 @@ Display::Display(int w, int h, int b)
    height = h;
    bpp = b;
    sdlmesactx = NULL;
-   
+
    #ifdef DEBUG
 	 Debug("Display constructor: width=%d height=%d bpp=%d", width, height, bpp);
    #endif
@@ -72,8 +72,11 @@ void Display::closeScreen()
    #endif
 	 
    if(sdlmesactx != NULL)
-	 delete sdlmesactx;
-   
+	 {
+		delete sdlmesactx;
+		sdlmesactx = NULL;
+	 }
+      
    #ifdef DEBUG
 	 Debug("Screen closed.");
    #endif
