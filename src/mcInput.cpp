@@ -204,11 +204,15 @@ Input::specialDown(int key, int x, int y)
 	menu->menuBar->reveal();
       break;
     case GLUT_KEY_F2:
+      glutSetCursor (GLUT_CURSOR_NONE);
+      glutWarpPointer (display->width/2, display->height/2);
       config->camera = 1;
       break;
     case GLUT_KEY_F1:
+      glutSetCursor (GLUT_CURSOR_INHERIT);
+      glutWarpPointer (display->width/2, display->height/2);
       config->camera = 0;
-      break;	 
+      break; 
     case GLUT_KEY_F12:
       captureScreen();
       break;
