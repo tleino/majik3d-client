@@ -89,19 +89,19 @@ void Landscape::init()
    setViewport(0, 0, display->width, display->height);
    
    map_1Mesh.numVertices = (MAP1_WIDTH+1)*(MAP1_WIDTH+1);
-   map_1Mesh.vertices  =  new float[3*map_1Mesh.numVertices];
+   map_1Mesh.vertices  =  new double[3*map_1Mesh.numVertices];
    map_1Mesh.face_normals = new P3D[(MAP1_WIDTH)*(MAP1_WIDTH)*2];
-   map_1Mesh.normals = new float[3*map_1Mesh.numVertices];
+   map_1Mesh.normals = new double[3*map_1Mesh.numVertices];
 
    map_2Mesh.numVertices = (MAP2_WIDTH+1)*(MAP2_WIDTH+1);
-   map_2Mesh.vertices  =  new float[3*map_2Mesh.numVertices];
+   map_2Mesh.vertices  =  new double[3*map_2Mesh.numVertices];
    map_2Mesh.face_normals = new P3D[(MAP2_WIDTH)*(MAP2_WIDTH)*2];
-   map_2Mesh.normals = new float[3*map_2Mesh.numVertices];
+   map_2Mesh.normals = new double[3*map_2Mesh.numVertices];
    
    map_3Mesh.numVertices = (MAP3_WIDTH+1)*(MAP3_WIDTH+1);
-   map_3Mesh.vertices  =  new float[3*map_2Mesh.numVertices];
+   map_3Mesh.vertices  =  new double[3*map_2Mesh.numVertices];
    map_3Mesh.face_normals = new P3D[(MAP3_WIDTH)*(MAP3_WIDTH)*2];
-   map_3Mesh.normals = new float[3*map_3Mesh.numVertices];
+   map_3Mesh.normals = new double[3*map_3Mesh.numVertices];
    
    
    listId_1 = -1;
@@ -130,7 +130,7 @@ void Landscape::init()
    initMap_3Mesh();
    makeMap_3();
    
-   glEnable(GL_FOG);
+//   glEnable(GL_FOG);
    
 	 {
 		GLfloat fogColor[4] =
@@ -268,9 +268,9 @@ void Landscape::init()
 
 void Landscape::makeHeightMaps()
 {
-   zmap_1 = new float[(MAP1_WIDTH+1)*(MAP1_WIDTH+1)];
-   zmap_2 = new float[(MAP2_WIDTH+1)*(MAP2_WIDTH+1)];
-   zmap_3 = new float[(MAP3_WIDTH+1)*(MAP3_WIDTH+1)];
+   zmap_1 = new double[(MAP1_WIDTH+1)*(MAP1_WIDTH+1)];
+   zmap_2 = new double[(MAP2_WIDTH+1)*(MAP2_WIDTH+1)];
+   zmap_3 = new double[(MAP3_WIDTH+1)*(MAP3_WIDTH+1)];
 
    map1_x = map1_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP1_WIDTH*(MAP1_GRID_WIDTH/2);
    map2_x = map2_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP2_WIDTH*(MAP2_GRID_WIDTH/2);
@@ -278,7 +278,7 @@ void Landscape::makeHeightMaps()
    
    
    int i, j;
-   float *temp;
+   double *temp;
    Perlin *perl = new Perlin;
    
    temp = zmap_3;
@@ -287,8 +287,8 @@ void Landscape::makeHeightMaps()
 	 {
 		for (i = 0; i <= MAP3_WIDTH; i++)
 		  {
-			 *(temp++) = perl->perlinNoise_2D((float)(map3_x+i*MAP3_GRID_WIDTH)/300, 
-											  (float)(map3_y+j*MAP3_GRID_WIDTH)/300)*200;
+			 *(temp++) = perl->perlinNoise_2D((double)(map3_x+i*MAP3_GRID_WIDTH)/300, 
+											  (double)(map3_y+j*MAP3_GRID_WIDTH)/300)*200;
 		  } 
 	 }
    
@@ -304,8 +304,8 @@ void Landscape::makeHeightMaps()
 		
 		for (i = 1; i < MAP2_WIDTH; i++)
 		  {
-			 *(temp++) = perl->perlinNoise_2D((float)(map2_x+i*MAP2_GRID_WIDTH)/300, 
-											  (float)(map2_y+j*MAP2_GRID_WIDTH)/300)*200;
+			 *(temp++) = perl->perlinNoise_2D((double)(map2_x+i*MAP2_GRID_WIDTH)/300, 
+											  (double)(map2_y+j*MAP2_GRID_WIDTH)/300)*200;
 		  } 
 		
 		*(temp++) = getHeight( map2_x + MAP2_GRID_WIDTH*MAP2_WIDTH, map2_y + j*MAP2_GRID_WIDTH);
@@ -315,7 +315,7 @@ void Landscape::makeHeightMaps()
 		*(temp++) = getHeight( map2_x + i*MAP2_GRID_WIDTH, map2_y + MAP2_GRID_WIDTH*MAP2_WIDTH);
 	 }
    
-   float temp2;
+   double temp2;
    temp = zmap_1;
    for (i = 0; i <= MAP1_WIDTH; i++)
 	 {
@@ -328,8 +328,8 @@ void Landscape::makeHeightMaps()
 		
 		for (i = 1; i < MAP1_WIDTH; i++)
 		  {
-			 *(temp++) = perl->perlinNoise_2D((float)(map1_x+i*MAP1_GRID_WIDTH)/300,
-											  (float)(map1_y+j*MAP1_GRID_WIDTH)/300)*200;
+			 *(temp++) = perl->perlinNoise_2D((double)(map1_x+i*MAP1_GRID_WIDTH)/300,
+											  (double)(map1_y+j*MAP1_GRID_WIDTH)/300)*200;
 		  }
 		
 		*(temp++) = getHeight( map1_x + MAP1_GRID_WIDTH*MAP1_WIDTH, map1_y + j*MAP1_GRID_WIDTH);
@@ -427,13 +427,13 @@ void Landscape::setViewport(int x, int y, int w, int h)
 
 }
 
-float Landscape::interpolate(float a, float b, float x)
+double Landscape::interpolate(double a, double b, double x)
 {
    return (1-x)*a + x*b;
 }
 
 
-float Landscape::getHeight(int x, int y)
+double Landscape::getHeight(int x, int y)
 {
    int tempx, tempy;
    
@@ -448,7 +448,7 @@ float Landscape::getHeight(int x, int y)
 		int fx = tempx % MAP1_GRID_WIDTH;
 		int ay = tempy / MAP1_GRID_WIDTH;
 		int fy = tempy % MAP1_GRID_WIDTH;
-		float x1, x2;
+		double x1, x2;
 		
 		if (fx == 0)
 		  x1 = zmap_1[ay*(MAP1_WIDTH+1) + ax];
@@ -457,7 +457,7 @@ float Landscape::getHeight(int x, int y)
 			 int bx = ax + 1;
 			 x1 = interpolate(zmap_1[ay*(MAP1_WIDTH+1) + ax],
 							  zmap_1[ay*(MAP1_WIDTH+1) + bx],
-							  (float)fx / MAP1_GRID_WIDTH);
+							  (double)fx / MAP1_GRID_WIDTH);
 		  }
 		
 		if (fy == 0)
@@ -472,9 +472,9 @@ float Landscape::getHeight(int x, int y)
 				  int bx = ax + 1;
 				  x2 = interpolate(zmap_1[by*(MAP1_WIDTH+1) + ax],
 								   zmap_1[by*(MAP1_WIDTH+1) + bx],
-								   (float)fx / MAP1_GRID_WIDTH);
+								   (double)fx / MAP1_GRID_WIDTH);
 			   }
-			 return interpolate(x1, x2, (float)fy / MAP1_GRID_WIDTH);
+			 return interpolate(x1, x2, (double)fy / MAP1_GRID_WIDTH);
 		  }
 	 }
    else 
@@ -490,7 +490,7 @@ float Landscape::getHeight(int x, int y)
 			 int fx = tempx % MAP2_GRID_WIDTH;
 			 int ay = tempy / MAP2_GRID_WIDTH;
 			 int fy = tempy % MAP2_GRID_WIDTH;
-			 float x1, x2;
+			 double x1, x2;
 			 
 			 if (fx == 0)
 			   x1 = zmap_2[ay*(MAP2_WIDTH+1) + ax];
@@ -499,7 +499,7 @@ float Landscape::getHeight(int x, int y)
 				  int bx = ax + 1;
 				  x1 = interpolate(zmap_2[ay*(MAP2_WIDTH+1) + ax], 
 								   zmap_2[ay*(MAP2_WIDTH+1) + bx], 
-								   (float)fx / MAP2_GRID_WIDTH);
+								   (double)fx / MAP2_GRID_WIDTH);
 			   }
 			 
 			 if (fy == 0)
@@ -514,9 +514,9 @@ float Landscape::getHeight(int x, int y)
 					   int bx = ax + 1;
 					   x2 = interpolate(zmap_2[by*(MAP2_WIDTH+1) + ax],
 										zmap_2[by*(MAP2_WIDTH+1) + bx],
-										(float)fx / MAP2_GRID_WIDTH);
+										(double)fx / MAP2_GRID_WIDTH);
 					}
-				  return interpolate(x1, x2, (float)fy / MAP2_GRID_WIDTH);
+				  return interpolate(x1, x2, (double)fy / MAP2_GRID_WIDTH);
 			   }
 		  }
 		else
@@ -533,7 +533,7 @@ float Landscape::getHeight(int x, int y)
 				  int fx = tempx % MAP3_GRID_WIDTH;
 				  int ay = tempy / MAP3_GRID_WIDTH;
 				  int fy = tempy % MAP3_GRID_WIDTH;
-				  float x1, x2;
+				  double x1, x2;
 				  
 //				  debug->put("%d %d %d %d %d %d", x, y, ax, fx, ay, fy);
 				  if (fx == 0)
@@ -543,7 +543,7 @@ float Landscape::getHeight(int x, int y)
 					   int bx = ax + 1;
 					   x1 = interpolate(zmap_3[ay*(MAP3_WIDTH+1) + ax],
 										zmap_3[ay*(MAP3_WIDTH+1) + bx],
-										(float)fx / MAP3_GRID_WIDTH);
+										(double)fx / MAP3_GRID_WIDTH);
 					}
 				  if (fy == 0)
 					{
@@ -560,9 +560,9 @@ float Landscape::getHeight(int x, int y)
 							int bx = ax + 1;
 							x2 = interpolate(zmap_3[by*(MAP3_WIDTH+1) + ax],
 											 zmap_3[by*(MAP3_WIDTH+1) + bx],
-											 (float)fx / MAP3_GRID_WIDTH);
+											 (double)fx / MAP3_GRID_WIDTH);
 						 }
-					   return interpolate(x1, x2, (float)fy / MAP3_GRID_WIDTH);
+					   return interpolate(x1, x2, (double)fy / MAP3_GRID_WIDTH);
 					}
 			   }
 			 else
@@ -577,7 +577,7 @@ float Landscape::getHeight(int x, int y)
 
 void Landscape::initMap_1Mesh()
 {
-   float *temp;
+   double *temp;
    
    int tempx, tempy;
    temp = map_1Mesh.vertices;
@@ -722,7 +722,7 @@ void Landscape::initMap_1Mesh()
    *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*(MAP1_WIDTH*2)-1].z;
    
 
-   float length;
+   double length;
    
    for (int i=0; i<map_1Mesh.numVertices*3; )
 	 {
@@ -741,7 +741,7 @@ void Landscape::initMap_1Mesh()
 
 void Landscape::initMap_2Mesh()
 {
-   float *temp;
+   double *temp;
    int tempx, tempy;
    
    temp = map_2Mesh.vertices;
@@ -750,7 +750,7 @@ void Landscape::initMap_2Mesh()
 		{
 		   *(temp++) = i*MAP2_GRID_WIDTH;
 		   *(temp++) = j*MAP2_GRID_WIDTH;
-//		   *(temp++) = perl->perlinNoise_2D((float)i/4, (float)j/4)*500;
+//		   *(temp++) = perl->perlinNoise_2D((double)i/4, (double)j/4)*500;
 		   *(temp++) = zmap_2[tempy*(MAP2_WIDTH+1) + tempx];
 		}
    }
@@ -886,7 +886,7 @@ void Landscape::initMap_2Mesh()
    *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*(MAP2_WIDTH*2)-1].z;
    
    
-   float length;
+   double length;
    
    for (int i=0; i<map_2Mesh.numVertices*3; )
 	 {
@@ -906,7 +906,7 @@ void Landscape::initMap_2Mesh()
 
 void Landscape::initMap_3Mesh()
 {
-   float *temp;
+   double *temp;
    int tempx, tempy;
    
    temp = map_3Mesh.vertices;
@@ -1049,7 +1049,7 @@ void Landscape::initMap_3Mesh()
    *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*(MAP3_WIDTH*2)-1].y;
    *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*(MAP3_WIDTH*2)-1].z;
    
-   float length;
+   double length;
    
    for (int i=0; i<map_3Mesh.numVertices*3; )
 	 {
@@ -1075,8 +1075,8 @@ void Landscape::makeMap_1()
    if (listId_1 != -1)
 	 glDeleteLists(listId_1, 1);
 
-   glVertexPointer(3, GL_FLOAT, 0, map_1Mesh.vertices);
-   glNormalPointer(GL_FLOAT, 0, map_1Mesh.normals);
+   glVertexPointer(3, GL_DOUBLE, 0, map_1Mesh.vertices);
+   glNormalPointer(GL_DOUBLE, 0, map_1Mesh.normals);
 
    glEnableClientState( GL_VERTEX_ARRAY );
    glEnableClientState( GL_NORMAL_ARRAY );
@@ -1116,8 +1116,8 @@ void Landscape::makeMap_2()
    if (listId_2 != -1)
 	 glDeleteLists(listId_2, 1);
    
-   glVertexPointer(3, GL_FLOAT, 0, map_2Mesh.vertices);
-   glNormalPointer(GL_FLOAT, 0, map_2Mesh.normals);
+   glVertexPointer(3, GL_DOUBLE, 0, map_2Mesh.vertices);
+   glNormalPointer(GL_DOUBLE, 0, map_2Mesh.normals);
    
    glEnableClientState( GL_VERTEX_ARRAY );
    glEnableClientState( GL_NORMAL_ARRAY );
@@ -1202,14 +1202,14 @@ void Landscape::makeMap_2()
 
 void Landscape::makeMap_3()
 {
-   float color[4] = { 0.0, 0.0, 1.0, 1.0 };
+   float color[4] = { 0.0, 1.0, 0.0, 1.0 };
    
    /* Check for already existing display list */
    if (listId_3 != -1)
 	 glDeleteLists(listId_3, 1);
    
-   glVertexPointer(3, GL_FLOAT, 0, map_3Mesh.vertices);
-   glNormalPointer(GL_FLOAT, 0, map_3Mesh.normals);
+   glVertexPointer(3, GL_DOUBLE, 0, map_3Mesh.vertices);
+   glNormalPointer(GL_DOUBLE, 0, map_3Mesh.normals);
    
    glEnableClientState( GL_VERTEX_ARRAY );
    glEnableClientState( GL_NORMAL_ARRAY );

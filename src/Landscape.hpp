@@ -34,7 +34,7 @@ class Landscape
    void setViewport(int, int, int, int);
    void addObject(int);
    void removeObject(int);
-   float getHeight(int, int);
+   double getHeight(int, int);
    void setMap_1(char *);
    void setMap_2(char *);
    void setMap_3(char *);
@@ -47,10 +47,10 @@ class Landscape
    char *map_2;   /* Map_1 is the area nearest to player and has the */
    char *map_3;   /* smallest polygons                               */
    char *map_4;
-   float *zmap_1;  /* Height maps */
-   float *zmap_2;
-   float *zmap_3;
-   float *zmap_4;
+   double *zmap_1;  /* Height maps */
+   double *zmap_2;
+   double *zmap_3;
+   double *zmap_4;
    int map1_x;
    int map1_y;
    int map2_x;
@@ -72,7 +72,7 @@ class Landscape
    void makeMap_3();
    void makeMap_4();
    void makeHeightMaps();
-   float interpolate(float, float, float);
+   double interpolate(double, double, double);
  private:
    int viewport_x;
    int viewport_y;
@@ -82,9 +82,9 @@ class Landscape
 
    struct mesh {
 	  int numVertices;
-	  float *vertices;   
+	  double *vertices;   
 	  P3D *face_normals;
-	  float *normals;
+	  double *normals;
    };
    
    struct mesh map_1Mesh, map_2Mesh, map_3Mesh, map4Mesh;
