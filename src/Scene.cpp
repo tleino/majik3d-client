@@ -223,63 +223,54 @@ Scene::update()
    sgCoord tuxpos = tuxi->getPos();
    
    while (ob != NULL)
-    {
-	   sgCoord pos = ob->getPos();
-	   
-	   if ( (abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ||
-		   abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ) && ob->getFileName() == "bee.ac"  ) 
-		 {
-			Object *temp = ob;
-			ob = ob->getNext();
-			delete temp;
-			continue;
-		 }
-	   
-	   scale[0] = 1.0f;
-	   scale[1] = 1.0f;
-	   scale[2] = sin( (float)ob->getMoveCounter() / 2.0 ) / 4 + 1;
-      
-	   if (!strcmp(ob->getFileName(), "tuxedo.ac"))
-		 {
-	//		ob->rotateX( 180.0f );
-			ob->setScale( scale );	 
-		 }
-	   else
-		 ob->setScale( scale );
-	   
+     {
+       sgCoord pos = ob->getPos();
+       
+       if ((abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ||
+	    abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ) && 
+	   ob->getFileName() == "bee.ac"  ) 
+	 {
+	   Object *temp = ob;
 	   ob = ob->getNext();
-    }
-  
-	   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
+	   delete temp;
+	   continue;
+	 }
+       
+       scale[0] = 1.0f;
+       scale[1] = 1.0f;
+       scale[2] = sin( (float)ob->getMoveCounter() / 2.0 ) / 4 + 1;
+       
+       ob->setScale( scale );
+       ob = ob->getNext();
+     }
+
+   printf ("%f\n", tuxi->getRadius());
+   
+   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
    sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
    
    if (config->camera == 0)
-	 {
-		// 3rd person mode.
-		campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-		campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
-		
-		float tuxhot = getHOT(tuxpos.xyz[0], tuxpos.xyz[1]);
-		float camhot = getHOT(campos.xyz[0], campos.xyz[1]);
-		campos.xyz[2] += 5+(camhot-tuxhot);
-		campos.hpr[1] -= 15+(camhot-tuxhot);
-	 }
+     {
+       // 3rd person mode.
+       campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+       campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
+       
+       float tuxhot = getHOT(tuxpos.xyz[0], tuxpos.xyz[1]);
+       float camhot = getHOT(campos.xyz[0], campos.xyz[1]);
+       campos.xyz[2] += 5+(camhot-tuxhot);
+       campos.hpr[1] -= 15+(camhot-tuxhot);
+     }
    else
-	 {
-		// 1st person mode.
-		campos.xyz[0] += 2*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-		campos.xyz[1] -= 2*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-		campos.xyz[2] += 2;
-		campos.hpr[1] = display->pitch;
-	 }
+     {
+       // 1st person mode.
+       campos.xyz[0] += 2*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+       campos.xyz[1] -= 2*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+       campos.xyz[2] += tuxi->getRadius();
+       campos.hpr[1] = tuxi->getRadius() + display->pitch - tuxi->getRadius() * 2.0f;
+     }
    
-   if (!strcmp(tuxi->getFileName(), "tuxedo.ac"))
-    {
-//      tuxi->rotateX( 180.0f );
-    }
-   
-  ssgSetCamera ( & campos ) ;
-  sky_dome->setTransform (  campos.xyz );
+   ssgSetCamera ( & campos ) ;
+   sky_dome->setTransform (  campos.xyz );
 }
 
 void
@@ -325,16 +316,20 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
   textpos[0] = textpos[0]*display->width/2 + display->width/2;
   textpos[1] = textpos[1]*display->height/2 + display->height/2;
   
+  int slen = strlen(text_object->getLabel())*8;
+  textpos[0] -= slen / 2;
+
   if (textpos[0] < 0)
     textpos[0] = 0;
-  else if (textpos[0] > display->width)
-    textpos[0] = display->width;
-  
+  else if (textpos[0] > display->width-slen)
+    textpos[0] = display->width-slen;
+
   if (textpos[1] < 0)
     textpos[1] = 0;
   else if (textpos[1] > display->height)
     textpos[1] = display->height;
-  
+
+  printf ("slen: %d width: %d x: %f y: %f\n", slen, display->width, textpos[0], textpos[1]);
   text_object->setPosition(textpos[0], textpos[1]);
 }
 
@@ -360,7 +355,7 @@ Scene::draw()
       sgCoord obPos = ob->getPos();
       posit[0] = obPos.xyz[0];
       posit[1] = obPos.xyz[1];
-      posit[2] = obPos.xyz[2];
+      posit[2] = obPos.xyz[2]+ob->getRadius();
       
       drawText( ob->getTextObject(), posit);
       

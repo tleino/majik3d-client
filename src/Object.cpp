@@ -92,6 +92,20 @@ Object::~Object()
   delete puhe;
 }
 
+float
+Object::getRadius()
+{
+  sgSphere *bs = trans->getBSphere(); 
+  return bs->getRadius() * scaleZ; 
+}
+
+float *
+Object::getCenter()
+{
+  sgSphere *bs = trans->getBSphere();
+  return bs->getCenter();
+}
+
 void
 Object::init(int id, char *file_name)
 {
@@ -186,6 +200,7 @@ Object::setScale( sgVec3 scale )
   sgCoord temp = getPos();
   
   trans->setTransform( &temp, scale[0], scale[1], scale[2] );
+  this->scaleZ = scale[2];
 }
 
 void

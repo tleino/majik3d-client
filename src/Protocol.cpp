@@ -206,26 +206,30 @@ Protocol::parseCommand(char *input)
       
       if (id == ownId)
 	{
-	  ob = tuxi = new Player();
-	  sock->writePacket("%d %f %f %f", CMD_MOVE, x, y, h);
-	  sock->writePacket("%d %f %f %f", CMD_MOVE, x, y, h);
-	   
+	  ob = tuxi = new Player();	   
 	}
       else
 	ob = new Object();
       
       ob->init(id, file_name);
       
-      sgCoord tmpPos = ob->getPos();
-      
-      tmpPos.xyz[0] = x;
-      tmpPos.xyz[1] = y;
-      
-      tmpPos.hpr[0] = h;
-      tmpPos.hpr[1] = 0;
-      tmpPos.hpr[2] = 0;
-      
-      ob->moveTo(tmpPos);
+      if (id == ownId)
+	{
+	  sock->writePacket("%d %f %f %f", CMD_MOVE, x, y, h); 
+	}
+      else
+	{
+	  sgCoord tmpPos = ob->getPos();
+
+	  tmpPos.xyz[0] = x;
+	  tmpPos.xyz[1] = y;
+	  
+	  tmpPos.hpr[0] = h;
+	  tmpPos.hpr[1] = 0;
+	  tmpPos.hpr[2] = 0;
+	  
+	  ob->moveTo(tmpPos);
+	}
       break;
     case CMD_MAP:
       char *tmp;

@@ -70,12 +70,15 @@ public:
   /// Reveal the say string.
   void revealSayString();
   /// Hide the say string.
-  void hideSayString();  
+  void hideSayString();
+  /// Bounding sphere radius.
+  float getRadius();
+  /// Bounding sphere center.
+  float *getCenter();
 private:
   ssgTransform *trans;
   ssgEntity *obu;
-  puText *puhe;
-  
+  puText *puhe;  
   char file_name[80];
   int movecounter;
   int id;
@@ -85,6 +88,7 @@ private:
   
   int currentSound;
   sgCoord ob_pos;
+  float scaleZ;
 };
 
 extern Object *object;
