@@ -67,12 +67,14 @@ Input::keyUp(unsigned char k, int x, int y)
 	case '2':
 		//stop moving
 		sock->writePacket("%d %f %f %f %d", Protocol::CMD_MOVE_DIRECTION, pos.xyz[0], pos.xyz[1], pos.hpr[0], 0);
+		scene->getPlayer()->stopMoving();
 		break;
 
 	case '4':
 	case '6':
 		//stop turning
 		sock->writePacket("%d %d", Protocol::CMD_TURN, 0);
+		scene->getPlayer()->stopTurning();
 		break;
 
 	default:
@@ -126,21 +128,25 @@ Input::keyDown(unsigned char k, int x, int y)
 		case '8':
 			// Move forward.
 			sock->writePacket("%d %f %f %f %d", Protocol::CMD_MOVE_DIRECTION, pos.xyz[0], pos.xyz[1], pos.hpr[0], 1);
+			scene->getPlayer()->moveForward();
 			break;
 	
 		case '2':
 	  // Move backward.
 			sock->writePacket("%d %f %f %f %d", Protocol::CMD_MOVE_DIRECTION, pos.xyz[0], pos.xyz[1], pos.hpr[0], -1);
+			scene->getPlayer()->moveBackward();
 			break;
 
 		case '6':
 			// turn right
 			sock->writePacket("%d %d", Protocol::CMD_TURN, 1);
+			scene->getPlayer()->turnRight();
 			break;
 
 		case '4':
 		  // Turn left.
 			sock->writePacket("%d %d", Protocol::CMD_TURN, -1);
+			scene->getPlayer()->turnLeft();
 			break;
 
 		case '+':

@@ -30,9 +30,6 @@
 #include "mcSky.hpp"
 #include "mcCamera.hpp"
 
-#include "mcPlayerController.hpp"
-#include "mcCameraController.hpp"
-
 #define random()	rand()
 
 //sgMat4         frustumi;

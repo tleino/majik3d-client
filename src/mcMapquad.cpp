@@ -18,8 +18,6 @@
 
 #include "mcMapquad.hpp"
 #include "mcLandscape.hpp"
-#include "mcSocket.hpp"
-#include "mcProtocol.hpp"
 #include "mcDebug.hpp"
 #include "mcError.hpp"
 #include "mcTerrainBlock.hpp"
