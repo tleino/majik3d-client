@@ -15,11 +15,6 @@ environment variable. This can be acheived (if you installed in
 
 setenv LD_LIBRARY_PATH /usr/local/lib
 
-I've been working with Steve Baker to get PLIB ported to Solaris,
-however the version listed above isn't... 
-In the meantime, a version of PLIB ported to Solaris is available
-at http://www.electronic.co.uk/plib.tar.gz
-
 You MUST have MESA installed first. And don't expect too much from
 the sound - Solaris (at least on the Sparc I use here) is horrible
 for sound... (8Khz U or A-Law)
@@ -27,4 +22,4 @@ for sound... (8Khz U or A-Law)
 A good place to visit if you want gzip and other good stuff is
 http://www.sunfreeware.com/
 
-Steve. (steve@electronic.co.uk)
+Steve. (delancie@majik.netti.fi)
