@@ -142,12 +142,12 @@ Input::keyDown(unsigned char k, int x, int y)
 
 		case '+':
 		  // Look up.
-			scene->getCamera()->pitchUp(1.0);
+			scene->getCamera()->pitch(1.0);
 		  break;
 
 		case '-':
 		  // Look down.
-			scene->getCamera()->pitchDown(1.0);
+			scene->getCamera()->pitch(-1.0);
 		  break;
 
 		case 13:
@@ -248,17 +248,13 @@ Input::mouseMotion(int x, int y)
     {
       sgCoord temppos = tuxi->getPos();
       temppos.hpr[0] += diff_x;
-      scene->getCamera()->pitchUp(diff_y);
+      scene->getCamera()->pitch(diff_y);
       
       if (temppos.hpr[0] > 355.0f)
 	temppos.hpr[0] = 0.0f;
       if (temppos.hpr[0] < 0.0f)
 	temppos.hpr[0] += 360.0f;
-/*      if (display->pitch > 360.0f) 
-	display->getCameraController()->setPitch(360.0f); 
-      if (display->pitch < -360.0f) 
-	display->getCameraController()->setPitch(-360.0f);
-  */    
+
       tuxi->setPos(temppos);
 
       if (x >= display->getWidth()-1 || y >= display->getHeight()-1 || x <= 0 || y <= 0)

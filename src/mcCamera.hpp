@@ -31,8 +31,7 @@ public:
 	void	update		(float);
 	void	setMode		(Mode);
 
-	void	pitchUp		(float p)	{ m_pitch += p; }
-	void	pitchDown	(float p)	{ m_pitch -= p; }
+	void	pitch		(float p);
 	void	setPitch	(float p)	{ m_pitch = p; }
 	float	getPitch	()			{ return m_pitch; }
 
@@ -40,6 +39,8 @@ public:
 
 private:
 
+	float			m_maxpitch,		// Maximum and minimum camera pitches
+					m_minpitch;		// for 1st person
 	float			m_pitch;
 	sgCoord			m_position;
 	Object*			m_target;

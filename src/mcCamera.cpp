@@ -14,6 +14,9 @@ mcCamera::mcCamera()
 {
 	m_target = NULL;
 	m_mode = FREE;
+	m_pitch = 0.0;
+	m_maxpitch = 60.0;
+	m_minpitch = -50.0;
 	sgSetVec3 ( m_position.xyz, 0.0, 0.0, 0.0 );
 	sgSetVec3 ( m_position.hpr, 0.0, 0.0, 0.0 );
 } 
@@ -21,6 +24,16 @@ mcCamera::mcCamera()
 mcCamera::~mcCamera()
 {
 
+}
+
+void
+mcCamera::pitch(float p)
+{
+	m_pitch += p;
+	if (m_pitch > m_maxpitch)
+		m_pitch = m_maxpitch;
+	if (m_pitch < m_minpitch)
+		m_pitch = m_minpitch;
 }
 
 void
@@ -52,19 +65,13 @@ mcCamera::update(float t)
 
 	case FIRSTPERSON:
 
-		tempPos.xyz[0] = targetPos.xyz[0];
-		tempPos.xyz[1] = targetPos.xyz[1];
-		tempPos.xyz[2] = targetPos.xyz[2] + m_target->getRadius();
-		tempPos.hpr[0] = targetPos.hpr[0];
-		tempPos.hpr[1] = m_pitch;
-		tempPos.hpr[2] = 0.f;
+		m_position.xyz[0] = targetPos.xyz[0];
+		m_position.xyz[1] = targetPos.xyz[1];
+		m_position.xyz[2] = targetPos.xyz[2] + m_target->getRadius();;
 
-		m_position.xyz[0] = tempPos.xyz[0];
-		m_position.xyz[1] = tempPos.xyz[1];
-		m_position.xyz[2] = tempPos.xyz[2];
-		m_position.hpr[0] += M * (tempPos.hpr[0] - m_position.hpr[0]);
-		m_position.hpr[1] += M * (tempPos.hpr[1] - m_position.hpr[1]);
-		m_position.hpr[2] += M * (tempPos.hpr[2] - m_position.hpr[2]);		
+		m_position.hpr[0] = targetPos.hpr[0];
+		m_position.hpr[1] = m_pitch;tempPos.hpr[1];
+		m_position.hpr[2] = 0.0f;
 
 		break;
 
