@@ -15,9 +15,13 @@
 #include "Config.hpp"
 #include "Error.hpp"
 #include "Debug.hpp"
+#include "Keyboard.hpp"
 
 extern Display *display;
 extern Socket *sock;
 extern Landscape *landscape;
+extern Keyboard *keyboard;
+extern SDL_Event event;
+extern bool quit;
 
 #endif

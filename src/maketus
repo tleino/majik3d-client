@@ -1,5 +1,6 @@
 #!/bin/sh
 g++ -o majikclinu Landscape.cpp Object.cpp main.cpp Display.cpp Socket.cpp \
-	Protocol.cpp Config.cpp SDLMesa.cpp Error.cpp Debug.cpp -L/usr/X11R6/lib \
-	-L/usr/lib/X11/lib -L/usr/local/lib -lX11 -lXext -lXmu -lXt -lXi -lSDL \
-	-lMesaGL -lSM -lICE -lglut -lMesaGLU -lpthread -ldl -lm -I/usr/include/GL/
+	Protocol.cpp Config.cpp SDLMesa.cpp Error.cpp Debug.cpp Keyboard.cpp \
+	-L/usr/X11R6/lib -L/usr/lib/X11/lib -L/usr/local/lib -lX11 -lXext -lXmu \
+	-lXt -lXi -lSDL -lMesaGL -lSM -lICE -lglut -lMesaGLU -lpthread -ldl -lm \
+	-I/usr/include/GL/

@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Landscape.hpp"
-#include "Object.hpp"
 #include "Majik.hpp"
 
 Landscape::Landscape()
@@ -15,7 +13,10 @@ Landscape::Landscape()
 Landscape::~Landscape()
 {
    if(first != NULL)
-	 free(first);
+	 {
+		delete first;
+		first = NULL;
+	 }
    #ifdef DEBUG
 	 Debug("Landscape destructor");
    #endif

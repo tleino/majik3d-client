@@ -45,6 +45,9 @@ void Display::openScreen()
 		flags |= SDL_HWPALETTE;
 	 }
    
+   #ifdef DEBUG
+	 Debug("Opening screen...");
+   #endif
    screen = SDL_SetVideoMode(width, height, bpp, flags);
    if(screen == NULL) 
 	 {
@@ -53,12 +56,21 @@ void Display::openScreen()
    
    ctx = new SDLMesaContext(screen);
    ctx->makeCurrent();
+   #ifdef DEBUG
+	 Debug("Screen opened.");
+   #endif
 }
 
 void Display::closeScreen()
 {
+   #ifdef DEBUG
+	 Debug("Closing screen...");
+   #endif
    if(ctx != NULL)
 	 delete ctx;
+   #ifdef DEBUG
+	 Debug("Screen closed.");
+   #endif
 }
 
 void Display::updateScreen()

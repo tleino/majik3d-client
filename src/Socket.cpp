@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Socket.hpp"
+#include <string.h>
+#include <stdarg.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <sys/ioctl.h>
 #include "Majik.hpp"
 
 Socket::Socket()
@@ -29,22 +35,18 @@ Socket::~Socket()
    #endif
 }
 
-int Socket::connect()
+void Socket::connect()
 {
-   return 1;
 }
 
-int Socket::disconnect()
+void Socket::disconnect()
 {
-   return 1;
 }
 
-int readPacket()
+void Socket::readPacket()
 {
-   return 1;
 }
 
-int writePacket()
+void Socket::writePacket()
 {
-   return 1;
 }

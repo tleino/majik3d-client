@@ -7,10 +7,10 @@ class Socket
    Socket();
    Socket(char *, int);
    ~Socket();
-   int connect();
-   int disconnect();
-   int readPacket();
-   int writePacket();
+   void connect();
+   void disconnect();
+   void readPacket();
+   void writePacket();
  public:
    char *ip;
    int port;
