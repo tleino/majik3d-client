@@ -16,20 +16,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <iostream.h>
+#include <sg.h>
+
 #include "Protocol.hpp"
 #include "Menu.hpp"
 #include "Socket.hpp"
-#include <iostream.h>
 #include "Debug.hpp"
 #include "Object.hpp"
 #include "Error.hpp"
 #include "Mapquad.hpp"
 #include "Display.hpp"
 
-#include <sg.h>
-
 extern sgCoord tuxpos;
-extern Object   *tuxi;
+extern Object *tuxi;
 
 Protocol::Protocol()
 {
@@ -43,7 +43,7 @@ void
 Protocol::parseCommand(char *input)
 {
    int command;
-   int found, id;
+   int found = 0, id;
    int map_x, map_y, map_level;
    float x, y, h;
    Object *ob = NULL;
@@ -53,51 +53,48 @@ Protocol::parseCommand(char *input)
    command = atoi(data);
    
    int tmp = strlen(data);
-   
    strcpy(data, &input[tmp+1]);  
 
    switch (command) {
-	case 50:
+	case CMD_MOVE:
 	  if (sscanf(data, "%d %f %f %f", &id, &x, &y, &h) < 4) {
-		 cout << "ERROR: invalid parameters to 50" << endl;
+		 error->put (ERROR_WARNING, "Invalid parameters to protocol command CMD_MOVE.");
 		 break;
 	  }
-	  
-	  found = 0;
-	  
+
 	  ob = Object::first;
-	  
-	  while (ob != NULL) {		 
+	  while (ob != NULL) {
 		 if (ob->id == id) {
 			ob->moveTo(x, y, h);
 			found = 1;
 			break;
 		 }
-			 
+		 
 		 ob = ob->next;
 	  }
 	  
 	  if (!found) {
-		 cout << "Object " << id << " not found!" << endl;
+		 error->put (ERROR_WARNING, "Object %d not found!", id);
 		 break;
 	  }
-
+	  
 	  if (ob == tuxi)
 		{
-//		   Mapquad::root_map->getMapquad(12, (int)x-128, (int)y-128)->selectLOD(0);
-//		   Mapquad::root_map->getMapquad(12, (int)x-128, (int)y+128)->selectLOD(0);
-//		   Mapquad::root_map->getMapquad(12, (int)x+128, (int)y-128)->selectLOD(0);
-//		   Mapquad::root_map->getMapquad(12, (int)x+128, (int)y+128)->selectLOD(0);
+		   /* FIXME: Clean up the code. */
+		   //		   Mapquad::root_map->getMapquad(12, (int)x-128, (int)y-128)->selectLOD(0);
+		   //		   Mapquad::root_map->getMapquad(12, (int)x-128, (int)y+128)->selectLOD(0);
+		   //		   Mapquad::root_map->getMapquad(12, (int)x+128, (int)y-128)->selectLOD(0);
+		   //		   Mapquad::root_map->getMapquad(12, (int)x+128, (int)y+128)->selectLOD(0);
 		   
 		   
-//		   Mapquad *temp = NULL;
-		  int i, j;
-/*
-		   for (j = -16; j < 16; j++) {
-			  for (i = -16; i < 16; i++) {
-				 
-				 Mapquad::root_map->getMapquad(12, (int)x +128+ i*256, (int)y +128+ j*256)->selectLOD(4);
-				 
+		   //		   Mapquad *temp = NULL;
+		   int i, j;
+		   /*
+			for (j = -16; j < 16; j++) {
+			   for (i = -16; i < 16; i++) {
+				  
+				Mapquad::root_map->getMapquad(12, (int)x +128+ i*256, (int)y +128+ j*256)->selectLOD(4);
+				  
 			  }
 		   }
 		   
@@ -135,11 +132,11 @@ Protocol::parseCommand(char *input)
 		   
 		}  
 	  break;
-	case 52:
+	case CMD_OWN_ID:
 	  sscanf(data, "%d", &id);
 	  
 	  ob = Object::first;
-	  
+
 	  while (ob != NULL) {
 		 if (ob->id == id) {
 			tuxi = ob;
@@ -147,7 +144,7 @@ Protocol::parseCommand(char *input)
 		 }
 	  }
 	  break;
-	case 53:
+	case CMD_QUIT:
 	  sscanf(data, "%d", &id);
 	  
 	  ob = Object::first;
@@ -161,8 +158,7 @@ Protocol::parseCommand(char *input)
 		 ob = ob->next;
 	  }	  
 	  break;
-	  
-	case 54:
+	case CMD_SAY:
 	  sscanf(data, "%d", &id);
 	  
 	  ob = Object::first;
@@ -175,12 +171,10 @@ Protocol::parseCommand(char *input)
 		 }
 		 ob = ob->next;
 	  }
-	  
 	  break;
-	  
-	case 55:
+	case CMD_ADD_OBJECT:
 	  if (sscanf(data, "%d %f %f %f %s", &id, &x, &y, &h, file_name) != 5) {
-		 cout << "ERROR: Invalid parameters to 55" << endl;
+		 error->put (ERROR_WARNING, "Invalid parameters to protocol command CMD_ADD_OBJECT.");
 		 break;
 	  }
 	  
@@ -196,7 +190,6 @@ Protocol::parseCommand(char *input)
 	  ob->ob_pos.hpr[2] = 0;
 	  
 	  ob->trans->setTransform( &ob->ob_pos );
-	  
 	  break;
 	case CMD_MAP:
 	  char *tmp;
@@ -204,15 +197,16 @@ Protocol::parseCommand(char *input)
 	  
 	  if (sscanf(data, "%d %d %d %s", &map_level, &map_x, &map_y, tmp) !=4)
 		{
-		   error->put(ERROR_WARNING, "buggelibug! invalid arguments to CMD_MAP");
+		   error->put (ERROR_WARNING, "Invalid parameters to protocol command CMD_MAP.");
 		   delete tmp;
 		   break;
 		}
-//	  cout << "got map, level: " << map_level << " (" << map_x << "," << map_y << "): " << tmp << endl;
+	  //	  cout << "got map, level: " << map_level << " (" << map_x << "," << map_y << "): " << tmp << endl;
 	  Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(tmp);
 	  
 	  break;
 	default:
+	  error->put (ERROR_WARNING, "Unknown protocol command received: 0x%X", command);
 	  break;
    }
 }
