@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <pu.h>
 #include "Majik.hpp"
 
@@ -25,6 +26,7 @@ puText *fps_text;
 puMenuBar *main_menu_bar;
 time_t t = time(NULL);
 int frames = 0;
+int mouse_x, mouse_y;
 
 void exit_cb(puObject *);
 void flat_cb(puObject *);
@@ -138,6 +140,8 @@ Display::openScreen()
    glutMotionFunc(mouseMotion);
    //glutIdleFunc(idle);
    
+   glutWarpPointer (width/2, height/2);
+   
    /* PLIB: Picoscopic User Interface */
    puInit();
    puShowCursor();
@@ -170,6 +174,7 @@ Display::openScreen()
 void
 Display::mouseMotion(int x, int y)
 {
+   mouse_x = x; mouse_y = y;
    puMouse (x, y);
    glutPostRedisplay();
 }
@@ -197,13 +202,36 @@ Display::idle()
 void 
 Display::updateScreen()
 {
-   int t2 = (int) (time(NULL) - t);
+   int t2 = (int) (time(NULL) - t), warp = 0;
    frames++;
    char fps[80];
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
    landscape->drawLandscape();
    
+   /* Trap the mouse */
+      
+   if (mouse_x < 1) {
+	  printf ("mouse_x <\n");
+	  mouse_x = 2; warp = TRUE;
+   } else if (mouse_x > display->width-1) {
+	  printf ("mouse_x >\n");
+	  mouse_x = display->width-2; warp = TRUE;
+   }
+   if (mouse_y < 1) {
+	  printf ("mouse_y <\n");
+	  mouse_y = 2; warp = TRUE;
+   } else if (mouse_y > display->height-1) {
+	  printf ("mouse_y >\n");
+	  mouse_y = display->height-2; warp = TRUE;
+   }
+
+   if (warp) {
+	  printf ("warping to: %d %d\n", mouse_x, mouse_y);
+	  glutWarpPointer (mouse_x, mouse_y);
+	  warp = 0;
+   }
+	  
    /* Draw menus etc using PUI (part of PLIB) */
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
