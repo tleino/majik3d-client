@@ -249,13 +249,21 @@ Input::mouseMotion(int x, int y)
 	temppos.hpr[0] = 0.0f;
       if (temppos.hpr[0] < 0.0f)
 	temppos.hpr[0] += 360.0f;
-
       if (display->pitch > 75.0f) 
 	display->pitch = 75.0f; 
       if (display->pitch < -75.0f) 
 	display->pitch = -75.0f; 
       
       tuxi->setPos(temppos);
+
+      if (x >= display->width-1 || y >= display->height-1 || x <= 0 || y <= 0)
+	{
+	  input->mouse_x = display->width/2;
+	  input->mouse_y = display->height/2;
+	  glutWarpPointer (input->mouse_x, input->mouse_y);
+
+	  return;
+	}
     }
 
   input->mouse_x = x; 
