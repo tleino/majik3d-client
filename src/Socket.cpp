@@ -27,10 +27,10 @@
 #include <netdb.h>
 #include <sys/ioctl.h>
 #include <errno.h>
+#include <unistd.h>
 
 #if defined(__svr4__)
 // For Solaris...
-#include <unistd.h>
 #include <stropts.h>
 #include <sys/filio.h>
 
@@ -109,7 +109,7 @@ Socket::connectServer()
    if (connect (nSocket, (struct sockaddr *) &ServerAddr, sizeof (ServerAddr)) < 0) {
       printf ("Unable to connect to remote host: %s\n", strerror (errno));
 	  printf ("Attempting to reconnect...\n");
-	  sleep (10);
+	  //sleep (10);
 	  connectServer();
    }
 }
