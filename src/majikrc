@@ -10,9 +10,9 @@
 # to 0, lod to 7, debug and protocol_debug to 0.  Otherwise the default
 # values will do. 
 
-# Majik host configuration.
+# Majik host configuration (port 4000 for -M3, 4001 for -current testing).
 server=195.197.61.60
-port=4001
+port=4000
 
 # Screen initialization.
 screen_width=640
