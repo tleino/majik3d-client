@@ -99,7 +99,6 @@ Scene::init()
   //ssgStripify (sky_dome);
   sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
   scene_root->addKid (sky_dome);
-  printf ("kids: %d\n", sky_dome->getNumKids());
   // ssgEntity *entity = ssgLoadAC ("skydome.ac");
 
   landscape->init(scene_root);
@@ -289,6 +288,7 @@ Scene::update()
    
    sgCoord skypos;
    sgCopyVec3 (skypos.xyz, campos.xyz);
+   skypos.xyz[2] -= 2000.0f;
    skypos.hpr[0] = 0.0f;
    skypos.hpr[1] = 90.0f;
    skypos.hpr[2] = 0.0f;
