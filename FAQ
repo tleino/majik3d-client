@@ -133,26 +133,34 @@ Majik FAQ (Frequently Asked Questions)
           
    2.8. What is the difference between WorldForge (former Altima) and
           Majik?
-          WorldForge: To create a GPL/LGPL game with total freedom for
-          anyone. It can be only a "generic" game engine for people to
-          build their own worlds. It can be played with several different
-          kinds of clients, which is a little bit restrictive, even
-          though it brings variety and opens it up for more people to
-          play. Shortly: WorldForge is for Open Source fanatics wanting
-          to watch the development of a generic game engine, and maybe
-          desiring to build their own world.
+          WorldForge: The WorldForge Project began in 1998 with an idea
+          to create a roleplaying game system, focusing on freedom and
+          playability. It wouldn't be just a 2D or 3D game; it could be
+          playable using with various frontends from 2D text-based to
+          true 3D frontend. Anyone could start a server and in fact there
+          would actually be many servers, each with unique maps,
+          histories, creatures, rulesets and legends.
           
-          Majik: To create only one consistent and well-designed base for
-          a world which the players themselves can modify to their
-          liking, if they have enough power and influence to do so. That
-          means, Majik will really write its own history. The project
-          will have only one client type and it is true 3D allowing total
-          freedom of movement. Only the client's code is GPLed, the
-          server remains closed from the public to prevent people wasting
-          time on their bad copies of the world instead of participating
-          in the centralized development. Shortly: Majik is for
-          role-players who demand realism, credibility and a
-          well-designed world.
+          Majik: The Majik Project began in 1995 with an idea to create
+          an online roleplaying world, focusing on realism, credibility
+          and most of all: roleplayability. The project begun its journey
+          as a simple text-based MUD and tried all the possible frontends
+          before discovering true 3D frontend as the best choice. All of
+          the previously tried frontends were inadequate. The 3D wasn't
+          selected because of it would be beautiful, it was selected
+          because it was not as restrictive as the others. How could one
+          see for miles from a top of a mountain if only using a 2D-based
+          client? Also, in the Majik there could be only one server, with
+          one large, well-designed and dynamic world, where the players
+          themselves could modify the rules for their liking. There is no
+          restrictions. For example, if player killing becomes a
+          nuisance, the players could group together and punish all the
+          player killers. Not only by allowing players to modify rules
+          they could change the world and its history by merely
+          roleplaying their character. If one burns a house in a city, it
+          will remain burned. If one kills an NPC, it will remain dead
+          and if one builds a city it will be there until destroyed by
+          someone.
           
    2.9. How much will Majik cost to play, or will it be free?
           Majik is totally free of charge until it is so big that we must
