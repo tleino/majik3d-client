@@ -34,6 +34,7 @@
 #include "Scene.hpp"
 #include "Protocol.hpp"
 #include "Perlin.hpp"
+#include "Mapquad.hpp"
 
 bool quit = false;
 Error *error = NULL;
@@ -47,6 +48,7 @@ Menu *menu = NULL;
 Scene *scene = NULL;
 Protocol *protocol = NULL;
 Perlin *perlin = NULL;
+Mapquad *Mapquad::root_map = NULL;
 
 int
 main(int argc, char **argv)
@@ -63,6 +65,7 @@ main(int argc, char **argv)
    scene = new Scene;
    protocol = new Protocol;
    perlin = new Perlin;
+   Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
    
    glutInit(&argc, argv);
    config->readConfig(argc, argv);
@@ -80,6 +83,8 @@ main(int argc, char **argv)
 
    // Open the screen
    display->openScreen();
+   
+//   Mapquad::root_map->getMapquad(12,0,0);
    glutMainLoop();
    
    // Call ending functions

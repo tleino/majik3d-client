@@ -22,7 +22,7 @@
 #define CMD_LOGIN        51
 #define CMD_MOVE         50
 #define CMD_OWN_FD       52
-
+#define CMD_MAP         189
 
 class Protocol
 {

@@ -22,7 +22,10 @@
 #include <iostream.h>
 #include "Debug.hpp"
 #include "Object.hpp"
+#include "Error.hpp"
+#include "Mapquad.hpp"
 #include "Display.hpp"
+
 #include <sg.h>
 
 extern sgCoord tuxpos;
@@ -41,14 +44,15 @@ Protocol::parseCommand(char *input)
 {
    int command;
    int found, id;
+   int map_x, map_y, map_level;
    float x, y, h;
    float new_x, new_y, new_h;
    float old_x, old_y, old_h;
    float dif_x, dif_y, dif_h;
    Object *ob = NULL;
    char file_name[80], data[1024];
-   
-   sscanf(input, "%s", data);
+      
+   sscanf(input, "%s\n", data);
    command = atoi(data);
    
    int tmp = strlen(data);
@@ -103,7 +107,7 @@ Protocol::parseCommand(char *input)
 				  ob->ob_pos.hpr[0] = h;
 				  break;
 			   }
-			   else {
+~			   else {
 				  ob->movecounter++;
 				  glutPostRedisplay();
 				  //display->updateScreen();
@@ -126,7 +130,59 @@ Protocol::parseCommand(char *input)
 		 cout << "Object " << id << " not found!" << endl;
 		 break;
 	  }
-	  
+
+	  if (ob == tuxi)
+		{
+//		   Mapquad::root_map->getMapquad(12, (int)x-128, (int)y-128)->selectLOD(0);
+//		   Mapquad::root_map->getMapquad(12, (int)x-128, (int)y+128)->selectLOD(0);
+//		   Mapquad::root_map->getMapquad(12, (int)x+128, (int)y-128)->selectLOD(0);
+//		   Mapquad::root_map->getMapquad(12, (int)x+128, (int)y+128)->selectLOD(0);
+		   
+		   
+//		   Mapquad *temp = NULL;
+		  int i, j;
+/*
+		   for (j = -16; j < 16; j++) {
+			  for (i = -16; i < 16; i++) {
+				 
+				 Mapquad::root_map->getMapquad(12, (int)x +128+ i*256, (int)y +128+ j*256)->selectLOD(4);
+				 
+			  }
+		   }
+		   
+		   for (j = -8; j < 8; j++) {
+			  for (i = -8; i < 8; i++) {
+				 
+				 Mapquad::root_map->getMapquad(12, (int)x +128+ i*256, (int)y +128+ j*256)->selectLOD(3);
+								  
+			  }
+		   }
+*/		   
+		   for (j = -4; j < 4; j++) {
+			  for (i = -4; i < 4; i++) {
+				 
+				 Mapquad::root_map->getMapquad(12, (int)x +128+ i*256, (int)y +128+ j*256)->selectLOD(2);
+				 
+			  }
+		   }
+		   
+		   for (j = -2; j < 2; j++) {
+			  for (i = -2; i < 2; i++) {
+				 
+				 Mapquad::root_map->getMapquad(12, (int)x +128+ i*256, (int)y +128+ j*256)->selectLOD(1);
+				 
+			  }
+		   }   
+
+		   for (j= - 1; j < 1; j++) {
+			  for (i= - 1; i < 1; i++) {
+				 
+				 Mapquad::root_map->getMapquad(12, (int)x + 128+ i*256, (int)y +128 + j*256)->selectLOD(0);
+				 
+			  }
+		   }		   
+		   
+		}  
 	  break;
 	case 52:
 	  sscanf(data, "%d", &id);
@@ -189,6 +245,20 @@ Protocol::parseCommand(char *input)
 	  ob->ob_pos.hpr[2] = 0;
 	  
 	  ob->trans->setTransform( &ob->ob_pos );
+	  
+	  break;
+	case CMD_MAP:
+	  char *tmp;
+	  tmp = new char[16*16+1];
+	  
+	  if (sscanf(data, "%d %d %d %s", &map_level, &map_x, &map_y, tmp) !=4)
+		{
+		   error->put(ERROR_WARNING, "buggelibug! invalid arguments to CMD_MAP");
+		   delete tmp;
+		   break;
+		}
+//	  cout << "got map, level: " << map_level << " (" << map_x << "," << map_y << "): " << tmp << endl;
+	  Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(tmp);
 	  
 	  break;
 	default:

@@ -31,13 +31,14 @@ class Landscape
  public:
    Landscape();
    ~Landscape();
+
+   ssgTransform   *terrain;
    
    void Landscape::init( ssgRoot*);
 	 
    float getHOT(float, float);
    int initialized;
- private:
-   ssgBranch *createTileLOD (int, int, ssgSimpleState*, int, float);
+   ssgBranch *createTileLOD (int, int, int, int, char *);
    void createTile (ssgTransform*, int, int, ssgSimpleState*);
    ssgRoot scene_root;
    

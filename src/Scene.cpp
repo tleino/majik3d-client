@@ -172,11 +172,12 @@ Scene::init()
 	 *     *     Set up some fog
 	 *     *   */
 
-   glFogf ( GL_FOG_DENSITY, 0.015 / 100.0f ) ;
+   glFogf ( GL_FOG_DENSITY, 0.035f / 100.0f ) ;
    glFogfv( GL_FOG_COLOR  , fogcol    ) ;
-   glFogf ( GL_FOG_START  , 0.0       ) ;
+   glFogf ( GL_FOG_START  , 3500.0       ) ;
+   glFogf ( GL_FOG_END    , 5000.0      ) ;
    glFogi ( GL_FOG_MODE   , GL_EXP2   ) ;
-   glHint ( GL_FOG_HINT   , GL_NICEST ) ;
+//   glHint ( GL_FOG_HINT   , GL_NICEST ) ;
    glEnable ( GL_FOG ) ;
    
    /*
@@ -322,7 +323,7 @@ Scene::update()
 	  campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
 	  campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
 	  campos.xyz[2] += 5+(getHOT(campos.xyz[0], campos.xyz[1])-hot);
-	  campos.hpr[1] -= 5+(getHOT(campos.xyz[0], campos.xyz[1])-hot);
+	  campos.hpr[1] -= 15+(getHOT(campos.xyz[0], campos.xyz[1])-hot);
    } else {
 	  campos.xyz[0] += 2*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
 	  campos.xyz[1] -= 2*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
@@ -337,7 +338,7 @@ Scene::update()
 		poo = tuxi->ob_pos;
 		
 		poo.hpr[0] += 180.0f;
-		tuxi->trans->setTransform(&poo, 1.0f, 1.0f, (sin((float)tuxi->movecounter/2.0))/4+1);
+//		tuxi->trans->setTransform(&poo, 1.0f, 1.0f, (sin((float)tuxi->movecounter/2.0))/4+1);
 		
 	 }	
       
@@ -385,21 +386,30 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
    
    textpos[0] /= textpos[3];
    textpos[1] /= textpos[3];
-//   textpos[2] /= textpos[3];       // mhmhmmh
+//   textpos[2] /= textpos[3];     
 
 //   cout << "textpos frustum jalk.: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << " " << textpos[3] << endl;
    
-   textpos[0] *= display->width/2;
-   textpos[1] *= display->height/2;
-   
+   textpos[0] = textpos[0]*display->width/2 + display->width/2;
+   textpos[1] = textpos[1]*display->height/2 + display->height/2;
+/*   
    if (textpos[2] < 0 || textpos[2] > 250)
 	 text_object->hide();
    else
 	 text_object->reveal();
+  */
    
-//   cout << "textpos proj. jalk.: " << textpos[0] + display->width/2 << " " << textpos[1] + display->height/2 << " " << textpos[2] << endl;
+   if (textpos[0] < 0)
+	 textpos[0] = 0;
+   else if (textpos[0] > display->width)
+	 textpos[0] = display->width;
    
-   text_object->setPosition(textpos[0]+ display->width/2, textpos[1] + display->height/2);
+   if (textpos[1] < 0)
+	 textpos[1] = 0;
+   else if (textpos[1] > display->height)
+	 textpos[1] = display->height;
+   
+   text_object->setPosition(textpos[0], textpos[1]);
 }
    
 

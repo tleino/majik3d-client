@@ -32,26 +32,28 @@
 #include <ssg.h>
 #include <ssgKeyFlier.h>
 #include <GL/glut.h>
+#include <iostream.h>
 
 #include "Debug.hpp"
 #include "Perlin.hpp"
 #include "Display.hpp"
 
-#define TILE_SIZE                 400.0f      /* cubits */
-#define LAMBDA                   (TILE_SIZE/48.0f)
+#define TILE_SIZE                 256.0f      /* cubits */
+#define LAMBDA                   (TILE_SIZE/16.0f)
 #define TILE_GRID_SIZE            20          /* Even number please! */
-#define TRIANGLE_GRID_SIZE        12          /* Num vertices */
+#define TRIANGLE_GRID_SIZE        16          /* Num vertices */
 #define ELEVATION_SCALE           4.0f
 #define ONLINE_TERRAIN_RANGE ((float)(TILE_GRID_SIZE/2  )* TILE_SIZE ) /* cubits */
 #define VISUAL_RANGE         ((float)(TILE_GRID_SIZE/2-1)* TILE_SIZE ) /* cubits */
 
 ssgSimpleState *state    = NULL ;
 
-ssgTransform   *terrain  = NULL ;
 ssgTransform   *tilegrid [ TILE_GRID_SIZE ][ TILE_GRID_SIZE ] ;
 
 Landscape::Landscape()
 {
+   terrain  = NULL ;
+   
    DEBUG("Landscape constructor");
 }
 
@@ -84,7 +86,8 @@ Landscape::init( ssgRoot *scene_root)
    state -> setShininess ( 0 ) ;
    state -> setOpaque () ;
    state -> disable ( GL_BLEND ) ;
-      
+
+   /*
    for ( int i = 0 ; i < TILE_GRID_SIZE ; i++ ) {
 	  sprintf (display->stxt, "Pre-calculation: %d%%", i*100/TILE_GRID_SIZE);
 	  display->updateScreen();
@@ -102,7 +105,7 @@ Landscape::init( ssgRoot *scene_root)
 		 createTile ( tilegrid [ i ][ j ], i, j, state ) ;
 	  }
    }
-      
+     */ 
    sprintf (display->stxt, "%s\nPre-calculation done. %d texels loaded.\n", display->stxt, ssgGetNumTexelsLoaded());
    
    scene_root -> addKid ( terrain ) ;
@@ -110,8 +113,12 @@ Landscape::init( ssgRoot *scene_root)
 }
 
 ssgBranch *
-Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float z_off ) 
+Landscape::createTileLOD ( int level, int x, int y, int ntris, char *terrain_map ) 
 {
+//   float tile_size;
+   
+//   tile_size = TILE_SIZE/2 * ((12-level+1)*2);
+   
    sgVec4 *scolors = new sgVec4 [ (ntris+1) * (ntris+1) ] ;
    sgVec2 *tcoords = new sgVec2 [ (ntris+1) * (ntris+1) ] ;
    sgVec3 *snorms  = new sgVec3 [ (ntris+1) * (ntris+1) ] ;
@@ -119,29 +126,65 @@ Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float
    
    for ( int j = 0 ; j < (ntris+1) ; j++ ) {
 	  for ( int i = 0 ; i < (ntris+1) ; i++ ) {
-		 float zz =  2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,
-												 (y + (float)j/(float)ntris)/7) + z_off;
-		 float zzN = 2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,     
-												 (y + (float)j/(float)ntris + 1)/7) + z_off;
-		 float zzE = 2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris + 1)/7, 
-												 (y + (float)j/(float)ntris)/7) + z_off;
 		 
+		 float zz = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*TILE_SIZE)/1000,
+											   (y + (float)j/(float)ntris*TILE_SIZE)/1000 );
+		 
+		 float zzN = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*TILE_SIZE)/1000,
+												(y + (float)(j+1)/(float)ntris*TILE_SIZE)/1000 );
+		 
+		 float zzE = 1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)ntris*TILE_SIZE)/1000,
+												(y + (float)j/(float)ntris*TILE_SIZE)/1000 );
+		 
+		 /*
+		 float zz =  1100*perlin->perlinNoise_2D((x + (float)i/(float)ntris*tile_size)/1256,
+												  (y + (float)j/(float)ntris*tile_size)/1256);
+		 float zzN = 1100*perlin->perlinNoise_2D((x + (float)i/(float)ntris*tile_size)/1256,     
+												 (y + (float)(j+1)/(float)ntris*tile_size)/1256);
+		 float zzE = 1100*perlin->perlinNoise_2D((x + (float)(i+1)/(float)ntris*tile_size + 1)/1256, 
+												(y + (float)j/(float)ntris*tile_size)/1256);
+		 */
+/*
+	  float zz =  2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,
+											  (y + (float)j/(float)ntris)/7);
+	  float zzN = 2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,
+											  (y + (float)j/(float)ntris + 1)/7);
+	  float zzE = 2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris + 1)/7,
+											  (y + (float)j/(float)ntris)/7);
+	*/  
 		 float rr = (float) 0.2 ;
 		 float gg;
-		 float bb = (float) (perlin->perlinNoise_2D((float)( 12.0f * ((float)x + (float)i / (float)ntris))/2 + 600,
-													(float)( 12.0f * ((float)y + (float)j / (float)ntris))/2 + 600) + 1) / 2.0f;
+		 float bb = (perlin->perlinNoise_2D((x + (float)i/(float)ntris*TILE_SIZE)/200,
+											(y + (float)j/(float)ntris*TILE_SIZE)/200) + 1) / 2.0f;
+		 
+//		 float bb = 0.2f;
 		 
 		 bb = pow (bb, 2);
 		 gg = 1 - bb;
 		 
 		 float xx = (float) i * (TILE_SIZE/(float)ntris) ;
 		 float yy = (float) j * (TILE_SIZE/(float)ntris) ;
+
+		 sgVec3 a, b;
+		 
+		 a [0] = TILE_SIZE/ntris;
+		 a [1] = 0;
+		 a [2] = zz - zzE;
+		 
+		 b [0] = 0; 
+		 b [1] = TILE_SIZE/ntris;
+		 b [2] = zz - zzN;
 		 
 		 sgVec3 nrm ;
 		 
-		 nrm [ 0 ] = (zz - zzE) / (TILE_SIZE/12.0f) ;
-		 nrm [ 1 ] = (zz - zzN) / (TILE_SIZE/12.0f) ;
+		 sgVectorProductVec3 (nrm, a, b);
+		 
+		 /*
+		 nrm [ 0 ] = (zz - zzE)  / (TILE_SIZE/16.0f) ;
+		 nrm [ 1 ] = (zz - zzN)  / (TILE_SIZE/16.0f) ;
 		 nrm [ 2 ] = sqrt ( nrm[0] * nrm[0] + nrm[1] * nrm[1] ) ;
+		 */
+		 sgNormalizeVec3( nrm );
 		 
 		 sgCopyVec3( snorms  [i+j*(ntris+1)], nrm ) ;
 		 sgSetVec2 ( tcoords [i+j*(ntris+1)], xx/LAMBDA, yy/LAMBDA ) ;
@@ -168,20 +211,22 @@ Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float
 	  gset -> setState ( state ) ;
 	  branch -> addKid ( gset  ) ;
    }
-   
+
    return branch ;
 }
 
 void 
 Landscape::createTile ( ssgTransform *tile, int x, int y, ssgSimpleState *state ) 
 {
-   float rr[] = { 0.0f, 2000.0f, 4000.0f, 8000.0f } ;
-   ssgRangeSelector *lod = new ssgRangeSelector () ;
+/*
+   float rr[] = { 0.0f, 1000.0f, 2000.0f, 8000.0f } ;
+   ssgRangeSelector *lod = new ssgSelector () ;
    
    lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE   - 1,   0.0f ) ) ;
    lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/4 - 1, -10.0f ) ) ;
    lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/6 - 1, -20.0f ) ) ;
-   lod  -> setRanges ( rr, 4 ) ;
+//   lod  -> setRanges ( rr, 4 ) ;
    
    tile -> addKid ( lod ) ;
-}
+*/
+ }

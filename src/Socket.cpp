@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <unistd.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -27,6 +28,8 @@
 #include <netdb.h>
 #include <sys/ioctl.h>
 #include <errno.h>
+
+#include <iostream.h>
 #include <unistd.h>
 
 #if defined(__svr4__)
@@ -181,5 +184,4 @@ Socket::writePacket(char *szFmt,...)
    
    if (send(nSocket, szData,strlen(szData),0) == -1)
      error->put(ERROR_FATAL, "Could not send data: %s", strerror (errno));
-  
 }

@@ -89,11 +89,13 @@ Input::keyDown(unsigned char k, int x, int y)
 		 exit ( 0 ) ;
 		 break;
 	   case '8':
-		 if (tuxi->lock == 1)
-		   break;
+		 if (tuxi->lock == 1) {
+			
+			break;
+		 }
 		 
-		 temppos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*1.0f;
-		 temppos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*1.0;;
+		 temppos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
+		 temppos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0;;
 				 
 		 sock->writePacket(debug->string("50 %f %f %f",
 										 (float) temppos.xyz[0],
@@ -105,8 +107,8 @@ Input::keyDown(unsigned char k, int x, int y)
 		 if (tuxi->lock == 1)
 		   break;
 		 
-		 temppos.xyz[0] += sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*1.0f;
-		 temppos.xyz[1] -= cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*1.0f;
+		 temppos.xyz[0] += sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
+		 temppos.xyz[1] -= cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
 		 
 		 sock->writePacket(debug->string("50 %f %f %f",
 										 (float) temppos.xyz[0],
