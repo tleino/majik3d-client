@@ -7,6 +7,6 @@
 # port=7680
 
 # Screen width, height and bits per pixel
-screen_width=320
-screen_height=200
-bpp=32
+screen_width=640
+screen_height=480
+bpp=16
