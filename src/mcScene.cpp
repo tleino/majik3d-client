@@ -240,20 +240,7 @@ Scene::removeObject(Object *ob)
   
 }
 
-double read_time_of_day () 
-{ 
-#ifdef WIN32 
-  _int64 u, v ; 
-  QueryPerformanceCounter   ((LARGE_INTEGER*) &u ) ; 
-  QueryPerformanceFrequency ((LARGE_INTEGER*) &v ) ; 
-  return (double)u / (double)v ; 
-#else 
-  timeval tv ; 
-  gettimeofday ( &tv, NULL ) ; 
-   
-  return (double) tv . tv_sec + (double) tv . tv_usec / 1000000.0 ; 
-#endif 
-} 
+extern double read_time_of_day ();
 
 void
 Scene::update()
