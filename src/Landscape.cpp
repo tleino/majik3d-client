@@ -93,7 +93,7 @@ void Landscape::init()
    
    angle = 0;
    
-//   glEnable(GL_FOG);
+   glEnable(GL_FOG);
    
 	 {
 		GLfloat fogColor[4] =
@@ -106,11 +106,11 @@ void Landscape::init()
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 	 }
    
-   glFogf(GL_FOG_START, 100.0);
-   glFogf(GL_FOG_END, 10000.0);
+   glFogf(GL_FOG_START, 10.0);
+   glFogf(GL_FOG_END, 1500.0);
 
    
-   
+/*   
    SDL_Surface *picture;
    int i, k, c;
    
@@ -146,13 +146,13 @@ void Landscape::init()
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-				   GL_LINEAR);
+				   GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-				   GL_LINEAR);
+				   GL_NEAREST);
    
    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 //   glEnable(GL_TEXTURE_2D);
-   
+*/   
 }
 
 
@@ -247,8 +247,8 @@ void Landscape::drawLandscape()
    glPushMatrix();
    
    /* Load camera matrix here            */
-   gluLookAt(0.0, -700, -300, 
-			 0.0, 0.0, -50, 0.0, 0.0, -1.0);   
+   gluLookAt(0.0, -150.0, -50, 
+			 0.0, 100.0, -40, 0.0, 0.0, -1.0);   
 //   glTranslatef(0.0, -300.0, -200.0);
 //   glRotatef(135.0, 1.0, 0.0, 0.0);
    glRotatef(angle/2, 0.0, 0.0, 1.0);
@@ -924,7 +924,7 @@ void Landscape::makeMap_1()
    /* Generate new list ID */
    listId_1 = glGenLists(1);
    glNewList(listId_1, GL_COMPILE);
-   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+//   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
    
    for (int j=0;j<MAP1_WIDTH;j++)
 	 {
@@ -1046,7 +1046,7 @@ void Landscape::makeMap_3()
    /* Generate new list ID */
    listId_3 = glGenLists(1);
    glNewList(listId_3, GL_COMPILE);
-   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+//   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
 
    int i, j;
 

@@ -4,8 +4,8 @@
 
 Display::Display()
 {
-   width = 320;
-   height = 200;
+   width = 640;
+   height = 480;
    bpp = 32;
    sdlmesactx = NULL;
    
