@@ -90,6 +90,6 @@ class mcSky
    ssgEntity * Draw();
 };
 
-extern mcSky *mc_sky;
+//extern mcSky *mc_sky;
 
 #endif /* __SKY_HPP__ */

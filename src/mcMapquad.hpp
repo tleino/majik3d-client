@@ -20,6 +20,7 @@
 #define __MAPQUAD_HPP__
 
 #include <ssg.h>
+#include "mcTerrainBlock.hpp"
 
 /// Size of one map chunk.
 #define   MAP_SIZE    16
@@ -73,6 +74,8 @@ public:
   
   ///
   ssgTransform *trans;
+
+  TerrainBlock *block;
   
   //   Object *inventory;
   //   Object *observers;
@@ -116,11 +119,14 @@ public:
   ///
   void setMap (Map_data);
   ///
-  void setSubMap (int, Map_data);
+//  void setSubMap (int, Map_data);
   ///
+  void resetBlocks();
+  void triangulateBlocks();
+  void selectLOD(int, int, int );
   void selectLOD(int);
   ///
-  void divideMap(int, Map_data&, Map_data&, Map_data&, Map_data&, Map_data&);
+//  void divideMap(int, Map_data&, Map_data&, Map_data&, Map_data&, Map_data&);
   ///
   void show();
   ///
@@ -140,7 +146,11 @@ public:
 private:
    bool mapReceived;
    int current_lod;
+
    
+   /* kludge */
+	ssgSimpleState *state;
+
 };
 
 

@@ -35,6 +35,7 @@
 #include "mcPerlin.hpp"
 #include "mcDisplay.hpp"
 #include "mcConfig.hpp"
+#include "mcTerrainBlock.hpp"
 
 #define TILE_SIZE                 512.0f      /* cubits */
 #define LAMBDA                    (TILE_SIZE/16.0f)
@@ -69,6 +70,13 @@ Landscape::~Landscape()
   debug->put("Landscape destructor.");
 }
 
+float
+Landscape::getHOT(float x, float y)
+{
+//	return 0.0f;
+	return 300.0*perlin->perlinNoise_2D(x/800.0, y/800.0);
+};
+
 void 
 Landscape::init( ssgRoot *scene_root)
 {
@@ -95,6 +103,20 @@ Landscape::init( ssgRoot *scene_root)
   state -> disable ( GL_BLEND ) ;
   
   scene_root -> addKid ( terrain ) ;
+}
+
+
+ssgBranch *
+Landscape::createBlock(int x, int y)
+{
+	ssgBranch *branch = new ssgBranch();
+	TerrainBlock *block = new TerrainBlock(x, y);
+
+//	block->collectVertices (0);
+
+	branch->addKid (block);
+	
+	return branch;
 }
 
 ssgBranch *
@@ -247,21 +269,3 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris,
   return branch ;
 }
 
-void 
-Landscape::createTile ( ssgTransform *tile, int x, int y,
-			ssgSimpleState *state ) 
-{
-  
-
-  /*
-    float rr[] = { 0.0f, 1000.0f, 2000.0f, 8000.0f } ;
-    ssgRangeSelector *lod = new ssgSelector () ;
-    
-    lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE   - 1,   0.0f ) ) ;
-    lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/4 - 1, -10.0f ) ) ;
-    lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/6 - 1, -20.0f ) ) ;
-    //   lod  -> setRanges ( rr, 4 ) ;
-    
-    tile -> addKid ( lod ) ;
-  */
-}

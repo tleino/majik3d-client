@@ -114,10 +114,10 @@ Protocol::parseCommand(char *input)
 	{
 	  int i, j;
 	  ((Player *)tuxi)->unLockMovement();
-	  Mapquad *temp;
+//	  Mapquad *temp;
 			
 	  int lod = config->lod;
-	  
+	  /*
 	  for (j = -(lod+1); j < lod+1; j++)
 	    for (i = -(lod+1); i < lod+1; i++)
 	      {
@@ -150,13 +150,26 @@ Protocol::parseCommand(char *input)
 		Mapquad::root_map->getMapquad(12, (int)x +256+ i*512, (int)
 					      y +256+j*512)->selectLOD(2);  
 	      }
-	  
-	  for (j= - 1; j < 1; j++)
-	    for (i= - 1; i < 1; i++)
+	  */
+	  for (j= - 2; j < 2; j++)
+	    for (i= - 2; i < 2; i++)
 	      {
 		Mapquad::root_map->getMapquad(12, (int)x + 256+ i*512, (int)
-					      y +256 + j*512)->selectLOD(0);
-	      }
+					      y +256 + j*512);
+
+		}
+
+	  Mapquad::root_map->resetBlocks();
+
+	Mapquad::root_map->selectLOD(4, x, y);
+	Mapquad::root_map->selectLOD(3, x, y);
+	Mapquad::root_map->selectLOD(2, x, y);
+	Mapquad::root_map->selectLOD(1, x, y);
+	Mapquad::root_map->selectLOD(0, x, y);
+
+	  Mapquad::root_map->triangulateBlocks();
+
+//	      }
 	}  
       break;
     case CMD_OWN_ID:
@@ -290,10 +303,10 @@ Protocol::parseCommand(char *input)
 		  &turbidity) == 4)
 	{
 	  printf ("CMD_SUN_POS %f %f %f %f\n", heading, pitch, luminance, turbidity);
-	  mc_sky->setLuminanceFactor(luminance);
-	  mc_sky->setSunPosition(heading, pitch); 
-	  mc_sky->setTurbidity(turbidity);
-	  scene->redrawSky();
+//	  mc_sky->setLuminanceFactor(luminance);
+//	  mc_sky->setSunPosition(heading, pitch); 
+//	  mc_sky->setTurbidity(turbidity);
+//	  scene->redrawSky();
 	  //scene->sky_entity = mc_sky->Draw();
 	}
       else

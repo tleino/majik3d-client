@@ -115,7 +115,7 @@ public:
   ///
   bool isMovementLocked()   { return movementLock; }
 private:  
-  int movementLock;
+  bool movementLock;
 };
 
 #endif /* __OBJECT_HPP__ */

@@ -39,7 +39,7 @@
 #include "mcMapquad.hpp"
 
 int mouse_x, mouse_y;
-extern Object *tuxi;
+extern Player *tuxi;
 
 bool Display::sceneVisible = false;
 
@@ -85,8 +85,8 @@ Display::openScreen()
   
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
-  if (config->gamemode)
-    glutEnterGameMode();
+  if (0); //config->gamemode)
+//    glutEnterGameMode();
   else
     {
       glutInitWindowSize(width, height);
@@ -98,12 +98,12 @@ Display::openScreen()
   glutDisplayFunc(updateScreen);
   glutKeyboardFunc(input->keyDown);
   glutSpecialFunc(input->specialDown);
-  glutSpecialUpFunc(input->specialUp);
+//  glutSpecialUpFunc(input->specialUp);
   glutMouseFunc(input->mouseDown);
   glutPassiveMotionFunc(input->mouseMotion);
   glutMotionFunc(input->mouseMotion);
 
-  glutIgnoreKeyRepeat(1);
+//  glutIgnoreKeyRepeat(1);
   
   if (config->nomousetrap != 1)
     glutWarpPointer (width/2, height/2);
@@ -135,7 +135,7 @@ Display::closeScreen()
   debug->put("Screen closed.");
 }
 
-bool mapFound;
+bool mapFound = true;
 
 void
 Display::updateScreen()

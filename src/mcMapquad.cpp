@@ -69,13 +69,15 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
   lod_switch = new ssgSelector();
   trans = new ssgTransform();
 
+	block = NULL;
+
   sgVec3 pos;
   pos[0] = (float)top_x;
   pos[1] = (float)top_y;
   pos[2] = 0.0f;
   
   trans->setTransform( pos );
-  lod_switch->select(0);
+//  lod_switch->select(0);
   
   if (level == NUM_LEVELS - 1)
     {
@@ -83,12 +85,37 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
       for (int i = 0; i < LOD_LEVELS; i++)
 	lod_indices[i] = -2;
     }
+
+
+
+  /* kludgetusta  */
+
+  		state    = new ssgSimpleState ;
+			state -> setTexture ( "gfx/bumpnoise.rgb") ;
+			state -> enable     ( GL_TEXTURE_2D ) ;
+			state -> enable     ( GL_LIGHTING ) ;
+
+			state -> setShadeModel ( GL_SMOOTH );
+
+			state -> enable ( GL_COLOR_MATERIAL ) ;
+			state -> disable ( GL_CULL_FACE      ) ;
+			state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
+			state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
+			state -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
+			state -> setShininess ( 0 ) ;
+			state -> setOpaque () ;
+			state -> disable ( GL_BLEND ) ;
+
+
 }
 
 Mapquad::~Mapquad()
 {
   if (parent != NULL)
     parent->decRef();
+
+  if (block)
+	  delete block;
   
   if (level == NUM_LEVELS - 1 )
     {
@@ -267,10 +294,10 @@ Mapquad::setMap(Map_data terrain_map)
 {  
   mapReceived = true;
   //this->terrain_map = terrain_map;
-  this->setSubMap(NUM_LEVELS - 1 - level, terrain_map);
+//  this->setSubMap(NUM_LEVELS - 1 - level, terrain_map);
 }
 
-
+/*
 void
 Mapquad::setSubMap(int lod, Map_data submap)
 {
@@ -295,17 +322,6 @@ Mapquad::setSubMap(int lod, Map_data submap)
 	lod_switch->selectStep ( lod_indices[lod] );
 	   
       
-      /* Add some trees */
-      /*  horrible kludge  
-      if (rand() % 3) {
-      scene->addSpecial (top_x, top_y, "tree.ac", true);
-      }
-      
-      if ((300 > (float) top_x-256.0f && 300 < (float) top_x+256.0f) &&
-	  (300 > (float) top_y-256.0f && 300 < (float) top_y+256.0f)) {
-	scene->addSpecial(300, 300, "snowman.ac", false);
-      }
-  */  
       return;
     }
 
@@ -321,10 +337,122 @@ Mapquad::setSubMap(int lod, Map_data submap)
   getChild3() -> setSubMap ( lod, submap3 );
   getChild4() -> setSubMap ( lod, submap4 );
 }
+*/
+
+
+void
+Mapquad::resetBlocks()
+{
+	 if (level == NUM_LEVELS - 1)
+	 {
+		 if (block)
+			block->reset();
+	 }
+	 else
+	 {
+		if (child1)
+			child1->resetBlocks();
+		if (child2)
+			child2->resetBlocks();
+		if (child3)
+			child3->resetBlocks();
+		if (child4)
+			child4->resetBlocks();
+	 }
+}
+
+void
+Mapquad::triangulateBlocks()
+{
+	 if (level == NUM_LEVELS - 1)
+	 {
+		 if (block)
+			block->triangulateBlock();
+	 }
+	 else
+	 {
+		if (child1)
+			child1->triangulateBlocks();
+		if (child2)
+			child2->triangulateBlocks();
+		if (child3)
+			child3->triangulateBlocks();
+		if (child4)
+			child4->triangulateBlocks();
+	 }
+}
+
+void
+Mapquad::selectLOD(int level, int x, int y)
+{
+	 if (this->level == NUM_LEVELS - 1)
+	 {
+		int dist = sqrt( (x-mid_x)*(x-mid_x) + (y-mid_y)*(y-mid_y) );
+
+		if (dist<1500)
+		{
+			if (!block)
+			{
+				block = new TerrainBlock (top_x, top_y );
+		
+				block->setState(state);
+				lod_switch->addKid ( block );
+				trans->addKid ( lod_switch );
+				landscape->terrain->addKid ( trans );
+			}
+
+			lod_switch->select(1);
+			block->collectVertices ( level,  dist/50);
+		}
+		else if (block)
+		{
+			lod_switch->select(0);
+
+//			trans->removeKid(block);
+//			delete block;
+//			block = NULL;
+		}
+
+
+	 }
+	 else
+	 {
+		if (child1)
+			child1->selectLOD(level, x, y);
+		if (child2)
+			child2->selectLOD(level, x, y);
+		if (child3)
+			child3->selectLOD(level, x, y);
+		if (child4)
+			child4->selectLOD(level, x, y);
+	 }
+}
 
 void
 Mapquad::selectLOD(int lod)
-{  
+{ 
+//	if (lod != 0)
+//		return;
+
+	if (!block)
+	{
+		block = new TerrainBlock (top_x, top_y );
+		lod_switch->addKid ( block );
+		trans->addKid ( lod_switch );
+		landscape->terrain->addKid ( trans );
+	}
+
+	block->reset();
+	
+	block->collectVertices ( 4, (lod+1)*(lod+1)*(lod+1) );
+	block->collectVertices ( 3, (lod+1)*(lod+1)*(lod+1) );
+	block->collectVertices ( 2, (lod+1)*(lod+1)*(lod+1) );
+	block->collectVertices ( 1, (lod+1)*(lod+1)*(lod+1) );
+	block->collectVertices ( 0, (lod+1)*(lod+1)*(lod+1) );
+
+	block->triangulateBlock();
+						     
+	/*
    current_lod = lod;
    
   if (lod == -1)
@@ -372,8 +500,10 @@ Mapquad::selectLOD(int lod)
 	    }
 	}
     }
+	*/
 }
 
+/*
 void
 Mapquad::divideMap(int lod, Map_data& submap, Map_data& submap1, Map_data& submap2, Map_data& submap3, Map_data& submap4) 
 {
@@ -398,6 +528,7 @@ Mapquad::divideMap(int lod, Map_data& submap, Map_data& submap1, Map_data& subma
   submap3.terrain[submap_size*submap_size] = '\0';
   submap4.terrain[submap_size*submap_size] = '\0'; 
 }
+*/
 
 void
 Mapquad::show()

@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <windows.h>
 #include <iostream.h>
 #include <GL/gl.h>
 #include <stdio.h>
@@ -52,7 +53,8 @@ Protocol *protocol = NULL;
 Perlin *perlin = NULL;
 Overlay *overlay = NULL;
 Mapquad *Mapquad::root_map = NULL;
-mcSky *mc_sky = NULL;
+//mcSky *mc_sky = NULL;
+
 
 int
 main(int argc, char **argv)
@@ -75,9 +77,9 @@ main(int argc, char **argv)
   protocol = new Protocol;
   perlin = new Perlin;
   overlay = new Overlay;
-  mc_sky = new mcSky(16, 8);
+//  mc_sky = new mcSky(16, 8);
   Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
-  
+
   // Check the config object for ip / port settings and create the socket
   // accordingly.
   if(config->server_ip != NULL || config->server_port)

@@ -49,6 +49,15 @@ Object::Object()
   
   movecounter = 0;
   hotFixed = false;
+
+  ob_pos.xyz[0] = 0;
+  ob_pos.xyz[1] = 0;
+  ob_pos.xyz[2] = 0;
+  ob_pos.hpr[0] = 0;
+  ob_pos.hpr[1] = 0;
+  ob_pos.hpr[2] = 0;
+  
+  
 }
 
 Object::~Object()
@@ -89,7 +98,7 @@ Object::~Object()
   
   scene->scene_root->removeKid( trans );
   
-  delete trans;
+//  delete trans;
   delete puhe;
 }
 

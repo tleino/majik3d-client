@@ -44,8 +44,9 @@ public:
   ///
   ssgBranch *createTileLOD (int level, int x, int y, int ntris,
 			    char *terrain_map);
-  ///
-  void createTile (ssgTransform *tile, int x, int y, ssgSimpleState *state);
+
+  ssgBranch *createBlock(int x, int y);
+  
   /// A pointer to SSG scene's root.
   ssgRoot *scene_root;  
 };

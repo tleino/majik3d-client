@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -26,6 +27,7 @@ float min_r, max_r, min_g, max_g, min_b, max_b;
 float min_x, max_x, min_y, max_y, min_Y, max_Y;
 
 #define S 6999.0f
+#define M_PI 3.141592653
 
 /**
  * Class constructor
@@ -90,7 +92,7 @@ void mcSky::setTurbidity(float t)
 
 void mcSky::setSunPosition(sgVec3 &v)
 {
-   this->sun = v;
+//   this->sun = v;
    this->a_sunzenith = acos(sgScalarProductVec3(this->sun, this->zenith));	
    this->calculateSunAngles();
    this->calculateZenithValues();

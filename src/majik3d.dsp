@@ -39,9 +39,10 @@ RSC=rc.exe
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /YX /FD /c
 # ADD BASE RSC /l 0x40b /d "NDEBUG"
 # ADD RSC /l 0x40b /d "NDEBUG"
 BSC32=bscmake.exe
@@ -49,7 +50,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 ws2_32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib opengl32.lib glut32.lib glu32.lib pui.lib ssg.lib fnt.lib sg.lib /nologo /subsystem:console /incremental:yes /machine:I386
+# SUBTRACT LINK32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "Majik3D - Win32 Debug"
 
@@ -65,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /ML /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x40b /d "_DEBUG"
 # ADD RSC /l 0x40b /d "_DEBUG"
 BSC32=bscmake.exe
@@ -73,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 ws2_32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib glut32.lib opengl32.lib glu32.lib pui.lib ssg.lib fnt.lib sg.lib /nologo /subsystem:console /debug /machine:I386 /out:"Majik3D.exe" /pdbtype:sept
+# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib glut32.lib opengl32.lib glu32.lib pui.lib ssg.lib fnt.lib sg.lib /nologo /subsystem:console /debug /machine:I386 /out:"Majik3D.exe" /pdbtype:sept
 
 !ENDIF 
 
@@ -84,6 +86,10 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\main.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\mcConfig.cpp
@@ -110,10 +116,6 @@ SOURCE=.\mcLandscape.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\mcMapquad.cpp
 # End Source File
 # Begin Source File
@@ -123,6 +125,10 @@ SOURCE=.\mcMenu.cpp
 # Begin Source File
 
 SOURCE=.\mcObject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mcOverlay.cpp
 # End Source File
 # Begin Source File
 
@@ -138,7 +144,15 @@ SOURCE=.\mcScene.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\mcSky.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\mcSocket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mcTerrainblock.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -190,6 +204,10 @@ SOURCE=.\mcObject.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\mcOverlay.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\mcPerlin.hpp
 # End Source File
 # Begin Source File
@@ -202,7 +220,15 @@ SOURCE=.\mcScene.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\mcSky.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\mcSocket.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mcTerrainblock.hpp
 # End Source File
 # End Group
 # Begin Group "Resource Files"

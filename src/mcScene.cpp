@@ -84,14 +84,14 @@ Scene::redrawSky()
     sky_dome->deRef();
     delete sky_dome;
   }
-
+/*
   sky_dome = new ssgTransform ();
   sky_entity = mc_sky->Draw();
   sky_dome->addKid (sky_entity);
   ssgFlatten (sky_entity);
   sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
   scene_root->addKid (sky_dome);
-
+*/
   printf ("redrawSky end.\n");
 }
 
@@ -179,6 +179,10 @@ Scene::init()
 float
 Scene::getHOT( float x, float y )
 {
+	return landscape->getHOT(x, y)+1.0f;
+
+	return 10;
+
   sgVec3 test_vec ;
   sgMat4 invmat ;
   sgMakeIdentMat4 ( invmat ) ;
@@ -298,7 +302,7 @@ Scene::update()
 
    ssgSetCamera ( & campos ) ;
    //sky_dome->setTransform ( &skypos, 100.0, 100.0, 100.0);
-   sky_dome->setTransform (&skypos);
+//   sky_dome->setTransform (&skypos);
    //sky_dome->setTransform (&campos);
 }
 
@@ -430,4 +434,5 @@ Scene::draw()
 
       ob = ob->getNext();
     }
+
 }

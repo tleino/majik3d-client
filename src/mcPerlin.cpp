@@ -24,7 +24,7 @@
 #include "mcPerlin.hpp"
 
 #define PERSISTENCE              0.6
-#define OCTAVES                  1
+#define OCTAVES                  3
 #define INTERPOLATION_TABLE_SIZE 256
 
 Perlin::Perlin()
