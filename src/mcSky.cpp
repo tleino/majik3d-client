@@ -16,7 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef WIN32
 #include <windows.h>
+#endif /* WIN32 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -27,7 +30,9 @@ float min_r, max_r, min_g, max_g, min_b, max_b;
 float min_x, max_x, min_y, max_y, min_Y, max_Y;
 
 #define S 6999.0f
+#ifndef M_PI
 #define M_PI 3.141592653
+#endif /* M_PI */
 
 /**
  * Class constructor

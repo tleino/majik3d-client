@@ -2,8 +2,12 @@
 #define __TERRAINBLOCK_HPP__
 
 #include <math.h>
+#include <string.h>
 #include <sg.h>
 #include <ssg.h>
+
+typedef unsigned int DWORD;
+typedef unsigned short WORD;
 
 class TerrainBlock : public ssgVTable
 {
@@ -276,7 +280,7 @@ public:
 
 	inline void makeDeps(Index level, Index x, Index y, int segment, int dir)
 	{
-		const d = DIM>>(level+1);
+		const int d = DIM>>(level+1);
 
 		vertex& vN = getVertex(x,	y+d);
 		vertex& vW = getVertex(x-d,	y);
@@ -390,7 +394,7 @@ public:
 		list[listCounter++] = i;
 	}
 
-	inline swap ()
+	inline void swap ()
 	{
 		list[listCounter++] = list[listCounter-3];
 //		list[listCounter++] = list[listCounter-3];
@@ -536,6 +540,7 @@ public:
 				}
 			}
 
+			int j;
 			for (j=0;j<DIM+1;j += inc)
 			{
 				for(int i=0;i<DIM+1;i += inc)

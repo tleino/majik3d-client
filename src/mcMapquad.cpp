@@ -49,6 +49,7 @@ int quad_sizes[NUM_LEVELS] =
 
 Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 {
+  cout << "new'd: " << this << endl;
   this->parent = parent;
   this->child1 = NULL;
   this->child2 = NULL;
