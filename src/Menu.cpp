@@ -17,6 +17,7 @@
  */
 
 #include <pu.h>
+#include <ssg.h>
 
 #include "Display.hpp"
 #include "Debug.hpp"
@@ -99,12 +100,14 @@ Menu::init()
 void
 Menu::textureCB(puObject *)
 {
+   ssgOverrideTexture (0);
    display->noTexture = 0;
 }
 
 void
 Menu::noTextureCB(puObject *)
 {
+   ssgOverrideTexture (1);
    display->noTexture = 1;
 }
 
