@@ -72,6 +72,9 @@ puCallback majikSubmenuCB[] = {
 };
 
 puMenuBar *menuBar;
+puDialogBox *dialogBox;
+puText *dialogBoxMessage;
+puOneShot *dialogBoxButton;
 
 Menu::Menu()
 {
@@ -112,8 +115,32 @@ Menu::noTextureCB(puObject *)
 }
 
 void
+Menu::mkDialogCB(puObject *)
+{
+   delete dialogBox;
+   dialogBox = NULL;
+}
+
+void
+Menu::mkDialog(char *str)
+{
+   dialogBox = new puDialogBox (150, 50);
+	 {
+		new puFrame (0, 0, 400, 100);
+		dialogBoxMessage = new puText (10, 70);
+		dialogBoxMessage->setLabel (str);
+		dialogBoxButton = new puOneShot (180, 10, "OK");
+		dialogBoxButton->makeReturnDefault (TRUE);
+		dialogBoxButton->setCallback (mkDialogCB);
+	 }
+   dialogBox->close();
+   dialogBox->reveal();
+}
+
+void
 Menu::aboutCB(puObject *)
 {
+   mkDialog("Majik 3D 0.00/M1");
 }
 
 void

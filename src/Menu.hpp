@@ -42,6 +42,9 @@ class Menu {
    static void textureCB(puObject *);
    static void noTextureCB(puObject *);
    
+   static void mkDialog(char *);
+   static void mkDialogCB(puObject *);
+   
    puMenuBar *menuBar;
 };
 
