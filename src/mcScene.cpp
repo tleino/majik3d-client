@@ -344,14 +344,14 @@ Scene::drawText(Object *o, sgVec3 object_pos)
   for (unsigned int i=0;i<strlen(buf);i++,len++)
     {
       if (len > max_len)
-	max_len = len;
+		max_len = len;
       if (len*8 < display->getWidth() && buf[i] != '\n')
-	sprintf (buf2, "%s%c", buf2, buf[i]);
+		sprintf (buf2, "%s%c", buf2, buf[i]);
       else if (buf[i] != '\n')
-	{
-	  sprintf (buf2, "%s\n%c", buf2, buf[i]);
-	  len = 0;
-	}
+		{
+		sprintf (buf2, "%s\n%c", buf2, buf[i]);
+		len = 0;
+		}
     }
   
   o->setSayString(buf2);

@@ -216,7 +216,7 @@ float mcSky::perez(float *params, float a_viewzenith, float a_sunview, float a_s
    float p2 = (1.0f + params[0] * expf(params[1])) *
 	 ((1.0f + params[2] * expf(params[3] * a_sunzenith) + params[4] * cosf(a_sunzenith) * cosf(a_sunzenith)));
    float result = p1 / p2;
-   
+
    return result;
 }
 
