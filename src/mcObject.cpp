@@ -122,7 +122,6 @@ Object::update(float t)
 	moveTo(tempPos);
 }
 
-
 void
 Object::moveForward()
 {

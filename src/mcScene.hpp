@@ -28,6 +28,7 @@ class mcPlayerController;
 class mcCameraController;
 class Object;
 class mcSky;
+class mcCamera;
 class Landscape;
 
 /** A scene class. This class handles the 3D scene. */
@@ -65,7 +66,7 @@ private:
 
 	Landscape	*m_landscape;
 
-	ssgEntity	*m_camera;
+	mcCamera	*m_camera;
 };
 
 extern Scene *scene; 

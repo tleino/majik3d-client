@@ -29,6 +29,7 @@
 #include "mcPlayer.hpp"
 #include "mcConfig.hpp"
 #include "mcSky.hpp"
+#include "mcCamera.hpp"
 
 #include "mcPlayerController.hpp"
 #include "mcCameraController.hpp"
@@ -48,6 +49,7 @@ Scene::Scene()
 {   
 	m_landscape = new Landscape();
 	m_sky = new mcSky(16, 8);
+	m_camera = new mcCamera();
 	m_playerController = new mcPlayerController();
 	m_cameraController = new mcCameraController();
   debug->put("Scene constructor");
@@ -236,6 +238,11 @@ Scene::update()
 	for (Object *o = Object::getFirst(); o; o = o->getNext())
 		o->update(frameTime);
 
+	m_camera->setTarget(tuxi);
+	m_camera->setMode (mcCamera::BEHIND);
+
+	m_camera->update(frameTime);
+
 //	m_cameraController->update();
 
    static int frameno = 0 ;   
@@ -305,7 +312,7 @@ Scene::update()
    skypos.hpr[1] = 90.0f;
    skypos.hpr[2] = 0.0f;
 
-   ssgSetCamera ( & campos ) ;
+//   ssgSetCamera ( & campos ) ;
 
    if (sky_dome)
      sky_dome->setTransform (&skypos);
