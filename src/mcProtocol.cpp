@@ -27,6 +27,7 @@
 #include "mcConfig.hpp"
 #include "mcSky.hpp"
 #include "mcScene.hpp"
+#include "version.hpp"
 
 //extern sgCoord tuxpos;
 //extern Player *tuxi;
@@ -54,6 +55,7 @@ Protocol::parseCommand(char *input)
   int found = 0, id;
   int map_x, map_y, map_level;
   int direction;
+  int major = 0, minor = 0, patch = 0;
   float x, y, h;
   Object *ob = NULL;
   char file_name[80], data[1024];
@@ -66,6 +68,22 @@ Protocol::parseCommand(char *input)
   
 	switch (command)
 	{
+	case CMD_REQUIREDVERSION:
+		if (sscanf(data, "%d.%d.%d", &major, &minor, &patch) != 3)
+		{
+			error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
+				"command CMD_REQUIREDVERSION.");
+			break;
+		}
+
+		if (majik::g_clientVersion[0] < major ||
+			(major == majik::g_clientVersion[0] && majik::g_clientVersion[1] < minor) ||
+			(major == majik::g_clientVersion[0] && minor == majik::g_clientVersion[1] && majik::g_clientVersion[2] < patch))
+			error->put(mcError::ERROR_FATAL, "Your client is too old. You need at least version " \
+				"%d.%d.%d.\nNewer client is available from ftp://ftp.majik3d.org/majik3d/\n", 
+				major, minor, patch);
+		break;
+
 	case CMD_MOVE_DIRECTION:
 		if (sscanf(data, "%d %f %f %f %d", &id, &x, &y, &h, &direction) < 5)
 		{
