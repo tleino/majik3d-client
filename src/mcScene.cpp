@@ -361,7 +361,7 @@ Scene::drawText(Object *o, sgVec3 object_pos)
 	}
     }
   
-  o->setSayString(buf2);
+//  o->setSayString(buf2);
 
   max_len+=8;
   max_len*=8;
