@@ -85,16 +85,10 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
       for (int i = 0; i < LOD_LEVELS; i++)
 	lod_indices[i] = -2;
     }
-  
-  debug->put ("Mapquad(%d,%d,%d,%d,%d): Constructor.",
-	      level, top_x, top_y, mid_x, mid_y);
 }
 
 Mapquad::~Mapquad()
 {
-  debug->put ("Mapquad(%d,%d,%d,%d,%d): Destructor.",
-	      level, top_x, top_y, mid_x, mid_y);
-  
   if (parent != NULL)
     parent->decRef();
   
@@ -105,18 +99,12 @@ Mapquad::~Mapquad()
 int
 Mapquad::incRef()
 {
-  debug->put ("Mapquad(%d,%d,%d,%d,%d): incRef to: %d", this->level,
-	      this->top_x, this->top_y, mid_x, mid_y, reference_count+1);
-  
   return reference_count++;
 }
 
 int
 Mapquad::decRef()
 {
-  debug->put ("Mapquad(%d,%d,%d,%d,%d): decRef to: %d", this->level,
-	      this->top_x, this->top_y, mid_x, mid_y, reference_count-1);
-  
   if (--reference_count < 1)
     {
       this->cleanUp();

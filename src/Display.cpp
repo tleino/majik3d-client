@@ -134,7 +134,7 @@ Display::closeScreen()
   debug->put("Screen closed.");
 }
 
-bool mapFound;
+bool mapFound, hotFixed;
 
 void
 Display::updateScreen()
@@ -154,9 +154,18 @@ Display::updateScreen()
   //   if (mousetrap)
   //	 mousetrap();
   //   if (Display::sceneVisible)
-  
+ 
   if (mapFound)
-    scene->draw();
+    {
+      if (!hotFixed)
+	{
+	  // FIXME: A kludge to move player to correct Z.
+	  sgCoord tuxPos = tuxi->getPos();
+	  tuxi->moveTo (tuxPos.xyz[0], tuxPos.xyz[1], tuxPos.hpr[0]);
+	  hotFixed = true;
+	}
+      scene->draw();
+    }
   else if (tuxi != NULL)
     {
       Mapquad *temp;
@@ -166,6 +175,7 @@ Display::updateScreen()
       if (temp != NULL && temp->isMapReceived())  
 	mapFound = true;
     }
+
   overlay->draw();
   
   glutSwapBuffers();

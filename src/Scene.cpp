@@ -364,8 +364,9 @@ Scene::drawText(Object *o, sgVec3 object_pos)
 void
 Scene::draw()
 {
-  if (tuxi == NULL)
+  if (tuxi == NULL) {
     return; // We do not exist yet and thus no draw() needed.
+  }
   
   // Update camera's position in relation to ourself.
   update();
