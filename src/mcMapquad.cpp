@@ -141,7 +141,8 @@ Mapquad::~Mapquad()
 	if (block)
 	{
 		lod_switch->removeKid(block);
-		trans->removeKid(lod_switch);
+		trans->removeAllKids();
+//		trans->removeKid(lod_switch);
 		scene->getLandscape()->getTerrain()->removeKid(trans);
 	}
 
@@ -191,7 +192,11 @@ Mapquad::cleanUp()
   }
  
   if (level != 0)
-    delete this;
+	{
+		
+		delete this;
+	}
+	
   else
 	  error->put(mcError::ERROR_WARNING, "mapquad: Refusing to delete root map.");
 }
@@ -504,18 +509,10 @@ Mapquad::selectLOD(int level, int x, int y)
 				state -> disable ( GL_BLEND ) ;
 
 				block->setState(state);
-//				block->setTraversalMaskBits ( SSGTRAV_CULL );
+				block->setTraversalMaskBits ( SSGTRAV_CULL );
 				lod_switch->addKid ( block );
-				trans->addKid ( lod_switch );
-				scene->getLandscape()->getTerrain()->addKid ( trans );
-			}
-
-			lod_switch->select(1);
-			block->collectVertices ( level,  dist/2);
-//			block->triangulateBlock();
-
-			if (newBlock)
-				while ((rand() % 10))
+				
+				for (int i = 0; i < rand() % 16; i++)
 				{
 					if (!kukkaModel)
 						kukkaModel = ssgLoadAC ("firtreelod3.ac");
@@ -523,26 +520,36 @@ Mapquad::selectLOD(int level, int x, int y)
 					ssgTransform *kukka = new ssgTransform ();
 					sgCoord tmpPos;
 
-					tmpPos.xyz[0] = top_x + rand() % 512;
-					tmpPos.xyz[1] = top_y + rand() % 512;
-					tmpPos.xyz[2] = scene->getLandscape()->getHOT(tmpPos.xyz[0], tmpPos.xyz[1]);
+					tmpPos.xyz[0] = /*top_x +*/ rand() % 512;
+					tmpPos.xyz[1] = /*top_y +*/ rand() % 512;
+					tmpPos.xyz[2] = scene->getLandscape()->getHOT(top_x + tmpPos.xyz[0], top_y + tmpPos.xyz[1]);
 					tmpPos.hpr[1] = 0.0f;
 					tmpPos.hpr[2] = 0.0f;
 
 					kukka->addKid (kukkaModel);
+//					kukka->setTraversalMask(SSGTRAV_CULL);
 					kukka->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
 
 					kukka->setTransform (&tmpPos, 2.5f*2, 2.5f*2, 5.0f*2);
 
-					ssgRangeSelector *rangeSelect = new ssgRangeSelector();
+/*					ssgRangeSelector *rangeSelect = new ssgRangeSelector();
 					rangeSelect->addKid(kukka);
 					float ranges[2] = { 0, 100000 };
-					rangeSelect->setRanges ( ranges, 2 );
+					rangeSelect->setRanges ( ranges, 2 );*/
 					
-					scene->getLandscape()->getTerrain()->addKid(rangeSelect);
-					
-					
-				}
+//					trans->addKid(rangeSelect);
+					trans->addKid(kukka);
+//					scene->getLandscape()->getTerrain()->addKid(kukka);
+				}			
+				trans->addKid(lod_switch);
+
+				scene->getLandscape()->getTerrain()->addKid ( trans );
+			}
+
+			lod_switch->select(1);
+			block->collectVertices ( level,  dist/2);
+//			block->triangulateBlock();
+
 		}
 		else if (block)
 		{
