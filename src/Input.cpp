@@ -38,11 +38,17 @@ void
 Input::keyDown(unsigned char key, int x, int y)
 {
    switch (key) {
+	case ',':
+	  landscape->sun_pos += 2;
+	  break;
+	case '.':
+	  landscape->sun_pos -= 2;
+	  break;
 	default:
 	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)", key, x, y);
+	  exit(0);
 	  break;
    }
-   exit(0);
 //   glutPostRedisplay();
 }
 
@@ -54,18 +60,24 @@ Input::specialDown(int key, int x, int y)
 	  landscape->angle -= 2;
 	  break;
 	case GLUT_KEY_UP:
+	  landscape->tilt += 2;
 	  break;
 	case GLUT_KEY_RIGHT:
 	  landscape->angle += 2;
 	  break;
 	case GLUT_KEY_DOWN:
+	  landscape->tilt -= 2;
 	  break;
 	case GLUT_KEY_PAGE_UP:
+	  landscape->distance += 2;
 	  break;
 	case GLUT_KEY_PAGE_DOWN:
+	  landscape->distance -= 2;
 	  break;
 	case GLUT_KEY_HOME:
-	  landscape->angle = 0;
+	  landscape->angle = 75;
+	  landscape->tilt = 15;
+	  landscape->distance = -20;
 	  break;
 	case GLUT_KEY_END:
 	  break;

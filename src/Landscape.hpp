@@ -35,9 +35,12 @@ class Landscape
    void addObject(int);
    void removeObject(int);
    float getHeight(int, int);
-   void shiftLandscape_1(int, char *);
-   void shiftLandscape_2(int, char *);
-   void shiftLandscape_3(int, char *);
+   void setMap_1(char *);
+   void setMap_2(char *);
+   void setMap_3(char *);
+   void shiftMap_1(int, char *);
+   void shiftMap_2(int, char *);
+   void shiftMap_3(int, char *);
  public:
    unsigned long detail;
    char *map_1;   /* Terrains for map parts                          */
@@ -54,6 +57,10 @@ class Landscape
    int map2_y;
    int map3_x;
    int map3_y;
+   int map1_shift_x;
+   int map1_shift_y;
+   int map2_shift_x;
+   int map2_shift_y;
    Object *first;
  private:
    void initMap_1Mesh();
@@ -86,10 +93,22 @@ class Landscape
    int listId_2;
    int listId_3;
    int listId_4;
+
+   int playerId;
+
+   GLubyte *groundTex;
+   GLubyte *playerTex;
+
+   GLuint groundTex_id;
+   GLuint playerTex_id;
    
  public:
    float angle;
-
+   float tilt;
+   float distance;
+   float sun_pos;
+   
+   float counter;
 };
 
 #endif /* __LANDSCAPE_HPP__ */

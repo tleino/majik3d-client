@@ -89,8 +89,6 @@ main(int argc, char **argv)
    // Open the screen
    display->openScreen();
 
-   landscape->init();
-   
    glutMainLoop();
    
    // Call ending functions

@@ -22,8 +22,8 @@
 
 Display::Display()
 {
-   width = 320;
-   height = 200;
+   width = 800;
+   height = 600;
    bpp = 32;
 
    cursor = new Cursor;
@@ -73,6 +73,7 @@ Display::openScreen()
    glutPassiveMotionFunc(input->mousePassiveMotion);
    glutIdleFunc(idle);
 
+   landscape->init();
    cursor->init();
    
    #ifdef DEBUG

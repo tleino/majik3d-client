@@ -20,8 +20,6 @@
 #include <stdlib.h>
 #include "Majik.hpp"
 
-#define VectMul(X1,Y1,Z1,X2,Y2,Z2) (Y1)*(Z2)-(Z1)*(Y2),(Z1)*(X2)-(X1)*(Z2),(X1)*(Y2)-(Y1)*(X2)
-
 #define NORTH   0
 #define EAST    1
 #define SOUTH   2
@@ -39,6 +37,12 @@
 #define MAP3_GAP          4
 #define MAP3_RATIO        5
 #define MAP3_GRID_WIDTH  ( MAP3_RATIO*MAP2_GRID_WIDTH )  
+
+#define VectMul(X1,Y1,Z1,X2,Y2,Z2) (Y1)*(Z2)-(Z1)*(Y2),(Z1)*(X2)-(X1)*(Z2),(X1)*(Y2)-(Y1)*(X2)
+
+#define MAP1(x, y) map_1[(y) * MAP1_WIDTH + (x)]
+#define MAP2(x, y) map_2[(y) * MAP2_WIDTH + (x)]
+#define MAP3(x, y) map_3[(y) * MAP3_WIDTH + (x)]
 
 
 Landscape::Landscape()
@@ -105,6 +109,16 @@ void Landscape::init()
    listId_3 = -1;
    listId_4 = -1;
 
+   map1_shift_x = 0;
+   map1_shift_y = 0;
+   map2_shift_x = 0;
+   map2_shift_y = 0;
+
+   angle = 75;
+   tilt = 15;
+   distance = -20; 
+   sun_pos = 0;
+   
    makeHeightMaps();
    
    initMap_1Mesh();
@@ -115,8 +129,6 @@ void Landscape::init()
    
    initMap_3Mesh();
    makeMap_3();
-   
-   angle = 0;
    
    glEnable(GL_FOG);
    
@@ -132,8 +144,125 @@ void Landscape::init()
 	 }
    
    glFogf(GL_FOG_START, 400.0);
-   glFogf(GL_FOG_END, 3000.0);
+   glFogf(GL_FOG_END, 7000.0);
 
+   /* THIS IS MEANT TO BE VERY TEMPORARY */
+   
+   playerId = glGenLists(1);
+   glNewList(playerId, GL_COMPILE);
+   glDisable(GL_CULL_FACE);
+   glBegin(GL_QUADS);
+	 {
+		glNormal3f( 0.0, 1.0, 0.0);
+		glTexCoord2f(0.00, 0.25); glVertex3f( -1.0, -1.0, 0.0);
+		glTexCoord2f(0.00, 0.50); glVertex3f( -1.0, -1.0, 2.0);
+		glTexCoord2f(0.25, 0.50); glVertex3f( 1.0, -1.0, 2.0);
+		glTexCoord2f(0.25, 0.25); glVertex3f( 1.0, -1.0, 0.0);
+		
+		glNormal3f( -1.0, 0.0, 0.0);
+		glTexCoord2f(0.25, 0.25); glVertex3f( 1.0, -1.0, 0.0);
+		glTexCoord2f(0.25, 0.50); glVertex3f( 1.0, -1.0, 2.0);
+		glTexCoord2f(0.50, 0.50); glVertex3f( 1.0, 1.0, 2.0);
+		glTexCoord2f(0.50, 0.25); glVertex3f( 1.0, 1.0, 0.0);
+
+		glNormal3f( 0.0, -1.0, 0.0);
+		glTexCoord2f(0.50, 0.25); glVertex3f( 1.0, 1.0, 0.0);
+		glTexCoord2f(0.50, 0.50); glVertex3f( 1.0, 1.0, 2.0);
+		glTexCoord2f(0.75, 0.50); glVertex3f( -1.0, 1.0, 2.0);
+		glTexCoord2f(0.75, 0.25); glVertex3f( -1.0, 1.0, 0.0);
+		
+		glNormal3f( 1.0, 0.0, 0.0);
+		glTexCoord2f(1.0, 0.25); glVertex3f( -1.0, 1.0, 0.0);
+		glTexCoord2f(1.0, 0.50); glVertex3f( -1.0, 1.0, 2.0);
+		glTexCoord2f(0.75, 0.50); glVertex3f( -1.0, -1.0, 2.0);
+		glTexCoord2f(0.75, 0.25); glVertex3f( -1.0, -1.0, 0.0);
+		
+		glNormal3f( 0.0, 0.0, -1.0);
+		glTexCoord2f(0.25, 0.75); glVertex3f( -1.0, -1.0, 2.0);
+		glTexCoord2f(0.25, 0.50); glVertex3f( -1.0, 1.0, 2.0);
+		glTexCoord2f(0.50, 0.50); glVertex3f( 1.0, 1.0, 2.0);
+		glTexCoord2f(0.50, 0.75); glVertex3f( 1.0, -1.0, 2.0);
+		
+		glNormal3f( 0.0, 0.0, 1.0);
+		glTexCoord2f(0.50, 0.25); glVertex3f( 1.0, 1.0, 0.0);
+		glTexCoord2f(0.25, 0.25); glVertex3f( 1.0, -1.0, 0.0);
+		glTexCoord2f(0.25, 0.00); glVertex3f( -1.0, -1.0, 0.0);
+		glTexCoord2f(0.50, 0.00); glVertex3f( -1.0, 1.0, 0.0);
+	 }
+   glEnd();
+   glEnable(GL_CULL_FACE);
+   glEndList();
+
+   SDL_Surface *picture;
+   
+   picture = SDL_LoadBMP("gfx/maasto.bmp");
+   
+   int i, k;
+   
+   groundTex = new GLubyte[picture->w*picture->w*3];
+   
+   k = 0;
+   
+   for (i=0; i < picture->w*picture->w*3 ;)
+	 {
+		groundTex[i+2] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		groundTex[i+1] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		groundTex[i] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		
+		i += 3;
+	 }
+   
+   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+   
+   glGenTextures(1, &groundTex_id);
+   glBindTexture(GL_TEXTURE_2D, groundTex_id);
+   
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+				   GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				   GL_LINEAR);
+   
+   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+   
+   glTexImage2D(GL_TEXTURE_2D, 0, 3, picture->w,
+				picture->w, 0, GL_RGB, GL_UNSIGNED_BYTE,
+				&groundTex[0]);
+   
+   picture = SDL_LoadBMP("gfx/ukkelipukkeli.bmp");
+   
+   playerTex = new GLubyte[picture->w*picture->w*3];
+   
+   k = 0;
+   
+   for (i=0; i < picture->w*picture->w*3 ;)
+	 {
+		playerTex[i+2] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		playerTex[i+1] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		playerTex[i] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		
+		i += 3;
+	 }
+   
+   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+   
+   glGenTextures(1, &playerTex_id);
+   glBindTexture(GL_TEXTURE_2D, playerTex_id);
+   
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+					  GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+					  GL_LINEAR);
+   
+   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+   
+   glTexImage2D(GL_TEXTURE_2D, 0, 3, picture->w,
+				   picture->w, 0, GL_RGB, GL_UNSIGNED_BYTE,
+				   &playerTex[0]);
+   
 }
 
 
@@ -221,7 +350,7 @@ void Landscape::drawLandscape()
    glViewport(viewport_x, viewport_y, viewport_w, viewport_h);
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
-   glFrustum(-1.0, 1.0, -viewport_ratio, viewport_ratio, 5.0, 100000.0);
+   glFrustum(-1.0, 1.0, -viewport_ratio, viewport_ratio, 3.0, 10000.0);
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
@@ -233,15 +362,18 @@ void Landscape::drawLandscape()
    glPushMatrix();
    
    /* Load camera matrix here            */
-   gluLookAt(0.0, -500.0, -200, 
-			 0.0, 100.0, getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2), 0.0, 0.0, -1.0);   
+//   gluLookAt(0.0, -500.0, -200, 
+//			 0.0, 100.0, getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2), 0.0, 0.0, -1.0);   
 //   glTranslatef(0.0, -300.0, -200.0);
 //   glRotatef(135.0, 1.0, 0.0, 0.0);
-   glRotatef(angle/2, 0.0, 0.0, 1.0);
+   glTranslatef(0.0, 0.0, distance);
+   glRotatef(90+tilt, 1.0, 0.0, 0.0);
+   glRotatef(angle, 0.0, 0.0, 1.0);
+   glTranslatef(0.0, 0.0, - getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2)+2);
    
    /* Position sun                       */
    glPushMatrix();
-   glRotatef(1.23*angle, 0.0, 1.0, 0.0);
+   glRotatef(sun_pos, 0.0, 1.0, 0.0);
    glLightfv (GL_LIGHT0, GL_POSITION, light_position);
    glPopMatrix();
    
@@ -259,18 +391,30 @@ void Landscape::drawLandscape()
    glCallList(listId_2);
    glPopMatrix();
 
+   glEnable(GL_TEXTURE_2D);
+   glBindTexture(GL_TEXTURE_2D, groundTex_id);
    glPushMatrix();
 //   glTranslatef(0.0, 0.0, -500);
- glCallList(listId_1);
+   glCallList(listId_1);
    glPopMatrix();
    
    /* Draw objects                       */
    /*  - Check for 1st-person/3rd-person */
    /*  - Check for detail settings       */
    
+   glBindTexture(GL_TEXTURE_2D, playerTex_id);
+   
+   glPushMatrix();
+   glTranslatef(0.0, 0.0, getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2)-2.5);
+   glRotatef( Perlin::perlinNoise_2D(0, counter/5)*10, 1.0, 0.0, 0.0);
+   glCallList(playerId);
    glPopMatrix();
    
-   // angle += 2;
+      glDisable(GL_TEXTURE_2D);
+   
+   glPopMatrix();
+   
+   counter += 0.1;
 }
 
 void Landscape::setViewport(int x, int y, int w, int h)
@@ -300,7 +444,38 @@ float Landscape::getHeight(int x, int y)
    if (tempx > 0 && tempx < MAP1_WIDTH*MAP1_GRID_WIDTH && 
 	   tempy > 0 && tempy < MAP1_WIDTH*MAP1_GRID_WIDTH)
 	 {           
-		return zmap_1[tempy*(MAP1_WIDTH+1) + tempx];
+		int ax = tempx / MAP1_GRID_WIDTH;
+		int fx = tempx % MAP1_GRID_WIDTH;
+		int ay = tempy / MAP1_GRID_WIDTH;
+		int fy = tempy % MAP1_GRID_WIDTH;
+		float x1, x2;
+		
+		if (fx == 0)
+		  x1 = zmap_1[ay*(MAP1_WIDTH+1) + ax];
+		else
+		  {
+			 int bx = ax + 1;
+			 x1 = interpolate(zmap_1[ay*(MAP1_WIDTH+1) + ax],
+							  zmap_1[ay*(MAP1_WIDTH+1) + bx],
+							  (float)fx / MAP1_GRID_WIDTH);
+		  }
+		
+		if (fy == 0)
+		  return x1;
+		else
+		  {
+			 int by = ay +1;
+			 if (fx == 0)
+			   x2 = zmap_1[by*(MAP1_WIDTH+1) + ax];
+			 else
+			   {
+				  int bx = ax + 1;
+				  x2 = interpolate(zmap_1[by*(MAP1_WIDTH+1) + ax],
+								   zmap_1[by*(MAP1_WIDTH+1) + bx],
+								   (float)fx / MAP1_GRID_WIDTH);
+			   }
+			 return interpolate(x1, x2, (float)fy / MAP1_GRID_WIDTH);
+		  }
 	 }
    else 
 	 {
@@ -894,7 +1069,7 @@ void Landscape::initMap_3Mesh()
 
 void Landscape::makeMap_1()
 {
-   float color[4] = { 1.0, 0.0, 0.0, 1.0 };
+   float color[4] = { 1.0, 1.0, 1.0, 1.0 };
  
    /* Check for already existing display list */
    if (listId_1 != -1)
@@ -909,9 +1084,9 @@ void Landscape::makeMap_1()
    /* Generate new list ID */
    listId_1 = glGenLists(1);
    glNewList(listId_1, GL_COMPILE);
-//   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-   
-   
+
+   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+
    for (int j=0;j<MAP1_WIDTH;j++)
 	 {
 		glBegin(GL_TRIANGLE_STRIP);
@@ -927,7 +1102,7 @@ void Landscape::makeMap_1()
 	 }
    
    glEndList();
-   
+
    glDisableClientState(GL_VERTEX_ARRAY);
    glDisableClientState(GL_NORMAL_ARRAY);
    
@@ -950,11 +1125,22 @@ void Landscape::makeMap_2()
    /* Generate new list ID */
    listId_2 = glGenLists(1);
    glNewList(listId_2, GL_COMPILE);
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
    
-   int j, i;
+   int j, i, north = 0, south = 0, west = 0, east = 0;
    
-   for (j=0;j<(MAP2_WIDTH/2 - MAP2_GAP/2);j++)
+   if (map1_shift_x > 0)
+	 east = 1;
+   else if (map1_shift_x < 0)
+	 west = 1;
+   
+   if (map1_shift_y > 0)
+	 north = 1;
+   else if (map1_shift_y < 0)
+	 south = 1;
+   
+   
+   for (j=0;j<(MAP2_WIDTH/2 - MAP2_GAP/2)-north;j++)
 	 {
 		glBegin(GL_TRIANGLE_STRIP);
 		
@@ -968,11 +1154,11 @@ void Landscape::makeMap_2()
 		glEnd();
 	 }
    
-   for (;j<(MAP2_WIDTH/2 - MAP2_GAP/2 + MAP2_GAP);j++)
+   for (;j<(MAP2_WIDTH/2 - MAP2_GAP/2 + MAP2_GAP)+south;j++)
 	 {
 		glBegin(GL_TRIANGLE_STRIP);
 		
-		for (i=0;i<(MAP2_WIDTH/2 - MAP2_GAP/2)+1;i++)
+		for (i=0;i<(MAP2_WIDTH/2 - MAP2_GAP/2)+1-west;i++)
 		  {
              glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
@@ -983,7 +1169,7 @@ void Landscape::makeMap_2()
 		
 		glBegin(GL_TRIANGLE_STRIP);
 		
-		for (i += MAP2_GAP-1;i<MAP2_WIDTH+1;i++)
+		for (i += MAP2_GAP-1+east;i<MAP2_WIDTH+1;i++)
 		  {
 			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
@@ -1031,7 +1217,7 @@ void Landscape::makeMap_3()
    /* Generate new list ID */
    listId_3 = glGenLists(1);
    glNewList(listId_3, GL_COMPILE);
- //  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
    
    int i, j;
 
@@ -1098,6 +1284,100 @@ void Landscape::makeMap_3()
    
 void Landscape::makeMap_4()
 {
+}
+
+void
+Landscape::setMap_1(char *map)
+{
+   
+}
+
+void
+Landscape::setMap_2(char *map)
+{
+   
+}
+
+void
+Landscape::setMap_3(char *map)
+{
+   
+}
+
+void
+Landscape::shiftMap_1(int side, char *slice)
+{
+   int x, y;
+   
+   switch (side)
+	 {
+	  case NORTH:
+		for (y = 0; y < MAP1_WIDTH-1; y++)
+		  for (x = 0; x < MAP1_WIDTH; x++)
+			{
+			   MAP1(x, y) = MAP1(x, y+1);
+			   map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + x*2] =
+				 map_1Mesh.face_normals[(y+1)*MAP1_WIDTH*2 + x*2];
+			}
+		for (x = 0; x < MAP1_WIDTH; x++)
+		  MAP1(x, 0) = slice[x];
+		
+		break;
+		
+	  case EAST:
+		for (x = 0; x < MAP1_WIDTH-1; x++)
+		  for (y = 0; y < MAP1_WIDTH; y++)
+			{
+			   MAP1(x, y) = MAP1(x+1, y);
+			   map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + x*2] =
+				 map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + (x+1)*2];
+			}
+		for (y = 0; y < MAP1_WIDTH; y++)
+		  MAP1(MAP1_WIDTH-1, y) = slice[y];
+		break;
+		
+	  case SOUTH:
+        for (y = MAP1_WIDTH-1; y > 0; y--)
+		  for (x = 0; x < MAP1_WIDTH; x++)
+		  {
+			 MAP1(x, y) = MAP1(x, y+1);
+			 
+			 map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + x*2] =
+			   map_1Mesh.face_normals[(y+1)*MAP1_WIDTH*2 + x*2];
+		  }
+		for (x = 0; x < MAP1_WIDTH; x++)
+		  MAP1(x, MAP1_WIDTH-1) = slice[x];
+		break;
+		
+	  case WEST:
+		for (x = MAP1_WIDTH-1; x > 0; x--)
+		  for (y = 0; y < MAP1_WIDTH; y++)
+			{
+			   MAP1(x, y) = MAP1(x-1, y);
+			   map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + x*2] =
+				 map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + (x-1)*2];
+			}
+		for (y = 0; y < MAP1_WIDTH; y++)
+		  MAP1(0, y) = slice[y];
+		break;
+
+	  default:
+		error->put(ERROR_FATAL, "invalid first argument to updateMap_1Slice()");
+		break;
+	 }
+}
+
+void
+Landscape::shiftMap_2(int side, char *slice)
+{
+   
+   
+}
+
+void
+Landscape::shiftMap_3(int side, char *slice)
+{
+   
 }
 
 void Landscape::addObject(int oid)
