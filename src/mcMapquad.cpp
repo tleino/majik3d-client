@@ -140,8 +140,13 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 
 Mapquad::~Mapquad()
 {
- if (block) 
-  block->deRef();
+	if (block)
+	{
+		lod_switch->removeKid(block);
+		trans->removeKid(lod_switch);
+		scene->getLandscape()->getTerrain()->removeKid(trans);
+	}
+
 /*  
   if (level == NUM_LEVELS - 1 )
     {

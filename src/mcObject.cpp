@@ -111,7 +111,7 @@ Object::~Object()
 void
 Object::update(float t)
 {
-	if (m_turnSpeed == 0.0 && m_moveSpeed == 0.0)
+	if (m_turnSpeed == 0.0 && m_moveSpeed == 0.0 && (fabs(ob_pos.xyz[2] - scene->getHOT(ob_pos.xyz[0], ob_pos.xyz[1])-.1f) < 0.1f))
 		return;
 
 	sgCoord tempPos = ob_pos;
@@ -299,7 +299,6 @@ Object::setHeading(float dir)
 {
 	moveTo(ob_pos.xyz[0], ob_pos.xyz[1], dir);
 }
-
 
 void
 Object::setPos(sgCoord where)

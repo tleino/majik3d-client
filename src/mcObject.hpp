@@ -45,7 +45,6 @@ public:
   /// Move object to a new position.
   void moveTo(sgCoord where);
   /// Set the Object's current position.
-  void setPos(sgCoord where);
   /// Get the Object's current position.
   const sgCoord& getPos();
   /// Set the object's scale.
@@ -98,6 +97,8 @@ static	Object	*getObject		(int id);
 static	Object	*getFirst		()			{ return first; }
 
 private:
+	void setPos(sgCoord where);
+
 	float	m_moveSpeed;
 	float	m_turnSpeed;
 

@@ -70,8 +70,8 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 
 			sgVec2 UV;
 				
-			UV[0] = /*UVBias+*/(float)i/DIM;//*(1.0-UVBias*2);
-			UV[1] = /*UVBias+*/(float)j/DIM;//*(1.0-UVBias*2);
+			UV[0] = UVBias+(float)i/DIM*(1.0-UVBias*2);
+			UV[1] = UVBias+(float)j/DIM*(1.0-UVBias*2);
 
 			sgCopyVec2 (texcoords[i + j * (DIM+1)], UV);
 

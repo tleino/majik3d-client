@@ -50,7 +50,7 @@ Protocol::parseCommand(char *input)
 {
   assert ( input );
 
-  cout << input << endl;
+//  cout << input << endl;
   
   int command;
   int found = 0, id;
@@ -133,11 +133,11 @@ Protocol::parseCommand(char *input)
 
       break;
 
-	case CMD_MOVE_HEADING:
+	case CMD_HEADING:
 		if (sscanf(data, "%d %f", &id, &h) < 2)
 		{
 			error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
-												"command CMD_MOVE_HEADING.");
+												"command CMD_HEADING.");
 			break;
 		}
 

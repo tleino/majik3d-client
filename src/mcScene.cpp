@@ -384,7 +384,6 @@ Scene::draw()
 	if (!m_player->initialized())
 		return; // We do not exist yet and thus no draw() needed.
   
-  // Update camera's position in relation to ourself.
 	update();
   
   // Draw the stuff to screen.

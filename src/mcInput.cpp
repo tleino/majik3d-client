@@ -242,6 +242,10 @@ Input::mouseDown(int button, int updown, int x, int y)
 void 
 Input::mouseMotion(int x, int y) 
 { 
+	// time treshold would be better
+	const static float turnTreshold = 15.f;
+	static float lastHeading = 0.f;
+
   puMouse (x, y);
 
   float diff_x = (input->mouse_x - x) * (360.0f / (display->getWidth() / 2));
@@ -250,16 +254,22 @@ Input::mouseMotion(int x, int y)
   Player *tuxi = scene->getPlayer();
   if (tuxi != NULL && config->getCameraMode() != 0)
     {
-      sgCoord temppos = tuxi->getPos();
-      temppos.hpr[0] += diff_x;
+	  float h = tuxi->getPos().hpr[0];
+      
+      h += diff_x;
       scene->getCamera()->pitch(diff_y);
       
-      if (temppos.hpr[0] > 355.0f)
-	temppos.hpr[0] = 0.0f;
-      if (temppos.hpr[0] < 0.0f)
-	temppos.hpr[0] += 360.0f;
+      while (h > 360.0f)
+		h -= 360.0f;
+      while (h < 0.0f)
+		h += 360.0f;
 
-      tuxi->setPos(temppos);
+	  tuxi->setHeading(h);
+	  if (fabs(lastHeading - h) > turnTreshold)
+	  {
+		  sock->writePacket("%d %f", Protocol::CMD_HEADING, h);
+		  lastHeading = h;
+	  }
 
       if (x >= display->getWidth()-1 || y >= display->getHeight()-1 || x <= 0 || y <= 0)
 	{
