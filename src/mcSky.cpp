@@ -439,3 +439,41 @@ void mcSky::xyYtoRGB(SKYPOINT *v, float x, float y, float Y)
    v->g = gamma(-1.035 * X + 1.939 * Y + 0.042 * Z, 0.8);	
    v->b = gamma( 0.011 * X - 0.184 * Y + 1.078 * Z, 0.8);
 }
+
+
+/**
+ * Sun position functions 
+ * */
+
+void mcSky::setTimeInDay(float t)
+{
+   this->stndtime = t;
+   this->updateSunPosition();
+}
+ 
+void mcSky::setDayInYear(float d)
+{
+   this->day = 365 * d;
+   this->updateSunPosition();
+}
+ 
+void mcSky::setLatLong(float latitude, float longitude)
+{
+   this->latitude = latitude;
+   this->longitude = longitude;
+   this->updateSunPosition();
+}
+ 
+void mcSky::updateSunPosition()
+{
+   float solartime, solardeclination;
+   float thetas, omegas;
+   
+   solartime = this->stndtime + 0.170 * sin((4.0 * M_PI * (this->day - 80)) / 373.0) - 0.129 * sin((2 * M_PI * (this->day - 8) / 355.0)) + 12 * (this->latitude - this->longitude) / M_PI;
+   solardeclination = 0.4093 * sin((2.0 * M_PI * (this->day - 81)) / 368.0);
+ 
+   thetas = M_PI / 2.0 - asin(sin(this->latitude) * sin(solardeclination) - cos(this->latitude) * cos(solardeclination) * cos((M_PI * this->stndtime) / 12.0));
+   omegas = atan2(-cos(solardeclination) * sin((M_PI * this->stndtime)/12.0), cos(this->latitude) * sin(solardeclination) - sin(this->latitude) * cos(solardeclination) * cos((M_PI * this->stndtime) / 12.0));
+   this->setSunPosition(thetas, omegas);
+}
+

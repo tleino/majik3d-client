@@ -51,6 +51,9 @@ class mcSky
    float   	perez_Y[5],		/* Perez-function parameters */
 	 		perez_x[5],
 	 		perez_y[5];
+   
+   float	latitude, longitude,
+	 		day, stndtime;
   
    // Light intensity and colour at zenith
    float	zenith_Y, zenith_x, zenith_y;
@@ -69,6 +72,7 @@ class mcSky
    void		calculateSkyColors();
    void    	createSkyPoint(SKYPOINT *v, float heading, float pitch);
    void		xyYtoRGB(SKYPOINT *v, float x, float y, float Y);
+   void		updateSunPosition();
   
  public:
    mcSky();
@@ -79,6 +83,9 @@ class mcSky
    void		setTurbidity(float t);
    void    	setSunPosition(sgVec3 &v);
    void		setSunPosition(float heading, float elevation);
+   void     setTimeInDay(float t);      // [0.0 .. 1.0]
+   void     setDayInYear(float d);      // [0.0 .. 1.0]
+   void     setLatLong(float lat, float lon);   // radians
   
    ssgEntity * Draw();
 };
