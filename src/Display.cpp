@@ -243,8 +243,7 @@ Display::updateScreen()
    if (mousetrap)
 	 mousetrap();
    
-   scene->draw();
-   
+   scene->draw();  
    overlay->draw();
 }
 

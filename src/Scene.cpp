@@ -206,7 +206,6 @@ Scene::removeObject(Object *ob)
 
 }
 
-
 void
 Scene::update()
 {
@@ -295,13 +294,6 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
    
    sgFullXformPnt3 (temppos, viewmat);
    
-   // textpos[0] = temppos[0];
-   // textpos[1] = temppos[1];
-   // textpos[2] = temppos[2];
-   // textpos[3] = 1.0f;
-   
-   // cout << "textpos xform jalk: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << endl;
-   
    textpos[0] = frustumi[0][0] * temppos[0] +  frustumi[1][0] * temppos[1] + frustumi[2][0] * temppos[2] +  frustumi[3][0];
    textpos[1] = frustumi[0][1] * temppos[0] +  frustumi[1][1] * temppos[1] + frustumi[2][1] * temppos[2] +  frustumi[3][1];
    textpos[2] = frustumi[0][2] * temppos[0] +  frustumi[1][2] * temppos[1] + frustumi[2][2] * temppos[2] +  frustumi[3][2];
@@ -309,17 +301,9 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
    
    textpos[0] /= textpos[3];
    textpos[1] /= textpos[3];
-   // textpos[2] /= textpos[3];     
-   
-   // cout << "textpos frustum jalk.: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << " " << textpos[3] << endl;
-   
+      
    textpos[0] = textpos[0]*display->width/2 + display->width/2;
    textpos[1] = textpos[1]*display->height/2 + display->height/2;
-
-   // if (textpos[2] < 0 || textpos[2] > 250)
-   //   text_object->hide();
-   // else
-   //	text_object->reveal();
    
    if (textpos[0] < 0)
 	 textpos[0] = 0;
@@ -334,10 +318,14 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
    text_object->setPosition(textpos[0], textpos[1]);
 }
    
-
 void
 Scene::draw()
 {
+   if (!initialized)
+	 return:
+
+   update();
+   
    ssgCullAndDraw ( scene_root ) ;
    
    sgVec3 posit;

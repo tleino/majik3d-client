@@ -29,7 +29,6 @@
 #endif
 #include <math.h>
 #include <ssg.h>
-#include <ssgKeyFlier.h>
 #include <GL/glut.h>
 #include <iostream.h>
 

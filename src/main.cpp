@@ -32,7 +32,7 @@
 #include "Input.hpp"
 #include "Config.hpp"
 #include "Scene.hpp"
-
+#include "Overlay.hpp"
 #include "Protocol.hpp"
 #include "Perlin.hpp"
 #include "Mapquad.hpp"
@@ -50,6 +50,7 @@ Menu *menu = NULL;
 Scene *scene = NULL;
 Protocol *protocol = NULL;
 Perlin *perlin = NULL;
+Overlay *overlay = NULL;
 Mapquad *Mapquad::root_map = NULL;
 
 
@@ -68,6 +69,7 @@ main(int argc, char **argv)
    scene = new Scene;
    protocol = new Protocol;
    perlin = new Perlin;
+   overlay = new Overlay;
    Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
    
    // Check the config object for ip / port settings and create the socket accordingly
