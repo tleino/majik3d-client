@@ -23,7 +23,10 @@ class Landscape
    char *map_2;
    char *map_3;
    char *map_4;
-   int *zmap;
+   float  *zmap_1;
+   float  *zmap_2;
+   float  *zmap_3;
+   float  *zmap_4;
    Object *first;
 };
 
