@@ -29,18 +29,15 @@ project for which you would like to have such a card.
 
 The keys working in the client:
 
-arrow up    = turn up
-arrow down  = turn down
-arrow left  = turn left
-arrow right = turn right
-page up     = zoom in
-page down   = zoom out
+4           = turn left
+5           = stop turning
+6           = turn right
+enter       = speed up
+0           = stop
+,           = walk backwards
+x           = exit
 insert      = insert menu bar
 end         = remove menu bar
-home        = reset to the starting position
-,           = move the light
-.           = move the light opposite way
-esc         = exit
 
 Please report problems to majik@majik.netti.fi or
                           majik-users@majik.netti.fi (preferable)
