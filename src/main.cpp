@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <getopt.h>
 #include "Majik.hpp"
 
 int Object::lastId = 0;
@@ -34,8 +35,37 @@ FilterEvents(const SDL_Event *event)
 }
 
 void
-main(int argc, char *argv[])
+main(int argc, char **argv)
 {
+   int c;
+      
+   // Read the command line arguments 
+   while (1) {
+	  int this_option_optind = optind ? optind : 1;
+	  int option_index = 0;
+	  
+	  static struct option long_options[] = {
+		   { "version", 0, 0, 'V' },
+		   { "help", 0,0, 'h' },
+		   { 0, 0, 0, 0 },
+	  };
+   
+	  c = getopt_long (argc, argv, "hV",
+					   long_options, &option_index);
+	  if (c == -1)
+		break;
+	  
+	  switch (c) {
+	   case 'V':
+		 printf ("%s-%s.%s\n", PACKAGE, VERSION, CPU_VENDOR_OS);
+		 exit (0);
+	   case '?':
+	   case 'h':
+		 printf ("usage: %s [option(s)]\n\n  -V, --version  display version information\n  -h, --help     display this text\n", argv[0]);
+		 exit (0);
+	  }
+   }
+   
    // Initialize the necessary global variables as proper objects
    sock = new Socket;
    display = new Display;
