@@ -49,6 +49,9 @@ void captureScreen();
 
 Input::Input()
 {
+  mouse_x = 0;
+  mouse_y = 0;
+
   debug->put ("Input constructor");
 }
 
@@ -220,6 +223,37 @@ Input::mouseDown(int button, int updown, int x, int y)
 {
   puMouse (button, updown, x, y);
   debug->put("mouseDown: %d %d %d %d", button, updown, x, y);
+}
+
+void 
+Input::mouseMotion(int x, int y) 
+{ 
+  puMouse (x, y);
+
+  int diff_x = input->mouse_x - x;
+  int diff_y = input->mouse_y - y;
+
+  if (tuxi != NULL && config->camera != 0) {
+    sgCopyVec3 ( temppos.hpr, tuxi->getPos().hpr ) ;
+    temppos.hpr[0] += diff_x;
+
+    if (temppos.hpr[0] > 355.0f) 
+      temppos.hpr[0] = 0.0f;
+    if (temppos.hpr[0] < 0) 
+      temppos.hpr[0] += 360.0f;
+
+    tuxi->moveTo(tuxi->getPos().xyz[0], tuxi->getPos().xyz[1],
+		 temppos.hpr[0]);
+
+    display->pitch += diff_y;
+
+    if (display->pitch > 75.0f)
+      display->pitch = 75.0f;
+    if (display->pitch < -75.0f)
+      display->pitch = -75.0f;
+  }
+
+  input->mouse_x = x; input->mouse_y = y; 
 }
 
 void

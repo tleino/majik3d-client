@@ -37,6 +37,10 @@ public:
   static void mouseDown(int button, int updown, int x, int y);
   /// This method is called when a '\n' has been detected on input prompt.
   static void promptDown(puObject *o);
+  /// This method is called when the mouse is moved.
+  static void mouseMotion(int x, int y);
+private:
+  int mouse_x, mouse_y;
 };
 
 extern Input *input;

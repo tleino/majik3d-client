@@ -93,8 +93,8 @@ Display::openScreen()
   glutKeyboardFunc(input->keyDown);
   glutSpecialFunc(input->specialDown);
   glutMouseFunc(input->mouseDown);
-  glutPassiveMotionFunc(mouseMotion);
-  glutMotionFunc(mouseMotion);
+  glutPassiveMotionFunc(input->mouseMotion);
+  glutMotionFunc(input->mouseMotion);
   
   if (config->nomousetrap != 1)
     glutWarpPointer (width/2, height/2);
@@ -117,14 +117,6 @@ Display::openScreen()
     glShadeModel (GL_SMOOTH);
   
   debug->put("Screen opened.");
-}
-
-void
-Display::mouseMotion(int x, int y)
-{
-  mouse_x = x; mouse_y = y;
-  puMouse (x, y);
-  glutPostRedisplay();
 }
 
 void 

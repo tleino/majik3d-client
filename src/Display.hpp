@@ -39,8 +39,6 @@ public:
   static void updateScreen();
   ///
   static void resizeScreen(int width, int height);
-  ///
-  static void mouseMotion(int x,int y);
 private:
   static void idle();
 public: 
