@@ -22,6 +22,7 @@
 #include "mcDebug.hpp"
 #include "mcObject.hpp"
 #include "mcDisplay.hpp"
+#include "mcScene.hpp"
 
 Object *Object::first = NULL;
 Object *Object::last = NULL;

@@ -10,6 +10,7 @@
 
 mcCameraController::mcCameraController()
 {
+	m_pitch = 0.0;
 
 }
 

@@ -26,6 +26,7 @@
 #include "mcDebug.hpp"
 #include "mcLandscape.hpp"
 #include "mcObject.hpp"
+#include "mcPlayer.hpp"
 #include "mcConfig.hpp"
 #include "mcSky.hpp"
 
@@ -283,7 +284,7 @@ Scene::update()
      }
    else
      {
-/*
+
        // 1st person mode.
        campos.xyz[0] += (tuxi->getLenY()*2.01f)*sin((campos.hpr[0]-180.0f)*
 						    SG_DEGREES_TO_RADIANS);
@@ -291,8 +292,8 @@ Scene::update()
 						    SG_DEGREES_TO_RADIANS);
        campos.xyz[2] += tuxi->getRadius();
 	   
-       campos.hpr[1] = tuxi->getRadius()+display->pitch-tuxi->getRadius()*2.0f;
-	   */
+       campos.hpr[1] = tuxi->getRadius()+scene->getCameraController()->getPitch()-tuxi->getRadius()*2.0f;
+	   
      }
    
    sgCoord skypos;

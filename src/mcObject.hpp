@@ -24,7 +24,6 @@
 #include <pu.h>
 #include <iostream.h>
 
-#include "mcScene.hpp"
 
 /** An object class. This class contains an interactive object and
     handles all things like moving and removing it. */
@@ -33,7 +32,7 @@ class Object
 {
 public:
   Object();
-  ~Object();
+  virtual  ~Object();
   
   /// Initialize a new object.
   void init(int id , char *file_name);
@@ -106,57 +105,5 @@ private:
 
 extern Object *object;
 
-/** Class definition for the player object */
-
-#include "mcMapquad.hpp"
-
-class Player : public Object
-{
-public:
-  Player()    { sgSetVec3(m_lastRedrawLocation, 0.0, 0.0, 0.0);  movementLock = false; }
-  ~Player();
-  
-
-	virtual void moveTo(float x, float y, float h)
-	{
-		Object::moveTo(x, y, h);
-
-		if (sgDistanceSquaredVec3(getPos().xyz, m_lastRedrawLocation) > 10.0)
-		{
-			sgCopyVec3 (m_lastRedrawLocation, getPos().xyz);
-
-			int i, j;
-
-			for (j= - 4; j < 4; j++)
-				for (i= - 4; i < 4; i++)
-				{
-					Mapquad::root_map->getMapquad(12, (int)x + 256+ i*512, (int)y +256 + j*512);
-				}
-
-			Mapquad::root_map->resetBlocks();
-
-			Mapquad::root_map->selectLOD(4, x, y);
-			Mapquad::root_map->selectLOD(3, x, y);
-			Mapquad::root_map->selectLOD(2, x, y);
-			Mapquad::root_map->selectLOD(1, x, y);
-			Mapquad::root_map->selectLOD(0, x, y);
-
-			Mapquad::root_map->exchangeBorders();
-			Mapquad::root_map->triangulateBlocks();
-		}
-
-	}
-
-  /// Lock the movement.
-  void lockMovement()  { movementLock = true; }
-  /// Release the movement lock, done when the server has acknowledged it.
-  void unLockMovement() { movementLock = false; }
-  ///
-  bool isMovementLocked()   { return movementLock; }
-private:  
-  bool movementLock;
-
-  sgVec3	m_lastRedrawLocation;
-};
 
 #endif /* __OBJECT_HPP__ */

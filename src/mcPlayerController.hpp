@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "mcController.hpp"
+#include "mcPlayer.hpp"
 
 class mcPlayerController : public mcController  
 {
@@ -21,6 +22,8 @@ public:
 	void moveBackward() {}
 	void turnLeft() {}
 	void turnRight() {}
+private:
+	Player *m_player;
 };
 
 #endif // !defined(AFX_MCPLAYERCONTROLLER_H__C662A4C5_C611_11D3_A108_0080296AA54F__INCLUDED_)

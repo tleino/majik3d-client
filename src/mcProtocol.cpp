@@ -23,10 +23,12 @@
 #include "mcMenu.hpp"
 #include "mcDebug.hpp"
 #include "mcObject.hpp"
+#include "mcPlayer.hpp"
 #include "mcError.hpp"
 #include "mcOverlay.hpp"
 #include "mcConfig.hpp"
 #include "mcSky.hpp"
+#include "mcScene.hpp"
 
 extern sgCoord tuxpos;
 extern Player *tuxi;

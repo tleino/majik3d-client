@@ -37,6 +37,7 @@
 #include "mcConfig.hpp"
 #include "mcOverlay.hpp"
 #include "mcMapquad.hpp"
+#include "mcPlayer.hpp"
 
 int mouse_x, mouse_y;
 extern Player *tuxi;

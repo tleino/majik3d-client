@@ -30,6 +30,7 @@
 #include "mcConfig.hpp"
 #include "mcOverlay.hpp"
 #include "mcProtocol.hpp"
+#include "mcPlayer.hpp"
 
 #include <fstream.h>
 
