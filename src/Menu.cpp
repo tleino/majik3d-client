@@ -182,7 +182,7 @@ Menu::wireframeCB(puObject *)
 void
 Menu::noWireframeCB(puObject *)
 {
-   glClearColor (0.0, 0.0, 1.0, 0.0);
+   glClearColor (0.4f, 0.7f, 1.0f, 1.0f);
    glEnable(GL_LIGHTING);
    glEnable(GL_FOG);
    glEnable(GL_LIGHT0);
