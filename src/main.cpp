@@ -13,7 +13,7 @@ Debug *debug = NULL;
 Socket *sock = NULL;
 Display *display = NULL;
 Landscape *landscape = NULL;
-Keyboard *keyboard = NULL;
+Input *input = NULL;
 
 void
 main(int argc, char **argv)
@@ -56,7 +56,7 @@ main(int argc, char **argv)
    sock = new Socket;
    display = new Display;
    landscape = new Landscape;
-   keyboard = new Keyboard;
+   input = new Input;
          
    // Open the screen
    display->openScreen();
@@ -74,7 +74,7 @@ main(int argc, char **argv)
    delete sock;
    delete display;
    delete landscape;
-   delete keyboard;
+   delete input;
    
    // Exit program
    exit(0);

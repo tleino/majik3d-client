@@ -2,34 +2,34 @@
 #include <stdlib.h>
 #include "Majik.hpp"
 
-Keyboard::Keyboard()
+Input::Input()
 {
    #ifdef DEBUG
-	 debug->put("Keyboard constructor");
+	 debug->put("Input constructor");
    #endif
 }
 
-Keyboard::~Keyboard()
+Input::~Input()
 {
    #ifdef DEBUG
-	 debug->put("Keyboard destructor");
+	 debug->put("Input destructor");
    #endif
 }
 
 void
-Keyboard::keyDown(unsigned char key, int x, int y)
+Input::keyDown(unsigned char key, int x, int y)
 {
    switch (key) {
 	default:
 	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)", key, x, y);
 	  break;
    }
-   
-   glutPostRedisplay();
+   exit(0);
+//   glutPostRedisplay();
 }
 
 void 
-Keyboard::specialDown(int key, int x, int y)
+Input::specialDown(int key, int x, int y)
 {
    switch(key) {
 	case GLUT_KEY_LEFT:
@@ -56,5 +56,16 @@ Keyboard::specialDown(int key, int x, int y)
 	  break;
    }
 
-   glutPostRedisplay();
+//   glutPostRedisplay();
+}
+
+void
+Input::mousePassiveMotion(int x, int y)
+{
+   #ifdef DEBUG
+	 debug->put("Mouse moved to: %d %d", x, y);
+   #endif
+	 
+   display->cursor->x_pos = x;
+   display->cursor->y_pos = y;   
 }

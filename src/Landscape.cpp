@@ -1,9 +1,13 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "Majik.hpp"
 
 #define VectMul(X1,Y1,Z1,X2,Y2,Z2) (Y1)*(Z2)-(Z1)*(Y2),(Z1)*(X2)-(X1)*(Z2),(X1)*(Y2)-(Y1)*(X2)
+
+#define NORTH   0
+#define EAST    1
+#define SOUTH   2
+#define WEST    3
 
 #define MAP1_WIDTH       20
 #define MAP1_GRID_WIDTH   2
@@ -45,11 +49,14 @@ void Landscape::init()
    float light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
    float light_diffuse[] = { 0.6, 0.6, 0.6, 1.0 };
    float light_specular[] = { 0.3, 0.3, 0.3, 1.0 };
+   float lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
    
    glLightfv (GL_LIGHT0, GL_AMBIENT, light_ambient);
    glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
    glLightfv (GL_LIGHT0, GL_SPECULAR, light_specular);
-
+   
+   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+   
    glEnable(GL_CULL_FACE);
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
@@ -106,53 +113,9 @@ void Landscape::init()
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 	 }
    
-   glFogf(GL_FOG_START, 10.0);
-   glFogf(GL_FOG_END, 1500.0);
+   glFogf(GL_FOG_START, 200.0);
+   glFogf(GL_FOG_END, 2500.0);
 
-   
-/*   
-   SDL_Surface *picture;
-   int i, k, c;
-   
-   picture = SDL_LoadBMP("grass.bmp");
-
-   
-   texture = new GLubyte[64*64*4];
-   
-   k = 0;
-   
-   for (i=0; i < 64*64*4 ;)
-	 {
-		c = 0;
-		if (*((GLubyte *)picture->pixels + k) != 255)
-		  c = 1;
-		texture[i+2] = (GLubyte) *((GLubyte *)picture->pixels + k++);
-		texture[i+1] = (GLubyte) *((GLubyte *)picture->pixels + k++);
-		texture[i] = (GLubyte) *((GLubyte *)picture->pixels + k++);
-		
-		i += 3;
-		
-		if (c)
-		  texture[i++] = 255;
-		else
-		  texture[i++] = 0;
-		
-	 }
-   
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64,
-				64, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-				&texture[0]);
-   
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-				   GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-				   GL_NEAREST);
-   
-   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-//   glEnable(GL_TEXTURE_2D);
-*/   
 }
 
 
@@ -177,8 +140,8 @@ void Landscape::makeHeightMaps()
 	 {
 		for (i = 0; i <= MAP3_WIDTH; i++)
 		  {
-			 *(temp++) = perl->perlinNoise_2D((float)(map3_x+i*MAP3_GRID_WIDTH)/100, 
-											  (float)(map3_y+j*MAP3_GRID_WIDTH)/100)*100;
+			 *(temp++) = perl->perlinNoise_2D((float)(map3_x+i*MAP3_GRID_WIDTH)/300, 
+											  (float)(map3_y+j*MAP3_GRID_WIDTH)/300)*200;
 		  } 
 	 }
    
@@ -194,8 +157,8 @@ void Landscape::makeHeightMaps()
 		
 		for (i = 1; i < MAP2_WIDTH; i++)
 		  {
-			 *(temp++) = perl->perlinNoise_2D((float)(map2_x+i*MAP2_GRID_WIDTH)/100, 
-											  (float)(map2_y+j*MAP2_GRID_WIDTH)/100)*100;
+			 *(temp++) = perl->perlinNoise_2D((float)(map2_x+i*MAP2_GRID_WIDTH)/300, 
+											  (float)(map2_y+j*MAP2_GRID_WIDTH)/300)*200;
 		  } 
 		
 		*(temp++) = getHeight( map2_x + MAP2_GRID_WIDTH*MAP2_WIDTH, map2_y + j*MAP2_GRID_WIDTH);
@@ -218,8 +181,8 @@ void Landscape::makeHeightMaps()
 		
 		for (i = 1; i < MAP1_WIDTH; i++)
 		  {
-			 *(temp++) = perl->perlinNoise_2D((float)(map1_x+i*MAP1_GRID_WIDTH)/100,
-											   (float)(map1_y+j*MAP1_GRID_WIDTH)/100)*100;
+			 *(temp++) = perl->perlinNoise_2D((float)(map1_x+i*MAP1_GRID_WIDTH)/300,
+											  (float)(map1_y+j*MAP1_GRID_WIDTH)/300)*200;
 		  }
 		
 		*(temp++) = getHeight( map1_x + MAP1_GRID_WIDTH*MAP1_WIDTH, map1_y + j*MAP1_GRID_WIDTH);
@@ -247,8 +210,8 @@ void Landscape::drawLandscape()
    glPushMatrix();
    
    /* Load camera matrix here            */
-   gluLookAt(0.0, -150.0, -50, 
-			 0.0, 100.0, -40, 0.0, 0.0, -1.0);   
+   gluLookAt(0.0, -500.0, -200, 
+			 0.0, 100.0, getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2), 0.0, 0.0, -1.0);   
 //   glTranslatef(0.0, -300.0, -200.0);
 //   glRotatef(135.0, 1.0, 0.0, 0.0);
    glRotatef(angle/2, 0.0, 0.0, 1.0);
@@ -266,7 +229,6 @@ void Landscape::drawLandscape()
    /* Draw terrain                       */
    /*  - Check for detail settings       */
    /*  - Cull map regions                */
-
    glCallList(listId_3);
 
    glPushMatrix();
@@ -276,7 +238,7 @@ void Landscape::drawLandscape()
 
    glPushMatrix();
 //   glTranslatef(0.0, 0.0, -500);
-   glCallList(listId_1);
+ glCallList(listId_1);
    glPopMatrix();
    
    /* Draw objects                       */
@@ -924,7 +886,8 @@ void Landscape::makeMap_1()
    /* Generate new list ID */
    listId_1 = glGenLists(1);
    glNewList(listId_1, GL_COMPILE);
-//   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+   
    
    for (int j=0;j<MAP1_WIDTH;j++)
 	 {
@@ -939,7 +902,7 @@ void Landscape::makeMap_1()
 		  }
 		glEnd();
 	 }
-
+   
    glEndList();
    
    glDisableClientState(GL_VERTEX_ARRAY);
@@ -964,8 +927,8 @@ void Landscape::makeMap_2()
    /* Generate new list ID */
    listId_2 = glGenLists(1);
    glNewList(listId_2, GL_COMPILE);
-   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+   
    int j, i;
    
    for (j=0;j<(MAP2_WIDTH/2 - MAP2_GAP/2);j++)
@@ -1021,7 +984,6 @@ void Landscape::makeMap_2()
 		  }
 		glEnd();
 	 }
-   
    glEndList();
    
    glDisableClientState(GL_VERTEX_ARRAY);
@@ -1046,8 +1008,8 @@ void Landscape::makeMap_3()
    /* Generate new list ID */
    listId_3 = glGenLists(1);
    glNewList(listId_3, GL_COMPILE);
-//   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-
+   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+   
    int i, j;
 
    for (j=0;j<(MAP3_WIDTH/2 - MAP3_GAP/2);j++)

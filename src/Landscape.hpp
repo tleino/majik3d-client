@@ -17,6 +17,9 @@ class Landscape
    void addObject(int);
    void removeObject(int);
    float getHeight(int, int);
+   void shiftLandscape_1(int, char *);
+   void shiftLandscape_2(int, char *);
+   void shiftLandscape_3(int, char *);
  public:
    unsigned long detail;
    char *map_1;   /* Terrains for map parts                          */
@@ -66,13 +69,9 @@ class Landscape
    int listId_3;
    int listId_4;
    
-   
-   
-   
  public:
    float angle;
- private:
-   GLubyte *texture;
+
 };
 
 #endif

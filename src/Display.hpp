@@ -1,6 +1,7 @@
 #ifndef __DISPLAY_H__
 #define __DISPLAY_H__
 
+#include "Cursor.hpp"
 #include "Majik.hpp"
 
 class Display
@@ -11,11 +12,13 @@ class Display
    ~Display();
    void openScreen();
    void closeScreen();
-   void updateScreen();
+   static void updateScreen();
+//   static void mouseFun(int, int, int, int);
  private:
-   void idle();
+   static void idle();
  public: 
    int width, height, bpp;
+   Cursor *cursor;
 };
    
 #endif

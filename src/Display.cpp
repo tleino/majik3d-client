@@ -4,9 +4,11 @@
 
 Display::Display()
 {
-   width = 640;
-   height = 480;
+   width = 800;
+   height = 600;
    bpp = 32;
+
+   cursor = new Cursor;
    
    #ifdef DEBUG
 	 debug->put("Display constructor");
@@ -48,8 +50,9 @@ Display::openScreen()
    glutInitWindowPosition(0, 0);
    glutCreateWindow("majik");
    glutDisplayFunc(updateScreen);
-   glutKeyboardFunc(keyboard->keyDown);
-   glutSpecialFunc(keyboard->specialDown);
+   glutKeyboardFunc(input->keyDown);
+   glutSpecialFunc(input->specialDown);
+   glutPassiveMotionFunc(input->mousePassiveMotion);
    glutIdleFunc(idle);
    
    #ifdef DEBUG
@@ -72,7 +75,7 @@ Display::closeScreen()
 void
 Display::idle()
 {
-   landscape->angle += 2.0;
+//   landscape->angle += 2.0;
    glutPostRedisplay();
 }
 

@@ -16,18 +16,19 @@
 #include "Config.hpp"
 #include "Error.hpp"
 #include "Debug.hpp"
-#include "Keyboard.hpp"
+#include "Input.hpp"
 #include "Matrix.hpp"
 #include "P3D.hpp"
 #include "Perlin.hpp"
 #include "Landscape.hpp"
+#include "Cursor.hpp"
 
 extern Error *error;
 extern Debug *debug;
 extern Display *display;
 extern Socket *sock;
 extern Landscape *landscape;
-extern Keyboard *keyboard;
+extern Input *input;
 extern bool quit;
 
 #endif
