@@ -82,6 +82,8 @@ Config::parseOption(char *option, char *value)
 	 {
 		if (atoi(value) == 1) {
 		   menu->noMousetrapCB(NULL);
+		} else {
+		   menu->mousetrapCB(NULL);
 		}
 	 }
    if (strcmp(option, "nomouse") == 0)

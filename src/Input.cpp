@@ -61,19 +61,8 @@ Input::keyDown(unsigned char k, int x, int y)
    puKeyboard (k, PU_DOWN);
    
    static int wireframe = 0;
-      
-   if ( k == 'w' )
-	 {
-		wireframe = ! wireframe ;
-		
-		glPolygonMode ( GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL ) ;
-	 }
-   
-   if ( k == 0x03 || k == 'x' )
-	 exit ( 0 ) ;
-   
-   switch (k) {
-	case '\t':
+         
+   if (k == '\t') {
 	  if (display->inp->isVisible()) {
 		 display->inp->rejectInput();
 		 display->inp->hide();
@@ -83,61 +72,70 @@ Input::keyDown(unsigned char k, int x, int y)
 		 display->inp->setCursor(0);
 		 display->inp->acceptInput();
 	  }
-	  break;
-	case '8':
-	  
-	  tuxi->ob_pos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  tuxi->ob_pos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  sock->writePacket(debug->string("50 %d %d %d",
-									  (int) tuxi->ob_pos.xyz[0],
-									  (int) tuxi->ob_pos.xyz[1],
-									  (int) tuxi->ob_pos.hpr[0]));
-	  
-	  tuxi->movecounter++;
-	  break;
-	case '2':
-	  tuxi->ob_pos.xyz[0] += sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  tuxi->ob_pos.xyz[1] -= cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  sock->writePacket(debug->string("50 %d %d %d",
-									  (int) tuxi->ob_pos.xyz[0],
-									  (int) tuxi->ob_pos.xyz[1],
-									  (int) tuxi->ob_pos.hpr[0]));
-	  
-	  tuxi->movecounter++;
-	  break;
-	case '6':
-	  tuxi->ob_pos.hpr[0] -= 5.0f;
-	  sock->writePacket(debug->string("50 %d %d %d",
-									  (int) tuxi->ob_pos.xyz[0],
-									  (int) tuxi->ob_pos.xyz[1],
-									  (int) tuxi->ob_pos.hpr[0]));
-	  tuxi->movecounter++;
-	  break;
-	case '4':
-	  tuxi->ob_pos.hpr[0] += 5.0f;
-	  sock->writePacket(debug->string("50 %d %d %d",
-									  (int) tuxi->ob_pos.xyz[0],
-									  (int) tuxi->ob_pos.xyz[1],
-									  (int) tuxi->ob_pos.hpr[0]));
-	  tuxi->movecounter++;
-	  break;
-	case '+':
-	  display->pitch += 1.0f;
-	  if (display->pitch > 75.0f)
-		display->pitch = 75.0f;
-	  break;
-	case '-':
-	  display->pitch -= 1.0f;
-	  if (display->pitch < -75.0f)
-		display->pitch = -75.0f;
-	  break;
-	default:
-//	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)", k, x, y);
-//	  exit(0);
-	  break;
+   } else if (!display->inp->isVisible()) {
+	  switch (k) {
+	   case 'w':
+		 wireframe = ! wireframe ;		 
+		 glPolygonMode ( GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL ) ;
+		 break;
+	   case 0x03:
+	   case 'x':
+		 exit ( 0 ) ;
+		 break;
+	   case '8':
+		 
+		 tuxi->ob_pos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		 tuxi->ob_pos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		 sock->writePacket(debug->string("50 %d %d %d",
+										 (int) tuxi->ob_pos.xyz[0],
+										 (int) tuxi->ob_pos.xyz[1],
+										 (int) tuxi->ob_pos.hpr[0]));
+		 
+		 tuxi->movecounter++;
+		 break;
+	   case '2':
+		 tuxi->ob_pos.xyz[0] += sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		 tuxi->ob_pos.xyz[1] -= cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		 sock->writePacket(debug->string("50 %d %d %d",
+										 (int) tuxi->ob_pos.xyz[0],
+										 (int) tuxi->ob_pos.xyz[1],
+										 (int) tuxi->ob_pos.hpr[0]));
+		 
+		 tuxi->movecounter++;
+		 break;
+	   case '6':
+		 tuxi->ob_pos.hpr[0] -= 5.0f;
+		 sock->writePacket(debug->string("50 %d %d %d",
+										 (int) tuxi->ob_pos.xyz[0],
+										 (int) tuxi->ob_pos.xyz[1],
+										 (int) tuxi->ob_pos.hpr[0]));
+		 tuxi->movecounter++;
+		 break;
+	   case '4':
+		 tuxi->ob_pos.hpr[0] += 5.0f;
+		 sock->writePacket(debug->string("50 %d %d %d",
+										 (int) tuxi->ob_pos.xyz[0],
+										 (int) tuxi->ob_pos.xyz[1],
+										 (int) tuxi->ob_pos.hpr[0]));
+		 tuxi->movecounter++;
+		 break;
+	   case '+':
+		 display->pitch += 1.0f;
+		 if (display->pitch > 75.0f)
+		   display->pitch = 75.0f;
+		 break;
+	   case '-':
+		 display->pitch -= 1.0f;
+		 if (display->pitch < -75.0f)
+		   display->pitch = -75.0f;
+		 break;
+	   default:
+		 //	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)", k, x, y);
+		 //	  exit(0);
+		 break;
+	  }
    }
 }
-   
 
 void 
 Input::specialDown(int key, int x, int y)
