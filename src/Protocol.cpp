@@ -292,7 +292,7 @@ Protocol::parseCommand(char *input)
       if (b_add > 1.0f)
 	b_add = 1.0f;
       sgVec4 skycol ;
-      sgSetVec4 ( skycol, 0.0f+r_add, 0.0f+g_add, 0.0f+b_add, 1.0f ) ;
+      sgSetVec4 ( skycol, 0.1f+r_add, 0.1f+g_add, 0.1f+b_add, 1.0f ) ;
       glFogfv( GL_FOG_COLOR  , skycol    ) ;
       glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
       break;
