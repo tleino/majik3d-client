@@ -91,10 +91,15 @@ Scene::init()
   // FIXME: I want better sky, the dynamic one, please. :)
   // sky_dome = new ssgTransform ();
   sky_dome = new ssgTransform ();
-   sky_dome->setTransform(&crd, 100.0, 100.0, 100.0);
-  ssgBranch *entity = mc_sky->Draw();
+  // sky_dome->setTransform(&crd, 100.0, 100.0, 100.0);
+  ssgEntity *entity = mc_sky->Draw();
+  // ssgEntity *entity = ssgLoadAC("skydome.ac");
   sky_dome->addKid (entity);
+  ssgFlatten (entity);
+  //ssgStripify (sky_dome);
+  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
   scene_root->addKid (sky_dome);
+  printf ("kids: %d\n", sky_dome->getNumKids());
   // ssgEntity *entity = ssgLoadAC ("skydome.ac");
 
   landscape->init(scene_root);
@@ -282,8 +287,16 @@ Scene::update()
        campos.hpr[1] = tuxi->getRadius() + display->pitch - tuxi->getRadius() * 2.0f;
      }
    
+   sgCoord skypos;
+   sgCopyVec3 (skypos.xyz, campos.xyz);
+   skypos.hpr[0] = 0.0f;
+   skypos.hpr[1] = 90.0f;
+   skypos.hpr[2] = 0.0f;
+
    ssgSetCamera ( & campos ) ;
-   sky_dome->setTransform ( &campos, 100.0, 100.0, 100.0);
+   //sky_dome->setTransform ( &skypos, 100.0, 100.0, 100.0);
+   sky_dome->setTransform (&skypos);
+   //sky_dome->setTransform (&campos);
 }
 
 void

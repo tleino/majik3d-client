@@ -131,25 +131,32 @@ void mcSky::setSunPosition(float heading, float pitch)
  * Renders the sky to screen
  * */
 
-ssgBranch *mcSky::Draw()
+ssgEntity *mcSky::Draw()
 {
    int x, y, i, j, p = 0;
    SKYPOINT *v;
    
    if (!this->sky_ok)
-	 this->calculateSkyColors();
+     this->calculateSkyColors();
    
    ssgSimpleState *state = new ssgSimpleState;
    state->enable(GL_COLOR_MATERIAL);
    state->setShadeModel(GL_SMOOTH);
    state->disable(GL_CULL_FACE);
    state->setOpaque();
+   state->disable(GL_FOG);
+   //state->setShininess(0);
+   //state->setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
+   //state->setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ; 
    state->disable(GL_BLEND);
-   
-   ssgBranch *skydome = new ssgBranch;
+   state -> disable     ( GL_LIGHTING ) ;
+
+   ssgBranch *skydome = new ssgTransform;
    
    /* Draw top fan */
    
+   this->scolors = new sgVec4[(sky_height-3)*(sky_width*2)];
+   this->scoords = new sgVec3[(sky_height-3)*(sky_width*2)];  
    p = 0;
    v = &this->sky[0];
    sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
@@ -157,66 +164,75 @@ ssgBranch *mcSky::Draw()
    p++;
    
    for (x = 0; x < this->sky_width; x++, p++)
-	 {
-		v = &this->sky[x + 1];
-		sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-		sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]);
-	 }
+     {
+       v = &this->sky[x + 1];
+       sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
+       sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]);
+     }
    v = &this->sky[1];
    sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
    sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]);
    p++;
-	
+   
    ssgLeaf *topfan = new ssgVTable(GL_TRIANGLE_FAN,
-								   p, scoords,
-								   0, NULL,
-								   0, NULL,
-								   p, scolors);
+				   p, scoords,
+				   0, NULL,
+				   0, NULL,
+				   p, scolors);
    
    topfan->setState(state);
+   topfan->setCullFace(FALSE);
    skydome->addKid(topfan);									
-	
-	/* Draw horizontal strips */
-	
+   printf ("tris: %d face: %d \n", topfan->getNumTriangles(), topfan->getCullFace());
+
+   /* Draw horizontal strips */
+   
    
    for (y = 0; y < this->sky_height - 1; y++)
+     {
+       p = 0;
+       this->scolors = new sgVec4[(sky_height-3)*(sky_width*2)];
+       this->scoords = new sgVec3[(sky_height-3)*(sky_width*2)]; 
+       
+       v = &this->sky[y * this->sky_width + x + 1];
+       sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
+       sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]); 
+       p++;
+       
+       for (x = 0; x < this->sky_width; x++)
 	 {
-		p = 0;
-		v = &this->sky[y * this->sky_width + x + 1];
-		sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-		sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]); 
-		p++;
-		
-		for (x = 0; x < this->sky_width; x++)
-		  {
-			 v = &this->sky[(y + 1) * this->sky_width + x + 1];
-			 sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-			 sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]); 
-			 p++;
-			 
-			 v = &this->sky[y * this->sky_width + x + 1];
-			 sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-			 sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]); 
-			 p++;
-		  }	
+	   v = &this->sky[(y + 1) * this->sky_width + x + 1];
+	   sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
+	   sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]); 
+	   p++;
+	   
+	   v = &this->sky[y * this->sky_width + x + 1];
+	   sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
+	   sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]); 
+	   p++;
+	 }	
+       
+       v = &this->sky[(y + 1) * this->sky_width + 1];
+       sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
+       sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]);
+       p++;
+       
+       v = &this->sky[y * this->sky_width + 1];
+       sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
+       sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]); 
+       
+       for (int pla=0;pla<p;pla++)
+	 printf ("%f %f %f\n", scoords[pla][0], scoords[pla][1], scoords[pla][2]);
 
-		v = &this->sky[(y + 1) * this->sky_width + 1];
-	   	sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-		sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]);
-		p++;
-		
-		v = &this->sky[y * this->sky_width + 1];
-		sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-	   	sgSetVec3(scoords[p], v->xyz[0], v->xyz[1], v->xyz[2]); 
-		
-		ssgLeaf *hstrip = new ssgVTable(GL_TRIANGLE_STRIP,
-										p, scoords,
-										0, NULL,
-										0, NULL,
-										p, scolors);
-		hstrip->setState(state);
-		skydome->addKid(hstrip);
-	 }
+       ssgLeaf *hstrip = new ssgVTable(GL_TRIANGLE_STRIP,
+				       p+1, scoords,
+				       0, NULL,
+				       0, NULL,
+				       p+1, scolors);
+       hstrip->setState(state);
+       hstrip->setCullFace(FALSE);
+       skydome->addKid(hstrip);
+     }
    return skydome;
 }
 
@@ -418,9 +434,9 @@ void mcSky::createSphere(int x_segs, int y_segs)
 	    for (x = 0; x < x_segs; x++, v++)
 		{
 			phi = (float)x * 2.0 * M_PI / (float)x_segs;
-			this->sky[v].xyz[0] = sin(theta) * cos(phi);
-			this->sky[v].xyz[2] = sin(theta) * sin(phi);
-			this->sky[v].xyz[1] = cos(theta);
+			this->sky[v].xyz[0] = 6999.0f * sin(theta) * cos(phi);
+			this->sky[v].xyz[2] = 6999.0f * sin(theta) * sin(phi);
+			this->sky[v].xyz[1] = 6999.0f * cos(theta);
 			
 			this->sky[v].a_zenith = acos(sgScalarProductVec3(this->sky[v].xyz, this->zenith));
 		}

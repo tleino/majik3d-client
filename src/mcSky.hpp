@@ -80,7 +80,7 @@ class mcSky
    void    	setSunPosition(sgVec3 &v);
    void		setSunPosition(float heading, float elevation);
   
-   ssgBranch * Draw();
+   ssgEntity * Draw();
 };
 
 extern mcSky *mc_sky;

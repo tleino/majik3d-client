@@ -237,7 +237,7 @@ Input::mouseMotion(int x, int y)
   puMouse (x, y);
 
   float diff_x = (input->mouse_x - x) * (360.0f / (display->width / 2));
-  float diff_y = (input->mouse_y - y) * (75.0f / (display->height / 2));
+  float diff_y = (input->mouse_y - y) * (360.0f / (display->height / 2));
 
   if (tuxi != NULL && config->camera != 0)
     {
@@ -249,10 +249,10 @@ Input::mouseMotion(int x, int y)
 	temppos.hpr[0] = 0.0f;
       if (temppos.hpr[0] < 0.0f)
 	temppos.hpr[0] += 360.0f;
-      if (display->pitch > 75.0f) 
-	display->pitch = 75.0f; 
-      if (display->pitch < -75.0f) 
-	display->pitch = -75.0f; 
+      if (display->pitch > 360.0f) 
+	display->pitch = 360.0f; 
+      if (display->pitch < -360.0f) 
+	display->pitch = -360.0f; 
       
       tuxi->setPos(temppos);
 
