@@ -357,14 +357,10 @@ Mapquad::resetBlocks()
 	 }
 	 else
 	 {
-		if (child1)
-			child1->resetBlocks();
-		if (child2)
-			child2->resetBlocks();
-		if (child3)
-			child3->resetBlocks();
-		if (child4)
-			child4->resetBlocks();
+		if (child1)	child1->resetBlocks();
+		if (child2)	child2->resetBlocks();
+		if (child3)	child3->resetBlocks();
+		if (child4)	child4->resetBlocks();
 	 }
 }
 
@@ -375,23 +371,15 @@ Mapquad::exchangeBorders()
 	 if (level == NUM_LEVELS - 1)
 	 {
 		 if (block)
-		 {
-			block->exchangeBorderVertices();
-		 }
-
+			 block->exchangeBorderVertices();
 	 }
 	 else
 	 {
-		if (child1)
-			child1->exchangeBorders();
-		if (child2)
-			child2->exchangeBorders();
-		if (child3)
-			child3->exchangeBorders();
-		if (child4)
-			child4->exchangeBorders();
+		if (child1) child1->exchangeBorders();
+		if (child2) child2->exchangeBorders();
+		if (child3) child3->exchangeBorders();
+		if (child4) child4->exchangeBorders();
 	 }
-
 }
 
 void
@@ -470,9 +458,9 @@ Mapquad::selectLOD(int level, int x, int y)
 				state -> setOpaque () ;
 				state -> disable ( GL_BLEND ) ;
 
-				block->setState(state);
+//				block->setState(state);
 //				block->setTraversalMaskBits ( SSGTRAV_CULL );
-				lod_switch->addKid ( block );
+//				lod_switch->addKid ( block );
 				trans->addKid ( lod_switch );
 				scene->getLandscape()->getTerrain()->addKid ( trans );
 			}
@@ -522,15 +510,32 @@ Mapquad::selectLOD(int level, int x, int y)
 	 }
 	 else
 	 {
-		if (child1)
-			child1->selectLOD(level, x, y);
-		if (child2)
-			child2->selectLOD(level, x, y);
-		if (child3)
-			child3->selectLOD(level, x, y);
-		if (child4)
-			child4->selectLOD(level, x, y);
+		if (child1)	child1->selectLOD(level, x, y);
+		if (child2)	child2->selectLOD(level, x, y);
+		if (child3)	child3->selectLOD(level, x, y);
+		if (child4)	child4->selectLOD(level, x, y);
 	 }
+}
+
+void Mapquad::draw(sgVec3 tri)
+{
+	if (	!pointInTriangle(top_x,			top_y, tri)
+		&&	!pointInTriangle(top_x+mid_x*2, top_y, tri)
+		&&	!pointInTriangle(top_x+mid_x*2, top_y+mid_y*2, tri)
+		&&	!pointInTriangle(top_x,			top_y+mid_y*2, tri))
+		return;
+
+	if (m_level == MAX_LEVEL)
+	{
+		m_block->draw();
+	}
+	else
+	{
+		if(child1) child1->draw(center, radius);
+		if(child2) child2->draw(center, radius);
+		if(child3) child3->draw(center, radius);
+		if(child4) child4->draw(center, radius);
+	}
 }
 
 void
@@ -542,7 +547,7 @@ Mapquad::selectLOD(int lod)
 	if (!block)
 	{
 		block = new TerrainBlock (top_x, top_y );
-		lod_switch->addKid ( block );
+//		lod_switch->addKid ( block );
 		trans->addKid ( lod_switch );
 		scene->getLandscape()->getTerrain()->addKid ( trans );
 	}
@@ -574,7 +579,8 @@ Mapquad::selectLOD(int lod)
     {
       Mapquad *temp;
       temp = this;
-      
+
+  
       for (int i = 0; i < lod; i++)
 	temp = temp->parent;
       

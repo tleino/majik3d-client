@@ -50,29 +50,19 @@ public:
   Mapquad(Mapquad *parent, int level, int top_x, int top_y);
   ~Mapquad();
   
-  ///
   static Mapquad *root_map;
   
-  ///
   Mapquad *parent;
-  ///
   Mapquad *child1;
-  ///
   Mapquad *child2;
-  ///
   Mapquad *child3;
-  ///
   Mapquad *child4;
-  
-  ///
+
   Map_data submap1;
-  ///
   Map_data submap2;
-  ///
   Map_data submap3;
-  ///
   Map_data submap4;
-  
+
   ///
   ssgSelector  *lod_switch;
   
@@ -89,15 +79,11 @@ public:
   
   ///
   int level;
-  ///
    int top_x;
-  ///
   int top_y;
-  ///
   int mid_x;
-  ///
   int mid_y;
-  ///
+
   int reference_count;
   ///
   int map_requested;
@@ -111,15 +97,11 @@ public:
   void cleanUp ();
   ///
   Mapquad *getChild1();
-  ///
   Mapquad *getChild2();
-  ///
   Mapquad *getChild3();
-  ///
   Mapquad *getChild4();
-  ///
+
   Mapquad *getMapquad(int level, int x, int y);
-  ///
   Mapquad *tryMapquad(int level, int x, int y);
   ///
   char *getMap ();
@@ -128,6 +110,8 @@ public:
   ///
 //  void setSubMap (int, Map_data);
   ///
+  void draw(sgVec3, float);
+	// hello
   void resetBlocks();
   void triangulateBlocks();
   void exchangeBorders();
@@ -136,9 +120,8 @@ public:
   ///
 //  void divideMap(int, Map_data&, Map_data&, Map_data&, Map_data&, Map_data&);
   ///
-  void show();
-  ///
-  void hide();
+//  void show();
+  //void hide();
   ///
   bool isMapReceived();
   

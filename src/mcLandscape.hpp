@@ -53,6 +53,7 @@ public:
 private:
   ssgRoot			*scene_root;
   ssgTransform		*terrain;
+  ssgSimpleState	*m_terrainState;
 };
 
 #endif /* __LANDSCAPE_HPP__ */

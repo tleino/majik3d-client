@@ -43,14 +43,6 @@
 #include "mcTerrainHeightGen.hpp"
 #include "mcMapquad.hpp"
 
-#define TILE_SIZE                 512.0f      /* cubits */
-#define LAMBDA                    (TILE_SIZE/16.0f)
-#define TILE_GRID_SIZE            20          /* Even number please! */
-#define TRIANGLE_GRID_SIZE        16          /* Num vertices */
-#define ELEVATION_SCALE           4.0f
-#define ONLINE_TERRAIN_RANGE      ((float)(TILE_GRID_SIZE/2  )* TILE_SIZE )
-#define VISUAL_RANGE              ((float)(TILE_GRID_SIZE/2-1)* TILE_SIZE )
-
 
 double
 linearInterpolate(double a, double b, double c)
@@ -59,17 +51,10 @@ linearInterpolate(double a, double b, double c)
 }
 
 
-ssgSimpleState *state    = NULL ;
-
-ssgTransform   *tilegrid [ TILE_GRID_SIZE ][ TILE_GRID_SIZE ] ;
-
-
 Landscape::Landscape()
 {
-  terrain  = NULL ;
-  
+  terrain  = NULL ;  
   debug->put("Landscape constructor");
-  
 }
 
 Landscape::~Landscape()
@@ -84,7 +69,6 @@ Landscape::getHOT(float x, float y)const
 {
 	return 2000.0f * terraingen->getHeight(x/1280.0, y/1280.0);
 }
-
 
 float
 Landscape::getRealHOT(float x, float y)const
@@ -146,23 +130,23 @@ Landscape::init( ssgRoot *scene_root)
   assert ( scene_root );
 
   terrain  = new ssgTransform ;
-  state    = new ssgSimpleState ;
-  state -> enable     ( GL_TEXTURE_2D ) ;
-  state -> disable     ( GL_LIGHTING ) ;
+  m_terrainState    = new ssgSimpleState ;
+  m_terrainState -> enable     ( GL_TEXTURE_2D ) ;
+  m_terrainState -> disable     ( GL_LIGHTING ) ;
   
   if (config->testFlag(mcConfig::SMOOTH))
-    state -> setShadeModel ( GL_SMOOTH ) ;
+    m_terrainState -> setShadeModel ( GL_SMOOTH ) ;
   else
-    state -> setShadeModel ( GL_FLAT );
+    m_terrainState -> setShadeModel ( GL_FLAT );
   
-  state -> enable ( GL_COLOR_MATERIAL ) ;
-  state -> enable ( GL_CULL_FACE      ) ;
-  state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
-  state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
-  state -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
-  state -> setShininess ( 0 ) ;
-  state -> setOpaque () ;
-  state -> disable ( GL_BLEND ) ;
+  m_terrainState -> enable ( GL_COLOR_MATERIAL ) ;
+  m_terrainState -> enable ( GL_CULL_FACE      ) ;
+  m_terrainState -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
+  m_terrainState -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
+  m_terrainState -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
+  m_terrainState -> setShininess ( 0 ) ;
+  m_terrainState -> setOpaque () ;
+  m_terrainState -> disable ( GL_BLEND ) ;
   
   scene_root -> addKid ( terrain ) ;
   

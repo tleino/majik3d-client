@@ -15,7 +15,7 @@ typedef unsigned int DWORD;
 typedef unsigned short WORD;
 #endif
 
-class TerrainBlock : public ssgVTable
+class TerrainBlock
 {
 public:
 			TerrainBlock				(WORD x, WORD y);
@@ -24,6 +24,7 @@ public:
 	void	exchangeBorderVertices		();
 	void	triangulateBlock			();
 	void	collectVertices				(unsigned short, unsigned int);
+	void	draw						();
 
 private:
 
@@ -38,8 +39,8 @@ private:
 
 	struct vertex
 	{
-//		sgVec3 coord;
-//		sgVec2 UV;
+		sgVec3 coord;
+		sgVec2 UV;
 		Index left;
 		Index right;
 		bool marked;
@@ -221,7 +222,7 @@ private:
 
 	inline void addVertex		(Index i)
 	{
-		v_index[listCounter++] = i;
+		list[listCounter++] = i;
 	}
 
 	inline void swap ()
@@ -241,7 +242,7 @@ private:
 //	Index	list[(DIM+1)*(DIM+1)];
 
 private:
-	vertex	myVertices[(DIM+1)*(DIM+1)];
+	vertex	m_vertices[(DIM+1)*(DIM+1)];
 	Index	list[(DIM+1)*(DIM+1)*3];
 	Index	listCounter;
 	quadrant quadrants[4];
