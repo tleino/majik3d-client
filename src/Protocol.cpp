@@ -28,6 +28,7 @@
 #include "Error.hpp"
 #include "Mapquad.hpp"
 #include "Display.hpp"
+#include "Overlay.hpp"
 
 extern sgCoord tuxpos;
 extern Object *tuxi;
@@ -235,8 +236,8 @@ Protocol::parseCommand(char *input)
 	  Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(tmp);	  
 	  break;
 	case CMD_PROMPT:
-	  sscanf(data, "%d", &display->inp_command);
-	  display->inp->reveal(); ///The data written to the prompt is handled in
+	  sscanf(data, "%d", &overlay->inp_command);
+	  overlay->inp->reveal(); ///The data written to the prompt is handled in
 	                          ///the input object's callback function
    	  break;
 	case CMD_SUN_POS:

@@ -23,12 +23,12 @@
 #include "Menu.hpp"
 #include "Display.hpp"
 #include "Debug.hpp"
-//#include "Landscape.hpp"
 #include "Error.hpp"
 #include "Input.hpp"
 #include "Scene.hpp"
 #include "Socket.hpp"
 #include "Config.hpp"
+#include "Overlay.hpp"
 
 #include <fstream.h>
 
@@ -60,7 +60,7 @@ void
 Input::keyDown(unsigned char k, int x, int y)
 {
 
- if (tuxi == NULL && !display->inp->isVisible())
+ if (tuxi == NULL && !overlay->inp->isVisible())
 	 return;
    
    puKeyboard (k, PU_DOWN);
@@ -75,16 +75,16 @@ Input::keyDown(unsigned char k, int x, int y)
    }
          
    if (k == '\t') {
-	  if (display->inp->isVisible()) {
-		 display->inp->rejectInput();
-		 display->inp->hide();
+	  if (overlay->inp->isVisible()) {
+		 overlay->inp->rejectInput();
+		 overlay->inp->hide();
 	  }
 	  else {
-		 display->inp->reveal();
-		 display->inp->setCursor(0);
-		 display->inp->acceptInput();
+		 overlay->inp->reveal();
+		 overlay->inp->setCursor(0);
+		 overlay->inp->acceptInput();
 	  }
-   } else if (!display->inp->isVisible()) {
+   } else if (!overlay->inp->isVisible()) {
 	  switch (k) {
 	   case 'w':
 		 wireframe = ! wireframe ;		 

@@ -322,7 +322,7 @@ void
 Scene::draw()
 {
    if (!initialized)
-	 return:
+	 return;
 
    update();
    

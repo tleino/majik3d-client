@@ -41,7 +41,6 @@ class Display
    static void resizeScreen(int width, int height);
    ///
    static void mouseMotion(int x,int y);
-   puText *status_text;
  private:
    static void idle();
  public: 
@@ -59,10 +58,6 @@ class Display
    int state;
    ///
    float pitch;
-   ///
-   int inp_command;
-   ///
-   puInput *inp;
    ///
    float sun_x, sun_y, sun_z;
    char stxt[8192*3];

@@ -19,13 +19,20 @@
 #ifndef __OVERLAY_HPP__
 #define __OVERLAY_HPP__
 
+#include <pu.h>
+
 class Overlay
 {
  public:
    Overlay();
    ~Overlay();
    
-   draw();
+   void init();
+   void draw();
+   
+   puText *status_text;
+   puInput *inp;
+   int inp_command;
 };
 
 extern Overlay *overlay;

@@ -37,6 +37,7 @@
 #include "Socket.hpp"
 #include "Protocol.hpp"
 #include "Config.hpp"
+#include "Overlay.hpp"
 
 time_t t = time(NULL);
 int frames = 0;
@@ -60,43 +61,6 @@ double read_time_of_day ()
    return (double) tv . tv_sec + (double) tv . tv_usec / 1000000.0 ;
 #endif
 }
-
-void inputCB (puObject *o)
-{
-   char *val = NULL;
-   o->getValue (&val);
-   debug->put ("got val: %s", val);
-   if (strlen(val) < 3) {
-	  return;
-   }
-   
-   if (scene->initialized == 3) {
-	  sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
-	  glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
-	  
-	  scene->initialized = 4;
-	  sock->writePacket ("%d %s", display->inp_command, val);
-	  display->inp_command = CMD_SAY;
-	  o->setSize(display->width-5, 5+20);
-	  if (config->nomenu == 0)
-	    menu->menuBar->reveal();
-	  
-	  memset (display->stxt, 0, sizeof(display->stxt));
-	  display->status_text->setPosition(5, 10);
-   } else {
-   sock->writePacket ("%d %s", display->inp_command, val);
-   }
-   delete display->inp;
-   display->inp = new puInput ( 5, 5, display->width-5, 5+20 ) ;
-   display->inp->setLegend    ( "Legend" ) ;
-   display->inp->setValue (" ");
-   display->inp->setLabel ("");
-   display->inp->acceptInput  () ;
-   display->inp->setCursor ( 0 ) ;
-   display->inp->setCallback (inputCB);
-   display->inp->hide();
-}
-
 
 Display::Display()
 {
@@ -128,9 +92,6 @@ Display::Display(int w, int h, int b)
 Display::~Display()
 {
    closeScreen();
-
-   if (inp != NULL)
-	 delete inp;
    
    debug->put("Display destructor");
 }
@@ -171,32 +132,7 @@ Display::openScreen()
    ssgInit();
    // initMaterials();
    
-   /* PLIB: Picoscopic User Interface */
-   puInit();
-   if (config->nomouse != 1)
-	 puShowCursor();
-   
-   /* PLIB: Font Library */
-   // fntTexFont *fnt = new fntTexFont;
-   // fnt->load ("gfx/sorority.txf");
-   // puFont sorority (fnt, 12);
-   // puSetDefaultFonts (sorority, PUFONT_8_BY_13);
-   puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
-   puSetDefaultColourScheme (1.0, 1.0, 1.0, 0.6f);
-   
-   status_text = new puText (5, 10);
-   status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
-   
-   inp = new puInput ( 5, 5, width-5, 5+20 ) ;
-   inp->setLegend    ( "Legend" ) ;
-   inp->setValue ("");
-   inp->setLabel ("");
-   inp->acceptInput  () ;
-   inp->setCursor ( 0 ) ;
-   inp->setCallback (inputCB);
-   inp->hide();
-   
-   menu->init();
+   overlay->init();
    
    glEnable ( GL_DEPTH_TEST);
    
@@ -240,8 +176,8 @@ Display::updateScreen()
 		tmp = sock->readPacket();
 	 }
    
-   if (mousetrap)
-	 mousetrap();
+//   if (mousetrap)
+//	 mousetrap();
    
    scene->draw();  
    overlay->draw();
@@ -253,7 +189,7 @@ Display::resizeScreen(int w,int h)
    display->width = w;
    display->height = h;
    glViewport(0, 0, w, h);
-   display->inp->setSize(display->width-5, 5+20 ) ;
+   overlay->inp->setSize(display->width-5, 5+20 ) ;
    //glutPostRedisplay();
 
 }

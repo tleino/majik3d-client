@@ -23,6 +23,8 @@
     and thus maintaining consistency and possibly in future specifying
     debug levels and switching debug on/off runtime. */
 
+#include <stdio.h>
+
 class Debug
 {
  public:
