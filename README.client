@@ -21,5 +21,18 @@ you need to do this:
   # exit
   $ xhost -
 
+The keys working in the client:
+
+arrow up    = turn up
+arrow down  = turn down
+arrow left  = turn left
+arrow right = turn right
+page up     = zoom in
+page down   = zoom out
+home        = reset to the starting position
+,           = decrease light
+.           = increase light
+esc         = exit
+
 Please report problems to majik@majik.netti.fi or
                           majik-users@majik.netti.fi (preferable)
