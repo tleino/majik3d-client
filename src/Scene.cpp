@@ -44,18 +44,18 @@ keyboard ( unsigned char k, int, int )
    
    switch (k) {
 	case '8':
-	  tuxpos.xyz[1] += 1.0f;
+//	  tuxpos.xyz[1] += 1.0f;
 	  tuxpos.xyz[0] -= sin((tuxpos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
 	  tuxpos.xyz[1] += cos((tuxpos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  campos.xyz[0] += sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  campos.xyz[1] += cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+//	  campos.xyz[0] += sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+//	  campos.xyz[1] += cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
 	  break;
 	case '2':
-	  tuxpos.xyz[1] -= 1.0f;
+//	  tuxpos.xyz[1] -= 1.0f;
 	  tuxpos.xyz[0] += sin((tuxpos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
 	  tuxpos.xyz[1] -= cos((tuxpos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  campos.xyz[0] -= sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  campos.xyz[1] -= cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+//	  campos.xyz[0] -= sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+//	  campos.xyz[1] -= cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
 	  break;
 	case '6':
 	  tuxpos.hpr[0] -= 5.0f;
@@ -293,16 +293,12 @@ Scene::update()
    tuxpos . hpr [ 1 ] = 0.0f ;
    tuxpos . hpr [ 2 ] = 0.0f ;
    
-//   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
-//   sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
+   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
+   sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
 
-   campos . hpr [ 0 ] = tuxpos.hpr[0]-180.0f;
-   //campos . hpr [ 1 ] = -10.0f ;
-   campos . hpr [ 2 ] = 0.0f ;
-   //campos . xyz [ 0 ] += 1.0f ;
-   campos . xyz [ 1 ] = tuxpos.xyz[1]-30.0f ;
-   campos . xyz [ 2 ] = getHOT(campos.xyz[0], campos.xyz[1])+12.0f ;
-   //campos . hpr [1] = hot-getHOT(campos.xyz[0], campos.xyz[1]);
+   campos.xyz[0] += 10*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+   campos.xyz[1] += 10*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
+
    ssgSetCamera ( & campos ) ;
    penguin -> setTransform ( & tuxpos ) ;
    
