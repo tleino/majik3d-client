@@ -49,6 +49,12 @@ public:
   const Landscape*	getLandscape	()	{ return m_landscape; }
 		Player*		getPlayer		()	{ return m_player; }
 
+		void switchWireframe		()
+		{
+			m_wireframe = ! m_wireframe ;		 
+			glPolygonMode ( GL_FRONT_AND_BACK, m_wireframe ? GL_LINE : GL_FILL );
+		}
+
 private:
 	sgMat4         frustumi;
 	ssgRoot*	scene_root;
@@ -58,6 +64,7 @@ private:
 	Landscape*	m_landscape;
 	mcCamera*	m_camera;
 	Player*		m_player;
+		bool		m_wireframe;
 };
 
 extern Scene *scene; // PRRRRRRRRRR!!

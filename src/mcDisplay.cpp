@@ -139,8 +139,6 @@ bool mapFound = true;
 void
 Display::updateScreen()
 { 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
   char *tmp = sock->readPacket();
   
   while (tmp != NULL)

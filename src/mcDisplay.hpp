@@ -49,14 +49,6 @@ static	void	resizeScreen		(int width, int height);
 		int		getHeight			()		{ return m_height; }
 		int		getInitialWidth		()		{ return m_initialWidth; }
 		int		getInitialHeight	()		{ return m_initialHeight; }
-
-		void switchWireframe		()
-		{
-			m_wireframe = ! m_wireframe ;		 
-			glPolygonMode ( GL_FRONT_AND_BACK, m_wireframe ? GL_LINE : GL_FILL );
-		}
-
-
 private:
 
 static	void	idle			();

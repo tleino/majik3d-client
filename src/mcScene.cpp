@@ -379,6 +379,12 @@ Scene::drawText(Object *o, sgVec3 object_pos)
 void
 Scene::draw()
 {
+	// Clear screen if necessary
+	if (m_wireframe)
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	else
+		glClear(GL_DEPTH_BUFFER_BIT);
+  
 	if (!m_player->initialized())
 		return; // We do not exist yet and thus no draw() needed.
   
@@ -389,7 +395,7 @@ Scene::draw()
 	m_landscape->draw(m_camera);
 
 	ssgCullAndDraw ( scene_root );
-  
+
   // Overlay chat-strings, if any.
 	sgVec3 posit;
   

@@ -166,7 +166,7 @@ ssgEntity *mcSky::Draw()
    
    /* Draw horizontal strips */
       
-   for (y = 0; y < m_skyHeight - 1; y++)
+   for (y = 0; y < m_skyHeight+1; y++)
 	 {
 		p = 0;
 
@@ -303,23 +303,32 @@ void mcSky::calculateZenithValues()
 
 void mcSky::calculateSkyColors()
 {
-  int i;
-  float x, y, Y;
-  SKYPOINT *v = NULL;
+	int i;
+	float x, y, Y;
+	SKYPOINT *v = NULL, *prev = NULL;
 	
-  for (i = 0; i < m_cSkyPoints; i++)
+	for (i = 0; i < m_skyHeight * m_skyWidth; i++)
     {
-      v = &m_sky[i];
+		v = &m_sky[i];
 
-      Y = m_zenithY * perez(m_perez_Y, v->a_zenith, v->a_sun, m_aSunZenith);
-      x = m_zenithx * perez(m_perez_x, v->a_zenith, v->a_sun, m_aSunZenith);
-      y = m_zenithy * perez(m_perez_y, v->a_zenith, v->a_sun, m_aSunZenith);
+		Y = m_zenithY * perez(m_perez_Y, v->a_zenith, v->a_sun, m_aSunZenith);
+		x = m_zenithx * perez(m_perez_x, v->a_zenith, v->a_sun, m_aSunZenith);
+		y = m_zenithy * perez(m_perez_y, v->a_zenith, v->a_sun, m_aSunZenith);
 	
-      Y *= m_luminancefactor;
-      xyYtoRGB(v, x, y, Y);
+		Y *= m_luminancefactor;
+		xyYtoRGB(v, x, y, Y);
     }
+
+	for (i = m_skyHeight * m_skyWidth; i < (m_skyHeight + 1) * m_skyWidth; i++)
+	{
+		v = &m_sky[i];
+		prev = &m_sky[i-m_skyWidth];
+		v->r = prev->r;
+		v->g = prev->g;
+		v->b = prev->b;
+	}
 	
-  m_skyOk = true;
+	m_skyOk = true;
 }
 
 
@@ -339,83 +348,103 @@ void mcSky::calculateSkyColors()
 
 void mcSky::createSphere(int x_segs, int y_segs)
 {
-   int x, y, v;
-   float theta, phi;
+	int x, y, v;
+    float theta, phi;
    
-   if (m_sky != NULL)
-	 delete m_sky;
+    if (m_sky != NULL)
+		delete m_sky;
    
-   if (x_segs * y_segs <= 0)
-	 return;
+    if (x_segs * y_segs <= 0)
+		return;
    
-   m_cSkyPoints = 1 + x_segs * y_segs;
-   m_skyWidth = x_segs;
-   m_skyHeight = y_segs;
+    m_cSkyPoints = 1 + x_segs * (y_segs + 1);
+    m_skyWidth = x_segs;
+    m_skyHeight = y_segs;
 
-   // Allocate space
-   m_sky = new SKYPOINT[m_cSkyPoints];
-   m_scolors.resize(y_segs+1);
-   for (y = 0; y <= y_segs; y++)
+    // Allocate space
+    m_sky = new SKYPOINT[m_cSkyPoints];
+    m_scolors.resize(y_segs+2);		// segments + top and bottom
+    for (y = 0; y < y_segs+2; y++)
 		m_scolors[y] = new sgVec4[m_skyWidth * 2 + 2];
 
-   m_scoords.resize(y_segs+1);
-   for (y = 0; y <= y_segs; y++)
+    m_scoords.resize(y_segs+2);
+    for (y = 0; y < y_segs+2; y++)
 		m_scoords[y] = new sgVec3[m_skyWidth * 2 + 2];
 
-   m_strips.resize(y_segs+1);
-   m_skydome = new ssgTransform;
+    m_strips.resize(y_segs+2);
+    m_skydome = new ssgTransform;
 
-   m_state = new ssgSimpleState;
-   m_state->enable(GL_COLOR_MATERIAL);
-   if (config->testFlag(mcConfig::SMOOTH))
-     m_state->setShadeModel (GL_SMOOTH);
-   else
-     m_state->setShadeModel (GL_FLAT);
-   m_state->enable(GL_CULL_FACE);
-   m_state->disable(GL_TEXTURE_2D);
-   m_state->setOpaque();
-   m_state->disable(GL_FOG);
-   m_state->disable(GL_BLEND);
-   m_state->disable(GL_LIGHTING);
+    m_state = new ssgSimpleState;
+    m_state->enable(GL_COLOR_MATERIAL);
+    if (config->testFlag(mcConfig::SMOOTH))
+		m_state->setShadeModel (GL_SMOOTH);
+    else
+		m_state->setShadeModel (GL_FLAT);
+	m_state->enable(GL_CULL_FACE);
+	m_state->disable(GL_TEXTURE_2D);
+	m_state->setOpaque();
+	m_state->disable(GL_FOG);
+	m_state->disable(GL_BLEND);
+	m_state->disable(GL_LIGHTING);
    
 	// Initialize
-   v = 0;
-   sgSetVec3(m_sky[v].xyz, 0.0f, 1.0f, 0.0f);
+	v = 0;
+	sgSetVec3(m_sky[v].xyz, 0.0f, 1.0f, 0.0f);
 
-   m_sky[v].a_zenith = 0.0f;		// Angle to zenith is 0 because we're at zenith
-   m_strips[0] = new ssgVTable(GL_TRIANGLE_FAN,
+	m_sky[v].a_zenith = 0.0f;		// Angle to zenith is 0 because we're at zenith
+	m_strips[0] = new ssgVTable(GL_TRIANGLE_FAN,
 								x_segs + 2, m_scoords[0],
 								0, NULL,
 								0, NULL,
 								x_segs + 2, m_scolors[0]);
-   m_strips[0]->setState(m_state);
-   m_strips[0]->setCullFace(TRUE);
-   m_skydome->addKid(m_strips[0]);
+	m_strips[0]->setState(m_state);
+	m_strips[0]->setCullFace(TRUE);
+	m_skydome->addKid(m_strips[0]);
 
-   v++;
+	v++;
 
-   for (y = 1; y <= y_segs; y++)
-   {
-	   m_strips[y] = new ssgVTable(GL_TRIANGLE_STRIP,
+	for (y = 1; y <= y_segs; y++)
+	{
+		m_strips[y] = new ssgVTable(GL_TRIANGLE_STRIP,
 									x_segs * 2 + 2, m_scoords[y],
 									0, NULL,
 									0, NULL,
 									x_segs * 2 + 2, m_scolors[y]);
-	   m_strips[y]->setState(m_state);
-	   m_strips[y]->setCullFace(TRUE);
-	   m_skydome->addKid(m_strips[y]);
+	    m_strips[y]->setState(m_state);
+	    m_strips[y]->setCullFace(TRUE);
+	    m_skydome->addKid(m_strips[y]);
 									
-	   theta = (float)y * M_PI * 0.5f / (float)y_segs;
-	   for (x = 0; x < x_segs; x++, v++)
-		 {
+		theta = 0.99f * (float)y * M_PI * 0.5f / (float)y_segs;
+		for (x = 0; x < x_segs; x++, v++)
+		{
 			phi = (float)x * 2.0f * M_PI / (float)x_segs;
 			sgSetVec3(m_sky[v].xyz,
 					  sinf(theta) * cosf(phi),
 					  cosf(theta),
 					  sinf(theta) * sinf(phi));
 			m_sky[v].a_zenith = acosf(sgScalarProductVec3(m_sky[v].xyz, m_zenith));
-		 }
-    }
+		}
+	}
+
+    m_strips[y_segs+1] = new ssgVTable(GL_TRIANGLE_STRIP,
+								x_segs * 2 + 2, m_scoords[y_segs+1],
+								0, NULL,
+								0, NULL,
+								x_segs * 2 + 2, m_scolors[y_segs+1]);
+	m_strips[y_segs+1]->setState(m_state);
+	m_strips[y_segs+1]->setCullFace(TRUE);
+	m_skydome->addKid(m_strips[y_segs+1]);
+								
+    theta = (float)SG_DEGREES_TO_RADIANS * 175.0;
+    for (x = 0; x < x_segs; x++, v++)
+	{
+		phi = (float)x * 2.0f * M_PI / (float)x_segs;
+		sgSetVec3(m_sky[v].xyz,
+				  sinf(theta) * cosf(phi),
+				  cosf(theta),
+				  sinf(theta) * sinf(phi));
+		m_sky[v].a_zenith = acosf(sgScalarProductVec3(m_sky[v].xyz, m_zenith));
+	}
 }
 
 

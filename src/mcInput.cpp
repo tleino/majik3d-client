@@ -117,7 +117,7 @@ Input::keyDown(unsigned char k, int x, int y)
 		switch (k)
 		{
 		case 'w':
-			display->switchWireframe();
+			scene->switchWireframe();
 			break;
 		case 0x03:
 
