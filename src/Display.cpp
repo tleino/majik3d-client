@@ -23,7 +23,8 @@
 
 puText *fps_text;
 puMenuBar *main_menu_bar;
-int flat;
+time_t t = time(NULL);
+int frames = 0;
 
 void exit_cb(puObject *);
 void flat_cb(puObject *);
@@ -149,7 +150,7 @@ Display::openScreen()
    puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
    puSetDefaultColourScheme (1.0, 1.0, 1.0, 0.6f);
    
-   fps_text = new puText (300, 10);
+   fps_text = new puText (5, 10);
    fps_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
    
    main_menu_bar = new puMenuBar();
@@ -196,6 +197,9 @@ Display::idle()
 void 
 Display::updateScreen()
 {
+   int t2 = (int) (time(NULL) - t);
+   frames++;
+   char fps[80];
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
    landscape->drawLandscape();
@@ -204,6 +208,8 @@ Display::updateScreen()
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
    glAlphaFunc(GL_GREATER,0.1f);
+   sprintf (fps, "fps: %f", (float) frames/t2);
+   fps_text->setLabel (fps);
    puDisplay();
 
    /* Display the cursor. FIXME: Should be displayed only if using hardware
