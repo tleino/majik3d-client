@@ -1,0 +1,103 @@
+Introduction
+------------
+
+Before trying this software make sure that you have browsed through the FAQ
+(http://www.majik3d.org/faq.html) and understand that the software is
+available only for testing -- playing the actual game is not yet possible.
+
+As the game is available for testing, we mean it too and expect you to give
+us your feedback and bug reports. It is also strongly recommended that you
+join the mailing lists and share your opinitions with the other users and
+help the new users when they have problems, or even join the development
+team if you feel like you have the potential to do so.
+
+If you find a bug that has not been answered in the FAQ do report it
+immediately to majik@majik3d.org or directly to majik-users mailing list (so
+the other users could see it too) and do not wait that someone else will do
+it, they may not. Also, if you have anything else to tell, just tell it!
+
+http://www.majik3d.org/archive.html is the address to join the mailing lists.
+It would be good to at least join the majik-announce so you will get
+announcements of new versions directly to your mailbox. You will not receive
+any other crap by joining -announce, except an occasional call for a
+convention.
+
+Installation
+------------
+
+If you have got a pre-compiled binary version of the game the installation
+should be fairly easy. You have already unpacked the archive, now you just
+have to execute the executable.
+
+Before you rush to see the client in action, you might want see if you
+can change something in the configuration file. This is a recommended
+step to do if you do not have or can't use 3D hardware acceleration. It is
+easy, just open the "majik3d.ini" ("majikrc" in the UNIX version) file and
+replace 1's with 0's if you want to disable some feature. For example by
+disabling textures and setting the screen size to 320x200 you can get a
+nice boost in the speed.
+
+After you are satisfied with the configuration file, you just have to open
+the "majik3d.exe" (UNIX users do "./majik") executable either by clicking
+its icon in the same folder as is this README file or alternatively type
+its name in your DOS box, shell or wherever and a new window should open,
+asking you to enter your name. If not, then you have a problem and should
+call for help, if you can't find the answer in the FAQ.
+
+The Windows version supports all the 3D hardware accelerators that are fully
+OpenGL-compliant. That means almost all accelerator cards should work, except
+perhaps the most popular ones: Voodoo 1 and 2. The Voodoo 3 works fine. The
+UNIX version does support even these if using Mesa compiled with glide
+support.
+
+For the UNIX versions make sure you have all the required libraries installed
+correctly. If you are unable to run the pre-compiled binary, please consult
+the next chapter and compile the sources by yourself.
+
+Compiling the sources
+---------------------
+
+You should be able to compile these sources on any platform supported by
+the Mesa 3D library (http://www.mesa3d.org) or OpenGL with minor or no
+changes, but these installation instructions apply only to the UNIX-like
+environments that include the GNU tools.
+
+  1. Make sure you have all the required libraries installed with their
+     development SDKs. You can get the libraries from here:
+
+       ftp://ftp.mesa3d.org/mesa/MesaLib-3.0.tar.gz
+       ftp://ftp.mesa3d.org/mesa/MesaDemos-3.0.tar.gz
+       http://www.woodsoup.org/projs/plib/dist/plib-1.0.20.tar.gz
+       http://reality.sgi.com/opengl/glut3/glut-3.7.tar.gz
+
+     You do not have to install Mesa if you have a real OpenGL support in 
+     your box (SGI for example) and you do not need to get glut-3.7.tar.gz
+     if you install MesaDemos-3.0.tar.gz because it includes the GLUT.
+
+  2. Compile the sources:
+
+     $ ./configure
+     $ make
+
+  3. Execute the binary as instructed in the previous chapter.
+
+Playing the game
+----------------
+
+As said above, you can't play the game yet. You can only walk around, talk
+to strangers and to run away from evil bugs who are trying to crash your
+client. You might however want to know how to even do that, look below:
+
+  8           = move forward         4           = turn left
+  6           = turn right           2           = move backward
+  x           = exit                 w           = wireframe mode
+  <insert>    = hide/reveal menu bar <tab>       = open a prompt to talk
+  <f1>        = 3rd person           <f2>        = 1st person
+  <f12>       = take a "screenshot"  +           = look up (1st person only)
+  -           = look down (1st person only)
+
+That's all folks.
+
+-- 
+Tommi Leino / Majik 3D project
+namhas@majik3d.org http://www.majik3d.org
