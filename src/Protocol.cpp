@@ -187,9 +187,9 @@ Protocol::parseCommand(char *input)
 			 {
 				cout << data << endl;
 				ob->puhe->hide();
+				break;
 			 }
-		   else
-			 ob = ob->next;
+		   ob = ob->next;
 		}
 	  break;
 	case CMD_ADD_OBJECT:

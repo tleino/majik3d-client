@@ -44,7 +44,7 @@ Config::parseOption(char *option, char *value)
 {   
    if(strcmp(option, "server") == 0)
 	 {
-		server_ip = new char [strlen(value)];
+		server_ip = new char [strlen(value)+1];
 		strcpy(server_ip, value);
 		return;
 	 }
