@@ -5,7 +5,7 @@ mcError.cpp mcError.hpp mcInput.cpp mcInput.hpp mcLandscape.cpp \
 mcLandscape.hpp mcObject.cpp mcObject.hpp mcProtocol.cpp mcProtocol.hpp \
 mcSocket.cpp mcSocket.hpp mcPerlin.cpp mcPerlin.hpp mcMenu.cpp mcMenu.hpp \
 mcScene.cpp mcMapquad.hpp mcMapquad.cpp mcScene.hpp mcOverlay.cpp \
-mcOverlay.hpp main.cpp
+mcOverlay.hpp mcSky.cpp mcSky.hpp main.cpp
 INCLUDES=-I/usr/local/plib/include
 CFLAGS=-pg
 CLEANFILES = *.debug *~

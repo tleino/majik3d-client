@@ -161,8 +161,8 @@ mcSky::Draw()
 
   ssgLeaf *topfan = new ssgVTable (GL_TRIANGLE_FAN,
 				   2*ntris, scoords,
-				   2*ntris, NULL,
-				   2*ntris, NULL,
+				   0, NULL,
+				   0, NULL,
 				   2*ntris, scolors
 				   );
 
@@ -207,8 +207,8 @@ mcSky::Draw()
 
   ssgLeaf *hstrip = new ssgVTable (GL_TRIANGLE_STRIP,
 				   2*ntris, scoords,
-				   2*ntris, NULL,
-				   2*ntris, NULL,
+				   0, NULL,
+				   0, NULL,
 				   2*ntris, scolors
 				   );
   
