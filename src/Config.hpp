@@ -24,7 +24,7 @@ class Config
  public:
    Config();
    ~Config();
-   void readOptions(char *);
+   bool readOptions(char *);
  private:
    void parseLine(char *, int);
    void parseOption(char *, char *);

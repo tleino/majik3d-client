@@ -39,7 +39,7 @@ void
 main(int argc, char **argv)
 {
    int c;
-
+      
    // Initialize the necessary global variables as proper objects
    error = new Error;
    debug = new Debug;
@@ -52,8 +52,11 @@ main(int argc, char **argv)
    glutInit(&argc, argv);
    
    // Read majikrc
-   config->readOptions("majikrc");
-   
+   if(config->readOptions("~/.majikrc") == false)
+	 if(config->readOptions("/etc/majikrc") == false)
+	   if(config->readOptions("majikrc") == false)
+		 error->put(ERROR_WARNING, "No majikrc file found.");
+     
    // Read the command line arguments 
    while(1)
 	 {
@@ -62,13 +65,16 @@ main(int argc, char **argv)
 		
 		static struct option long_options[] = {
 			 { "version", 0, 0, 'V' },
-			 { "help", 0, 0, 'h' },
+			 { "help", 0, 0, '?' },
 			 { "host", 0, 0, 'H' },
 			 { "port", 0, 0, 'p' },
+		     { "width", 0, 0, 'w' },
+		     { "height", 0, 0, 'h' },
+		     { "bpp", 0, 0, 'b' },
 			 { 0, 0, 0, 0 },
 		};
 		
-		c = getopt_long(argc, argv, "hVH:p:", long_options, &option_index);
+		c = getopt_long(argc, argv, "?VH:p:w:h:b:", long_options, &option_index);
 		if(c == -1)
 		  break;
 		
@@ -78,14 +84,27 @@ main(int argc, char **argv)
 			 printf("%s-%s.%s\n", PACKAGE, VERSION, CPU_VENDOR_OS);
 			 exit(0);
 		   case 'H':
-			 printf ("HOST = %s\n", optarg);
+			 printf("HOST = %s\n", optarg);
+			 strcpy(config->server_ip, optarg); 
 			 break;
 		   case 'p':
-			 printf ("PORT = %s\n", optarg);
+			 printf("PORT = %s\n", optarg);
+			 config->server_port = atoi(optarg);
+			 break;
+		   case 'w':
+			 printf("WIDTH = %s\n", optarg);
+			 config->screen_width = atoi(optarg);
+			 break;
+		   case 'h':
+			 printf("HEIGHT = %s\n", optarg);
+			 config->screen_height = atoi(optarg);
+			 break;
+		   case 'b':
+			 printf("BPP = %s\n", optarg);
+			 config->bpp = atoi(optarg);
 			 break;
 		   case '?':
-		   case 'h':
-			 printf("Usage: %s [option(s)]\n\n  -V, --version  display version information\n  -h, --help     display this text\n", argv[0]);
+			 printf("Usage: %s [option(s)]\n\n  -V, --version  display version information\n  -?, --help  display this text\n", argv[0]);
 			 exit(0);
 		  }
 	 }

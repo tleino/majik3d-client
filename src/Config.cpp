@@ -50,10 +50,9 @@ Config::parseOption(char *option, char *value)
    
    if(strcmp(option, "server") == 0)
 	 {
-		debug->put("Ja valuehan oli: %s", value);
 		if(sscanf(value, "%*d.%*d.%*d.%*d") == 4)
 		  {
-			 server_ip = new char[16];
+			 server_ip = new char [16];
 			 strcpy(&server_ip[0], &value[0]);
 		  }
 		else
@@ -102,7 +101,7 @@ Config::parseLine(char *strbuf, int line)
    memset(&option[0], 0, 32);
    memset(&value[0], 0, 128);
    
-   // This works also with '      option = value' lines
+   // This works also with '      option=value' lines
    ostart = 0;
    while(strbuf[ostart] == ' ')
 	 ostart++;
@@ -142,31 +141,29 @@ Config::parseLine(char *strbuf, int line)
    
    memcpy(&value[0], &strbuf[vstart], vend - vstart);
    
-   debug->put("option: '%s' = '%s'\n", option, value);
+   #ifdef DEBUG
+	 debug->put("option: '%s' = '%s'\n", option, value);
+   #endif
    parseOption(&option[0], &value[0]);
 }
 
-void
+bool
 Config::readOptions(char *filename)
 {
    FILE *fp;
    char *strbuf;
-   char *homedir;
    char file[80];
    int line;
    
    if(filename[0] == '~' && filename[1] == '/')
 	 {
-		homedir = getenv("HOME");
-		sprintf(file, "%s/%s", homedir, filename);
+		sprintf(file, "%s/%s", getenv("HOME"), ".majikrc");
 	 }
-   
-   sprintf(file, "%s", filename);
-   
+      
    fp = fopen(file, "r");
    if(fp == NULL)
 	 {
-		return;
+		return false;
 	 }
    
    strbuf = new char [128+32];
@@ -182,4 +179,5 @@ Config::readOptions(char *filename)
 		parseLine(strbuf, line);
 	 }
    delete strbuf;
+   return true;
 }
