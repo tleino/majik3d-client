@@ -173,14 +173,18 @@ Protocol::parseCommand(char *input)
 	  
 	  break;
 	case CMD_SAY:
-	  sscanf(data, "%d", &id);
+	  char name[80];
+	  char str[80];
+
+	  sscanf(data, "%d %s %[^\n]", &id, name, str);
+	  debug->put ("id=%d name=%s str=%s", id, name, str);
 	  
 	  ob = Object::first;
 	  
 	  while (ob != NULL) {
 		 if (ob->getID() == id) {
-			debug->put(data);
-			ob->setSayString(debug->string("%s", data));
+			debug->put(str);
+			ob->setSayString(debug->string("%s: %s", name, str));
 			ob->revealSayString();
 			break;
 		 }
@@ -196,7 +200,6 @@ Protocol::parseCommand(char *input)
 		{
 		   if(ob->getID() == id)
 			 {
-				cout << data << endl;
 				ob->hideSayString();
 				break;
 			 }

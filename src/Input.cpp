@@ -84,7 +84,7 @@ Input::keyDown(unsigned char k, int x, int y)
 		 overlay->inp->setCursor(0);
 		 overlay->inp->acceptInput();
 	  }
-   } else //if (!overlay->inp->isVisible()) 
+   } else if (!overlay->inp->isVisible()) 
 	 {
 
 		switch (k) {

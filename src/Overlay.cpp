@@ -39,7 +39,7 @@ void inputCB (puObject *o)
    }
    
    sock->writePacket ("%d %s", overlay->inp_command, val);
-   overlay->inp->setValue (" "); // PLIB FIXME: Segfault if set to "" !!
+   overlay->inp->setValue ("");
    overlay->inp->setLabel ("");
    overlay->inp->acceptInput  () ;
    overlay->inp->setCursor ( 0 ) ;
