@@ -39,7 +39,8 @@ void
 Protocol::parseCommand(char *input)
 {
    int command;
-   int found, id, x, y, h;
+   int found, id;
+   float x, y, h;
    Object *ob = NULL;
    char file_name[80], data[1024];
    
@@ -52,7 +53,7 @@ Protocol::parseCommand(char *input)
 
    switch (command) {
 	case 50:
-	  if (sscanf(data, "%d %d %d %d", &id, &x, &y, &h) < 4) {
+	  if (sscanf(data, "%d %f %f %f", &id, &x, &y, &h) < 4) {
 		 cout << "ERROR: invalid parameters to 50" << endl;
 		 break;
 	  }
@@ -72,6 +73,7 @@ Protocol::parseCommand(char *input)
 			
 			found = 1;
 			ob->movecounter++;
+			ob->lock = 0;
 			break;
 		 }
 			 
@@ -128,7 +130,7 @@ Protocol::parseCommand(char *input)
 	  break;
 	  
 	case 55:
-	  if (sscanf(data, "%d %d %d %d %s", &id, &x, &y, &h, file_name) != 5) {
+	  if (sscanf(data, "%d %f %f %f %s", &id, &x, &y, &h, file_name) != 5) {
 		 cout << "ERROR: Invalid parameters to 55" << endl;
 		 break;
 	  }

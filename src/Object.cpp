@@ -44,6 +44,7 @@ Object::Object()
 	 printf("Object parent: %d\n", prev->id);
    
    DEBUG (debug->string("Object constructor"));
+   lock = 0;
 }
 
 Object::~Object()

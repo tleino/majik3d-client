@@ -44,6 +44,7 @@ class Object
    char file_name[80];
    int movecounter;
    int id;
+   int lock;
    Object *prev;
    Object *next;
    static Object *last;
