@@ -52,7 +52,7 @@ Socket::Socket()
 
 Socket::Socket(char *addr, int nport)
 {
-   ip = new char[strlen(addr)];
+   ip = new char[strlen(addr)+1];
    strcpy(ip, addr);
    port = nport;
    DEBUG (debug->string("Socket constructor: ip=%s port=%d", ip, port));
@@ -86,7 +86,7 @@ Socket::connectServer()
    if(inet_addr(ip) == INADDR_NONE) {
 		if((pHostEnt = gethostbyname(ip)) != NULL) {
 		   delete [] ip;
-		   ip = new char [3*4];
+		   ip = new char [15];
 		   sprintf(ip, "%d.%d.%d.%d",
 				   (unsigned char)pHostEnt->h_addr_list[0][0],
 				   (unsigned char)pHostEnt->h_addr_list[0][1],
