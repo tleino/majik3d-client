@@ -18,7 +18,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
+#ifdef WIN32
+# include <windows.h>
+# include <time.h>
+#else
+# include <sys/time.h>
+# include <unistd.h>
+#endif
 #include <pu.h>
 #include <ssg.h>
 
