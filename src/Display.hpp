@@ -13,7 +13,7 @@ class Display
    void closeScreen();
    void updateScreen();
  public: 
-   SDLMesaContext *ctx;
+   SDLMesaContext *sdlmesactx;
    int width, height, bpp;
 };
    

@@ -7,7 +7,8 @@ Display::Display()
    width = 640;
    height = 480;
    bpp = 32;
-   ctx = NULL;
+   sdlmesactx = NULL;
+   
    #ifdef DEBUG
 	 Debug("Display constructor");
    #endif
@@ -18,7 +19,8 @@ Display::Display(int w, int h, int b)
    width = w;
    height = h;
    bpp = b;
-   ctx = NULL;
+   sdlmesactx = NULL;
+   
    #ifdef DEBUG
 	 Debug("Display constructor: width=%d height=%d bpp=%d", width, height, bpp);
    #endif
@@ -37,6 +39,10 @@ void Display::openScreen()
    GLenum format;
    SDL_Surface *screen;
    
+   #ifdef DEBUG
+	 Debug("Opening screen...");
+   #endif
+   
    flags = SDL_SWSURFACE;
    flags |= SDL_FULLSCREEN;
    flags != SDL_ANYFORMAT;
@@ -45,17 +51,15 @@ void Display::openScreen()
 		flags |= SDL_HWPALETTE;
 	 }
    
-   #ifdef DEBUG
-	 Debug("Opening screen...");
-   #endif
    screen = SDL_SetVideoMode(width, height, bpp, flags);
    if(screen == NULL) 
 	 {
 		Error(ERROR_FATAL, "Unable to set video mode");
 	 }
    
-   ctx = new SDLMesaContext(screen);
-   ctx->makeCurrent();
+   sdlmesactx = new SDLMesaContext(screen);
+   sdlmesactx->makeCurrent();
+   
    #ifdef DEBUG
 	 Debug("Screen opened.");
    #endif
@@ -66,8 +70,10 @@ void Display::closeScreen()
    #ifdef DEBUG
 	 Debug("Closing screen...");
    #endif
-   if(ctx != NULL)
-	 delete ctx;
+	 
+   if(sdlmesactx != NULL)
+	 delete sdlmesactx;
+   
    #ifdef DEBUG
 	 Debug("Screen closed.");
    #endif
@@ -76,5 +82,5 @@ void Display::closeScreen()
 void Display::updateScreen()
 {
    landscape->drawLandscape();
-   SDL_Flip(ctx->surface);
+   SDL_Flip(sdlmesactx->surface);
 }

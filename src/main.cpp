@@ -87,6 +87,7 @@ main(int argc, char *argv[])
    delete sock;
    delete display;
    delete landscape;
+   delete keyboard;
    
    // Exit program
    exit(0);
