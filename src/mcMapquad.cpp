@@ -515,31 +515,33 @@ Mapquad::selectLOD(int level, int x, int y)
 //			block->triangulateBlock();
 
 			if (newBlock)
-				while (/*(rand() % 10)*/ 0)
+				while ((rand() % 10))
 				{
 					if (!kukkaModel)
-						kukkaModel = ssgLoadAC ("kukka.ac");
+						kukkaModel = ssgLoadAC ("firtreelod3.ac");
 
 					ssgTransform *kukka = new ssgTransform ();
 					sgCoord tmpPos;
 
-					tmpPos.xyz[0] = rand() % 512;
-					tmpPos.xyz[1] = rand() % 512;
-					tmpPos.xyz[2] = scene->getHOT(top_x+tmpPos.xyz[0], top_y+tmpPos.xyz[1]);
+					tmpPos.xyz[0] = top_x + rand() % 512;
+					tmpPos.xyz[1] = top_y + rand() % 512;
+					tmpPos.xyz[2] = scene->getLandscape()->getHOT(tmpPos.xyz[0], tmpPos.xyz[1]);
 					tmpPos.hpr[1] = 0.0f;
 					tmpPos.hpr[2] = 0.0f;
 
 					kukka->addKid (kukkaModel);
 					kukka->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
 
-					kukka->setTransform (&tmpPos);
+					kukka->setTransform (&tmpPos, 2.5f*2, 2.5f*2, 5.0f*2);
 
 					ssgRangeSelector *rangeSelect = new ssgRangeSelector();
 					rangeSelect->addKid(kukka);
-					float ranges[2] = { 0, 2000 };
+					float ranges[2] = { 0, 100000 };
 					rangeSelect->setRanges ( ranges, 2 );
 					
-					trans->addKid(rangeSelect);
+					scene->getLandscape()->getTerrain()->addKid(rangeSelect);
+					
+					
 				}
 		}
 		else if (block)
