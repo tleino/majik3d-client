@@ -9,4 +9,4 @@
 # Screen width, height and bits per pixel
 screen_width=640
 screen_height=480
-bpp=16
+bpp=32
