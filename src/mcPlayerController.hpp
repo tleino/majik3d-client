@@ -11,6 +11,8 @@
 
 #include "mcController.hpp"
 
+
+//not in use
 class Player;
 
 class mcPlayerController : public mcController  

@@ -511,6 +511,12 @@ void TerrainBlock::collectVertices(unsigned short l, unsigned int errMax)
 	}
 }
 
+void TerrainBlock::reset()
+{
+	for (int k =0;k<(DIM+1)*(DIM+1);k++)
+		myVertices[k].enabled = false;
+}
+
 void TerrainBlock::makeDeps(Index level, Index x, Index y, int segment, int dir)
 {
 	const Index d = DIM>>(level+1);

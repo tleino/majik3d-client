@@ -61,27 +61,19 @@ private:
 
 static	void	idle			();
 
-  ///
-  int m_bpp;
-  ///
-  int m_width;
-  ///
-  int m_height;
-  ///
-  int m_initialWidth;
-  ///
-  int m_initialHeight;
-  ///
-  int m_state;
-  ///
-  bool m_wireframe;
-
-  float m_pitch;
-  ///
-  float sun_x, sun_y, sun_z;
-  char stxt[8192*3];
-  
-  static bool sceneVisible;
+		int		m_bpp;
+		int		m_width;
+		int		m_height;
+		int		m_initialWidth;
+		int		m_initialHeight;
+		int		m_state;
+		bool	m_wireframe;
+		float	m_pitch;
+		
+		float	sun_x, sun_y, sun_z;
+		char	stxt[8192*3]; // mikas se taa on?
+		
+		static bool sceneVisible;
 };
 
 extern Display *display;

@@ -18,6 +18,14 @@ typedef unsigned short WORD;
 class TerrainBlock : public ssgVTable
 {
 public:
+			TerrainBlock				(WORD x, WORD y);
+			~TerrainBlock				();
+	void	reset						();
+	void	exchangeBorderVertices		();
+	void	triangulateBlock			();
+	void	collectVertices				(unsigned short, unsigned int);
+
+private:
 
 	typedef unsigned short Index;
 
@@ -162,7 +170,6 @@ public:
 		DWORD		m_nodes;						// number of nodes
 	};
 
-
 	class VertexBuffer
 	{
 	public:
@@ -201,53 +208,18 @@ public:
 		Index ptr;
 	};
 
-	TerrainBlock(WORD x, WORD y);
-	~TerrainBlock();
-
-	vertex& getVertexFromNeighbour(Index mask, Index i);
-	vertex& getVertex (Index i, bool neighbour = false);
-	vertex& getVertexFromCoords (Index x, Index y);
-	Index getVertexIndex (short x, short y, bool border);
-	void makeDeps(Index level, Index x, Index y, int segment, int dir);
+	vertex& getVertexFromNeighbour	(Index mask, Index i);
+	vertex& getVertex				(Index i, bool neighbour = false);
+	vertex& getVertexFromCoords		(Index x, Index y);
+	Index	getVertexIndex			(short x, short y, bool border);
 	
-	void makeDeps();
-	
+	// this should be made static
+	void	makeDeps				(Index level, Index x, Index y, int segment, int dir);
+	void	makeDeps				();
 
-	void calculateErrors();
-	void exchangeBorderVertices();
+	void	calculateErrors			();
 
-/*
-	class QSet
-	{
-	public:
-		inline QSet()
-		{
-			reset();
-
-		}
-
-		inline void reset()
-		{
-			for(int i=0;i<(DIM+1)*(DIM+1);i++)
-				activeVertices[i] = false;
-
-		}
-	
-		inline bool contains (Index i)
-		{
-			return activeVertices[i];
-		}
-
-		inline void insert (Index i)
-		{
-			activeVertices[i] = true;
-		}
-	private:
-		bool activeVertices[(DIM+1)*(DIM+1)];
-	};
-
-*/
-	inline void addVertex(Index i)
+	inline void addVertex		(Index i)
 	{
 		v_index[listCounter++] = i;
 	}
@@ -257,46 +229,32 @@ public:
 		list[listCounter++] = list[listCounter-3];
 	}
 
-	void triangulateBlock		();
-	void triangulateQuadrant	(Index iL, Index iT, Index iR, Index level);
+	void	triangulateQuadrant	(Index iL, Index iT, Index iR, Index level);
 	
-	void reset()
-	{
-		for (int k =0;k<(DIM+1)*(DIM+1);k++)
-			myVertices[k].enabled = false;
-	}
-
-	void collectVertices		(unsigned short, unsigned int);
-	void resolveDependencies	(vertex&);
-
-	DWORD	getID()
-	{
-		return (m_x << 16) | m_y;	
-	}
-
-public:
-	vertex	myVertices[(DIM+1)*(DIM+1)];
+	void	resolveDependencies	(vertex&);
+	DWORD	getID				() { return (m_x << 16) | m_y;	}
 
 //	QSet	set;
 //	srVector3 coords[(DIM+1)*(DIM+1)];
 //	int		err[(DIM+1)*(DIM+1)];
 //	bool	marked[(DIM+1)*(DIM+1)];
 //	Index	list[(DIM+1)*(DIM+1)];
+
+private:
+	vertex	myVertices[(DIM+1)*(DIM+1)];
 	Index	list[(DIM+1)*(DIM+1)*3];
 	Index	listCounter;
-
-	int previousLevel;
-
 	quadrant quadrants[4];
 	int		numSelectedVertices;
 	VertexBuffer myBuffer;
 //	vertex	vertices[DIM*DIM];
-
-private:
 	int getError(float, float);
-	
 
 	friend class TerrainBlockHash;
+	friend class VertexBuffer;
+
+
+	int previousLevel;
 
 	Index	m_x;
 	Index	m_y;

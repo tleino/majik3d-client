@@ -90,10 +90,10 @@ public:
 		void	stopTurning		();
 
 
-virtual void	update		(float);
+virtual void	update			(float);
 
-static	Object	*getObject	(int id);
-static	Object	*getFirst	()			{ return first; }
+static	Object	*getObject		(int id);
+static	Object	*getFirst		()			{ return first; }
 
 private:
 	float	m_moveSpeed;

@@ -66,7 +66,7 @@ public:
 	int		getScreenBpp	()	{ return m_screenBpp; }
 	int		getDebugLevel	()	{ return m_debugLevel; }
 	int		getCameraMode	()	{ return m_cameraMode; }
-	char *	getServerIP		()	{ return m_serverIP; }
+	char*	getServerIP		()	{ return m_serverIP; }
 	int		getServerPort	()	{ return m_serverPort; }
 
 	void	setCameraMode	(int m) { m_cameraMode = m; }

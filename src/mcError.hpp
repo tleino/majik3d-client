@@ -48,6 +48,6 @@ private:
   char *buf;
 };
 
-extern mcError *error;
+extern mcError *error; // PLURRRRRRR
 
 #endif /* __ERROR_HPP__ */

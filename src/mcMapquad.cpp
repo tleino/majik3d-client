@@ -121,7 +121,6 @@ Mapquad::~Mapquad()
 {
   if (parent != NULL)
     parent->decRef();
-
  
   delete block;
   

@@ -11,6 +11,8 @@
 
 #include "mcController.hpp"
 
+// not in use
+
 class mcCameraController : public mcController  
 {
 public:

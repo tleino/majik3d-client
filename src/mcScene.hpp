@@ -56,6 +56,6 @@ private:
 	mcCamera*	m_camera;
 };
 
-extern Scene *scene; 
+extern Scene *scene; // PRRRRRRRRRR!!
 
 #endif /* __SCENE_HPP__ */
