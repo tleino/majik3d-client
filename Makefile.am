@@ -1,3 +1,3 @@
 SUBDIRS = src
 EXTRA_DIST = template/* src/gfx/* src/data/* src/majikrc README.client \
-README.linux README.win32
+README.linux README.win32 README.bugs FAQ
