@@ -8,8 +8,10 @@
 
 #pragma inline_recursion(on)
 
-//typedef unsigned int DWORD;
-//typedef unsigned short WORD;
+#ifndef WIN32
+typedef unsigned int DWORD;
+typedef unsigned short WORD;
+#endif
 
 class TerrainBlock : public ssgVTable
 {
