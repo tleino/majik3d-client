@@ -23,10 +23,9 @@
 
 /* tux */
 ssgTransform   *penguin  = NULL ;
+sgCoord tuxpos, campos;
 
 ssgTransform  *trees[100];
-
-ssgKeyFlier keyflier;
 
 void 
 keyboard ( unsigned char k, int, int )
@@ -43,7 +42,42 @@ keyboard ( unsigned char k, int, int )
    if ( k == 0x03 || k == 'x' )
 	 exit ( 0 ) ;
    
-   keyflier . incoming_keystroke ( k ) ;
+   switch (k) {
+	case '8':
+	  tuxpos.xyz[1] += 1.0f;
+	  tuxpos.xyz[0] -= sin((tuxpos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  tuxpos.xyz[1] += cos((tuxpos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  campos.xyz[0] += sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  campos.xyz[1] += cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  break;
+	case '2':
+	  tuxpos.xyz[1] -= 1.0f;
+	  tuxpos.xyz[0] += sin((tuxpos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  tuxpos.xyz[1] -= cos((tuxpos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  campos.xyz[0] -= sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  campos.xyz[1] -= cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  break;
+	case '6':
+	  tuxpos.hpr[0] -= 5.0f;
+	  break;
+	case '4':
+	  tuxpos.hpr[0] += 5.0f;
+	  break;
+	case '+':
+	  if (campos.hpr[1] > 90)
+		campos.hpr[1] = 90;
+	  else
+		campos.hpr[1] += 1.0f;
+	  break;
+	case '-':
+	  if (campos.hpr[1] < -90)
+		campos.hpr[1] = -90;
+	  else
+		campos.hpr[1] -= 1.0f;
+	  break;
+   }
+   
+   //keyflier . incoming_keystroke ( k ) ;
 }
 
 
@@ -81,6 +115,7 @@ Scene::init()
    ssgStripify        ( penguin  ) ;
    penguin  -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
    scene_root -> addKid ( penguin ) ;
+   tuxpos.hpr[0] = 180.0f;
    /* ... */
    
     ssgEntity *tree_obj = ssgLoadAC ("tree.ac" );
@@ -223,17 +258,9 @@ Scene::removeObject(Object *ob)
 void
 Scene::update()
 {
-   
    static int frameno = 0 ;
    
    frameno++ ;
-   
-   sgCoord campos ;
-   sgCoord tuxpos ;
-   
-   keyflier . update () ;
-   tuxpos = *(keyflier . get_coord ()) ;
-   tuxpos.hpr[0] += 180.0f ;
    
    sgVec3 test_vec ;
    sgMat4 invmat ;
@@ -266,16 +293,16 @@ Scene::update()
    tuxpos . hpr [ 1 ] = 0.0f ;
    tuxpos . hpr [ 2 ] = 0.0f ;
    
-   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
-//  sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
-   
-   campos . hpr [ 0 ] = 0.0f;
-   campos . hpr [ 1 ] = -10.0f ;
+//   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
+//   sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
+
+   campos . hpr [ 0 ] = tuxpos.hpr[0]-180.0f;
+   //campos . hpr [ 1 ] = -10.0f ;
    campos . hpr [ 2 ] = 0.0f ;
-   campos . xyz [ 0 ] += 1.0f ;
-   campos . xyz [ 1 ] -= 30.0f ;
-   campos . xyz [ 2 ] += 12.0f ;
-   
+   //campos . xyz [ 0 ] += 1.0f ;
+   campos . xyz [ 1 ] = tuxpos.xyz[1]-30.0f ;
+   campos . xyz [ 2 ] = getHOT(campos.xyz[0], campos.xyz[1])+12.0f ;
+   //campos . hpr [1] = hot-getHOT(campos.xyz[0], campos.xyz[1]);
    ssgSetCamera ( & campos ) ;
    penguin -> setTransform ( & tuxpos ) ;
    

@@ -133,5 +133,6 @@ Perlin::perlinNoise_2D(double x, double y)
 
 		total = total + interpolatedNoise(i, (x) * frequency, (y) * frequency) * amplitude;
 	 }
+
    return total;
 }
