@@ -66,8 +66,6 @@ Landscape::~Landscape()
 void 
 Landscape::init( ssgRoot *scene_root)
 {
-   landscape->initialized = 1;
-   
    terrain  = new ssgTransform ;
    state    = new ssgSimpleState ;
    state -> setTexture ( "gfx/bumpnoise.rgb") ;
@@ -88,30 +86,7 @@ Landscape::init( ssgRoot *scene_root)
    state -> setOpaque () ;
    state -> disable ( GL_BLEND ) ;
 
-   /*
-   for ( int i = 0 ; i < TILE_GRID_SIZE ; i++ ) {
-	  sprintf (display->stxt, "Pre-calculation: %d%%", i*100/TILE_GRID_SIZE);
-	  display->updateScreen();
-	  	  
-	  for ( int j = 0 ; j < TILE_GRID_SIZE ; j++ ) {		 
-		 tilegrid [ i ][ j ] = new ssgTransform ;
-		 
-		 terrain -> addKid ( tilegrid [ i ][ j ] ) ;
-		 
-		 sgVec3 tilepos ;
-		 sgSetVec3 ( tilepos, (float)i * TILE_SIZE - ONLINE_TERRAIN_RANGE,
-					(float)j * TILE_SIZE - ONLINE_TERRAIN_RANGE, 0.0f ) ;
-
-
-		 tilegrid [ i ][ j ] -> setTransform ( tilepos ) ;
-		 createTile ( tilegrid [ i ][ j ], i, j, state ) ;
-	  }
-   }
-     */ 
-   sprintf (display->stxt, "%s\nPre-calculation done. %d texels loaded.\n", display->stxt, ssgGetNumTexelsLoaded());
-
    scene_root -> addKid ( terrain ) ;
-   landscape->initialized = 2;
 }
 
 ssgBranch *

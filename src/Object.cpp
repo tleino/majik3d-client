@@ -151,7 +151,6 @@ Object::moveTo(float x, float y, float h)
 	  }
 	  else {
 		 movecounter++;
-		 display->updateScreen();
 	  }
    } 
    

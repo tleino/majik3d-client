@@ -168,7 +168,7 @@ void
 Display::updateScreen()
 {
    char *tmp;
-
+   
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
    tmp = sock->readPacket();
@@ -182,10 +182,10 @@ Display::updateScreen()
 //   if (mousetrap)
 //	 mousetrap();
 //   if (Display::sceneVisible)
-	 scene->draw();
    
+   scene->draw();
    overlay->draw();
-
+   
    glutSwapBuffers();
    glutPostRedisplay();
 }
@@ -197,6 +197,4 @@ Display::resizeScreen(int w,int h)
    display->height = h;
    glViewport(0, 0, w, h);
    overlay->inp->setSize(display->width-5, 5+20 ) ;
-   //glutPostRedisplay();
-
 }

@@ -326,10 +326,10 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
    
 void
 Scene::draw()
-{
-   if (!initialized)
+{   
+   if (tuxi == NULL)
 	 return;
-
+   
    update();
    
    ssgCullAndDraw ( scene_root ) ;

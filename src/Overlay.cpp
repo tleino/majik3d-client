@@ -38,30 +38,11 @@ void inputCB (puObject *o)
 	  return;
    }
    
-   if (scene->initialized == 3) {
-	  sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
-	  glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
-	  
-//	  scene->initialized = 4;
-	  sock->writePacket ("%d %s", overlay->inp_command, val);
-	  overlay->inp_command = CMD_SAY;
-	  o->setSize(display->width-5, 5+20);
-	  if (config->nomenu == 0)
-		menu->menuBar->reveal();
-	  
-	  memset (display->stxt, 0, sizeof(display->stxt));
-	  overlay->status_text->setPosition(5, 10);
-   } else {
-	  sock->writePacket ("%d %s", overlay->inp_command, val);
-   }
-   delete overlay->inp;
-   overlay->inp = new puInput ( 5, 5, display->width-5, 5+20 ) ;
-   overlay->inp->setLegend    ( "Legend" ) ;
-   overlay->inp->setValue (" ");
+   sock->writePacket ("%d %s", overlay->inp_command, val);
+   overlay->inp->setValue (" "); // PLIB FIXME: Segfault if set to "" !!
    overlay->inp->setLabel ("");
    overlay->inp->acceptInput  () ;
    overlay->inp->setCursor ( 0 ) ;
-   overlay->inp->setCallback (inputCB);
    overlay->inp->hide();
 }
 
@@ -86,7 +67,7 @@ Overlay::init()
    status_text = new puText (5, 10);
    status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
    
-   inp = new puInput ( 5, 5, display->width-5, 5+20 ) ;
+   inp = new puInput ( 5, 25, display->width-5, 5+20 ) ;
    inp->setLegend    ( "Legend" ) ;
    inp->setValue ("");
    inp->setLabel ("");

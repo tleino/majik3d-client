@@ -41,8 +41,6 @@ class Landscape
 	 
    /// Get height of terrain at the point given as an argument.
    float getHOT(float x, float y);
-   /// 0 = not initialized, 1 = running through init(), 2 = done with init().
-   int initialized;
    ///
    ssgBranch *createTileLOD (int level, int x, int y, int ntris, char *terrain_map);
    ///

@@ -21,14 +21,13 @@
 #include "Socket.hpp"
 #include "Protocol.hpp"
 #include "Debug.hpp"
+#include "Error.hpp"
 
 #include <iostream.h>
 
 #define  NUM_LEVELS         13  
 #define  LOD_LEVELS          5
 #define  LEVEL_0_SIZE    65536
-
-//int Mapquad::stats[13] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 const
 int quad_sizes[NUM_LEVELS] =
@@ -77,48 +76,44 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 
    trans->setTransform( pos );
    lod_switch->select(0);
-//   landscape->terrain->addKid ( trans );
    
    if (level == NUM_LEVELS - 1)
 	{
-//	   sock->writePacket("%d %d %d %d", CMD_MAP, level, top_x, top_y);
 	   lod_indices = new int[LOD_LEVELS];
 	   for (int i = 0; i < LOD_LEVELS; i++)
 		 lod_indices[i] = -2;
 	}
-
-//   stats[level]++;
    
-//   cout << "created new map, level: " << level << " top_x: " << top_x << " top_y: " << top_y 
-//	 << " mid_x: " << mid_x << " mid_y: " << mid_y << endl;
+   debug->put ("Mapquad(%d,%d,%d,%d,%d): Constructor.",
+			   level, top_x, top_y, mid_x, mid_y);
 }
 
 Mapquad::~Mapquad()
 {
-   cout << "deleting level " << level << " map at ( " << top_x << ", " << top_y << " )" << endl;
+   debug->put ("Mapquad(%d,%d,%d,%d,%d): Destructor.",
+			   level, top_x, top_y, mid_x, mid_y);
    
    if (parent != NULL)
 	 parent->decRef();
    
    if (terrain_map != NULL)
 	 delete terrain_map;
-   
-//   stats[level]--;
 }
 
 int
 Mapquad::incRef()
 {
-//   cout << "level " << level << " map at ( " << top_x << ", " << top_y << " ): "
-//	 << "increasing reference to " << reference_count + 1 << endl;
+   debug->put ("Mapquad(%d,%d,%d,%d,%d): incRef to: %d", this->level,
+			   this->top_x, this->top_y, mid_x, mid_y, reference_count+1);
+
    return reference_count++;
 }
 
 int
 Mapquad::decRef()
 {
-//   cout << "level " << level << " map at ( " << top_x << ", " << top_y << " ): "
-//	 << "decreasing reference to " << reference_count - 1 << endl;
+   debug->put ("Mapquad(%d,%d,%d,%d,%d): decRef to: %d", this->level,
+			   this->top_x, this->top_y, mid_x, mid_y, reference_count-1);
    
    if (--reference_count < 1)
 	 {
@@ -134,7 +129,7 @@ Mapquad::cleanUp()
    if (level != 0)
 	 delete this;
    else
-	 cout << "refusing to delete root map" << endl;
+	 error->put(ERROR_WARNING, "mapquad: Refusing to delete root map.");
 }
 
 Mapquad *
@@ -267,36 +262,17 @@ void
 Mapquad::setMap(char *terrain_map)
 {  
    this->terrain_map = terrain_map;
-     
-//   cout << "setMap for map " << level << "," << top_x << "," << top_y << endl;
    this->setSubMap(NUM_LEVELS - 1 - level, terrain_map);
-
-/*   
-   char *submap1, *submap2, *submap3, *submap4;
-   
-   divideMap( terrain_map, *submap1, *submap2, *submap3, *submap4 );
-   
-   int lod = NUM_LEVELS - 1 - level;
-   
-   getChild1() -> setSubMap ( lod, submap1 );
-   getChild2() -> setSubMap ( lod, submap2 );
-   getChild3() -> setSubMap ( lod, submap3 );
-   getChild4() -> setSubMap ( lod, submap4 );
-*/		 
 }
 
 void
 Mapquad::setSubMap(int lod, char *submap)
 {	 
-//   cout << "setSunMap for map " << level << "," << top_x << "," << top_y << "with lod " << lod << endl;
-
    if (level == NUM_LEVELS - 1)
 	 {
  		lod_indices[lod] = lod_switch->getNumKids();
 
 		lod_switch->addKid ( landscape->createTileLOD (level, top_x, top_y, MAP_SIZE / pow(2, lod ), terrain_map) );
-
-//		selectLOD ( lod );
 
 		if (lod_switch->getNumKids() == 1)
 		  {
@@ -327,9 +303,6 @@ Mapquad::setSubMap(int lod, char *submap)
    
    divideMap ( lod, submap ); //, submap1, submap2, submap3, submap4 );
    
-//   cout << "pok: " << submap1 << endl;
-//   lod--;
-
    getChild1() -> setSubMap ( lod, submap1 );
    getChild2() -> setSubMap ( lod, submap2 );
    getChild3() -> setSubMap ( lod, submap3 );
@@ -339,8 +312,6 @@ Mapquad::setSubMap(int lod, char *submap)
 void
 Mapquad::selectLOD(int lod)
 {  
-//   cout << "map " << level << "," << top_x << "," << top_y << ": got selectLOD with lod: " << lod << endl;
-
    if (lod == -1)
  	 {
 		lod_switch->select(0);
@@ -349,8 +320,6 @@ Mapquad::selectLOD(int lod)
    
    if ( lod_indices[lod] > -1 ) {
 	  lod_switch->selectStep ( lod_indices[lod] );
-//	  lod_switch->select(1);
-//	  cout << "..set kid: " << lod_indices[lod] << endl;
    }
    else {
 	  Mapquad *temp;
@@ -360,13 +329,10 @@ Mapquad::selectLOD(int lod)
 		temp = temp->parent;
 	  
 	  if (temp->map_requested) {
-//		 cout << "..waiting for map" << endl;
 		 return;
 	  }
 	  else
 		{
-//		   cout << "..requesting map for level: " << level - lod << " xy: " << top_x << "," << top_y << endl;
-//		   lod_indices[lod] = -1;
 		   temp->map_requested = 1;
 		   FILE *fp;
 		   char buf[256];
@@ -385,9 +351,8 @@ Mapquad::selectLOD(int lod)
 void
 Mapquad::divideMap(int lod, char *submap) //, char *submap1, char *submap2, char *submap3, char *submap4)
 {
-//   cout << "submap: " << submap << endl;
    int submap_size = MAP_SIZE / (2*(lod - (NUM_LEVELS - level) + 2 ));
-  // cout << "submap_size" << submap_size << endl;
+   
    submap1 = new char[submap_size*submap_size+1];
    submap2 = new char[submap_size*submap_size+1];
    submap3 = new char[submap_size*submap_size+1];
@@ -402,11 +367,6 @@ Mapquad::divideMap(int lod, char *submap) //, char *submap1, char *submap2, char
 	  }
    }
    
-//   cout << "submap1: " << submap1 << endl;
-//   cout << "submap2: " << submap2 << endl;
-//   cout << "submap3: " << submap3 << endl;
-//   cout << "submap4: " << submap4 << endl;
-   
    submap1[submap_size*submap_size] = '\0';
    submap2[submap_size*submap_size] = '\0';
    submap3[submap_size*submap_size] = '\0';
@@ -417,13 +377,13 @@ Mapquad::divideMap(int lod, char *submap) //, char *submap1, char *submap2, char
 void
 Mapquad::show()
 {
-//   lod->select(1);
+   // lod->select(1);
 }
 
 void
 Mapquad::hide()
 {
-  // lod->select(0);
+   // lod->select(0);
 }
 
 

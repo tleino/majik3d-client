@@ -371,6 +371,7 @@ Socket::readPacket()
 		 
 		 if (config->protocol_debug) {
 			fprintf (debug->fp, ">> %s", szData);
+			fflush (debug->fp);
 		 }
 		 
 		 // Resize the buffer
@@ -413,6 +414,7 @@ Socket::writePacket(char *szFmt, ...)
    
    if (config->protocol_debug) {
 	  fprintf (debug->fp, "<< %s", szData);
+	  fflush (debug->fp);
    }
    
    if (send(nSocket, szData,strlen(szData),0) == -1)

@@ -47,8 +47,6 @@ Protocol::~Protocol()
 void 
 Protocol::parseCommand(char *input)
 {
-   cout << input << endl;
-   
    int command;
    int found = 0, id;
    int map_x, map_y, map_level;
@@ -213,8 +211,8 @@ Protocol::parseCommand(char *input)
 	 
 	  if (id == ownId)
 		{
-		   scene->initialized = 1;
 		   ob = tuxi = new Player();
+		   sock->writePacket("%d %f %f %f", CMD_MOVE, x, y, h);
 		}
 	  else
 		ob = new Object();

@@ -88,8 +88,6 @@ main(int argc, char **argv)
 		display->bpp = config->bpp;
 	 }
   
-//   sock->writePacket("51 harum\r\n"); /* Log in to the server */
-
   // sock->connectServer();
 #ifndef WIN32
    sock->connectServer();
@@ -98,7 +96,6 @@ main(int argc, char **argv)
    // Open the screen
    display->openScreen();
    
-   sock->writePacket("51 harum\r\n");
 //   Mapquad::root_map->getMapquad(12,0,0);
    glutMainLoop();
    
