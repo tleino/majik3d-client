@@ -76,7 +76,7 @@ main(int argc, char **argv)
    if(config->server_ip != NULL || config->server_port)
 	 sock = new Socket(config->server_ip, config->server_port);
    else
-	 sock = new Socket("195.197.61.60", 4001); // majik.netti.fi 
+	 sock = new Socket("127.0.0.1", 4001); // majik.netti.fi 
 
    glutInit(&argc, argv);
 
@@ -88,7 +88,7 @@ main(int argc, char **argv)
 		display->bpp = config->bpp;
 	 }
   
-//   sock->writePacket("51\r\n"); /* Log in to the server */
+//   sock->writePacket("51 harum\r\n"); /* Log in to the server */
 
   // sock->connectServer();
 #ifndef WIN32
@@ -98,6 +98,7 @@ main(int argc, char **argv)
    // Open the screen
    display->openScreen();
    
+   sock->writePacket("51 harum\r\n");
 //   Mapquad::root_map->getMapquad(12,0,0);
    glutMainLoop();
    

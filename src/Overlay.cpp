@@ -42,7 +42,7 @@ void inputCB (puObject *o)
 	  sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
 	  glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
 	  
-	  scene->initialized = 4;
+//	  scene->initialized = 4;
 	  sock->writePacket ("%d %s", overlay->inp_command, val);
 	  overlay->inp_command = CMD_SAY;
 	  o->setSize(display->width-5, 5+20);

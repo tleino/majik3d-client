@@ -31,9 +31,10 @@
 #include "Overlay.hpp"
 
 extern sgCoord tuxpos;
-extern Object *tuxi;
+extern Player *tuxi;
 float meep = 0.0f;
 int flag = 0;
+int ownId = -1;
 
 Protocol::Protocol()
 {
@@ -46,7 +47,8 @@ Protocol::~Protocol()
 void 
 Protocol::parseCommand(char *input)
 {
-
+   cout << input << endl;
+   
    int command;
    int found = 0, id;
    int map_x, map_y, map_level;
@@ -69,13 +71,13 @@ Protocol::parseCommand(char *input)
 
 	  ob = Object::first;
 	  while (ob != NULL) {
-		 if (ob->id == id) {
+		 if (ob->getID() == id) {
 			ob->moveTo(x, y, h);
 			found = 1;
 			break;
 		 }
 		 
-		 ob = ob->next;
+		 ob = ob->getNext();
 	  }
 	  
 	  if (!found) {
@@ -85,6 +87,7 @@ Protocol::parseCommand(char *input)
 	  
 	  if (ob == tuxi)
 		{
+		   ((Player *)tuxi)->unLockMovement();
 		   /* FIXME: Clean up the code. */
 		   //		   Mapquad::root_map->getMapquad(12, (int)x-128, (int)y-128)->selectLOD(0);
 		   //		   Mapquad::root_map->getMapquad(12, (int)x-128, (int)y+128)->selectLOD(0);
@@ -110,7 +113,20 @@ Protocol::parseCommand(char *input)
 								  
 			  }
 		   }
-*/		   
+*/
+		   Mapquad *temp;
+		   
+		   for (j = -3; j < 3; j++) {
+			  for (i = -3; i < 3; i++) {
+				 if ( (j > -3 && j < 2) && (i > -3 && i < 2) )
+				   continue;
+				 
+				 temp = Mapquad::root_map->tryMapquad(12, (int)x +256+ i*512, (int)y +256+ j*512);
+				 if (temp != NULL)
+				   temp->selectLOD(-1);
+			  }
+		   }
+/*		   
 		   for (j = -4; j < 4; j++) {
 			  for (i = -4; i < 4; i++) {
 				 
@@ -118,11 +134,11 @@ Protocol::parseCommand(char *input)
 				 
 			  }
 		   }
-		   
+*/		   
 		   for (j = -2; j < 2; j++) {
 			  for (i = -2; i < 2; i++) {
 				 
-				 Mapquad::root_map->getMapquad(12, (int)x +128+ i*256, (int)y +128+ j*256)->selectLOD(1);
+				 Mapquad::root_map->getMapquad(12, (int)x +256+ i*512, (int)y +256+ j*512)->selectLOD(1);
 				 
 			  }
 		   }   
@@ -130,7 +146,7 @@ Protocol::parseCommand(char *input)
 		   for (j= - 1; j < 1; j++) {
 			  for (i= - 1; i < 1; i++) {
 				 
-				 Mapquad::root_map->getMapquad(12, (int)x + 128+ i*256, (int)y +128 + j*256)->selectLOD(0);
+				 Mapquad::root_map->getMapquad(12, (int)x + 256+ i*512, (int)y +256 + j*512)->selectLOD(0);
 				 
 			  }
 		   }		   
@@ -140,14 +156,8 @@ Protocol::parseCommand(char *input)
 	case CMD_OWN_ID:
 	  sscanf(data, "%d", &id);
 	  
-	  ob = Object::first;
+	  ownId = id;
 
-	  while (ob != NULL) {
-		 if (ob->id == id) {
-			tuxi = ob;
-			break;
-		 }
-	  }
 	  break;
 	case CMD_QUIT:
 	  sscanf(data, "%d", &id);
@@ -155,12 +165,12 @@ Protocol::parseCommand(char *input)
 	  ob = Object::first;
 	  
 	  while (ob != NULL) {
-		 if (ob->id == id) {
+		 if (ob->getID() == id) {
 			delete ob;
 			break;
 		 }
 		 
-		 ob = ob->next;
+		 ob = ob->getNext();
 	  }	  
 	  
 	  break;
@@ -170,13 +180,13 @@ Protocol::parseCommand(char *input)
 	  ob = Object::first;
 	  
 	  while (ob != NULL) {
-		 if (ob->id == id) {
+		 if (ob->getID() == id) {
 			debug->put(data);
-			ob->puhe->setLabel(debug->string("%s", data));
-			ob->puhe->reveal();
+			ob->setSayString(debug->string("%s", data));
+			ob->revealSayString();
 			break;
 		 }
-		 ob = ob->next;
+		 ob = ob->getNext();
 	  }
 	  break;
 	case CMD_SAYHIDE:
@@ -186,13 +196,13 @@ Protocol::parseCommand(char *input)
 	  
 	  while(ob != NULL)
 		{
-		   if(ob->id == id)
+		   if(ob->getID() == id)
 			 {
 				cout << data << endl;
-				ob->puhe->hide();
+				ob->hideSayString();
 				break;
 			 }
-		   ob = ob->next;
+		   ob = ob->getNext();
 		}
 	  break;
 	case CMD_ADD_OBJECT:
@@ -200,8 +210,14 @@ Protocol::parseCommand(char *input)
 		 error->put (ERROR_WARNING, "Invalid parameters to protocol command CMD_ADD_OBJECT.");
 		 break;
 	  }
-	  
-	  ob = new Object();
+	 
+	  if (id == ownId)
+		{
+		   scene->initialized = 1;
+		   ob = tuxi = new Player();
+		}
+	  else
+		ob = new Object();
 	  
 	  ob->init(id, file_name);
 	  
@@ -216,7 +232,7 @@ Protocol::parseCommand(char *input)
 	  
 	  ob->moveTo(tmpPos);
 
-	  ob->trans->setTransform( &tmpPos );
+//	  ob->trans->setTransform( &tmpPos );
 	  break;
 	case CMD_MAP:
 	  char *tmp;
@@ -273,13 +289,13 @@ Protocol::parseCommand(char *input)
 	  if (b_add > 1.0f)
 		b_add = 1.0f;
 	  sgVec4 skycol ; sgSetVec4 ( skycol, 0.0f+r_add, 0.0f+g_add, 0.0f+b_add, 1.0f ) ;
-	  glFogf ( GL_FOG_DENSITY, 0.035f / 100.0f ) ;
+//	  glFogf ( GL_FOG_DENSITY, 0.035f / 100.0f ) ;
 	  glFogfv( GL_FOG_COLOR  , skycol    ) ;
-	  glFogf ( GL_FOG_START  , 3500.0       ) ;
-	  glFogf ( GL_FOG_END    , 5000.0      ) ;
-	  glFogi ( GL_FOG_MODE   , GL_EXP2   ) ;
+//	  glFogf ( GL_FOG_START  , 3500.0       ) ;
+//	  glFogf ( GL_FOG_END    , 5000.0      ) ;
+//	  glFogi ( GL_FOG_MODE   , GL_EXP2   ) ;
 	  // glHint ( GL_FOG_HINT   , GL_NICEST ) ;
-	  glEnable ( GL_FOG ) ;
+//	  glEnable ( GL_FOG ) ;
 	  glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
 	  break;
 	default:

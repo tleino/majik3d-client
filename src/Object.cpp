@@ -47,7 +47,7 @@ Object::Object()
    if (prev != NULL)
 	 debug->put("Object parent: %d", prev->id);
    
-   lock = 0;
+   movecounter = 0;
 }
 
 Object::~Object()
@@ -113,7 +113,8 @@ Object::init(int id, char *file_name)
    puhe->setLabel("");
 }
 
-void Object::moveTo(float x, float y, float h)
+void 
+Object::moveTo(float x, float y, float h)
 {
    // Smooth the movement from point a to point b.
    float old_x, old_y, old_h;
@@ -164,17 +165,74 @@ void Object::moveTo(float x, float y, float h)
    ob_pos.hpr [ 2 ] = 0.0f ;
 
    movecounter++;
-   lock = 0;
 //	cerr << "ID: " << id << " is at pos " << ob_pos.xyz[0] << ", " << ob_pos.xyz[1] << endl;
 }
 
-void Object::moveTo(sgCoord where)
+void 
+Object::moveTo(sgCoord where)
 {
 	moveTo(where.xyz[0], where.xyz[1], where.hpr[0]);
 }
 
-sgCoord Object::getPos()
+sgCoord 
+Object::getPos()
 {
 	// This may need to be explicitly done using a sgCopyVec3?
 	return ob_pos;
+}
+
+void
+Object::setScale( sgVec3 scale )
+{
+   sgCoord temp = getPos();
+   
+   trans->setTransform( &temp, scale[0], scale[1], scale[2] );
+}
+
+void
+Object::rotateX( double a )
+{
+   ob_pos.hpr[0] += a;
+}
+
+int
+Object::getMoveCounter()
+{
+   return movecounter;
+}
+
+int
+Object::getID()
+{
+   return id;
+}
+
+Object *
+Object::getNext()
+{
+   return next;
+}
+
+void
+Object::setSayString(char *str)
+{
+   puhe->setLabel(str);
+}
+
+void
+Object::revealSayString()
+{
+   puhe->reveal();
+}
+
+void
+Object::hideSayString()
+{
+   puhe->hide();
+}
+
+char *
+Object::getFileName()
+{
+   return file_name;
 }

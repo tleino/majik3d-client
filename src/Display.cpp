@@ -45,6 +45,8 @@ int mouse_x, mouse_y;
 double start_time;
 extern Object *tuxi;
 
+bool Display::sceneVisible = false;
+
 double read_time_of_day();
 
 double read_time_of_day ()
@@ -133,6 +135,7 @@ Display::openScreen()
    // initMaterials();
    
    overlay->init();
+   scene->init();
    
    glEnable ( GL_DEPTH_TEST);
    
@@ -161,7 +164,7 @@ Display::closeScreen()
    debug->put("Screen closed.");
 }
 
-void 
+void
 Display::updateScreen()
 {
    char *tmp;
@@ -178,9 +181,13 @@ Display::updateScreen()
    
 //   if (mousetrap)
 //	 mousetrap();
+//   if (Display::sceneVisible)
+	 scene->draw();
    
-   scene->draw();  
    overlay->draw();
+
+   glutSwapBuffers();
+   glutPostRedisplay();
 }
 
 void

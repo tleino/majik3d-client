@@ -23,6 +23,8 @@
 #include <ssg.h>
 #include <pu.h>
 
+#include <iostream.h>
+
 #include "Scene.hpp"
 
 // class Scene;
@@ -55,6 +57,30 @@ class Object
    /// Get the Objects current Position
    sgCoord getPos();
 
+   void setScale( sgVec3 );
+   
+   void rotateX ( double );
+
+   int getMoveCounter();
+   
+   ///
+   static Object *last;
+   ///
+   static Object *first;
+   
+   Object *getNext();
+   
+   int getID();
+
+   puText *getTextObject() { return puhe; } // a kludge
+   
+   char *getFileName();
+   
+   void setSayString(char *);
+   void revealSayString();
+   void hideSayString();
+   
+ private:
    ///
    ssgTransform *trans;
    ///
@@ -69,24 +95,38 @@ class Object
    ///
    int id;
    ///
-   int lock;
-   ///
+
    Object *prev;
    ///
    Object *next;
-   ///
-   static Object *last;
-   ///
-   static Object *first;
 
-private:
    /* Note from Steve Brown - why is everything else public?? */
    /* Note from Tommi Leino - object oriented programming sucks :) */
+  
    int currentSound;
    ///
    sgCoord ob_pos;
 };
 
 extern Object *object;
+
+/** Class definition for the player object */
+
+class Player : public Object
+{
+ public:
+   Player()    { movementLock = 0; }
+   ~Player();
+   
+   void lockMovement()  { movementLock = 1; }
+   void unLockMovement() { movementLock = 0; }
+  
+   int isMovementLocked()   { return movementLock; }
+   
+ private:
+   
+   int movementLock;
+};
+
 
 #endif /* __OBJECT_HPP__ */

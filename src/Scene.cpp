@@ -32,7 +32,7 @@
 
 sgCoord        campos;
 
-Object         *tuxi = NULL;
+Player        *tuxi = NULL;
 sgMat4         frustumi;
 
 ssgTransform  *trees[100];
@@ -75,7 +75,7 @@ Scene::addSpecial(float x, float y, char *model, bool cutout)
 void
 Scene::init()
 {
-   scene->initialized = 1;
+
    scene_root = new ssgRoot;
    
    ssgModelPath   ("data");
@@ -150,7 +150,7 @@ Scene::init()
    sgSetVec4 ( sunamb , 0.4f, 0.4f, 0.4f, 1.0f ) ;
    ssgGetLight ( 0 ) -> setPosition ( sunposn ) ;
    ssgGetLight ( 0 ) -> setColour ( GL_AMBIENT, sunamb ) ;
-   scene->initialized = 2;
+
 }
 
 float
@@ -210,7 +210,7 @@ void
 Scene::update()
 {
    static int frameno = 0 ;   
-   sgCoord poo;
+   sgVec3 scale;
    
    frameno++ ;
    
@@ -218,18 +218,20 @@ Scene::update()
    
    while (ob != NULL)
 	 {
-		poo = ob->getPos();
-		if (strcmp(ob->file_name, "tuxedo.ac"))
+		scale[0] = 1.0f;
+		scale[1] = 1.0f;
+		scale[2] = sin( (float)ob->getMoveCounter() / 2.0 ) / 4 + 1;
+		
+		if (strcmp(ob->getFileName(), "tuxedo.ac"))
 		  {
-			 // This MAY need a variant of moveTo to work properly.
-			 poo.hpr[0] += 180.0f;
-			 ob->trans->setTransform(&poo, 1.0f, 1.0f, (sin((float)ob->movecounter/2.0))/4+1);
+			 ob->rotateX( 180.0f );
+			 ob->setScale( scale );
 			 
 		  }
 		else
-		  ob->trans->setTransform( &poo, 1.0f, 1.0f, (sin((float)ob->movecounter/2.0))/4+1);
+		  ob->setScale( scale );
 		
-		ob = ob->next;
+		ob = ob->getNext();
 	 }
    
    sgCoord tuxpos = tuxi->getPos();
@@ -256,6 +258,8 @@ Scene::update()
    
    ssgSetCamera ( & campos ) ;
 
+   
+   /*
    if (strcmp(tuxi->file_name, "tuxedo.ac"))
 	 {
 		poo = tuxi->getPos();
@@ -264,6 +268,8 @@ Scene::update()
 		tuxi->trans->setTransform(&poo, 1.0f, 1.0f, (sin((float)tuxi->movecounter/2.0))/4+1);
 		
 	 }
+
+	*/
 }
 
 void
@@ -339,8 +345,8 @@ Scene::draw()
 		posit[1] = obPos.xyz[1];
 		posit[2] = obPos.xyz[2];
 				
-		drawText( ob->puhe, posit);
+		drawText( ob->getTextObject(), posit);
 		
-		ob = ob->next;
+		ob = ob->getNext();
 	 }
 }

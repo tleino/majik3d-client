@@ -38,7 +38,7 @@
 #include "Display.hpp"
 #include "Config.hpp"
 
-#define TILE_SIZE                 256.0f      /* cubits */
+#define TILE_SIZE                 512.0f      /* cubits */
 #define LAMBDA                   (TILE_SIZE/16.0f)
 #define TILE_GRID_SIZE            20          /* Even number please! */
 #define TRIANGLE_GRID_SIZE        16          /* Num vertices */

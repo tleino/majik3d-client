@@ -62,6 +62,7 @@ class Display
    float sun_x, sun_y, sun_z;
    char stxt[8192*3];
 
+   static bool sceneVisible;
 };
 
 extern Display *display;

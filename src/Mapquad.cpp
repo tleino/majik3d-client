@@ -59,8 +59,8 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
    this->top_x = top_x;
    this->top_y = top_y;
    
-   this->mid_x = top_x + quad_sizes[level]/2*16;
-   this->mid_y = top_y + quad_sizes[level]/2*16;
+   this->mid_x = top_x + quad_sizes[level]/2*32;
+   this->mid_y = top_y + quad_sizes[level]/2*32;
    
    this->reference_count = 0;
    this->map_requested = 0;
@@ -346,7 +346,7 @@ Mapquad::selectLOD(int lod)
 		lod_switch->select(0);
 		return;
 	 }
-		
+   
    if ( lod_indices[lod] > -1 ) {
 	  lod_switch->selectStep ( lod_indices[lod] );
 //	  lod_switch->select(1);

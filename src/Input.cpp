@@ -39,7 +39,7 @@
 #define DIR_WEST    3
 
 
-extern Object       *tuxi;
+extern Player       *tuxi;
 int pitch;
 sgCoord temppos;
 
@@ -62,12 +62,10 @@ Input::keyDown(unsigned char k, int x, int y)
 
  if (tuxi == NULL && !overlay->inp->isVisible())
 	 return;
-   
    puKeyboard (k, PU_DOWN);
    
    static int wireframe = 0;
    
-
    if (tuxi != NULL) {
 	  sgCoord tuxiPos = tuxi->getPos(); // Avoid multiple calls to getPos
 	  sgCopyVec3 ( temppos.xyz, tuxiPos.xyz ) ;
@@ -84,8 +82,10 @@ Input::keyDown(unsigned char k, int x, int y)
 		 overlay->inp->setCursor(0);
 		 overlay->inp->acceptInput();
 	  }
-   } else if (!overlay->inp->isVisible()) {
-	  switch (k) {
+   } else //if (!overlay->inp->isVisible()) 
+	 {
+
+		switch (k) {
 	   case 'w':
 		 wireframe = ! wireframe ;		 
 		 glPolygonMode ( GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL ) ;
@@ -95,8 +95,9 @@ Input::keyDown(unsigned char k, int x, int y)
 		 exit ( 0 ) ;
 		 break;
 	   case '8':
-		 if (tuxi->lock == 0) {
-			tuxi->movecounter++;
+
+		 if (!tuxi->isMovementLocked()) {
+//			tuxi->incMoveCounter();
 			temppos.xyz[0] -= sin((temppos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
 			temppos.xyz[1] += cos((temppos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0;;
 				 
@@ -104,12 +105,12 @@ Input::keyDown(unsigned char k, int x, int y)
 							 (float) temppos.xyz[0],
 							 (float) temppos.xyz[1],
 							 (float) temppos.hpr[0]));
-			tuxi->lock = 1;
+			tuxi->lockMovement();
 		 }
 		 break;
 	   case '2':
-		 if (tuxi->lock == 0) {
-			tuxi->movecounter++;
+		 if (!tuxi->isMovementLocked()) {
+//			tuxi->movecounter++;
 		 	temppos.xyz[0] += sin((temppos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
 		 	temppos.xyz[1] -= cos((temppos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
 		 
@@ -117,11 +118,11 @@ Input::keyDown(unsigned char k, int x, int y)
 						 (float) temppos.xyz[0],
 						 (float) temppos.xyz[1],
 						 (float) temppos.hpr[0]));
-		 	tuxi->lock = 1;
+		 	tuxi->lockMovement();
 		 }
 		 break;
 	   case '6':
-		 if (tuxi->lock == 0) {
+		 if (!tuxi->isMovementLocked()) {
 		 	temppos.hpr[0] -= 5.0f;
 		 	if (temppos.hpr[0] < 0)
 		   		temppos.hpr[0] += 360.0f;
@@ -130,11 +131,11 @@ Input::keyDown(unsigned char k, int x, int y)
 					 (float) temppos.xyz[0],
 					 (float) temppos.xyz[1],
 					 (float) temppos.hpr[0]));
-		 	tuxi->lock = 1;
+		 	tuxi->lockMovement();
 		 }
 		 break;
 	   case '4':
-		 if (tuxi->lock == 0) {
+		 if (!tuxi->isMovementLocked()) {
 		 	temppos.hpr[0] += 5.0f;
 		 	if (temppos.hpr[0] > 355.0f)
 		   		temppos.hpr[0] = 0.0f;
@@ -143,7 +144,7 @@ Input::keyDown(unsigned char k, int x, int y)
 						 (float) temppos.xyz[0],
 						 (float) temppos.xyz[1],
 						 (float) temppos.hpr[0]));
-		 	tuxi->lock = 1;
+		 	tuxi->lockMovement();
 		 }
 		 break;
 	   case '+':
