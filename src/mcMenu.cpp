@@ -168,14 +168,14 @@ Menu::aboutCB(puObject *)
 void
 Menu::mouseCB(puObject *)
 {
-  config->setFlag ( mcConfig::MOUSE, 0);
+  config->setFlag ( mcConfig::MOUSE, 1);
   puShowCursor();
 }
 
 void
 Menu::noMouseCB(puObject *)
 {
-  config->setFlag ( mcConfig::MOUSE, 1);
+  config->setFlag ( mcConfig::MOUSE, 0);
   puHideCursor();
 }
 
