@@ -23,8 +23,10 @@
 #include "ssgKeyFlier.h"
 #include "Socket.hpp"
 #include "Object.hpp"
+
 #include <pu.h>
 #include <sg.h>
+#include <iostream.h>
 
 #define random()	rand()
 
