@@ -58,7 +58,5 @@ void Display::openScreen()
 void Display::closeScreen()
 {
    if(ctx != NULL)
-	 {
-		delete(ctx);
-	 }
+	 delete ctx;
 }

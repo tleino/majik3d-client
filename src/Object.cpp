@@ -13,4 +13,6 @@ Object::Object()
 
 Object::~Object()
 {
+   if(next != NULL)
+	 free(next);
 }
