@@ -6,53 +6,53 @@
         [ [1]introduction | [2]screenshots | [3]latest news | faq |
    [4]conventions | [5]mailing lists | [6]art gallery | [7]bug tracking ]
    [ [8]www statistics | [9]download | [10]project status | [11]features
-                       | [12]the team | [13]history ]
+                 | [12]the team | [13]history | [14]chat ]
                                       
 Majik FAQ (Frequently Asked Questions)
 
    1. This file.
-          1.01. [14]What is the purpose of this file?
-          1.02. [15]What does 'FAQ' stand for?
-          1.03. [16]Who is the maintainer of this file?
-          1.04. [17]How can I contribute to the FAQ?
+          1.01. [15]What is the purpose of this file?
+          1.02. [16]What does 'FAQ' stand for?
+          1.03. [17]Who is the maintainer of this file?
+          1.04. [18]How can I contribute to the FAQ?
           
    2. General information on Majik MURPE.
-          2.01. [18]What is Majik?
-          2.02. [19]What is a MURPE?
-          2.03. [20]What is Majik 3D?
-          2.04. [21]When will Majik 3D be open to the public?
-          2.05. [22]Who are the developers of Majik 3D?
-          2.06. [23]Does Majik have a homepage?
-          2.07. [24]Do you need my help?
-          2.08. [25]What is the difference between WorldForge and Majik?
-          2.09. [26]How much will Majik cost to play, or will it be free?
-          2.10. [27]Why did you choose 3D, aren't there easier
+          2.01. [19]What is Majik?
+          2.02. [20]What is a MURPE?
+          2.03. [21]What is Majik 3D?
+          2.04. [22]When will Majik 3D be open to the public?
+          2.05. [23]Who are the developers of Majik 3D?
+          2.06. [24]Does Majik have a homepage?
+          2.07. [25]Do you need my help?
+          2.08. [26]What is the difference between WorldForge and Majik?
+          2.09. [27]How much will Majik cost to play, or will it be free?
+          2.10. [28]Why did you choose 3D, aren't there easier
           alternatives?
-          2.11. [28]Why make Majik when other, similar projects are
+          2.11. [29]Why make Majik when other, similar projects are
           already underway?
-          2.12. [29]So why won't you charge money, I really think you
+          2.12. [30]So why won't you charge money, I really think you
           could!
-          2.13. [30]How are you going to solve the problem of troublesome
+          2.13. [31]How are you going to solve the problem of troublesome
           players?
-          2.14. [31]Does Majik have an IRC channel?
+          2.14. [32]Does Majik have an IRC channel?
           
    3. Majik 3D client.
-          3.01. [32]Where can I get the client?
-          3.02. [33]What platforms does the client support?
-          3.03. [34]Is the client's source code available?
-          3.04. [35]Does the client have any special hardware
+          3.01. [33]Where can I get the client?
+          3.02. [34]What platforms does the client support?
+          3.03. [35]Is the client's source code available?
+          3.04. [36]Does the client have any special hardware
           requirements?
-          3.05. [36]What do these version numbers mean?
-          3.06. [37]What is the latest version available for download?
-          3.07. [38]I have found a bug, what should I do?
+          3.05. [37]What do these version numbers mean?
+          3.06. [38]What is the latest version available for download?
+          3.07. [39]I have found a bug, what should I do?
           
    4. Known problems with Majik 3D client.
-          4.01. [39]The client crashes when pressing OK in the about box.
-          4.02. [40]The Win32 executable reports missing WS2_32.DLL
-          4.03. [41]I got "unsupported special key" when trying to move.
-          4.04. [42]I have problems with connecting to the server.
-          4.05. [43]All I see is a blank screen and nothing happens.
-          4.06. [44]When compiling the sources, I got errors of missing
+          4.01. [40]The client crashes when pressing OK in the about box.
+          4.02. [41]The Win32 executable reports missing WS2_32.DLL
+          4.03. [42]I got "unsupported special key" when trying to move.
+          4.04. [43]I have problems with connecting to the server.
+          4.05. [44]All I see is a blank screen and nothing happens.
+          4.06. [45]When compiling the sources, I got errors of missing
           header files.
        ______________________________________________________________
      
@@ -76,7 +76,7 @@ Majik FAQ (Frequently Asked Questions)
    1.4. How can I contribute to the FAQ?
           If you have a question to ask, and you feel like the subject is
           so common and essential that it should be included in this FAQ,
-          just send mail to [45]majik@majik3d.org and ask your question.
+          just send mail to [46]majik@majik3d.org and ask your question.
        ______________________________________________________________
      
    2.1. What is Majik?
@@ -89,36 +89,36 @@ Majik FAQ (Frequently Asked Questions)
           
    2.3. What is Majik 3D?
           Majik 3D is the fifth, and hopefully final, distinguishable
-          incarnation of Majik. All of Majik's [46]predecessors have been
+          incarnation of Majik. All of Majik's [47]predecessors have been
           essentially MUDs, the fourth being a roguelike + MUD synthesis,
           but Majik 3D is a 3-dimensional RPG that uses a real
           hardware-accelerated 3D engine. At the moment Majik 3D is under
           heavy development. The source code for some of Majik 3D's
           predecessors is available from:
-          [47]ftp://ftp.majik3d.org/attic/ - build your own MUD or
+          [48]ftp://ftp.majik3d.org/attic/ - build your own MUD or
           multiplayer roguelike! :)
           
    2.4. When will Majik 3D be open to the public?
           Unknown. It will probably take months, even years. Look at our
-          [48]milestone plan to get some idea where we are going and
+          [49]milestone plan to get some idea where we are going and
           where we are within the next few months.
           
    2.5. Who are the developers of Majik 3D?
           The people responsible for the base code of Majik 3D are listed
           below:
           
-          [49]Tommi "Namhas" Leino ([50]namhas@majik3d.org)
-          [51]Jari "Dazzt" Saukkonen ([52]dazzt@majik3d.org)
-          [53]Atte "Yorkaturr" Koivula ([54]yorkaturr@majik3d.org)
-          [55]Otso "Harum" Mäkinen ([56]harum@majik3d.org)
+          [50]Tommi "Namhas" Leino ([51]namhas@majik3d.org)
+          [52]Jari "Dazzt" Saukkonen ([53]dazzt@majik3d.org)
+          [54]Atte "Yorkaturr" Koivula ([55]yorkaturr@majik3d.org)
+          [56]Otso "Harum" Mäkinen ([57]harum@majik3d.org)
           
-          There are also [57]numerous designers who are designing the
+          There are also [58]numerous designers who are designing the
           world among other things, and doing miscellanious things apart
           from coding.
           
    2.6. Does Majik 3D have a homepage?
           Yes, the URL for Majik's homepage is:
-          [58]http://www.majik3d.org
+          [59]http://www.majik3d.org
           
    2.7. Do you need my help?
           Yes, certainly. This is a non-profit volunteer-driven project
@@ -142,12 +142,12 @@ Majik FAQ (Frequently Asked Questions)
           You can help the project in many ways. Our primary need is of
           skilled programmers, productive world designers and those with
           skill in computer graphics, 3D, 2D or with pen and paper (see
-          our [59]art gallery). It is also very possible to help the
+          our [60]art gallery). It is also very possible to help the
           project by suggesting ideas, sending bug reports, fixing bugs
           or porting the client to new platforms (show us that there is
           some benefit for the client being Open Source!), adding a link
           to Majik from your homepages or wherever applicable (see our
-          [60]banner - draw a better one!) and by for example correcting
+          [61]banner - draw a better one!) and by for example correcting
           the many spelling mistakes in these pages. Use your
           imagination.
           
@@ -159,7 +159,7 @@ Majik FAQ (Frequently Asked Questions)
           them dare to report such a fatal bug when a week has passed
           already.
           
-          In any case, the address is [61]majik@majik3d.org.
+          In any case, the address is [62]majik@majik3d.org.
           
    2.8. What is the difference between WorldForge and Majik?
           WorldForge: WorldForge's approach is not to create a single
@@ -216,7 +216,7 @@ Majik FAQ (Frequently Asked Questions)
           to be a popular habit in the Open Source community nowadays. A
           waste of resources I would say.
           
-          The recently discovered commercial game called [62]Underlight
+          The recently discovered commercial game called [63]Underlight
           can be estimated to be most nearest to our project at the
           concept level (not the world), otherwise it is unique and
           easily distinguishable from our project. Tell us if there are
@@ -257,13 +257,10 @@ Majik FAQ (Frequently Asked Questions)
           could be actually fun to roleplay such cases.
           
    2.14. Does Majik have an IRC channel?
-          Yes, channel #majik at IRCnet, but it is not so popular. The
-          right way to get in contact with Majik is to send mail, but
-          there is also one of Majik 3D's precedessors online, the Majik
-          3. It is a telnetable MUD which is nowadays online only for
-          chatting. You can connect to it by telnetting
-          [63]majik.majik3d.org 7600. Of course, you might also find us
-          idling in the Majik 3D.
+          Yes, channel #majik at [64]IRCnet, so get yourself an [65]IRC
+          client and join one of the [66]servers or alternatively join
+          the discussion using [67]Jicra java applet. You can see the
+          channel log from: [68]http://www.majik3d.org/channel-log.txt.
        ______________________________________________________________
      
    3.1. Where can I get the client?
@@ -271,13 +268,13 @@ Majik FAQ (Frequently Asked Questions)
           However, if you want to participate in bug-testing,
           portability-fixing, the development, or just want to see how it
           looks right now, you can download the client from our
-          [64]download page.
+          [69]download page.
           
    3.2. What platforms does the client support?
           The client is primarily developed under Linux and it is ported
           to Win32 (95/98/NT), IRIX and Solaris. In the future it will be
           hopefully ported to all the architectures and operating systems
-          supported by [65]The Mesa 3-D graphics library.
+          supported by [70]The Mesa 3-D graphics library.
           
    3.3. Is the client's source code available?
           Yes, it is available under the GNU Public License from our FTP
@@ -315,11 +312,16 @@ Majik FAQ (Frequently Asked Questions)
           The server doesn't care about the patch level.
           
    3.6. What is the latest version available for download?
-          The latest version is 0.3.0.
           
+   The latest version is for irix: 0.3.1
+   linux: 0.4.0pre
+   solaris: 0.3.1
+   source: 0.4.0pre
+   win32: 0.4.0pre
+   
    3.7. I have found a bug, what should I do?
           If it doesn't appear in the FAQ's section 4, report it
-          immediately to [66]majik@majik3d.org. Thank you.
+          immediately to [71]majik@majik3d.org. Thank you.
        ______________________________________________________________
      
    4.1. The client crashes when pressing OK in the about box.
@@ -332,9 +334,7 @@ Majik FAQ (Frequently Asked Questions)
           
    4.2. The Win32 executable reports missing WS2_32.DLL
           Your Winsock version is too old or it is missing completely.
-          Get a new Winsock version from:
-          [67]http://www.microsoft.com/windows95/downloads/contents/wuadm
-          intools/s_wunetworkingtools/w95sockets2/default.asp.
+          Get a new [72]Winsock version.
           
    4.3. I got "unsupported special key" when trying to move.
           You're trying to move without your num lock key turned on, or
@@ -362,12 +362,12 @@ Majik FAQ (Frequently Asked Questions)
           
    4.6. When compiling the sources, I got errors of missing header files.
           You apparently haven't properly installed all the libraries
-          required to compile the sources. See the README.* files that
-          came with the sources for a list of needed libraries.
+          required to compile the sources. See the README file that came
+          with the sources for a list of needed libraries.
             __________________________________________________________
           
-                         [68]Majik Development Team
-                       Sun Oct 31 09:32:50 EEST 1999
+                         [73]Majik Development Team
+                       Sun Feb 13 20:45:08 EEST 2000
 
 References
 
@@ -384,58 +384,63 @@ References
   11. http://www.majik3d.org/features.html
   12. http://www.majik3d.org/team.html
   13. http://www.majik3d.org/history.html
-  14. http://www.majik3d.org/faq.html#1.1
-  15. http://www.majik3d.org/faq.html#1.2
-  16. http://www.majik3d.org/faq.html#1.3
-  17. http://www.majik3d.org/faq.html#1.4
-  18. http://www.majik3d.org/faq.html#2.1
-  19. http://www.majik3d.org/faq.html#2.2
-  20. http://www.majik3d.org/faq.html#2.3
-  21. http://www.majik3d.org/faq.html#2.4
-  22. http://www.majik3d.org/faq.html#2.5
-  23. http://www.majik3d.org/faq.html#2.6
-  24. http://www.majik3d.org/faq.html#2.7
-  25. http://www.majik3d.org/faq.html#2.8
-  26. http://www.majik3d.org/faq.html#2.9
-  27. http://www.majik3d.org/faq.html#2.10
-  28. http://www.majik3d.org/faq.html#2.11
-  29. http://www.majik3d.org/faq.html#2.12
-  30. http://www.majik3d.org/faq.html#2.13
-  31. http://www.majik3d.org/faq.html#2.14
-  32. http://www.majik3d.org/faq.html#3.1
-  33. http://www.majik3d.org/faq.html#3.2
-  34. http://www.majik3d.org/faq.html#3.3
-  35. http://www.majik3d.org/faq.html#3.4
-  36. http://www.majik3d.org/faq.html#3.5
-  37. http://www.majik3d.org/faq.html#3.6
-  38. http://www.majik3d.org/faq.html#3.7
-  39. http://www.majik3d.org/faq.html#4.1
-  40. http://www.majik3d.org/faq.html#4.2
-  41. http://www.majik3d.org/faq.html#4.3
-  42. http://www.majik3d.org/faq.html#4.4
-  43. http://www.majik3d.org/faq.html#4.5
-  44. http://www.majik3d.org/faq.html#4.6
-  45. mailto:majik@majik3d.org
-  46. http://www.majik3d.org/history.html
-  47. ftp://ftp.majik3d.org/attic/
-  48. http://www.majik3d.org/milestones.html
-  49. http://www.majik3d.org/~namhas
-  50. mailto:namhas@majik3d.org
-  51. http://www.majik3d.org/~dazzt
-  52. mailto:dazzt@majik3d.org
-  53. http://www.majik3d.org/~yorkaturr
-  54. mailto:yorkaturr@majik3d.org
-  55. http://www.majik3d.org/~harum
-  56. mailto:harum@majik3d.org
-  57. http://www.majik3d.org/team.html
-  58. http://www.majik3d.org/
-  59. http://www.majik3d.org/gallery.html
-  60. http://www.majik3d.org/gfx/banner.gif
-  61. mailto:majik@majik3d.org
-  62. http://www.underlight.com/
-  63. telnet://majik.majik3d.org:7600/
-  64. http://www.majik3d.org/download.html
-  65. http://www.mesa3d.org/
-  66. mailto:majik@majik3d.org
-  67. http://www.microsoft.com/windows95/downloads/contents/wuadmintools/s_wunetworkingtools/w95sockets2/default.asp
-  68. mailto:majik@majik3d.org
+  14. Javascript:launchJicra();
+  15. http://www.majik3d.org/faq.html#1.1
+  16. http://www.majik3d.org/faq.html#1.2
+  17. http://www.majik3d.org/faq.html#1.3
+  18. http://www.majik3d.org/faq.html#1.4
+  19. http://www.majik3d.org/faq.html#2.1
+  20. http://www.majik3d.org/faq.html#2.2
+  21. http://www.majik3d.org/faq.html#2.3
+  22. http://www.majik3d.org/faq.html#2.4
+  23. http://www.majik3d.org/faq.html#2.5
+  24. http://www.majik3d.org/faq.html#2.6
+  25. http://www.majik3d.org/faq.html#2.7
+  26. http://www.majik3d.org/faq.html#2.8
+  27. http://www.majik3d.org/faq.html#2.9
+  28. http://www.majik3d.org/faq.html#2.10
+  29. http://www.majik3d.org/faq.html#2.11
+  30. http://www.majik3d.org/faq.html#2.12
+  31. http://www.majik3d.org/faq.html#2.13
+  32. http://www.majik3d.org/faq.html#2.14
+  33. http://www.majik3d.org/faq.html#3.1
+  34. http://www.majik3d.org/faq.html#3.2
+  35. http://www.majik3d.org/faq.html#3.3
+  36. http://www.majik3d.org/faq.html#3.4
+  37. http://www.majik3d.org/faq.html#3.5
+  38. http://www.majik3d.org/faq.html#3.6
+  39. http://www.majik3d.org/faq.html#3.7
+  40. http://www.majik3d.org/faq.html#4.1
+  41. http://www.majik3d.org/faq.html#4.2
+  42. http://www.majik3d.org/faq.html#4.3
+  43. http://www.majik3d.org/faq.html#4.4
+  44. http://www.majik3d.org/faq.html#4.5
+  45. http://www.majik3d.org/faq.html#4.6
+  46. mailto:majik@majik3d.org
+  47. http://www.majik3d.org/history.html
+  48. ftp://ftp.majik3d.org/attic/
+  49. http://www.majik3d.org/milestones.html
+  50. http://www.majik3d.org/~namhas
+  51. mailto:namhas@majik3d.org
+  52. http://www.majik3d.org/~dazzt
+  53. mailto:dazzt@majik3d.org
+  54. http://www.majik3d.org/~yorkaturr
+  55. mailto:yorkaturr@majik3d.org
+  56. http://www.majik3d.org/~harum
+  57. mailto:harum@majik3d.org
+  58. http://www.majik3d.org/team.html
+  59. http://www.majik3d.org/
+  60. http://www.majik3d.org/gallery.html
+  61. http://www.majik3d.org/gfx/banner.gif
+  62. mailto:majik@majik3d.org
+  63. http://www.underlight.com/
+  64. http://www.ircnet.org/
+  65. http://www.ludd.luth.se/irc/clients.html
+  66. http://www.funet.fi/~irc/servers.txt
+  67. http://www.majik3d.org/java/jicra/
+  68. http://www.majik3d.org/channel-log.txt
+  69. http://www.majik3d.org/download.html
+  70. http://www.mesa3d.org/
+  71. mailto:majik@majik3d.org
+  72. http://www.microsoft.com/windows95/downloads/contents/wuadmintools/s_wunetworkingtools/w95sockets2/default.asp
+  73. mailto:majik@majik3d.org
