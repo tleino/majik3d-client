@@ -261,7 +261,7 @@ Mapquad::getMap()
 void
 Mapquad::setMap(char *terrain_map)
 {  
-  this->terrain_map = terrain_map;
+  //  this->terrain_map = terrain_map;
   this->setSubMap(NUM_LEVELS - 1 - level, terrain_map);
 }
 
@@ -285,7 +285,7 @@ Mapquad::setSubMap(int lod, char *submap)
 	}
       
       /* Add some trees */
-      
+  /*  horrible kludge  
       if (rand() % 3) {
 	scene->addSpecial (top_x, top_y, "tree.ac", true);
       }
@@ -294,7 +294,7 @@ Mapquad::setSubMap(int lod, char *submap)
 	  (300 > (float) top_y-256.0f && 300 < (float) top_y+256.0f)) {
 	scene->addSpecial(300, 300, "snowman.ac", false);
       }
-      
+    */  
       return;
     }
   
@@ -340,7 +340,7 @@ Mapquad::selectLOD(int lod)
 	{
 	  temp->map_requested = 1;
 	  FILE *fp;
-	  char buf[256];
+	  char *buf = new char[256];
 	  fp = fopen(debug->string("cache/%01x%05x%05x.map", level-lod, top_x,
 				   top_y), "r");
 	  if (fp)

@@ -45,6 +45,7 @@ Config::Config()
   server_port = 0;
   debug_level = 0;
   protocol_debug = 0;
+  lod = 7;
 }
 
 Config::~Config()
@@ -129,6 +130,11 @@ Config::parseOption(char *option, char *value)
     {
       protocol_debug = atoi(value);
     }
+  if (strcmp(option, "lod") == 0)
+    {
+      lod = atoi(value);
+    }
+
 }
 
 void

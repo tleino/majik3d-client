@@ -37,6 +37,7 @@ sgMat4         frustumi;
 
 ssgTransform  *trees[100];
 ssgTransform  *lumiukko;
+ssgTransform  *sky_dome = NULL;
 
 Scene::Scene()
 {    
@@ -81,6 +82,16 @@ Scene::init()
   
   landscape->init(scene_root);
   
+  sky_dome = new ssgTransform ();
+  ssgEntity *entity = ssgLoadAC ("skydome.ac");
+    
+  sky_dome->addKid (entity);
+  //  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
+  
+  //  sky_dome->setTransform (&tmpPos);
+
+  scene_root->addKid (sky_dome);
+
   sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
   sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
   
@@ -88,12 +99,12 @@ Scene::init()
   
   /* Set up the viewing parameters */
   ssgSetFOV     ( 90.0f, 60.0f ) ;
-  ssgSetNearFar ( 1.0f, 10000.0f ) ;
+  ssgSetNearFar ( 1.0f, 30000.0f ) ;
   
   float nnear, ffar, top, bottom, left, right, hfov, vfov, v, h;
   
   nnear = 1.0f;
-  ffar = 10000.0f;
+  ffar = 30000.0f;
   h = 90.0f;
   v = 60.0f;
   
@@ -260,6 +271,7 @@ Scene::update()
     }
   
   ssgSetCamera ( & campos ) ;
+  sky_dome->setTransform (  campos.xyz );
 }
 
 void

@@ -28,6 +28,7 @@
 #include "Mapquad.hpp"
 #include "Display.hpp"
 #include "Overlay.hpp"
+#include "Config.hpp"
 
 extern sgCoord tuxpos;
 extern Player *tuxi;
@@ -94,10 +95,12 @@ Protocol::parseCommand(char *input)
 	  ((Player *)tuxi)->unLockMovement();
 	  Mapquad *temp;
 	  
-	  for (j = -3; j < 3; j++)
-	    for (i = -3; i < 3; i++)
+	  int lod = config->lod;
+	  
+	  for (j = -(lod+1); j < lod+1; j++)
+	    for (i = -(lod+1); i < lod+1; i++)
 	      {
-		if ( (j > -3 && j < 2) && (i > -3 && i < 2) )
+		if ( (j > -(lod+1) && j < lod) && (i > -(lod+1) && i < lod) )
 		  continue;
 		
 		temp = Mapquad::root_map->tryMapquad(12, (int)x +256+ i*512,
@@ -105,12 +108,26 @@ Protocol::parseCommand(char *input)
 		if (temp != NULL)
 		  temp->selectLOD(-1);
 	      }
+	  	  	  
+	  for (j = -lod; j < lod; j++)
+	    for (i = -lod; i < lod; i++) 
+	      {
+		Mapquad::root_map->getMapquad(12, (int)x +256+ i*512, (int)
+					      y +256+j*512)->selectLOD(4);  
+	      }
+	  
+	  for (j = -6; j < 6; j++)
+	    for (i = -6; i < 6; i++) 
+	      {
+		Mapquad::root_map->getMapquad(12, (int)x +256+ i*512, (int)
+					      y +256+j*512)->selectLOD(3);  
+	      }
 	  
 	  for (j = -2; j < 2; j++)
 	    for (i = -2; i < 2; i++) 
 	      {
 		Mapquad::root_map->getMapquad(12, (int)x +256+ i*512, (int)
-					      y +256+j*512)->selectLOD(1);  
+					      y +256+j*512)->selectLOD(2);  
 	      }
 	  
 	  for (j= - 1; j < 1; j++)

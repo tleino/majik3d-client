@@ -66,6 +66,7 @@ public:
   ///
   int fullscreen;
   ///
+  int lod;
 };
 
 extern Config *config;
