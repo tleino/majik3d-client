@@ -39,17 +39,19 @@ Error::put(const int severity, const char *fmt, ...)
    va_start (vl, fmt);
    vsprintf (buf, fmt, vl);
    va_end (vl);
+   
    switch(severity)
 	 {
 	  case ERROR_FATAL:
-		cerr << "FATAL ERROR:" << endl;
+		cerr << "FATAL ERROR: ";
 		break;
 	  case ERROR_WARNING:
-		cerr << "WARNING:" << endl;
+		cerr << "WARNING: ";
 		break;
 	 }
    
    cerr << buf << endl;
+   
    switch (severity)
 	 {
 	  case ERROR_FATAL:
