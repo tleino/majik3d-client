@@ -19,12 +19,17 @@
 #ifndef __CONFIG_HPP__
 #define __CONFIG_HPP__
 
+/** A configuration class. This class is for reading and possibly in
+    future saving the majikrc/majik3d.ini configuration files. It could
+    however also contain all the configuration variables and thus
+    encapsulating the whole scheme to this class. */
+
 class Config
 {
  public:
    Config();
-   ~Config();
-   void readConfig(int, char **);
+   /// Try to read user configuration from configuration files.
+   void readConfig();
  private:
    void parseLine(char *, int);
    void parseOption(char *, char *);

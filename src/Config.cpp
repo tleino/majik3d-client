@@ -30,17 +30,9 @@ Config::Config()
 {
    server_ip = NULL;
    server_port = 0;
-   screen_width = screen_height = bpp = 0;
-   
-   DEBUG ("Config constructor");
-}
-
-Config::~Config()
-{
-   if(server_ip != NULL)
-	 delete [] server_ip;
-   
-   DEBUG ("Config destructor");
+   screen_width = 0;
+   screen_height = 0;
+   bpp = 0;
 }
 
 void
@@ -216,7 +208,7 @@ Config::readOptions(char *filename)
 }
 
 void
-Config::readConfig (int argc, char **argv)
+Config::readConfig ()
 {
    if(config->readOptions("~/.majikrc") == false)
 	 if(config->readOptions("/etc/majikrc") == false)

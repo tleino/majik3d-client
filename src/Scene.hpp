@@ -27,7 +27,7 @@
 
 class Object;
 
-void keyboard ( unsigned char, int, int );
+/** A scene class. This class handles the 3D scene. */
 
 class Scene
 {
@@ -35,21 +35,31 @@ class Scene
    Scene();
    ~Scene();
    
+   ///
    void addObject(Object *);
+   ///
    void removeObject(int);
+   ///
    void removeObject(Object *);
 
+   /// Draw the scene to screen.
    void draw();
+   /// Update the scene.
    void update();
+   /// Initialize the scene.
    void init();
+   ///
    void drawText(puText *, sgVec3);
    
+   ///
    float getHOT( float, float );
    
 
 //   list<Object*> object_list;
    
+   ///
    ssgRoot *scene_root;
+   ///
    int initialized;
    
 };

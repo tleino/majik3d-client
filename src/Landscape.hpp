@@ -26,21 +26,29 @@
 
 double interpolate(double, double, double);
 
+/** A landscape class. This class creates the landscape. */
+
 class Landscape
 {
  public:
    Landscape();
    ~Landscape();
 
+   ///
    ssgTransform   *terrain;
-   
-   void Landscape::init( ssgRoot*);
+   /// Initializes landscape.
+   void Landscape::init(ssgRoot *);
 	 
-   float getHOT(float, float);
+   /// Get height of terrain at the point given as an argument.
+   float getHOT(float x, float y);
+   /// 0 = not initialized, 1 = running through init(), 2 = done with init().
    int initialized;
-   ssgBranch *createTileLOD (int, int, int, int, char *);
-   void createTile (ssgTransform*, int, int, ssgSimpleState*);
-   ssgRoot scene_root;
+   ///
+   ssgBranch *createTileLOD (int level, int x, int y, int ntris, char *terrain_map);
+   ///
+   void createTile (ssgTransform *tile, int x, int y, ssgSimpleState *state);
+   /// A pointer to SSG scene's root.
+   ssgRoot *scene_root;
    
 };
 

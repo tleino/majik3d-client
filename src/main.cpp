@@ -68,7 +68,7 @@ main(int argc, char **argv)
    Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
    
    glutInit(&argc, argv);
-   config->readConfig(argc, argv);
+   config->readConfig();
    
    // Assign proper width / height 
    if(config->screen_width && config->screen_height && config->bpp)

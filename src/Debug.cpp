@@ -24,16 +24,6 @@
 
 #include "Debug.hpp"
 
-Debug::Debug()
-{
-   DEBUG("Debug constructor");
-}
-
-Debug::~Debug()
-{
-   
-}
-
 char *
 Debug::string(char *fmt, ...)
 {

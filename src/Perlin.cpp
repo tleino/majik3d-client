@@ -16,11 +16,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* Note that this code is ported straight from the pseudo code at
- * http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
- * and needs some serious optimization and tuning.
- */
-
 #include <math.h>
 #include <stdio.h>
 

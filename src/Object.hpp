@@ -27,28 +27,59 @@
 
 class Scene;
 
+///
+#define NO_SOUND 0
+///
+#define MOVEMENT_SOUND 1
+
+/** An object class linked-list. This class contains an interactive object and
+handles all things like moving and removing it. */
+
 class Object
 {
  public:
    Object();
    ~Object();
 
-   void init(int, char*);
-   
+   /// Initialize a new object.
+   void init(int id , char *file_name);
+   /// Called when object moves.
+   void makeSound(int); 
+   /// For client to get sound made.
+   int getCurrentSound();
+   /// Move object to a new position.
+   void moveTo(int x, int y, int h);
+
+   ///
    sgCoord ob_pos;
-   
+   ///
    ssgTransform *trans;
+   ///
    ssgEntity *obu;
+   ///
    puText *puhe;
 
+   ///
    char file_name[80];
+   ///
    int movecounter;
+   ///
    int id;
+   ///
    int lock;
+   ///
    Object *prev;
+   ///
    Object *next;
+   ///
    static Object *last;
+   ///
    static Object *first;
+
+private:
+   /* Note from Steve Brown - why is everything else public?? */
+   /* Note from Tommi Leino - object oriented programming sucks :) */
+   int currentSound;
 };
 
 extern Object *object;

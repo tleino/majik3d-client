@@ -21,27 +21,67 @@
 
 #include <pu.h>
 
+/** A display class. This class handles all the things to do with the
+    display, opening window, reshaping, updating and so on. */
+
 class Display
 {
  public:
    Display();
-   Display(int, int, int);
+   /// Init the display using width, height and bpp as arguments.
+   Display(int width, int height, int bpp);
    ~Display();
+   ///
    void openScreen();
+   ///
    void closeScreen();
+   ///
    static void updateScreen();
-   static void resizeScreen(int,int);
-   static void mouseMotion(int,int);
-//   static void mouseFun(int, int, int, int);
+   ///
+   static void resizeScreen(int width, int height);
+   ///
+   static void mouseMotion(int x,int y);
    puText *status_text;
  private:
    static void idle();
  public: 
-   int width, height, bpp, initialWidth, initialHeight;
-   int mousetrap, nomousetrap, noTexture, wireframe, nomouse, nofog, nosmooth,
-   nomenu, camera, fullscreen, state;
+   ///
+   int width;
+   ///
+   int height;
+   ///
+   int bpp;
+   ///
+   int initialWidth;
+   ///
+   int initialHeight;
+   ///
+   int mousetrap;
+   ///
+   int nomousetrap;
+   ///
+   int noTexture;
+   ///
+   int wireframe;
+   ///
+   int nomouse;
+   ///
+   int nofog;
+   ///
+   int nosmooth;
+   ///
+   int nomenu;
+   ///
+   int camera;
+   ///
+   int fullscreen;
+   ///
+   int state;
+   ///
    float pitch;
+   ///
    puInput *inp;
+   ///
    char stxt[8192*3];
 };
 

@@ -19,14 +19,22 @@
 #ifndef __INPUT_HPP__
 #define __INPUT_HPP__
 
+/** An input handling class. This class handles all the input from
+    mouse to keyboard. The class should redirect all the work to
+    more proper classes, this is just for catching the input. */
+
 class Input
 {
  public:
    Input();
    ~Input();
-   static void keyDown(unsigned char, int, int);
-   static void specialDown(int, int, int);
-   static void mouseDown(int,int,int,int);
+   /// This method is called when a normal key-press has been detected.
+   static void keyDown(unsigned char key, int x, int y);
+   /** This method is called when a special key-press has been detected,
+	   for example when using arrow keys. */
+   static void specialDown(int special_key, int x, int y);
+   /// This method is called when a mouse-press has been detected.
+   static void mouseDown(int button, int updown, int x, int y);
 };
 
 extern Input *input;

@@ -1,3 +1,5 @@
+/** Hieno landscape classi. */
+
 /* Majik 3D client
  * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
  *

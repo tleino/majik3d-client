@@ -21,15 +21,22 @@
 
 #include <errno.h>
 
+/// Highest severity of an error; exits the program.
 #define ERROR_FATAL	   -1
+/// Lowest severity of an error; displays the error and continues.
 #define ERROR_WARNING	1
+
+/** An error message handling class. All the error messages should
+    go through this class to ensure consistency and handling of
+    different severity levels and what to do with them. */
 
 class Error
 {
  public:
    Error();
    ~Error();
-   void put(const int, const char *, ...);
+   /// Adds a new error message.
+   void put(const int severity, const char *error_message, ...);
  private:
    char *buf;
 };

@@ -19,18 +19,28 @@
 #ifndef __SOCKET_HPP__
 #define __SOCKET_HPP__
 
+/** A socket class. Handles the connecting, disconnecting, reading
+    and writing packets with the server. */
+
 class Socket
 {
  public:
    Socket();
-   Socket(char *, int);
+   Socket(char *ip, int port);
    ~Socket();
+   /// Connect to the server.
    void connectServer();
+   /// Disconnect the server.
    void disconnectServer();
+   /** Read the packet sent by the server if there is any.
+       @returns The packet sent by the server. */
    char *readPacket();
-   void writePacket(char *,...);
+   /// Write packet to the server.
+   void writePacket(char *buf, ...);
  public:
+   /// IP address if the server.
    char *ip;
+   /// Port of the server.
    int port;
  private:
    int nSocket;

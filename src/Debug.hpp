@@ -19,18 +19,23 @@
 #ifndef __DEBUG_HPP__
 #define __DEBUG_HPP__
 
+/** A debugging class. All debug messages should go through this class,
+    and thus maintaining consistency and possibly in future specifying
+    debug levels and switching debug on/off runtime. */
+
 class Debug
 {
  public:
-   Debug();
-   ~Debug();
+   /// Add a new debug message.
    void put(char *, ...);
+   /// Allow printf() style formatting in DEBUG() macro.
    char *string(char *, ...);
 };
 
 extern Debug *debug;
 
 #if 0
+/// Use this macro to add all the unnecessary information to your debug messages.
 # define DEBUG(x) debug->put("%-17s: debug: %s", debug->string("%s:%d", __FILE__, __LINE__), x);
 #else
 # define DEBUG(x)

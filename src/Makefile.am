@@ -9,3 +9,7 @@ INCLUDES=-I/usr/local/plib/include
 CLEANFILES = *.debug
 toilet  :
 	@-wc *.cpp *.hpp
+autodoc	:
+	doc++ -S *.cpp *.hpp
+	rm -rf doc/*
+	mv *.class *.html *.gif doc/
