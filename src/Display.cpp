@@ -75,6 +75,7 @@ void inputCB (puObject *o)
 	  
 	  scene->initialized = 4;
 	  sock->writePacket ("%d %s", display->inp_command, val);
+	  display->inp_command = CMD_SAY;
 	  o->setSize(display->width-5, 5+20 ) ;
 	  if (display->nomenu == 0)
 	    menu->menuBar->reveal();
@@ -247,6 +248,7 @@ Display::updateScreen()
 	 // memset (display->stxt, 0, sizeof(display->stxt));
 	 //display->status_text->setPosition(5, 10);
 	 scene->initialized = 3;
+	 display->inp_command = CMD_LOGIN;
 	 display->inp->setSize(10*16, 5+20);
 	 display->inp->reveal();
 	 display->status_text->setPosition(5, 30);
