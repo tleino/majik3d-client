@@ -56,6 +56,7 @@ public:
   float getHOT( float x, float y);
   /// A pointer to scene's root node.
   ssgRoot *scene_root;
+  ssgEntity *sky_entity;
 };
 
 extern Scene *scene; 

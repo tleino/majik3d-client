@@ -29,6 +29,7 @@
 #include "mcDisplay.hpp"
 #include "mcOverlay.hpp"
 #include "mcConfig.hpp"
+#include "mcSky.hpp"
 
 extern sgCoord tuxpos;
 extern Player *tuxi;
@@ -266,21 +267,22 @@ Protocol::parseCommand(char *input)
       overlay->inp->reveal();
       break;
     case CMD_SUN_POS:
-      // FIXME: A horrible kludge.
-      int mod;
-      float r_add, g_add, b_add;
-      sscanf (data, "%d", &mod);
-      mod = mod % 40;
-      if (mod == 0)
-	flag = 0;
-      
-      if (flag == 1 || mod > 20)
+      float heading, pitch, luminance, turbidity;
+      if (sscanf (data, "%f %f %f %f", &heading, &pitch, &luminance,
+		  &turbidity) == 4)
 	{
-	  mod -= (mod-20)*2;
-	  flag = 1;
+	  mc_sky->setLuminanceFactor(luminance);
+	  mc_sky->setSunPosition(heading, pitch); 
+	  mc_sky->setTurbidity(turbidity);
+	  scene->sky_entity = mc_sky->Draw();
 	}
-      
-      sgVec3 sunposn ;
+      else
+	{
+	  error->put (ERROR_WARNING, "Invalid parameters to protocol " \
+		      "command CMD_SUN_POS.");
+	}
+      /*
+	  
       sgVec4 sunamb  ;
       sgSetVec3 ( sunposn, -1.0f+(float) mod/10.0f, 0.0f, 0.1f ) ;
       sgSetVec4 ( sunamb , 1.0f, 1.0f, 1.0f, 1.0f ) ;
@@ -302,6 +304,7 @@ Protocol::parseCommand(char *input)
       sgSetVec4 ( skycol, 0.1f+r_add, 0.1f+g_add, 0.1f+b_add, 1.0f ) ;
       glFogfv( GL_FOG_COLOR  , skycol    ) ;
       glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
+      */
       break;
     default:
       error->put (ERROR_WARNING, "Unknown protocol command received: 0x%X",

@@ -88,25 +88,15 @@ Scene::init()
   ssgModelPath   ("data");
   ssgTexturePath ("data");
   
-  // FIXME: I want better sky, the dynamic one, please. :)
-  // sky_dome = new ssgTransform ();
   sky_dome = new ssgTransform ();
-  // sky_dome->setTransform(&crd, 100.0, 100.0, 100.0);
-  ssgEntity *entity = mc_sky->Draw();
-  // ssgEntity *entity = ssgLoadAC("skydome.ac");
-  sky_dome->addKid (entity);
-  ssgFlatten (entity);
-  //ssgStripify (sky_dome);
+  sky_entity = mc_sky->Draw();
+  sky_dome->addKid (sky_entity);
+  ssgFlatten (sky_entity);
   sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
   scene_root->addKid (sky_dome);
-  // ssgEntity *entity = ssgLoadAC ("skydome.ac");
 
   landscape->init(scene_root);
-//   printf("%d\n", entity->getNumTriangles());
         
-  // sky_dome->addKid (entity);
-  // scene_root->addKid (sky_dome);
-
   sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
   sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
 	  
