@@ -156,12 +156,6 @@ Display::updateScreen()
   //   if (mousetrap)
   //	 mousetrap();
   //   if (Display::sceneVisible)
- 
-//	if (tuxi == NULL)
-//	{
-//		protocol->parseCommand("52 1");
-//		protocol->parseCommand("55 1 1000 1000 0 dog3.ac");
-//	}
 
   if (mapFound)
     {
@@ -170,13 +164,13 @@ Display::updateScreen()
   else if (tuxi != NULL)
     {
       Mapquad *temp;
-      sgCoord tuxiPos = tuxi->getPos();
+	  sgCoord tuxiPos = tuxi->getPos();
 
       temp = Mapquad::root_map->tryMapquad(12,
 					   tuxiPos.xyz[0],
 					   tuxiPos.xyz[1]);
       if (temp != NULL && temp->isMapReceived())  
-	mapFound = true;
+		mapFound = true;
     }
 
   overlay->draw();

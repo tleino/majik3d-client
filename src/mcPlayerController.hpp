@@ -19,10 +19,14 @@ public:
 	mcPlayerController();
 	virtual ~mcPlayerController();
 
-	void moveForward() {}
-	void moveBackward() {}
-	void turnLeft() {}
-	void turnRight() {}
+	void moveForward	();
+	void moveBackward	(){}
+//	void stopMoving		();
+	void turnLeft		(){}
+	void turnRight		(){}
+//	void stopTurning	();
+
+	void update			(float);
 private:
 	Player *m_player;
 };

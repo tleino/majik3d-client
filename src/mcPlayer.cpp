@@ -26,6 +26,27 @@ Player::Player()
 }
 
 void
+Player::moveForward()
+{
+	m_moveSpeed = 1.0;
+}
+
+void
+Player::stopMoving()
+{
+	m_moveSpeed = 0.0;
+}
+
+void
+Player::update()
+{
+	if (m_moveSpeed != 0.0)
+	{
+		sgCoord curPos = getPos();
+	}
+}
+
+void
 Player::moveTo(float x, float y, float h)
 {
 	Object::moveTo(x, y, h);

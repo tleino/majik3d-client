@@ -47,7 +47,7 @@ public:
   /// Set the Object's current position.
   void setPos(sgCoord where);
   /// Get the Object's current position.
-  sgCoord getPos();
+  const sgCoord& getPos();
   /// Set the object's scale.
   void setScale( sgVec3 );
   /// Rotate the object X-axis.
@@ -79,8 +79,10 @@ public:
   /// FIXME: A kludge.
   bool hotFixed;
 
-	static Object *getObject	(int id);
-	static Object *getFirst		()			{ return first; }
+virtual void	update		(float);
+
+static	Object	*getObject	(int id);
+static	Object	*getFirst	()			{ return first; }
 
 private:
 

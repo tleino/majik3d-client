@@ -240,9 +240,37 @@ Scene::removeObject(Object *ob)
   
 }
 
+double read_time_of_day () 
+{ 
+#ifdef WIN32 
+  _int64 u, v ; 
+  QueryPerformanceCounter   ((LARGE_INTEGER*) &u ) ; 
+  QueryPerformanceFrequency ((LARGE_INTEGER*) &v ) ; 
+  return (double)u / (double)v ; 
+#else 
+  timeval tv ; 
+  gettimeofday ( &tv, NULL ) ; 
+   
+  return (double) tv . tv_sec + (double) tv . tv_usec / 1000000.0 ; 
+#endif 
+} 
+
 void
 Scene::update()
 {
+	// some quick kludges
+	static float lastTime = read_time_of_day();
+	float curTime = read_time_of_day();
+	float frameTime = curTime - lastTime;
+	if (frameTime <= 0.0)
+		frameTime = 0.01;
+	lastTime = curTime;
+
+	for (Object *o = Object::getFirst(); o; o = o->getNext())
+		o->update(frameTime);
+
+//	m_cameraController->update();
+
    static int frameno = 0 ;   
    sgVec3 scale;
   

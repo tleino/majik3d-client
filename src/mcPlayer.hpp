@@ -27,15 +27,21 @@ public:
 				Player			();
 virtual			~Player			()		{}
   
-virtual void	moveTo			(float x, float y, float h);
+		void	moveForward		();
+		void	stopMoving		();
+		void	update			();
 				
 		void	lockMovement	()		{ m_movementLock = true; }
 		void	unLockMovement	()		{ m_movementLock = false; }
 		bool	isMovementLocked()		{ return m_movementLock; }
 
 private:
+virtual void	moveTo			(float x, float y, float h);
+
 	bool	m_movementLock;
 	sgVec3	m_lastRedrawLocation;
+
+	float m_moveSpeed;
 };
 
 #endif /* __OBJECT_HPP__ */

@@ -97,12 +97,17 @@ Object::~Object()
 	first = NULL;
     }
   
-  scene->getSceneRoot()->removeKid( trans );
+	scene->getSceneRoot()->removeKid( trans );
   
 //  delete trans;
   delete puhe;
 }
 
+void
+Object::update(float t)
+{
+	t = 0;
+}
 
 Object *
 Object::getObject(int id)
@@ -240,7 +245,7 @@ Object::setPos(sgCoord where)
   sgCopyVec3 (ob_pos.hpr, where.hpr);
 }
 
-sgCoord 
+const sgCoord&
 Object::getPos()
 {
   // This may need to be explicitly done using a sgCopyVec3?
