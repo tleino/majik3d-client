@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik-devel@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
