@@ -41,6 +41,10 @@ public:
   
   /// Get height of terrain at the point given as an argument.
   float getHOT(float x, float y);
+
+  void getNormal(sgVec3& nrm, float x, float y);
+
+  GLuint getTextureHandle ( int level, int x, int y);
   ///
   ssgBranch *createTileLOD (int level, int x, int y, int ntris,
 			    char *terrain_map);

@@ -21,15 +21,19 @@
 
 class mcTexGen
 {
+
   private:
+
 	int *primes;		// Prime number table
 	int octave;
 
   protected:
+
 	mcTexGen();
   
 	// Perlin noise functions
 	double perlin(int x);
+
 	double perlin(int x, int y);
 
 	double iperlin(double x);
@@ -40,6 +44,7 @@ class mcTexGen
 
 	void selectPerlinOctave(int o) { octave = o; }
 
+
 	// Interpolators
 	double lerp(double a, double b, double t);		// Linear interpolation
 	double hermite(double a, double b, double t);	// Hermite cubic spline interpolation
@@ -49,7 +54,9 @@ class mcTexGen
 	double gain(double t, double g);					// 0.5 = no gain
 
   public:
+
 	virtual int getPixel(double x, double y) = 0;
+
 	virtual void getPixels(unsigned char *image, double nwx, double nwy, double sex, double sey, int width, int height) = 0;
 	
 	virtual ~mcTexGen();

@@ -138,6 +138,7 @@ Protocol::parseCommand(char *input)
 			Mapquad::root_map->selectLOD(1, x, y);
 			Mapquad::root_map->selectLOD(0, x, y);
 
+			Mapquad::root_map->exchangeBorders();
 			Mapquad::root_map->triangulateBlocks();
 		}
 

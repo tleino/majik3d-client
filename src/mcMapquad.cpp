@@ -51,8 +51,6 @@ int quad_sizes[NUM_LEVELS] =
 static ssgEntity *kukkaModel = NULL;
 
 
-extern ssgSimpleState *state;
-
 Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 {
 
@@ -369,13 +367,55 @@ Mapquad::resetBlocks()
 	 }
 }
 
+
+void 
+Mapquad::exchangeBorders()
+{
+	 if (level == NUM_LEVELS - 1)
+	 {
+		 if (block)
+		 {
+			block->exchangeBorderVertices();
+		 }
+
+	 }
+	 else
+	 {
+		if (child1)
+			child1->exchangeBorders();
+		if (child2)
+			child2->exchangeBorders();
+		if (child3)
+			child3->exchangeBorders();
+		if (child4)
+			child4->exchangeBorders();
+	 }
+
+}
+
 void
 Mapquad::triangulateBlocks()
 {
 	 if (level == NUM_LEVELS - 1)
 	 {
 		 if (block)
+		 {
 			block->triangulateBlock();
+		 }
+/*
+		 ssgEntity *kid;
+		while (kid = getNextKid();
+		{
+			ssgEntity *kidinKid;
+			while (kidinKid = kid->getNextKid();
+			{
+				sgVec3 pos = kidinKid->
+
+
+			}
+
+		}
+*/
 	 }
 	 else
 	 {
@@ -409,6 +449,25 @@ Mapquad::selectLOD(int level, int x, int y)
 				sp.setCenter(mid_x, mid_y, landscape->getHOT(mid_x, mid_y) );
 				sp.setRadius( sqrt( (mid_x-top_x)*(mid_x-top_x) + (mid_y-top_y)*(mid_y-top_y)) );
 		
+				ssgSimpleState *state    = new ssgSimpleState ;
+				state->setTexture ( landscape->getTextureHandle(level, top_x, top_y) );
+				state -> enable     ( GL_TEXTURE_2D ) ;
+				state -> enable     ( GL_LIGHTING ) ;
+
+//				if (config->nosmooth)
+//					state -> setShadeModel ( GL_FLAT ) ;
+//				else
+					state -> setShadeModel ( GL_SMOOTH );
+
+				state -> enable ( GL_COLOR_MATERIAL ) ;
+				state -> enable ( GL_CULL_FACE      ) ;
+				state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
+				state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
+				state -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
+				state -> setShininess ( 0 ) ;
+				state -> setOpaque () ;
+				state -> disable ( GL_BLEND ) ;
+
 				block->setState(state);
 //				block->setTraversalMaskBits ( SSGTRAV_CULL );
 				lod_switch->addKid ( block );
@@ -418,10 +477,10 @@ Mapquad::selectLOD(int level, int x, int y)
 
 			lod_switch->select(1);
 			block->collectVertices ( level,  dist/50);
-			block->triangulateBlock();
+//			block->triangulateBlock();
 
 			if (newBlock)
-				while (!(rand() % 2))
+				while ((rand() % 10))
 				{
 					if (!kukkaModel)
 						kukkaModel = ssgLoadAC ("kukka.ac");
@@ -442,7 +501,7 @@ Mapquad::selectLOD(int level, int x, int y)
 
 					ssgRangeSelector *rangeSelect = new ssgRangeSelector();
 					rangeSelect->addKid(kukka);
-					float ranges[2] = { 0, 500 };
+					float ranges[2] = { 0, 2000 };
 					rangeSelect->setRanges ( ranges, 2 );
 					
 					trans->addKid(rangeSelect);

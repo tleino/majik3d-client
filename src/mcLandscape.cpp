@@ -36,6 +36,8 @@
 #include "mcDisplay.hpp"
 #include "mcConfig.hpp"
 #include "mcTerrainBlock.hpp"
+#include "mcTexGen.hpp"
+#include "mcTerrainGen.hpp"
 
 #define TILE_SIZE                 512.0f      /* cubits */
 #define LAMBDA                    (TILE_SIZE/16.0f)
@@ -79,6 +81,29 @@ Landscape::getHOT(float x, float y)
 };
 
 void 
+Landscape::getNormal(sgVec3& nrm, float x, float y)
+{
+	
+	float x1 = x;
+	float y1 = y;
+
+
+	sgVec3 a, b;
+	
+	a [0] = 16.0;
+	a [1] = 0;
+	a [2] = getHOT(x, y) - getHOT(x+16.0, y);
+	
+	b [0] = 0; 
+	b [1] = 16.0;
+	b [2] = getHOT(x, y) - getHOT(x, y+16.0);
+	
+	sgVectorProductVec3 (nrm, a, b);
+	
+	sgNormalizeVec3( nrm );
+}
+
+void
 Landscape::init( ssgRoot *scene_root)
 {
   assert ( scene_root );
@@ -271,3 +296,33 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris,
   return branch ;
 }
 
+
+GLuint
+Landscape::getTextureHandle ( int level, int x, int y)
+{
+	GLuint handle;
+	
+	GLubyte image[32*32*3];
+
+	mcTexGen *tgen = new mcTerrainGen();
+
+	tgen->getPixels(image, x, y, (x+512.0), (y+512.0), 32, 32);
+
+	glGenTextures (1, &handle);
+	glBindTexture (GL_TEXTURE_2D, handle);
+
+	glTexImage2D  ( GL_TEXTURE_2D,
+                 0, 3, 32, 32, 0,
+                        GL_RGB,
+                        GL_UNSIGNED_BYTE, (GLvoid *) &image[0] ) ;
+
+
+	glTexEnvi ( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ) ;
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ) ;
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP ) ;
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP ) ;
+	glBindTexture (GL_TEXTURE_2D, 0);
+
+	return handle;
+}

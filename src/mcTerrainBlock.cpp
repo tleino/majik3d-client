@@ -38,7 +38,7 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 	texcoords = new sgVec2[(DIM+1)*(DIM+1)];
 	t_index = v_index;
 	colours = new sgVec4[1];
-	sgSetVec4 (colours[0], 0.0, 1.0, 0.0, 1.0);
+	sgSetVec4 (colours[0], 1.0, 1.0, 1.0, 1.0);
 	c_index = new unsigned short[1000];
 	memset(c_index, 0, sizeof(unsigned short)*1000);
 	num_colours = 1;
@@ -73,6 +73,7 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 
 			v.error = 0;
 			v.marked = false;
+			v.enabled = false;
 			v.left = 0 - 1;
 			v.right = 0 -1;
 
@@ -112,57 +113,7 @@ TerrainBlock::~TerrainBlock()
 {
 	blockHash.remove(m_x, m_y);
 }
-
-inline void
-TerrainBlock::exchangeBorderVertices(TerrainBlock& b, direction dir)
-{
-	int x = 0;
-	int y = 0;
-	int dx = 0;
-	int dy = 0;
-
-	switch (dir)
-	{
-	case DIR_NORTH:
-
-		y = DIM;
-		dx = 1;
-		break;
-
-	case DIR_SOUTH:
-
-		y = 0;
-		dx = 1;
-		break;
-
-	case DIR_WEST:
-
-		x = 0;
-		dy = 1;
-		break;
-
-	case DIR_EAST:
-
-		x = DIM;
-		dy = 1;
-		break;
-
-	default:
-		assert(false);
-		break;
-	}
-
-	for (int i = 0; i < DIM+1; i++)
-	{
-		vertex &t = getVertex	( dx * i + x, dy * i + y);
-		vertex &o = b.getVertex ( dx * i + x, dy * i + y);
-
-		if (t.error > o.error)
-			o.error = t.error;
-		else
-			t.error = o.error;
-	}
-}
+ 
 
 
 /*
@@ -176,9 +127,12 @@ TerrainBlock::draw()
 
 
 /*
+
 void 
 TerrainBlock::draw_geometry()
 {
+	ssgVTable::draw_geometry();
+
 	int i;
 
 	glEnable (GL_VERTEX_ARRAY);
@@ -212,28 +166,28 @@ TerrainBlock::draw_geometry()
 */
 //	visualiseBSphere();
 
-/*
 
+/*
 	glBegin(GL_LINES);
 
 	glColor3f ( 0.0, 1.0, 0.0 );
 	glNormal3f ( 0.0, 0.0, 1.0 );
 
-	for (i = 0; i < numSelectedVertices; i++)
+	for (int i = 0; i < num_vertices; i++)
 	{
 //			glColor4fv;
 //			glNormal3fv;
 //			glTexCoord2fv;
-		if (vertices[list[i]].left != 0xffff)
+		if (myVertices[v_index[i]].left != 0xffff)
 		{
-			glVertex3fv   ( vertices[list[i]].coord ) ;
-			glVertex3fv   ( vertices[vertices[list[i]].left].coord ) ;
+			glVertex3fv   ( vertices[v_index[i]] ) ;
+			glVertex3fv   ( vertices[myVertices[v_index[i]].left] ) ;
 		}
 
-		if (vertices[list[i]].right != 0xffff)
+		if (myVertices[v_index[i]].right != 0xffff && )
 		{
-			glVertex3fv   ( vertices[list[i]].coord ) ;
-			glVertex3fv   ( vertices[vertices[list[i]].right].coord ) ;
+			glVertex3fv   ( vertices[v_index[i]] ) ;
+			glVertex3fv   ( vertices[myVertices[v_index[i]].right] ) ;
 
 		}
 
@@ -271,13 +225,16 @@ TerrainBlock::calculateErrors()
 		vertex &v = myVertices[i];
 
 		if (v.left == 0xffff || v.right == 0xffff)
-			v.error = 0;
+			v.error = rand() % 10;
 		else
 		{
 //			if ((&getVertex(v.left) != &nullVertex) && (&getVertex(v.right) != &nullVertex))
 //				v.error = (unsigned int)fabs(0.5*(getVertex(v.left).coord[2] + getVertex(v.right).coord[2]) - v.coord[2]);
 //			else
-				v.error = 0;
+				v.error = rand() % 10;
 		}
 	}
 }
+
+
+

@@ -154,6 +154,14 @@ SOURCE=.\mcSocket.cpp
 
 SOURCE=.\mcTerrainblock.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\mcTerrainGen.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mcTexGen.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -229,6 +237,14 @@ SOURCE=.\mcSocket.hpp
 # Begin Source File
 
 SOURCE=.\mcTerrainblock.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mcTerrainGen.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mcTexGen.hpp
 # End Source File
 # End Group
 # Begin Group "Resource Files"

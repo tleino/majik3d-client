@@ -123,6 +123,7 @@ public:
   ///
   void resetBlocks();
   void triangulateBlocks();
+  void exchangeBorders();
   void selectLOD(int, int, int );
   void selectLOD(int);
   ///

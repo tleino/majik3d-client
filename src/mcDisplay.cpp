@@ -85,8 +85,10 @@ Display::openScreen()
   
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
-  if (config->gamemode)
-    glutEnterGameMode();
+  if (0)
+	  ;
+//  if (config->gamemode)
+//    glutEnterGameMode();
   else
     {
       glutInitWindowSize(width, height);
@@ -98,7 +100,7 @@ Display::openScreen()
   glutDisplayFunc(updateScreen);
   glutKeyboardFunc(input->keyDown);
   glutSpecialFunc(input->specialDown);
-  glutSpecialUpFunc(input->specialUp);
+ // glutSpecialUpFunc(input->specialUp);
   glutMouseFunc(input->mouseDown);
   glutPassiveMotionFunc(input->mouseMotion);
   glutMotionFunc(input->mouseMotion);

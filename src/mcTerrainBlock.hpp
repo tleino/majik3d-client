@@ -36,6 +36,7 @@ public:
 		Index left;
 		Index right;
 		bool marked;
+		bool enabled;
 
 		unsigned int error;
 	};
@@ -55,6 +56,7 @@ public:
 		DIR_NORTH = (0x2 << 12),
 		DIR_SOUTH = (0x4 << 12),
 		DIR_WEST  = (0x8 << 12),
+		DIR_SOME  = (0xf << 12),
 
 		DISABLED = 0xffff
 	};
@@ -212,29 +214,36 @@ public:
 		TerrainBlock *b = blockHash.get( m_x + x, m_y + y);
 
 		if (b)
-			return b->getVertex(i);
+			return b->getVertex(i, true);
 		else
 			return nullVertex;
 	}
 
-	inline vertex& getVertex (Index i)
+	inline vertex& getVertex (Index i, bool neighbour = false)
 	{
 		if (i == 0xffff)
 			return nullVertex;
 
-		if (i & DIR_WEST)
-			return getVertexFromNeighbour(DIR_WEST, i ^ DIR_WEST );
-		else if (i & DIR_EAST)
-			return getVertexFromNeighbour(DIR_EAST, i ^ DIR_EAST );
-		else if (i & DIR_NORTH)
-			return getVertexFromNeighbour(DIR_NORTH, i ^ DIR_NORTH );
-		else if (i & DIR_SOUTH)
-			return getVertexFromNeighbour(DIR_SOUTH, i ^ DIR_SOUTH );
+		if (neighbour)
+		{
+			if (i & DIR_WEST)
+				return getVertexFromNeighbour(DIR_WEST, i ^ DIR_WEST );
+			else if (i & DIR_EAST)
+				return getVertexFromNeighbour(DIR_EAST, i ^ DIR_EAST );
+			else if (i & DIR_NORTH)
+				return getVertexFromNeighbour(DIR_NORTH, i ^ DIR_NORTH );
+			else if (i & DIR_SOUTH)
+				return getVertexFromNeighbour(DIR_SOUTH, i ^ DIR_SOUTH );
+			else
+				return myVertices[i];
+		}
+		else if (i & DIR_SOME)
+			return nullVertex;
 		else
 			return myVertices[i];
 	}
 
-	inline vertex& getVertex (Index x, Index y)
+	inline vertex& getVertexFromCoords (Index x, Index y)
 	{
 		assert(!(x>DIM||y>DIM));
 
@@ -290,11 +299,11 @@ public:
 	{
 		const Index d = DIM>>(level+1);
 
-		vertex& vN = getVertex(x,	y+d);
-		vertex& vW = getVertex(x-d,	y);
-		vertex& vE = getVertex(x+d, y);
-		vertex& vS = getVertex(x,	y-d);
-		vertex& vC = getVertex(x,	y);
+		vertex& vN = getVertexFromCoords(x,	y+d);
+		vertex& vW = getVertexFromCoords(x-d,	y);
+		vertex& vE = getVertexFromCoords(x+d, y);
+		vertex& vS = getVertexFromCoords(x,	y-d);
+		vertex& vC = getVertexFromCoords(x,	y);
 
 		vN.left = getVertexIndex ( x, y, 0 );
 		vN.right = getVertexIndex ( x, y+2*d, (y+d == DIM) );
@@ -345,9 +354,44 @@ public:
 
 	inline void calculateErrors();
 
-	inline void exchangeBorderVertices(TerrainBlock&, direction);
+inline void
+exchangeBorderVertices()
+{
+	TerrainBlock *b;
+	
+	if (b = blockHash.get(m_x+1, m_y) )
+	{
+		for (int i = 0; i < DIM+1; i++)
+		{
+			vertex &t = getVertexFromCoords	( DIM, i );
+			vertex &o = b->getVertexFromCoords ( 0, i );
+
+			if ( t.enabled && !o.enabled )
+				b->resolveDependencies (o);
+			else if ( o.enabled && !t.enabled )
+				resolveDependencies (t);
+		}	
+	}
+
+	if (b = blockHash.get(m_x, m_y+1) )
+	{
+		for (int i = 0; i < DIM+1; i++)
+		{
+			vertex &t = getVertexFromCoords	( i, DIM );
+			vertex &o = b->getVertexFromCoords ( i, 0 );
+
+			if ( t.enabled && !o.enabled )
+				b->resolveDependencies (o);
+			else if ( o.enabled && !t.enabled )
+				resolveDependencies (t);
+		}	
+	}
+
+  
+}
 
 
+/*
 	class QSet
 	{
 	public:
@@ -377,26 +421,11 @@ public:
 		bool activeVertices[(DIM+1)*(DIM+1)];
 	};
 
+*/
 
 //	void draw();
-//	void draw_geometry();
+//	virtual void draw_geometry();
 
-	void render()//srGERD& gerd)
-	{
-		
-	}
-
-/*
-	inline void triangulateBlock ()
-	{
-
-		renderVertex ( v0 );
-		myBuffer.push ( v0 );
-		previousLevel = 0;
-
-
-	}
-*/
 	inline void addVertex(Index i)
 	{
 		v_index[listCounter++] = i;
@@ -407,39 +436,6 @@ public:
 		list[listCounter++] = list[listCounter-3];
 //		list[listCounter++] = list[listCounter-3];
 	}
-/*
-	inline void triangulateBlock(Index level, Index i0, Index i1, Index i2, Index i3, bool twoWay)
-	{
-		const d = DIM>>(level+1);
-
-		if (0) //centerVertexOnNextLevel)
-		{
-//			triangulateBlock ( level+1, i0, i0+d );
-//			triangulateBlock ( );
-//			triangulateBlock ( );
-//			triangulateBlock ( );
-		}
-		else
-		{
-
-			addVertex ( i0 );
-			addVertex ( i1 );
-			addVertex ( i0 );
-			addVertex ( i2 );
-
-			if (twoWay)
-			{
-//				addVertex ( corners[2] );
-//				swap();
-//				renderVertex ( 2back );
-//				renderVertex ( oneback );
-
-				addVertex ( i3 );
-//				addVertex ( corners[0] );
-			}
-		}
-	}
-	*/
 
 	inline void triangulateBlock()
 	{
@@ -474,7 +470,7 @@ public:
 		if (level <= 0)
 			return;
 
-		if ( set.contains(iT) )
+		if ( myVertices[iT].enabled )
 		{
 			triangulateQuadrant(iL, (iL+iR)/2, iT, level-1);
 			if ( !myBuffer.contains(iT) )
@@ -506,9 +502,9 @@ public:
 	inline void reset()
 	{
 //		calculateErrors();
-		set.reset();
-//		for (int k =0;k<(DIM+1)*(DIM+1);k++)
-//			vertices[k].marked = false;
+//		set.reset();
+		for (int k =0;k<(DIM+1)*(DIM+1);k++)
+			myVertices[k].enabled = false;
 
 	}
 
@@ -540,7 +536,8 @@ public:
 
 					if (v.error >= errMax || v.marked)
 					{
-						set.insert ( ind );
+//						set.insert ( ind );
+						v.enabled = true;
 
 						if (v.left != 0xffff)
 							getVertex(v.left).marked = true;
@@ -567,7 +564,7 @@ public:
 
 					if (v.error >= errMax || v.marked)
 					{
-						set.insert ( ind );
+						v.enabled = true;
 
 						if (v.left != 0xffff)
 							getVertex(v.left).marked = true;
@@ -591,23 +588,71 @@ public:
 		}
 */
 	}
-/*
-	inline void resolveDependencies ( Index i )
-	{ 
-		Index dep = getLeft ( i );
-		if (!set.contains( dep ))
+
+inline void
+resolveDependencies ( vertex& v )
+{ 
+//	vertex& v;// = getVertex( i );
+	if (!v.enabled)
+	{
+		v.enabled = true;
+	}
+
+	if (v.left != DISABLED)
+	{
+		vertex& left = getVertex ( v.left, true) ;
+
+		if (!left.enabled && &left != &nullVertex)
 		{
-			set.insert(dep);
-			resolveDependencies(dep);
-		} 
-		dep = getRight(i);
-		if (!set.contains( dep ))
-		{
-			set.insert(dep);
-			resolveDependencies(dep);
+//			TerrainBlock *b;
+			if (v.left & DIR_WEST)
+				blockHash.get(m_x-1, m_y)->resolveDependencies(left);
+			else if (v.left & DIR_EAST)
+				blockHash.get(m_x+1, m_y)->resolveDependencies(left);
+			else if (v.left & DIR_NORTH)
+				blockHash.get(m_x, m_y+1)->resolveDependencies(left);
+			else if (v.left & DIR_SOUTH)
+				blockHash.get(m_x, m_y-1)->resolveDependencies(left);
+			else resolveDependencies( left );
 		}
 	}
-*/
+
+	if (v.right != DISABLED)
+	{
+		vertex& right = getVertex ( v.right, true) ;
+
+		if (!right.enabled && &right != &nullVertex)
+		{
+			if (v.right & DIR_WEST)
+				blockHash.get(m_x-1, m_y)->resolveDependencies(right);
+			else if (v.right & DIR_EAST)
+				blockHash.get(m_x+1, m_y)->resolveDependencies(right);
+			else if (v.right & DIR_NORTH)
+				blockHash.get(m_x, m_y+1)->resolveDependencies(right);
+			else if (v.right & DIR_SOUTH)
+				blockHash.get(m_x, m_y-1)->resolveDependencies(right);
+			else resolveDependencies( right );
+			
+		}
+	}
+
+
+
+/*	Index dep = getLeft ( i );
+	if (!set.contains( dep ))
+	{
+		set.insert(dep);
+		resolveDependencies(dep);
+	} 
+	dep = getRight(i);
+	if (!set.contains( dep ))
+	{
+		set.insert(dep);
+		resolveDependencies(dep);
+	}
+	*/
+}
+
 
 	DWORD	getID()
 	{
@@ -617,7 +662,7 @@ public:
 public:
 	vertex	myVertices[(DIM+1)*(DIM+1)];
 
-	QSet	set;
+//	QSet	set;
 //	srVector3 coords[(DIM+1)*(DIM+1)];
 //	int		err[(DIM+1)*(DIM+1)];
 //	bool	marked[(DIM+1)*(DIM+1)];
