@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <pu.h>
 #include "Majik.hpp"
 
 Display::Display()
@@ -26,7 +27,7 @@ Display::Display()
    height = 600;
    bpp = 32;
 
-   cursor = new Cursor;
+   // cursor = new Cursor;
    
    #ifdef DEBUG
 	 debug->put("Display constructor");
@@ -39,7 +40,7 @@ Display::Display(int w, int h, int b)
    height = h;
    bpp = b;
 
-   cursor = new Cursor;
+   // cursor = new Cursor;
    
    #ifdef DEBUG
 	 debug->put("Display constructor: width=%d height=%d bpp=%d", width, height, bpp);
@@ -73,15 +74,28 @@ Display::openScreen()
    glutDisplayFunc(updateScreen);
    glutKeyboardFunc(input->keyDown);
    glutSpecialFunc(input->specialDown);
-   glutPassiveMotionFunc(input->mousePassiveMotion);
-   glutIdleFunc(idle);
-
+   glutMouseFunc(input->mouseDown);
+   glutPassiveMotionFunc(mouseMotion);
+   //glutMotionFunc(mouseMotion);
+   //glutIdleFunc(idle);
+   
+   /* PLIB: Picoscopic User Interface */
+   puInit();
+   puShowCursor();
+   
    landscape->init();
-   cursor->init();
+   // cursor->init();
    
    #ifdef DEBUG
 	 debug->put("Screen opened.");
    #endif
+}
+
+void
+Display::mouseMotion(int x, int y)
+{
+   puMouse (x, y);
+   glutPostRedisplay();
 }
 
 void 
@@ -96,12 +110,13 @@ Display::closeScreen()
    #endif
 }
 
-void
+/*void
 Display::idle()
 {
 //   landscape->angle += 2.0;
+   puDisplay();
    glutPostRedisplay();
-}
+}*/
 
 void 
 Display::updateScreen()
@@ -110,11 +125,15 @@ Display::updateScreen()
    
    landscape->drawLandscape();
    
-   /* INSERT HERE: Draw menus etc */
-   
-   display->cursor->draw();
+   /* Draw menus etc using PUI (part of PLIB) */
+   puDisplay();
+
+   /* Display the cursor. FIXME: Should be displayed only if using hardware
+      acceleration which doesn't provide it's own cursor */
+   // display->cursor->draw();
    
    glutSwapBuffers();
+   glutPostRedisplay();
 }
 
 void

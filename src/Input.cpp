@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <pu.h>
 #include "Majik.hpp"
 
 Input::Input()
@@ -90,12 +91,11 @@ Input::specialDown(int key, int x, int y)
 }
 
 void
-Input::mousePassiveMotion(int x, int y)
+Input::mouseDown(int button, int updown, int x, int y)
 {
-//   #ifdef DEBUG
-//	 debug->put("Mouse moved to: %d %d", x, y);
-//   #endif
-	 
-   display->cursor->x_pos = x;
-   display->cursor->y_pos = y;   
+      puMouse (button, updown, x, y);
+#ifdef DEBUG
+      debug->put("mouseDown: %d %d %d %d", button, updown, x, y);
+#endif /* DEBUG */
+      glutPostRedisplay();
 }

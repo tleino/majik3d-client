@@ -26,7 +26,7 @@ class Input
    ~Input();
    static void keyDown(unsigned char, int, int);
    static void specialDown(int, int, int);
-   static void mousePassiveMotion(int, int);
+   static void mouseDown(int,int,int,int);
 };
 
 #endif /* __INPUT_HPP__ */
