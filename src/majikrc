@@ -11,7 +11,7 @@
 # values will do. 
 
 # Majik host configuration (port 4000 for -M3, 4001 for -current testing).
-server=195.197.61.60
+server=majik.majik3d.org
 port=4000
 
 # Screen initialization.
