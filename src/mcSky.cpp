@@ -27,7 +27,7 @@
 #include "mcSky.hpp"
 #include "mcConfig.hpp"
 
-#define S 6999.0f
+#define S 4999.0f
 #ifndef M_PI
 #define M_PI 3.141592653f
 #endif /* M_PI */
