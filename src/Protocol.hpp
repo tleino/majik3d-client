@@ -39,6 +39,8 @@
 #define CMD_MAP        189
 ///
 #define CMD_PROMPT     220
+///
+#define CMD_SAYHIDE    223
 
 /** A protocol class. This class parses commands sent by the server. */
 

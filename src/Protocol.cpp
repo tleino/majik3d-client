@@ -176,6 +176,22 @@ Protocol::parseCommand(char *input)
 		 ob = ob->next;
 	  }
 	  break;
+	case CMD_SAYHIDE:
+	  sscanf(data, "%d", &id);
+	  
+	  ob = Object::first;
+	  
+	  while(ob != NULL)
+		{
+		   if(ob->id == id)
+			 {
+				cout << data << endl;
+				ob->puhe->hide();
+			 }
+		   else
+			 ob = ob->next;
+		}
+	  break;
 	case CMD_ADD_OBJECT:
 	  if (sscanf(data, "%d %f %f %f %s", &id, &x, &y, &h, file_name) != 5) {
 		 error->put (ERROR_WARNING, "Invalid parameters to protocol command CMD_ADD_OBJECT.");

@@ -76,7 +76,7 @@ void inputCB (puObject *o)
 	  scene->initialized = 4;
 	  sock->writePacket ("%d %s", display->inp_command, val);
 	  display->inp_command = CMD_SAY;
-	  o->setSize(display->width-5, 5+20 ) ;
+	  o->setSize(display->width-5, 5+20);
 	  if (display->nomenu == 0)
 	    menu->menuBar->reveal();
 	  
