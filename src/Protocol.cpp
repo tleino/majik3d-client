@@ -250,6 +250,13 @@ Protocol::parseCommand(char *input)
 	  if (b_add > 1.0f)
 		b_add = 1.0f;
 	  sgVec4 skycol ; sgSetVec4 ( skycol, 0.0f+r_add, 0.0f+g_add, 0.0f+b_add, 1.0f ) ;
+	  glFogf ( GL_FOG_DENSITY, 0.035f / 100.0f ) ;
+	  glFogfv( GL_FOG_COLOR  , skycol    ) ;
+	  glFogf ( GL_FOG_START  , 3500.0       ) ;
+	  glFogf ( GL_FOG_END    , 5000.0      ) ;
+	  glFogi ( GL_FOG_MODE   , GL_EXP2   ) ;
+	  // glHint ( GL_FOG_HINT   , GL_NICEST ) ;
+	  glEnable ( GL_FOG ) ;
 	  glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
 	  break;
 	default:
