@@ -3,9 +3,6 @@ To run this binary you'll need:
  - Mesa and GLUT (in MesaDemos package) libraries installed
      ftp://ftp.mesa3d.org/mesa/MesaLib-3.0.tar.gz
      ftp://ftp.mesa3d.org/mesa/MesaDemos-3.0.tar.gz
- - libpng and zlib installed
-     ftp://ftp.uu.net/graphics/png/libpng-1.0.3.tar.gz
-     ftp://ftp.uu.net/graphics/png/zlib-1.1.3.tar.gz
  - PLIB installed
      http://www.woodsoup.org/~sbaker/plib/dist/plib-1.0.12.tar.gz
  - X Window System
@@ -22,6 +19,13 @@ you need to do this:
   # ./majik
   # exit
   $ xhost -
+
+Right now 3D acceleration is simply 'required'. On PII233 without hardware
+acceleration the client can only give 0.1 frames per second on 640x480
+resolution. That is because of linear mipmapping we are using now by default,
+temporarily, though. So, wait a moment or get yourself an accelerator card.
+Getting one is preferable and highly recommended. This is not the only
+project for which you would like to have such a card.
 
 The keys working in the client:
 
