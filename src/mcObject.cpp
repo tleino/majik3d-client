@@ -51,6 +51,7 @@ Object::Object()
   movecounter = 0;
   hotFixed = false;
   trans = NULL;
+  m_selector = NULL;
   obu = NULL;
   puhe = NULL;
 
@@ -124,6 +125,7 @@ Object::update(float t)
 		SG_DEGREES_TO_RADIANS)*m_moveSpeed*t;
 
 	moveTo(tempPos);
+
 }
 
 void
@@ -198,6 +200,14 @@ Object::getLenY()
   return lenY;
 }
 
+void Object::setVisible(bool v)
+{
+	if (!v)
+		m_selector->select(0);
+	else
+		m_selector->select(1);
+}
+
 void
 Object::init(int id, char *file_name)
 {
@@ -205,7 +215,8 @@ Object::init(int id, char *file_name)
 
   this->id = id;
   strcpy(this->file_name, file_name);
-  
+
+  m_selector = new ssgSelector;
   trans = new ssgTransform;
   
   ssgEntity *pengu = ssgLoadAC(file_name);
@@ -215,7 +226,10 @@ Object::init(int id, char *file_name)
   ssgStripify        ( trans  ) ;
   trans  -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
   
-  scene->getSceneRoot() -> addKid ( trans ) ;
+  m_selector->addKid(trans);
+  scene->getSceneRoot() -> addKid ( m_selector ) ;
+
+  setVisible(true);
   
   puhe = new puText(0, 0);
   puhe->setLabel("");

@@ -203,12 +203,14 @@ Input::specialDown(int key, int x, int y)
       glutWarpPointer (display->getWidth()/2, display->getHeight()/2);
 	  scene->getCamera()->setMode(mcCamera::FIRSTPERSON);
       config->setCameraMode(1);
+	  scene->getPlayer()->setVisible(false);
       break;
     case GLUT_KEY_F1:
       glutSetCursor (GLUT_CURSOR_INHERIT);
       glutWarpPointer (display->getWidth()/2, display->getHeight()/2);
 	  scene->getCamera()->setMode(mcCamera::BEHIND);
       config->setCameraMode(0);
+	  scene->getPlayer()->setVisible(true);
       break; 
     case GLUT_KEY_F12:
       break;

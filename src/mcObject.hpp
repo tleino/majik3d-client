@@ -78,6 +78,8 @@ public:
   /// FIXME: A kludge.
   bool hotFixed;
 
+		void	setVisible		(bool);
+
 		bool	initialized		() { return m_initialized; }
 
 		void	setHeading		(float);
@@ -107,6 +109,7 @@ private:
 	static Object *last;
 	static Object *first;
 
+	ssgSelector		*m_selector;
 	ssgTransform *trans;
 	ssgEntity *obu;
 	puText *puhe;  
