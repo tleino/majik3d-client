@@ -7,7 +7,7 @@ Socket::Socket()
 {
    ip = NULL;
    #ifdef DEBUG
-	 fprintf(stderr, "Socket constructor\n");
+	 Debug("Socket constructor");
    #endif
 }
 
@@ -16,7 +16,7 @@ Socket::Socket(char *addr, int nport)
    strcpy(ip, addr);
    port = nport;
    #ifdef DEBUG
-	 fprintf(stderr, "Socket constructor: ip=%s, port=%d\n", ip, port);
+	 Debug("Socket constructor: ip=%s, port=%d", ip, port);
    #endif
 }
 
@@ -25,7 +25,7 @@ Socket::~Socket()
    if(ip != NULL)
 	 free(ip);
    #ifdef DEBUG
-	 fprintf(stderr, "Socket destructor\n");
+	 Debug("Socket destructor");
    #endif
 }
 
