@@ -163,7 +163,7 @@ Protocol::parseCommand(char *input)
       break;
     case CMD_SAY:
       char name[80];
-      char str[80];
+      char str[1000];
       
       sscanf(data, "%d %s %[^\n]", &id, name, str);
       debug->put ("id=%d name=%s str=%s", id, name, str);
