@@ -6,7 +6,9 @@
 #include <sg.h>
 #include <ssg.h>
 
+#ifdef WIN32
 #pragma inline_recursion(on)
+#endif
 
 #ifndef WIN32
 typedef unsigned int DWORD;
@@ -234,7 +236,7 @@ public:
 
 	inline vertex& getVertex (Index x, Index y)
 	{
-		assert(!(x<0||x>DIM||y<0||y>DIM));
+		assert(!(x>DIM||y>DIM));
 
 		return myVertices[ x + (DIM+1) * y];
 	}

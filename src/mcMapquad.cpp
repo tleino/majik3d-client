@@ -395,7 +395,7 @@ Mapquad::selectLOD(int level, int x, int y)
 {
 	 if (this->level == NUM_LEVELS - 1)
 	 {
-		int dist = sqrt( (x-mid_x)*(x-mid_x) + (y-mid_y)*(y-mid_y) );
+		int dist = (int) sqrt( (x-mid_x)*(x-mid_x) + (y-mid_y)*(y-mid_y) );
 
 		if (dist<2500)
 		{

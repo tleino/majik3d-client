@@ -118,7 +118,7 @@ Protocol::parseCommand(char *input)
 
 		sgCoord tuxPos = ob->getPos();
 
-		if (abs(tempPos[0]-tuxPos.xyz[0]) > 10 || abs(tempPos[1]-tuxPos.xyz[1]) > 10)
+		if (fabs(tempPos[0]-tuxPos.xyz[0]) > 10 || fabs(tempPos[1]-tuxPos.xyz[1]) > 10)
 		{
 			sgCopyVec3 (tempPos, tuxPos.xyz);
 
