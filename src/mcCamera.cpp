@@ -16,7 +16,7 @@ mcCamera::mcCamera()
 	m_mode = FREE;
 	sgSetVec3 ( m_position.xyz, 0.0, 0.0, 0.0 );
 	sgSetVec3 ( m_position.hpr, 0.0, 0.0, 0.0 );
-}
+} 
 
 mcCamera::~mcCamera()
 {
@@ -56,8 +56,14 @@ mcCamera::update(float t)
 
 		tempPos.xyz[2] = scene->getHOT(tempPos.xyz[0], tempPos.xyz[1]) + 10.0;
 
+		sgVec2 loc1;
+		sgVec2 loc2;
+
+		sgSetVec2(loc1, tempPos.xyz[0],		tempPos.xyz[1]);
+		sgSetVec2(loc2, targetPos.xyz[0],	targetPos.xyz[1]);
+
 		tempPos.hpr[0] = targetPos.hpr[0];
-		tempPos.hpr[1] = -20.f;
+		tempPos.hpr[1] = 90.0 - SG_RADIANS_TO_DEGREES*atan2(sgDistanceVec2(loc1, loc2), (targetPos.xyz[2] + m_target->getLenY() - tempPos.xyz[2]) );
 		tempPos.hpr[2] = 0.f;
 
 		float M;
