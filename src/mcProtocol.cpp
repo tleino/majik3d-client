@@ -151,22 +151,23 @@ Protocol::parseCommand(char *input)
 
       break;
     case CMD_SAY:
-      char name[80];
-      char str[1000];
+//      char name[80];
+      char *str;
+	  str = new char[1000];
       
-      if (sscanf(data, "%d %s %[^\n]", &id, name, str) < 3)
+      if (sscanf(data, "%d %[^\n]", &id, str) < 2)
 	  {
 			error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_SAY.");
 			break;
 	  }
 
-      debug->put ("id=%d name=%s str=%s", id, name, str);
+//      debug->put ("id=%d name=%s str=%s", id, name, str);
       
       ob = Object::getObject(id);
       if (ob)
 	  {
-	      ob->setSayString(debug->string("%s: %s", name, str));
+	      ob->setSayString(str);
 	      ob->revealSayString();
 	  }
 	  // else ERROR - object not found
@@ -217,14 +218,13 @@ Protocol::parseCommand(char *input)
 	}
       break;
     case CMD_MAP:
-      char *tmp;
-      tmp = new char[16*16+1];
+      char tmp[16*16+1];
+      
       
       if (sscanf(data, "%d %d %d %s", &map_level, &map_x, &map_y, tmp) !=4)
 	{
 	  error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_MAP.");
-	  delete tmp;
 	  break;
 	}
 
@@ -256,9 +256,10 @@ Protocol::parseCommand(char *input)
 		  &turbidity) == 4)
 	{
 	  printf ("CMD_SUN_POS %f %f %f %f\n", heading, pitch, luminance, turbidity);
-	  mc_sky->setLuminanceFactor(luminance);
-	  mc_sky->setSunPosition(heading, pitch); 
-	  mc_sky->setTurbidity(turbidity);
+
+	  scene->getSky()->setLuminanceFactor(luminance);
+	  scene->getSky()->setSunPosition(heading, pitch); 
+	  scene->getSky()->setTurbidity(turbidity);
 	  scene->redrawSky();
 	 //scene->sky_entity = mc_sky->Draw();
 	}

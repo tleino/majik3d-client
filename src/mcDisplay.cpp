@@ -149,6 +149,7 @@ Display::updateScreen()
   while (tmp != NULL)
     {
       protocol->parseCommand(tmp);
+	  free(tmp); // hmpf something better? streams would be nice..
       tmp = sock->readPacket();
     }
   

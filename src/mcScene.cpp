@@ -46,6 +46,7 @@ ssgTransform  *sky_dome = NULL;
 
 Scene::Scene()
 {    
+	m_sky = new mcSky(16, 8);
 	m_playerController = new mcPlayerController();
 	m_cameraController = new mcCameraController();
   debug->put("Scene constructor");
@@ -92,7 +93,7 @@ Scene::redrawSky()
     }
   
   sky_dome = new ssgTransform ();
-  sky_entity = mc_sky->Draw();
+  sky_entity = m_sky->Draw();
   sky_dome->addKid (sky_entity);
 //  ssgFlatten (sky_entity);
 //  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
@@ -320,7 +321,7 @@ Scene::drawText(Object *o, sgVec3 object_pos)
 {
   assert ( o );
 
-  if (o != NULL && !strlen(o->getTextObject()->getLabel()) && o != tuxi)
+  if (!strlen(o->getTextObject()->getLabel()))
     return;
 
   sgMat4 ploo =

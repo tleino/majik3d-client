@@ -121,8 +121,8 @@ Mapquad::~Mapquad()
   if (parent != NULL)
     parent->decRef();
 
-  if (block)
-	  delete block;
+ 
+  delete block;
   
   if (level == NUM_LEVELS - 1 )
     {

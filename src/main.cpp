@@ -39,7 +39,7 @@
 #include "mcProtocol.hpp"
 #include "mcPerlin.hpp"
 #include "mcMapquad.hpp"
-#include "mcSky.hpp"
+//#include "mcSky.hpp"
 
 bool quit = false;
 mcError *error = NULL;
@@ -55,7 +55,7 @@ Protocol *protocol = NULL;
 Perlin *perlin = NULL;
 Overlay *overlay = NULL;
 Mapquad *Mapquad::root_map = NULL;
-mcSky *mc_sky = NULL;
+//mcSky *mc_sky = NULL;
 
 
 int
@@ -79,7 +79,7 @@ main(int argc, char **argv)
   protocol = new Protocol;
   perlin = new Perlin;
   overlay = new Overlay;
-  mc_sky = new mcSky(16, 8);
+//  mc_sky = new mcSky(16, 8);
   Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
 
 

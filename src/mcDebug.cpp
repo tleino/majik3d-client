@@ -66,7 +66,7 @@ Debug::string(char *fmt, ...)
 void
 Debug::put(char *fmt, ...)
 {
-  char *buf = new char[1000];
+  char buf[1000];
   memset(buf, 0, sizeof(buf));
   va_list vl;
   va_start (vl, fmt);
@@ -76,5 +76,4 @@ Debug::put(char *fmt, ...)
   if (config->getDebugLevel() > 0)
     cerr << "DEBUG: " << buf << endl;
   
-  delete buf;
 }

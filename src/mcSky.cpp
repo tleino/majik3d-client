@@ -57,11 +57,11 @@ mcSky::mcSky(int x_segs, int y_segs)
 
 mcSky::~mcSky()
 {
-   if (this->sky != NULL)
+//   if (this->sky != NULL)
 	 delete[] sky;
-   if (this->scolors != NULL)
+  // if (this->scolors != NULL)
 	 delete[] scolors;
-   if (this->scoords != NULL)
+//   if (this->scoords != NULL)
 	 delete[] scoords;
 }
 

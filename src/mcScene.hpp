@@ -27,6 +27,7 @@
 class mcPlayerController;
 class mcCameraController;
 class Object;
+class mcSky;
 
 /** A scene class. This class handles the 3D scene. */
 
@@ -60,6 +61,7 @@ public:
 
   mcPlayerController	*getPlayerController() { return m_playerController; }
   mcCameraController	*getCameraController() { return m_cameraController; }
+  mcSky	*getSky()	{ return m_sky; }
 
   ssgRoot	*getSceneRoot	()	{ return scene_root; }
 
@@ -69,6 +71,7 @@ private:
 
 	ssgRoot *scene_root;
 	ssgEntity *sky_entity;
+	mcSky	*m_sky;
 };
 
 extern Scene *scene; 
