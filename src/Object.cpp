@@ -116,6 +116,8 @@ Object::getLenY()
 void
 Object::init(int id, char *file_name)
 {
+  assert ( (id > 0) && file_name );
+
   this->id = id;
   strcpy(this->file_name, file_name);
   
@@ -249,6 +251,7 @@ Object::getNext()
 void
 Object::setSayString(char *str)
 {
+  assert ( str );
   puhe->setLabel(str);
 }
 

@@ -55,6 +55,8 @@ Scene::~Scene()
 void
 Scene::addSpecial(float x, float y, char *model, bool cutout)
 {     
+  assert ( model );
+
   ssgTransform *trans = new ssgTransform ();
   ssgEntity *entity = ssgLoadAC (model);
   sgCoord tmpPos;
@@ -242,8 +244,9 @@ Scene::update()
        
        ob->setScale( scale );
        ob = ob->getNext();
+       
      }
-
+   
    sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
    sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
    
@@ -274,6 +277,8 @@ Scene::update()
 void
 Scene::drawText(Object *o, sgVec3 object_pos)
 {
+  assert ( o );
+
   if (o != NULL && !strlen(o->getTextObject()->getLabel()) && o != tuxi)
     return;
 

@@ -23,13 +23,22 @@
 
 /// Size of one map chunk.
 #define   MAP_SIZE    16
+#define   NUM_VISIBLE_LEVELS 5
 
 /** A map chunk. */
+
 
 class Mapquad
 {
 public:
-  ///
+
+  struct Map_data
+  {
+    char *terrain;
+    double *height;
+  };
+
+ ///
   Mapquad(Mapquad *parent, int level, int top_x, int top_y);
   ~Mapquad();
   
@@ -48,13 +57,13 @@ public:
   Mapquad *child4;
   
   ///
-  char *submap1;
+  Map_data submap1;
   ///
-  char *submap2;
+  Map_data submap2;
   ///
-  char *submap3;
+  Map_data submap3;
   ///
-  char *submap4;
+  Map_data submap4;
   
   ///
   ssgSelector  *lod_switch;
@@ -64,6 +73,7 @@ public:
   
   ///
   ssgTransform *trans;
+  
   //   Object *inventory;
   //   Object *observers;
   
@@ -82,15 +92,13 @@ public:
   ///
   int map_requested;
   ///
-  char *terrain_map;
-  //   char zmap[45646];
+  Map_data map_data[NUM_VISIBLE_LEVELS];
   ///
   int  incRef  ();
   ///
   int  decRef  ();
   /// Clean up the map from the memory when it is no longer needed.
   void cleanUp ();
-  
   ///
   Mapquad *getChild1();
   ///
@@ -106,13 +114,13 @@ public:
   ///
   char *getMap ();
   ///
-  void setMap (char *);
+  void setMap (Map_data);
   ///
-  void setSubMap (int, char *);
+  void setSubMap (int, Map_data);
   ///
   void selectLOD(int);
   ///
-  void divideMap(int, char *);
+  void divideMap(int, Map_data&, Map_data&, Map_data&, Map_data&, Map_data&);
   ///
   void show();
   ///

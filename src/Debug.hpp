@@ -19,6 +19,9 @@
 #ifndef __DEBUG_HPP__
 #define __DEBUG_HPP__
 
+#include <assert.h>
+
+
 /** A debugging class. All debug messages should go through this class,
     and thus maintaining consistency and possibly in future specifying
     debug levels and switching debug on/off runtime. */

@@ -47,6 +47,8 @@ Protocol::~Protocol()
 void 
 Protocol::parseCommand(char *input)
 {
+  assert ( input );
+
   int command;
   int found = 0, id;
   int map_x, map_y, map_level;
@@ -248,7 +250,12 @@ Protocol::parseCommand(char *input)
 			       map_y), "w");
       fprintf (fp, "%s", tmp);
       fclose (fp);
-      Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(tmp);
+      
+      Mapquad::Map_data map_data;
+      
+      map_data.terrain = tmp;
+      
+      Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(map_data);
       break;
     case CMD_PROMPT:
       // The data written to the prompt is handled in the input object's

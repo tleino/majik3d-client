@@ -44,9 +44,17 @@
 #define ONLINE_TERRAIN_RANGE      ((float)(TILE_GRID_SIZE/2  )* TILE_SIZE )
 #define VISUAL_RANGE              ((float)(TILE_GRID_SIZE/2-1)* TILE_SIZE )
 
+
+double
+linearInterpolate(double a, double b, double c)
+{
+  return ( 1.0 - c ) * a + c * b;
+}
+
 ssgSimpleState *state    = NULL ;
 
 ssgTransform   *tilegrid [ TILE_GRID_SIZE ][ TILE_GRID_SIZE ] ;
+
 
 Landscape::Landscape()
 {
@@ -64,6 +72,8 @@ Landscape::~Landscape()
 void 
 Landscape::init( ssgRoot *scene_root)
 {
+  assert ( scene_root );
+
   terrain  = new ssgTransform ;
   state    = new ssgSimpleState ;
   state -> setTexture ( "gfx/bumpnoise.rgb") ;
@@ -91,30 +101,88 @@ ssgBranch *
 Landscape::createTileLOD ( int level, int x, int y, int ntris,
 			   char *terrain_map ) 
 {
+  assert ( terrain_map );
+
   sgVec4 *scolors = new sgVec4 [ (ntris+1) * (ntris+1) ] ;
   sgVec2 *tcoords = new sgVec2 [ (ntris+1) * (ntris+1) ] ;
   sgVec3 *snorms  = new sgVec3 [ (ntris+1) * (ntris+1) ] ;
   sgVec3 *scoords = new sgVec3 [ (ntris+1) * (ntris+1) ] ;
+
+  float zz, zzN, zzE;
   
   for ( int j = 0 ; j < (ntris+1) ; j++ )
     for ( int i = 0 ; i < (ntris+1) ; i++ )
       {
-	float zz = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
-						TILE_SIZE)/1000,
-					       (y + (float)j/(float)ntris*
-						TILE_SIZE)/1000 );
+	if (j == 0 || j == ntris && level == 0) 
+	  {
+	    if (i % 2)
+	      zz = linearInterpolate( 1500*perlin->perlinNoise_2D((x + (float)(i-1)/(float)ntris*
+								   TILE_SIZE)/1000.0,
+								  (y + (float)j/(float)ntris*
+								   TILE_SIZE)/1000.0 ),
+				      1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)ntris*
+								   TILE_SIZE)/1000.0,
+								  (y + (float)j/(float)ntris*
+								   TILE_SIZE)/1000.0 ),
+				      0.5 );
+	    else
+	      zz = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
+						      TILE_SIZE)/1000.0,
+						     (y + (float)j/(float)ntris*
+						      TILE_SIZE)/1000.0 );
+
+	    zzN = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
+						     TILE_SIZE)/1000,
+						    (y + (float)(j+1)/
+						     (float)ntris*TILE_SIZE)/1000
+						    );
+	    
+	    zzE = 1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)
+						     ntris*TILE_SIZE)/1000,
+						    (y + (float)j/(float)ntris*
+						     TILE_SIZE)/1000 );
+	  }
 	
-	float zzN = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
-						 TILE_SIZE)/1000,
-						(y + (float)(j+1)/
-						 (float)ntris*TILE_SIZE)/1000
-						);
+	else if (i == 0 || i == ntris) 
+	  {  
+	    zz = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
+						    TILE_SIZE)/1000,
+						   (y + (float)j/(float)ntris*
+						    TILE_SIZE)/1000 );
 	
-	float zzE = 1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)
-						 ntris*TILE_SIZE)/1000,
-						(y + (float)j/(float)ntris*
-						 TILE_SIZE)/1000 );
+	    zzN = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
+						     TILE_SIZE)/1000,
+						    (y + (float)(j+1)/
+						     (float)ntris*TILE_SIZE)/1000
+						    );
+	    
+	    zzE = 1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)
+						     ntris*TILE_SIZE)/1000,
+						    (y + (float)j/(float)ntris*
+						     TILE_SIZE)/1000 );
+	  }
+	else
+	  {
+	    zz = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
+						    TILE_SIZE)/1000,
+						   (y + (float)j/(float)ntris*
+						    TILE_SIZE)/1000 );
 	
+	    zzN = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
+						     TILE_SIZE)/1000,
+						    (y + (float)(j+1)/
+						     (float)ntris*TILE_SIZE)/1000
+						    );
+	    
+	    zzE = 1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)
+						     ntris*TILE_SIZE)/1000,
+						    (y + (float)j/(float)ntris*
+						     TILE_SIZE)/1000 );
+	    
+
+
+	  }
+
 	float rr = (float) 0.2 ;
 	float gg;
 	float bb = (perlin->perlinNoise_2D((x + (float)i/(float)ntris*
@@ -183,6 +251,8 @@ void
 Landscape::createTile ( ssgTransform *tile, int x, int y,
 			ssgSimpleState *state ) 
 {
+  
+
   /*
     float rr[] = { 0.0f, 1000.0f, 2000.0f, 8000.0f } ;
     ssgRangeSelector *lod = new ssgSelector () ;

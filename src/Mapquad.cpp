@@ -64,13 +64,11 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
   
   this->reference_count = 0;
   this->map_requested = 0;
-   this->current_lod = -1;
-   
-  terrain_map = NULL;
-  
-  lod_switch = new ssgSelector() ;
-  trans = new ssgTransform() ;
-  
+  this->current_lod = -1;
+
+  lod_switch = new ssgSelector();
+  trans = new ssgTransform();
+
   sgVec3 pos;
   pos[0] = (float)top_x;
   pos[1] = (float)top_y;
@@ -92,8 +90,17 @@ Mapquad::~Mapquad()
   if (parent != NULL)
     parent->decRef();
   
-  if (terrain_map != NULL)
-    delete terrain_map;
+  if (level == NUM_LEVELS - 1 )
+    {
+      for (int i = 0; i < NUM_VISIBLE_LEVELS; i++)
+	{
+	  if (map_data[i].terrain != NULL)
+	    delete map_data[i].terrain;
+		  
+	  if (map_data[i].height != NULL)
+	    delete map_data[i].height;
+	}
+    }
 }
 
 int
@@ -245,66 +252,69 @@ Mapquad::getMapquad(int level, int x, int y)
 	 return this->getChild2()->getMapquad (level, x, y);
        else
 	 return this->getChild4()->getMapquad (level, x, y);     
-     }      
+     }
 }
 
 char *
 Mapquad::getMap()
 {
-  return terrain_map;
+  //  return map_data[][][;
+  return "haa, olen kartta!\0";
 }
 
 void
-Mapquad::setMap(char *terrain_map)
+Mapquad::setMap(Map_data terrain_map)
 {  
   mapReceived = true;
-  //  this->terrain_map = terrain_map;
+  //this->terrain_map = terrain_map;
   this->setSubMap(NUM_LEVELS - 1 - level, terrain_map);
 }
 
+
 void
-Mapquad::setSubMap(int lod, char *submap)
-{	 
+Mapquad::setSubMap(int lod, Map_data submap)
+{
+  assert( lod <= NUM_VISIBLE_LEVELS);
+
   if (level == NUM_LEVELS - 1)
     {
+      map_data[lod] = submap;
+
       lod_indices[lod] = lod_switch->getNumKids();
       
       lod_switch->addKid ( landscape->createTileLOD (level, top_x, top_y,
 						     MAP_SIZE / pow(2, lod ),
-						     terrain_map) );
-      
+						     map_data[lod].terrain ) );
       if (lod_switch->getNumKids() == 1)
 	{
 	  landscape->terrain->addKid ( trans );
 	  
 	  trans->addKid ( lod_switch );
-	  
-	}
-	   
-	   if (lod == current_lod)
-		 lod_switch->selectStep ( lod_indices[lod] );
+	}   
+      if (lod == current_lod)
+	lod_switch->selectStep ( lod_indices[lod] );
 	   
       
       /* Add some trees */
-  /*  horrible kludge  
+      /*  horrible kludge  
       if (rand() % 3) {
-	scene->addSpecial (top_x, top_y, "tree.ac", true);
+      scene->addSpecial (top_x, top_y, "tree.ac", true);
       }
       
       if ((300 > (float) top_x-256.0f && 300 < (float) top_x+256.0f) &&
 	  (300 > (float) top_y-256.0f && 300 < (float) top_y+256.0f)) {
 	scene->addSpecial(300, 300, "snowman.ac", false);
       }
-    */  
+  */  
       return;
     }
+
+  //  Map_data submap1;
+  // Map_data submap2;
+  // Map_data submap3;
+  // Map_data submap4;
   
-  submap1 = NULL;
-  submap2 = NULL;
-  submap3 = NULL;
-  submap4 = NULL;
-  
-  divideMap ( lod, submap ); //, submap1, submap2, submap3, submap4 );
+  divideMap ( lod, submap, submap1, submap2, submap3, submap4 );
   
   getChild1() -> setSubMap ( lod, submap1 );
   getChild2() -> setSubMap ( lod, submap2 );
@@ -350,8 +360,10 @@ Mapquad::selectLOD(int lod)
 	    {
 	      fgets (buf, 256, fp);
 	      fclose (fp);
+	      Map_data hop;
+	      hop.terrain = buf;
 	      Mapquad::root_map->getMapquad(level-lod, top_x,
-					    top_y)->setMap(buf);
+					    top_y)->setMap(hop);
 	    }
 	  else
 	    {
@@ -363,31 +375,28 @@ Mapquad::selectLOD(int lod)
 }
 
 void
-Mapquad::divideMap(int lod, char *submap) 
+Mapquad::divideMap(int lod, Map_data& submap, Map_data& submap1, Map_data& submap2, Map_data& submap3, Map_data& submap4) 
 {
   int submap_size = MAP_SIZE / (2*(lod - (NUM_LEVELS - level) + 2 ));
   
-  submap1 = new char[submap_size*submap_size+1];
-  submap2 = new char[submap_size*submap_size+1];
-  submap3 = new char[submap_size*submap_size+1];
-  submap4 = new char[submap_size*submap_size+1];
+  submap1.terrain = new char[submap_size*submap_size+1];
+  submap2.terrain = new char[submap_size*submap_size+1];
+  submap3.terrain = new char[submap_size*submap_size+1];
+  submap4.terrain = new char[submap_size*submap_size+1];
 
   for (int j=0; j < submap_size; j++)
     for (int i=0; i < submap_size; i++)
       {
-	submap1[j * submap_size + i] = submap[j * submap_size*2 + i];
-	submap2[j * submap_size + i] = submap[j * submap_size*2 + i +
-					     submap_size];
-	submap3[j * submap_size + i] = submap[(j+submap_size) *
-					     submap_size*2 + i];
-	submap4[j * submap_size + i] = submap[(j+submap_size) *
-					     submap_size*2 + i + submap_size];
+	submap1.terrain[j * submap_size + i] = submap.terrain[j * submap_size*2 + i];
+	submap2.terrain[j * submap_size + i] = submap.terrain[j * submap_size*2 + i + submap_size];
+	submap3.terrain[j * submap_size + i] = submap.terrain[(j+submap_size) * submap_size*2 + i];
+	submap4.terrain[j * submap_size + i] = submap.terrain[(j+submap_size) * submap_size*2 + i + submap_size];
       }
   
-  submap1[submap_size*submap_size] = '\0';
-  submap2[submap_size*submap_size] = '\0';
-  submap3[submap_size*submap_size] = '\0';
-  submap4[submap_size*submap_size] = '\0'; 
+  submap1.terrain[submap_size*submap_size] = '\0';
+  submap2.terrain[submap_size*submap_size] = '\0';
+  submap3.terrain[submap_size*submap_size] = '\0';
+  submap4.terrain[submap_size*submap_size] = '\0'; 
 }
 
 void

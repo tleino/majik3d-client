@@ -49,7 +49,7 @@ Display::Display()
   height = 480;
   initialWidth = width;
   initialHeight = height;
-  bpp = 32;
+  bpp = 16;
   
   debug->put("Display constructor");
 }
