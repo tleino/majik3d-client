@@ -4,8 +4,8 @@
 
 Display::Display()
 {
-   width = 640;
-   height = 480;
+   width = 320;
+   height = 200;
    bpp = 32;
    sdlmesactx = NULL;
    
@@ -44,7 +44,7 @@ void Display::openScreen()
    #endif
    
    flags = SDL_SWSURFACE;
-   flags |= SDL_FULLSCREEN;
+   flags != SDL_FULLSCREEN;
    flags != SDL_ANYFORMAT;
    if(bpp <= 8) 
 	 {
@@ -84,6 +84,10 @@ void Display::closeScreen()
 
 void Display::updateScreen()
 {
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   
    landscape->drawLandscape();
+   /* INSERT HERE: Draw menus etc */
+   
    SDL_Flip(sdlmesactx->surface);
 }
