@@ -20,7 +20,6 @@
 #define __CURSOR_HPP__
 
 #include "GL/gl.h"
-#include "SDL/SDL.h"
 
 class Cursor
 {
@@ -34,7 +33,6 @@ class Cursor
    int y_pos;
    unsigned int tex_id;
  private:
-   SDL_Surface *picture;
    GLubyte *tex;
 };
 
