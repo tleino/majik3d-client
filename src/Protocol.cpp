@@ -170,7 +170,7 @@ Protocol::parseCommand(char *input)
 	  
 	  while (ob != NULL) {
 		 if (ob->id == id) {
-			cout << data << endl;
+			debug->put(data);
 			ob->puhe->setLabel(debug->string("%s", data));
 			break;
 		 }

@@ -322,7 +322,7 @@ Socket::connectServer()
    
    szBuffer = strdup("");
    
-   printf("Connecting to ip address: %s", ip);
+   debug->put("Connecting to ip address: %s", ip);
    
    if(inet_addr(ip) == INADDR_NONE) {
 		if((pHostEnt = gethostbyname(ip)) != NULL) {
