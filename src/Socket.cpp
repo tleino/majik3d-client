@@ -1,18 +1,32 @@
-// Socket.cpp: implementation of the Socket class.
-//
-//////////////////////////////////////////////////////////////////////
+/* Majik 3D client
+ * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "Socket.hpp"
-#include <process.h>
-#include <string.h>
-#include <stdlib.h>
 #include "Debug.hpp"
-#include <stdio.h>
+#include "Error.hpp"
 
-
-#ifdef WIN32
-
+#ifdef WIN32	
 #include <winsock.h>
+#include <process.h>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -262,19 +276,15 @@ Socket::Thread()
 
 #else
 
-#include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
-
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
 #include <errno.h>
-
 #include <iostream.h>
-#include <unistd.h>
 
 #if defined(__svr4__)
 // For Solaris...
@@ -284,7 +294,7 @@ Socket::Thread()
 // Not sure what this might break, but its set to this value on Linux
 // and on DEC/UNIX boxes...
 #define INADDR_NONE INADDR_BROADCAST
-#endif
+#endif /* __svr4__ */
 
 Socket::Socket(char *addr, int nport)
 {
@@ -309,7 +319,6 @@ Socket::connectServer()
 {
    struct hostent *pHostEnt;
    struct sockaddr_in ServerAddr;
-   char buf[80];
    
    szBuffer = strdup("");
    
@@ -337,9 +346,9 @@ Socket::connectServer()
    
    if (connect (nSocket, (struct sockaddr *) &ServerAddr, sizeof (ServerAddr)) < 0) {
       printf ("Unable to connect to remote host: %s\n", strerror (errno));
-	  printf ("Attempting to reconnect...\n");
-	  //sleep (10);
-	  connectServer();
+      printf ("Attempting to reconnect...\n");
+      sleep (10);
+      connectServer();
    }
 }
 
@@ -385,7 +394,7 @@ Socket::readPacket()
 
 
 void
-Socket::writePacket(char *buf, ...)
+Socket::writePacket(char *szFmt, ...)
 {
    va_list vl;
    char szData[1024*10];
