@@ -5,6 +5,10 @@ The known bugs are (P: problem, A: answer, S: solution):
      Linux and we are using exactly the same code.
   S: Wait until we figure it out or install Linux.
 
+  P: Win32 executable reports missing DLL: WS2_32.DLL
+  A: Your WinSock version is too old or it is missing completely.
+  S: Update your Windows or wait if we can fix this problem somehow.
+ 
 When you find a bug which isn't listen on this known bugs list, please
 send your bug report to majik-users@majik.netti.fi, subscribe if you
 haven't done that already, or if you don't want to subscribe the address
