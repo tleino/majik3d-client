@@ -84,18 +84,18 @@ Protocol::parseCommand(char *input)
 	}
       
       if (!found)
-	{
-	  error->put (ERROR_WARNING, "Object %d not found!", id);
-	  break;
-	}
-      
-      if (ob == tuxi)
-	{
-	  int i, j;
-	  ((Player *)tuxi)->unLockMovement();
-	  Mapquad *temp;
-	  
-	  int lod = config->lod;
+		 {
+			error->put (ERROR_WARNING, "Object %d not found!", id);
+			break;
+		 }
+	   
+	   if (ob == tuxi)
+		 {
+			int i, j;
+			((Player *)tuxi)->unLockMovement();
+			Mapquad *temp;
+			
+			int lod = config->lod;
 	  
 	  for (j = -(lod+1); j < lod+1; j++)
 	    for (i = -(lod+1); i < lod+1; i++)
@@ -137,7 +137,7 @@ Protocol::parseCommand(char *input)
 					      y +256 + j*512)->selectLOD(0);
 	      }
 	}  
-      break;
+	   break;
     case CMD_OWN_ID:
       sscanf(data, "%d", &id);
       
@@ -208,6 +208,8 @@ Protocol::parseCommand(char *input)
 	{
 	  ob = tuxi = new Player();
 	  sock->writePacket("%d %f %f %f", CMD_MOVE, x, y, h);
+	  sock->writePacket("%d %f %f %f", CMD_MOVE, x, y, h);
+	   
 	}
       else
 	ob = new Object();

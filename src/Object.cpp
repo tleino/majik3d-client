@@ -176,6 +176,7 @@ sgCoord
 Object::getPos()
 {
   // This may need to be explicitly done using a sgCopyVec3?
+   // hmm, I guess you're right
   return ob_pos;
 }
 

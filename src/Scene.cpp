@@ -85,12 +85,9 @@ Scene::init()
   sky_dome = new ssgTransform ();
   ssgEntity *entity = ssgLoadAC ("skydome.ac");
     
-  sky_dome->addKid (entity);
-  //  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
-  
-  //  sky_dome->setTransform (&tmpPos);
+   sky_dome->addKid (entity);
 
-  scene_root->addKid (sky_dome);
+  //scene_root->addKid (sky_dome);
 
   sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
   sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
@@ -225,51 +222,51 @@ Scene::update()
   
   while (ob != NULL)
     {
-      scale[0] = 1.0f;
-      scale[1] = 1.0f;
-      scale[2] = sin( (float)ob->getMoveCounter() / 2.0 ) / 4 + 1;
+	   scale[0] = 1.0f;
+	   scale[1] = 1.0f;
+	   scale[2] = sin( (float)ob->getMoveCounter() / 2.0 ) / 4 + 1;
       
-      if (!strcmp(ob->getFileName(), "tuxedo.ac"))
-	{
-	  ob->rotateX( 180.0f );
-	  ob->setScale( scale );	 
-	}
-      else
-	ob->setScale( scale );
-      
-      ob = ob->getNext();
+	   if (!strcmp(ob->getFileName(), "tuxedo.ac"))
+		 {
+	//		ob->rotateX( 180.0f );
+			ob->setScale( scale );	 
+		 }
+	   else
+		 ob->setScale( scale );
+	   
+	   ob = ob->getNext();
     }
   
-  sgCoord tuxpos = tuxi->getPos();
-  
-  sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
-  sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
-  
-  if (config->camera == 0)
+   sgCoord tuxpos = tuxi->getPos();
+   
+   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
+   sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
+   
+   if (config->camera == 0)
+	 {
+		// 3rd person mode.
+		campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
+		
+		float tuxhot = getHOT(tuxpos.xyz[0], tuxpos.xyz[1]);
+		float camhot = getHOT(campos.xyz[0], campos.xyz[1]);
+		campos.xyz[2] += 5+(camhot-tuxhot);
+		campos.hpr[1] -= 15+(camhot-tuxhot);
+	 }
+   else
+	 {
+		// 1st person mode.
+		campos.xyz[0] += 2*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		campos.xyz[1] -= 2*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		campos.xyz[2] += 2;
+		campos.hpr[1] = display->pitch;
+	 }
+   
+   if (!strcmp(tuxi->getFileName(), "tuxedo.ac"))
     {
-      // 3rd person mode.
-      campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-      campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
-      
-      float tuxhot = getHOT(tuxpos.xyz[0], tuxpos.xyz[1]);
-      float camhot = getHOT(campos.xyz[0], campos.xyz[1]);
-      campos.xyz[2] += 5+(camhot-tuxhot);
-      campos.hpr[1] -= 15+(camhot-tuxhot);
+//      tuxi->rotateX( 180.0f );
     }
-  else
-    {
-      // 1st person mode.
-      campos.xyz[0] += 2*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-      campos.xyz[1] -= 2*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-      campos.xyz[2] += 2;
-      campos.hpr[1] = display->pitch;
-    }
-  
-  if (!strcmp(tuxi->getFileName(), "tuxedo.ac"))
-    {
-      tuxi->rotateX( -180.0f );
-    }
-  
+   
   ssgSetCamera ( & campos ) ;
   sky_dome->setTransform (  campos.xyz );
 }

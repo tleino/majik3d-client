@@ -108,9 +108,9 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (tuxi->isMovementLocked() == true)
 	    return;
 	  
-	  temppos.xyz[0] -= sin((temppos.hpr[0]-180.0f)*
+	  temppos.xyz[0] += sin((temppos.hpr[0]-180.0f)*
 				SG_DEGREES_TO_RADIANS)*10.0f;
-	  temppos.xyz[1] += cos((temppos.hpr[0]-180.0f)*
+	  temppos.xyz[1] -= cos((temppos.hpr[0]-180.0f)*
 				SG_DEGREES_TO_RADIANS)*10.0;;
 	  
 	  sock->writePacket(debug->string("50 %f %f %f",
@@ -124,9 +124,9 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (tuxi->isMovementLocked() == true)
 	    return;
 
-	  temppos.xyz[0] += sin((temppos.hpr[0]-180.0f)*
+	  temppos.xyz[0] -= sin((temppos.hpr[0]-180.0f)*
 				SG_DEGREES_TO_RADIANS)*10.0f;
-	  temppos.xyz[1] -= cos((temppos.hpr[0]-180.0f)*
+	  temppos.xyz[1] += cos((temppos.hpr[0]-180.0f)*
 				SG_DEGREES_TO_RADIANS)*10.0f;
 	  
 	  sock->writePacket(debug->string("50 %f %f %f",
