@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <pu.h>
 
+#include "Menu.hpp"
 #include "Display.hpp"
 #include "Debug.hpp"
 #include "Landscape.hpp"
@@ -99,10 +100,10 @@ Input::specialDown(int key, int x, int y)
 	  landscape->distance = -20;
 	  break;
     case GLUT_KEY_INSERT:
-      display->main_menu_bar->reveal();
+      menu->menuBar->reveal();
       break;
     case GLUT_KEY_END:
-      display->main_menu_bar->hide();
+      menu->menuBar->hide();
       break;
 	default:
 	  error->put(ERROR_WARNING, "Unsupported special key received: %d at (%d,%d)", key, x, y);

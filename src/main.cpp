@@ -24,6 +24,7 @@
 #include <string.h>
 #include <getopt.h>
 
+#include "Menu.hpp"
 #include "Error.hpp"
 #include "Debug.hpp"
 #include "Socket.hpp"
@@ -41,6 +42,7 @@ Display *display = NULL;
 Landscape *landscape = NULL;
 Input *input = NULL;
 Config *config = NULL;
+Menu *menu = NULL;
 
 void
 main(int argc, char **argv)
@@ -55,6 +57,7 @@ main(int argc, char **argv)
    landscape = new Landscape;
    input = new Input;
    config = new Config;
+   menu = new Menu;
    
    glutInit(&argc, argv);
    config->readConfig(argc, argv);

@@ -16,30 +16,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __DISPLAY_HPP__
-#define __DISPLAY_HPP__
+#ifndef __MENU_HPP__
+#define __MENU_HPP__
 
 #include <pu.h>
 
-class Display
-{
+class Menu {
  public:
-   Display();
-   Display(int, int, int);
-   ~Display();
-   void openScreen();
-   void closeScreen();
-   static void updateScreen();
-   static void resizeScreen(int,int);
-   static void mouseMotion(int,int);
-//   static void mouseFun(int, int, int, int);
- private:
-   static void idle();
- public: 
-   int width, height, bpp;
-   int mousetrap;
+   Menu();
+   ~Menu();
+   void init();
+   
+   static void exitCB(puObject *);
+   static void flatCB(puObject *);
+   static void smoothCB(puObject *);
+   static void wireframeCB(puObject *);
+   static void noWireframeCB(puObject *);
+   static void fogCB(puObject *);
+   static void noFogCB(puObject *);
+   static void mousetrapCB(puObject *);
+   static void noMousetrapCB(puObject *);
+   static void mouseCB(puObject *);
+   static void noMouseCB(puObject *);
+   static void aboutCB(puObject *);
+   
+   puMenuBar *menuBar;
 };
 
-extern Display *display;
+extern Menu *menu;
 
-#endif /* __DISPLAY_HPP__ */
+#endif /* __MENU_HPP__ */
