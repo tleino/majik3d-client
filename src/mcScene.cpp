@@ -27,6 +27,7 @@
 #include "mcSocket.hpp"
 #include "mcObject.hpp"
 #include "mcConfig.hpp"
+#include "mcSky.hpp"
 
 #define random()	rand()
 
@@ -86,6 +87,10 @@ Scene::init()
   
   // FIXME: I want better sky, the dynamic one, please. :)
   // sky_dome = new ssgTransform ();
+  sky_dome = new ssgTransform ();
+  ssgBranch *entity = mc_sky->Draw();
+  sky_dome->addKid (entity);
+  scene_root->addKid (sky_dome);
   // ssgEntity *entity = ssgLoadAC ("skydome.ac");
   
   // sky_dome->addKid (entity);
@@ -271,7 +276,7 @@ Scene::update()
      }
    
    ssgSetCamera ( & campos ) ;
-   // sky_dome->setTransform (  campos.xyz );
+   sky_dome->setTransform (  campos.xyz );
 }
 
 void
