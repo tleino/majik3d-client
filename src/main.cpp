@@ -75,7 +75,7 @@ main(int argc, char **argv)
   if(config->server_ip != NULL || config->server_port)
     sock = new Socket(config->server_ip, config->server_port);
   else
-    sock = new Socket("195.197.61.60", 4001);
+    sock = new Socket("195.197.61.60", 4000);
    
   glutInit(&argc, argv);
   
