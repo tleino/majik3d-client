@@ -22,6 +22,7 @@
 #include "mcProtocol.hpp"
 #include "mcDebug.hpp"
 #include "mcError.hpp"
+#include "mcTerrainBlock.hpp"
 
 #include <iostream.h>
 

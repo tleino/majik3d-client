@@ -32,6 +32,9 @@
 #include "mcProtocol.hpp"
 #include "mcPlayer.hpp"
 
+#include "mcPlayerController.hpp"
+#include "mcCameraController.hpp"
+
 #include <fstream.h>
 
 

@@ -20,7 +20,8 @@
 #define __MAPQUAD_HPP__
 
 #include <ssg.h>
-#include "mcTerrainBlock.hpp"
+
+class TerrainBlock;
 
 /// Size of one map chunk.
 #define   MAP_SIZE    16

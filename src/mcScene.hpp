@@ -23,11 +23,9 @@
 #include <ssg.h>
 #include <sg.h>
 #include <pu.h>
-#include "mcPlayerController.hpp"
-#include "mcCameraController.hpp"
 
-#include "mcObject.hpp"
-
+class mcPlayerController;
+class mcCameraController;
 class Object;
 
 /** A scene class. This class handles the 3D scene. */

@@ -19,7 +19,7 @@
 #ifndef __LANDSCAPE_HPP__
 #define __LANDSCAPE_HPP__
 
-#include "mcObject.hpp"
+class Object;
 
 #include <ssg.h>
 #include <GL/glu.h>

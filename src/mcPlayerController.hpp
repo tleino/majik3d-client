@@ -10,7 +10,8 @@
 #endif // _MSC_VER > 1000
 
 #include "mcController.hpp"
-#include "mcPlayer.hpp"
+
+class Player;
 
 class mcPlayerController : public mcController  
 {

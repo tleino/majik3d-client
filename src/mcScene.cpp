@@ -30,6 +30,9 @@
 #include "mcConfig.hpp"
 #include "mcSky.hpp"
 
+#include "mcPlayerController.hpp"
+#include "mcCameraController.hpp"
+
 #define random()	rand()
 
 sgCoord        campos;
