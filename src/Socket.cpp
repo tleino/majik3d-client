@@ -68,7 +68,6 @@ void
 Socket::connectServer()
 {
    struct hostent *pHostEnt;
-   unsigned long nAddr;
    struct sockaddr_in ServerAddr;
    
    szBuffer = strdup("");

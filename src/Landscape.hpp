@@ -20,7 +20,7 @@
 #define __LANDSCAPE_HPP__
 
 #include "Object.hpp"
-#include "Detail.hpp"
+
 #include <ssg.h>
 #include <GL/glu.h>
 

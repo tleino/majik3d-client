@@ -28,7 +28,6 @@
 #include <pu.h>
 #include <ssg.h>
 
-#include "Material.hpp"
 #include "Menu.hpp"
 //#include "Landscape.hpp"
 #include "Input.hpp"
@@ -109,8 +108,8 @@ Display::~Display()
 void
 Display::openScreen()
 {
-   unsigned long flags;
-   GLenum format;
+   //unsigned long flags;
+   //GLenum format;
    
    DEBUG ("Opening screen...");
    if (display->nomousetrap != 0)
@@ -147,7 +146,7 @@ Display::openScreen()
 	 puShowCursor();
    
    /* PLIB: Font Library */
-   fntTexFont *fnt = new fntTexFont;
+   // fntTexFont *fnt = new fntTexFont;
    // fnt->load ("gfx/sorority.txf");
    // puFont sorority (fnt, 12);
    // puSetDefaultFonts (sorority, PUFONT_8_BY_13);
@@ -200,7 +199,8 @@ Display::closeScreen()
 void 
 Display::updateScreen()
 {
-   int t2 = (int) (time(NULL) - t), warp = 0;
+   //int t2 = (int) (time(NULL) - t), warp = 0;
+   int warp = 0;
    frames++;
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

@@ -146,7 +146,7 @@ Config::parseLine(char *strbuf, int line)
 		return;
 	 }
    
-   for(j=i;j<strlen(strbuf);j++)
+   for(j=i;j<(signed)strlen(strbuf);j++)
 	 if(strbuf[j] == '\n')
 	   break;
    

@@ -25,7 +25,7 @@ class Debug
    Debug();
    ~Debug();
    void put(char *, ...);
-   const char *string(char *, ...);
+   char *string(char *, ...);
 };
 
 extern Debug *debug;

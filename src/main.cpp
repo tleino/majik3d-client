@@ -58,7 +58,8 @@ main(int argc, char **argv)
    error = new Error;
    debug = new Debug;
    sock = new Socket("195.197.61.60", 4000);
-//   sock= new Socket();
+//   sock = new Socket("127.0.0.1", 4000);
+   //   sock= new Socket();
    display = new Display;
    landscape = new Landscape;
    input = new Input;

@@ -34,7 +34,7 @@ Debug::~Debug()
    
 }
 
-const char *
+char *
 Debug::string(char *fmt, ...)
 {
    char *buf = new char[80]; // EORJWPEORJP

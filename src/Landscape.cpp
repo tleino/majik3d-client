@@ -114,8 +114,8 @@ Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float
   for ( int j = 0 ; j < (ntris+1) ; j++ )
     for ( int i = 0 ; i < (ntris+1) ; i++ )
     {
-      int address  =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)      ) % 256  +
-                     ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)      ) % 256 ) * 256 ;
+    //  int address  =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)      ) % 256  +
+    //                 ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)      ) % 256 ) * 256 ;
 /*      int addressN =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)      ) % 256  +
                      ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)+1.0f ) % 256 ) * 256 ;
       int addressE =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)+1.0f ) % 256  +

@@ -38,7 +38,7 @@ Protocol::~Protocol()
 void 
 Protocol::parseCommand(char *input)
 {
-   int command, len = strlen(input);
+   int command;
    int found, id, x, y, h;
    Object *ob = NULL;
    char file_name[80];
@@ -69,7 +69,7 @@ Protocol::parseCommand(char *input)
 			 cout << "ERROR: invalid parameters to 50" << endl;
 			 break;
 		  }
-		//      printf ("data=%s\n", data);
+//		printf ("data=%s\n", data);
 		//printf ("id=%d x=%d y=%d h=%d\n", id, x, y, h);
 
 		found = 0;
@@ -89,7 +89,7 @@ Protocol::parseCommand(char *input)
 				  ob->ob_pos.hpr[1] = 0;
 				  ob->ob_pos.hpr[2] = 0;
 				  
-				  ob->trans->setTransform( &ob->ob_pos );
+//				  ob->trans->setTransform( &ob->ob_pos );
 				  found = 1;
 				  ob->movecounter++;
 				  break;
