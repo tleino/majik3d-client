@@ -180,9 +180,7 @@ Scene::init()
 float
 Scene::getHOT( float x, float y )
 {
-	return landscape->getHOT(x, y)+1.0f;
-
-	return 10;
+//	return landscape->getHOT(x, y)+1.0f;
 
   sgVec3 test_vec ;
   sgMat4 invmat ;

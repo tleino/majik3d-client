@@ -29,8 +29,8 @@ public:
 
 	struct vertex
 	{
-		sgVec3 coord;
-		sgVec2 UV;
+//		sgVec3 coord;
+//		sgVec2 UV;
 		Index left;
 		Index right;
 		bool marked;
@@ -229,14 +229,14 @@ public:
 		else if (i & DIR_SOUTH)
 			return getVertexFromNeighbour(DIR_SOUTH, i ^ DIR_SOUTH );
 		else
-			return vertices[i];
+			return myVertices[i];
 	}
 
 	inline vertex& getVertex (Index x, Index y)
 	{
 		assert(!(x<0||x>DIM||y<0||y>DIM));
 
-		return vertices[ x + (DIM+1) * y];
+		return myVertices[ x + (DIM+1) * y];
 	}
 
 	inline Index getVertexIndex (short x, short y, bool border)
@@ -376,8 +376,8 @@ public:
 	};
 
 
-	void draw();
-	void draw_geometry();
+//	void draw();
+//	void draw_geometry();
 
 	void render()//srGERD& gerd)
 	{
@@ -397,7 +397,7 @@ public:
 */
 	inline void addVertex(Index i)
 	{
-		list[listCounter++] = i;
+		v_index[listCounter++] = i;
 	}
 
 	inline void swap ()
@@ -461,6 +461,8 @@ public:
 		addVertex(0);
 
 		numSelectedVertices = listCounter;
+		num_vertices = listCounter;
+		num_texcoords = listCounter;
 	}
 
 	inline void triangulateQuadrant(Index iL, Index iT, Index iR, Index level)
@@ -530,7 +532,7 @@ public:
 
 					int ind = i + j * (DIM+1);
 
-					vertex& v = vertices[ind];
+					vertex& v = myVertices[ind];
 
 					if (v.error >= errMax || v.marked)
 					{
@@ -557,7 +559,7 @@ public:
 
 					int ind = i + j * (DIM+1);
 
-					vertex& v = vertices[ind];
+					vertex& v = myVertices[ind];
 
 					if (v.error >= errMax || v.marked)
 					{
@@ -609,8 +611,7 @@ public:
 	}
 
 public:
-
-	vertex	vertices[(DIM+1)*(DIM+1)];
+	vertex	myVertices[(DIM+1)*(DIM+1)];
 
 	QSet	set;
 //	srVector3 coords[(DIM+1)*(DIM+1)];
@@ -637,8 +638,5 @@ private:
 
 	static TerrainBlockHash blockHash;
 };
-
-
-
 
 #endif /* __TERRAINBLOCK_HPP__ */

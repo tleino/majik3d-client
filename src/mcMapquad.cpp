@@ -400,11 +400,33 @@ Mapquad::selectLOD(int level, int x, int y)
 			if (!block)
 			{
 				block = new TerrainBlock (top_x, top_y );
+
+				sgSphere sp;
+				sp.setCenter(mid_x, mid_y, landscape->getHOT(mid_x, mid_y) );
+				sp.setRadius( sqrt( (mid_x-top_x)*(mid_x-top_x) + (mid_y-top_y)*(mid_y-top_y)) );
 		
 				block->setState(state);
+				block->setTraversalMaskBits ( SSGTRAV_CULL );
 				lod_switch->addKid ( block );
 				trans->addKid ( lod_switch );
 				landscape->terrain->addKid ( trans );
+/*
+				ssgTransform *kukka = new ssgTransform ();
+				ssgEntity *entity = ssgLoadAC ("tuxedo.ac");
+				sgCoord tmpPos;
+
+				tmpPos.xyz[0] = 0;
+				tmpPos.xyz[1] = 0;
+				tmpPos.xyz[2] = landscape->getHOT(top_x, top_y);
+				tmpPos.hpr[1] = 0.0f;
+				tmpPos.hpr[2] = 0.0f;
+
+				kukka->addKid (entity);
+				kukka->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
+
+				kukka->setTransform (&tmpPos);
+				trans->addKid(kukka);
+*/
 			}
 
 			lod_switch->select(1);

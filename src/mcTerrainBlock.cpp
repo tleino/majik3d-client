@@ -33,6 +33,15 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 	m_next = NULL;
 	blockHash.put(m_x, m_y, this);
 
+	vertices = new sgVec3[(DIM+1)*(DIM+1)];
+	v_index = new unsigned short[1000];
+	texcoords = new sgVec2[(DIM+1)*(DIM+1)];
+	t_index = v_index;
+	
+	type |= SSG_TYPE_VTABLE ;
+	gltype = GL_TRIANGLE_STRIP ;
+	indexed = TRUE ;
+
 	for(int j=0;j<DIM+1;j++)
 		for(int i=0;i<DIM+1;i++)
 		{
@@ -47,14 +56,15 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 //				loc[0] -= 0.9;
 //				loc[1] -= 0.9;
 			
-			vertex& v = vertices[i + j * (DIM+1)];
+			vertex& v = myVertices[i + j * (DIM+1)];
 
-			sgCopyVec3 (v.coord, loc);
+			sgCopyVec3 (vertices[i + j * (DIM+1)], loc);
 
 			sgVec2 UV;
 			UV[0] = (float)i/(DIM);
 			UV[1] = (float)j/(DIM);
-			sgCopyVec2 (v.UV, UV);
+
+			sgCopyVec2 (texcoords[i + j * (DIM+1)], UV);
 
 			v.error = 0;
 			v.marked = false;
@@ -85,6 +95,10 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 	if (b)
 		exchangeBorderVertices(*b, DIR_NORTH);
 */
+
+
+	
+
 };
 
 
@@ -145,19 +159,22 @@ TerrainBlock::exchangeBorderVertices(TerrainBlock& b, direction dir)
 }
 
 
-
+/*
 void
 TerrainBlock::draw()
 {
 	ssgVTable::draw();
 //	draw_geometry();
 }
+*/
 
+
+/*
 void 
 TerrainBlock::draw_geometry()
 {
 	int i;
-/*
+
 	glEnable (GL_VERTEX_ARRAY);
 	glEnable (GL_TEXTURE_COORD_ARRAY);
 
@@ -171,7 +188,7 @@ TerrainBlock::draw_geometry()
 	glDisable(GL_VERTEX_ARRAY);
 */	
 	
-
+/*
 	glBegin(GL_TRIANGLE_STRIP);
 
 	glColor3f ( 0.0, 1.0, 0.0 );
@@ -186,6 +203,8 @@ TerrainBlock::draw_geometry()
 	}
 	
 	glEnd ();
+*/
+//	visualiseBSphere();
 
 /*
 
@@ -215,23 +234,43 @@ TerrainBlock::draw_geometry()
 	}
 	
 	glEnd ();
-*/
+
 }
+*/
+/*
+void
+TerrainBlock::setSphere( sgSphere& sp)
+{
+	boundSphere.empty();
+
+	boundSphere.extend ( &sp );
+};
+
+void
+TerrainBlock::recalcBSphere()
+{
+	emptyBSphere () ;
+
+	extendBSphere ( & boundSphere ) ;
+	dirtyBSphere () ; 
+	bsphere_is_invalid = FALSE ;
+}
+*/
 
 inline void
 TerrainBlock::calculateErrors()
 {
 	for (int i = 0; i < NUM_VERTICES; i++)
 	{
-		vertex &v = vertices[i];
+		vertex &v = myVertices[i];
 
 		if (v.left == 0xffff || v.right == 0xffff)
 			v.error = 0;
 		else
 		{
-			if ((&getVertex(v.left) != &nullVertex) && (&getVertex(v.right) != &nullVertex))
-				v.error = (unsigned int)fabs(0.5*(getVertex(v.left).coord[2] + getVertex(v.right).coord[2]) - v.coord[2]);
-			else
+//			if ((&getVertex(v.left) != &nullVertex) && (&getVertex(v.right) != &nullVertex))
+//				v.error = (unsigned int)fabs(0.5*(getVertex(v.left).coord[2] + getVertex(v.right).coord[2]) - v.coord[2]);
+//			else
 				v.error = 0;
 		}
 	}
