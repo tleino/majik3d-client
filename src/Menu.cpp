@@ -37,6 +37,8 @@ char *settingsSubmenu[] = {
    "No Mousetrap",
    "Mouse",
    "No Mouse",
+   "Textures",
+   "No Textures",
    NULL 
 };
 char *majikSubmenu[] = {
@@ -58,6 +60,8 @@ puCallback settingsSubmenuCB[] = {
    menu->noMousetrapCB,
    menu->mouseCB,
    menu->noMouseCB,
+   menu->textureCB,
+   menu->noTextureCB,
    NULL 
 };
 
@@ -91,6 +95,18 @@ Menu::init()
 }
 
 /* Menu callbacks */
+
+void
+Menu::textureCB(puObject *)
+{
+   display->noTexture = 0;
+}
+
+void
+Menu::noTextureCB(puObject *)
+{
+   display->noTexture = 1;
+}
 
 void
 Menu::aboutCB(puObject *)
@@ -130,6 +146,7 @@ Menu::wireframeCB(puObject *)
    glDisable(GL_LIGHT0);
    glShadeModel(GL_FLAT);
    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   display->wireframe = 1;
 }
 
 void
@@ -141,6 +158,7 @@ Menu::noWireframeCB(puObject *)
    glEnable(GL_LIGHT0);
    glShadeModel(GL_SMOOTH);
    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+   display->wireframe = 0;
 }
 
 void

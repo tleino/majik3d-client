@@ -95,11 +95,9 @@ class Landscape
    int listId_4;
 
    int playerId;
-
-   GLubyte *groundTex;
-   GLubyte *playerTex;
-
-   GLuint groundTex_id;
+   
+   GLuint grassTex_id;
+   GLuint sandstoneTex_id;
    GLuint playerTex_id;
    
  public:

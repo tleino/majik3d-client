@@ -170,6 +170,9 @@ void Landscape::init()
    glDisable(GL_CULL_FACE);
    glBegin(GL_QUADS);
 	 {
+		float color[4] = { 1.0, 1.0, 1.0, 1.0 };
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+		
 		glNormal3f( 0.0, 1.0, 0.0);
 		glTexCoord2f(0.00, 0.25); glVertex3f( -1.0, -1.0, 0.0);
 		glTexCoord2f(0.00, 0.50); glVertex3f( -1.0, -1.0, 2.0);
@@ -209,57 +212,22 @@ void Landscape::init()
    glEnd();
    glEnable(GL_CULL_FACE);
    glEndList();
-
-   Texture *picture = new Texture;
-   picture->loadTexture("gfx/maasto.png");
    
    int i, k;
+   Texture *picture;
    
-   groundTex = new GLubyte[picture->width*picture->width*3];
-   groundTex = (GLubyte *) picture->pixels;
-   
-   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-   
-   glGenTextures(1, &groundTex_id);
-   glBindTexture(GL_TEXTURE_2D, groundTex_id);
-   
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-				   GL_LINEAR);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-				   GL_LINEAR);
-   
-   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-   
-   glTexImage2D(GL_TEXTURE_2D, 0, 3, picture->width,
-				picture->width, 0, GL_RGB, GL_UNSIGNED_BYTE,
-				&groundTex[0]);
+   /* Load textures. FIXME: loadTexture shouldn't return the id instantly,
+	* it would be nicer to be able to fetch it using findTexture, so we
+	* wouldn't need to assign those ids as global */
    
    picture = new Texture;
-   picture->loadTexture("gfx/ukkelipukkeli.png");
+   grassTex_id = picture->loadTexture("gfx/grass.png");
    
-   playerTex = new GLubyte[picture->width*picture->width*3];
-   playerTex = (GLubyte *) picture->pixels;
-   
-   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-   
-   glGenTextures(1, &playerTex_id);
-   glBindTexture(GL_TEXTURE_2D, playerTex_id);
-   
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-					  GL_LINEAR);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-					  GL_LINEAR);
-   
-   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-   
-   glTexImage2D(GL_TEXTURE_2D, 0, 3, picture->width,
-				   picture->width, 0, GL_RGB, GL_UNSIGNED_BYTE,
-				   &playerTex[0]);
-   
+   picture = new Texture;
+   sandstoneTex_id = picture->loadTexture("gfx/sandstone.png");
+
+   picture = new Texture;
+   playerTex_id = picture->loadTexture("gfx/ukkelipukkeli.png");
 }
 
 /* This should be cut into several smaller functions */
@@ -372,15 +340,21 @@ void Landscape::draw()
    /* Draw terrain                       */
    /*  - Check for detail settings       */
    /*  - Cull map regions                */
-   glEnable(GL_TEXTURE_2D);
-   glBindTexture(GL_TEXTURE_2D, groundTex_id);
+   
+   if (!display->noTexture) {
+	  glEnable(GL_TEXTURE_2D);
+	  glBindTexture(GL_TEXTURE_2D, sandstoneTex_id);
+   }
    glPushMatrix();
    //   glTranslatef(0.0, 0.0, -500);
    glCallList(listId_1);
    glPopMatrix();
    glDisable(GL_TEXTURE_2D);
    
-   
+   if (!display->noTexture) {
+	  glEnable(GL_TEXTURE_2D);
+	  glBindTexture(GL_TEXTURE_2D, grassTex_id);   
+   }
    glPushMatrix();
    
    glTranslatef(-map1_shift_x*MAP1_GRID_WIDTH, map1_shift_y*MAP1_GRID_WIDTH, 0.0);
@@ -392,15 +366,16 @@ void Landscape::draw()
    glCallList(listId_3);
 
    glPopMatrix();
+   glDisable(GL_TEXTURE_2D);
    
    /* Draw objects                       */
    /*  - Check for 1st-person/3rd-person */
    /*  - Check for detail settings       */
 
-   glEnable(GL_TEXTURE_2D);
-   
-   glBindTexture(GL_TEXTURE_2D, playerTex_id);
-   
+   if (!display->noTexture) {
+	  glEnable(GL_TEXTURE_2D);
+	  glBindTexture(GL_TEXTURE_2D, playerTex_id);
+   }
    glPushMatrix();
    glTranslatef(0.0, 0.0, getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2)-2.5);
    glRotatef( Perlin::perlinNoise_2D(0, counter/5)*50, 1.0, 0.0, 0.0);
@@ -1065,7 +1040,7 @@ void Landscape::initMap_3Mesh()
 /* These construct the display lists */
 void Landscape::makeMap_1()
 {
-   float color[4] = { 1.0, 1.0, 1.0, 1.0 };
+   float color[4] = { 0.7, 0.7, 0.0, 1.0 };
  
    /* Check for already existing display list */
    if (listId_1 != -1)

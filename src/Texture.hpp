@@ -19,12 +19,14 @@
 #ifndef __TEXTURE_HPP__
 #define __TEXTURE_HPP__
 
+#include <GL/gl.h>
+
 class Texture
 {
  public:
    Texture();
    ~Texture();
-   void loadTexture(char *);
+   GLuint loadTexture(char *);
    void * getPixels();
  private:
    void errorPNG();
@@ -32,7 +34,7 @@ class Texture
  public:
    unsigned int width;
    unsigned int height;
-   unsigned int textureId;
+   GLuint textureId;
    void *pixels; /* FIXME: Should be private */
 };
 

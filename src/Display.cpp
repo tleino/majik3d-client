@@ -171,6 +171,11 @@ Display::updateScreen()
    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
    glAlphaFunc(GL_GREATER,0.1f);
    
+   if (display->wireframe)
+	 status_text->setColour (PUCOL_LABEL, 0.0, 0.0, 0.0);
+   else
+	 status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
+   
    status_text->setLabel ((char *) debug->string("fps: %.1f angle: %.1f tilt: %.1f distance: %.1f",
 										(float) 1/(read_time_of_day() - start_time),
 										landscape->angle, landscape->tilt, landscape->distance));

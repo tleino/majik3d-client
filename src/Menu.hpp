@@ -39,6 +39,8 @@ class Menu {
    static void mouseCB(puObject *);
    static void noMouseCB(puObject *);
    static void aboutCB(puObject *);
+   static void textureCB(puObject *);
+   static void noTextureCB(puObject *);
    
    puMenuBar *menuBar;
 };
