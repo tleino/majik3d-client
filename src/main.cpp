@@ -61,20 +61,23 @@ main(int argc, char *argv[])
    while(quit == false)
 	 {
 		// Poll events
-		SDL_PollEvent(&event);
-		
-		// Act according to event type
-		switch(event.type)
+		while(SDL_PollEvent(&event))
 		  {
-		   case SDL_QUIT:
-			 quit = true;
-			 break;
-		   case SDL_KEYDOWN:
-			 keyboard->keyPressed(SDL_SymToASCII(&event.key.keysym, NULL));
-			 break;
-		   default:
-			 break;
+			 // Act according to event type
+			 switch(event.type)
+			   {
+				case SDL_QUIT:
+				  quit = true;
+				  break;
+				case SDL_KEYDOWN:
+				  keyboard->keyPressed(SDL_SymToASCII(&event.key.keysym, NULL));
+				  break;
+				default:
+				  break;
+			   }
 		  }
+		
+		// End event poll
 		display->updateScreen();
 	 }
    // End main loop
