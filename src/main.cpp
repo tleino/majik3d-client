@@ -75,7 +75,7 @@ main(int argc, char **argv)
   protocol = new Protocol;
   perlin = new Perlin;
   overlay = new Overlay;
-  mc_sky = new mcSky(8, 8);
+  mc_sky = new mcSky(16, 8);
   Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
   
   // Check the config object for ip / port settings and create the socket
