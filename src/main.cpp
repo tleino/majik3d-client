@@ -22,7 +22,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-//#include <getopt.h>
 
 #include "Menu.hpp"
 #include "Error.hpp"
@@ -51,15 +50,11 @@ Perlin *perlin = NULL;
 
 int
 main(int argc, char **argv)
-{
-   // int c;
-      
+{      
    // Initialize the necessary global variables as proper objects
    error = new Error;
    debug = new Debug;
    sock = new Socket("195.197.61.60", 4000);
-//   sock = new Socket("127.0.0.1", 4000);
-   //   sock= new Socket();
    display = new Display;
    landscape = new Landscape;
    input = new Input;
@@ -69,62 +64,9 @@ main(int argc, char **argv)
    protocol = new Protocol;
    perlin = new Perlin;
    
-   
    glutInit(&argc, argv);
    config->readConfig(argc, argv);
-/*
-   // Read the command line arguments 
-   while(1)
-	 {
-		int this_option_optind = optind ? optind : 1;
-		int option_index = 0;
-		
-		static struct option long_options[] = {
-			 { "version", 0, 0, 'V' },
-			 { "help", 0, 0, '?' },
-			 { "host", 0, 0, 'H' },
-			 { "port", 0, 0, 'p' },
-		     { "width", 0, 0, 'w' },
-		     { "height", 0, 0, 'h' },
-		     { "bpp", 0, 0, 'b' },
-			 { 0, 0, 0, 0 },
-		};
-		
-		c = getopt_long(argc, argv, "?VH:p:w:h:b:", long_options, &option_index);
-		if(c == -1)
-		  break;
-		
-		switch(c) 
-		  {
-		   case 'V':
-			 printf("%s-%s.%s\n", PACKAGE, VERSION, CPU_VENDOR_OS);
-			 exit(0);
-		   case 'H':
-			 printf("HOST = %s\n", optarg);
-			 strcpy(config->server_ip, optarg); 
-			 break;
-		   case 'p':
-			 printf("PORT = %s\n", optarg);
-			 config->server_port = atoi(optarg);
-			 break;
-		   case 'w':
-			 printf("WIDTH = %s\n", optarg);
-			 config->screen_width = atoi(optarg);
-			 break;
-		   case 'h':
-			 printf("HEIGHT = %s\n", optarg);
-			 config->screen_height = atoi(optarg);
-			 break;
-		   case 'b':
-			 printf("BPP = %s\n", optarg);
-			 config->bpp = atoi(optarg);
-			 break;
-		   case '?':
-			 printf("Usage: %s [option(s)]\n\n  -V, --version  display version information\n  -?, --help  display this text\n", argv[0]);
-			 exit(0);
-		  }
-	 }
-*/
+   
    // Assign proper width / height 
    if(config->screen_width && config->screen_height && config->bpp)
 	 {
@@ -134,11 +76,10 @@ main(int argc, char **argv)
 	 }
    
    sock->connectServer();
-   sock->writePacket("51\r\n");
+   sock->writePacket("51\r\n"); /* Log in to the server */
 
    // Open the screen
-   display->openScreen();   
-  
+   display->openScreen();
    glutMainLoop();
    
    // Call ending functions

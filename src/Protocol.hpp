@@ -30,7 +30,6 @@ class Protocol
    Protocol();
    ~Protocol();
    void parseCommand(char *);
-   void sendCommand();
 };
 
 extern Protocol *protocol;

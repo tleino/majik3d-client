@@ -68,7 +68,6 @@ void inputCB (puObject *o)
    if (strlen(val) < 3)
 	 return;
    sock->writePacket ("54 %s", val);
-   printf ("value: %s\n", val);
    o->setValue(" ");
    o->hide();
 }
@@ -166,7 +165,6 @@ Display::openScreen()
    inp->hide();
    
    menu->init();   
-   printf ("%d\n", display->nosmooth);
    scene->init();
    
    glEnable ( GL_DEPTH_TEST);

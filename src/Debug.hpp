@@ -30,6 +30,10 @@ class Debug
 
 extern Debug *debug;
 
-#define DEBUG(x) debug->put("%-17s: debug: %s", debug->string("%s:%d", __FILE__, __LINE__), x);
+#if 0
+# define DEBUG(x) debug->put("%-17s: debug: %s", debug->string("%s:%d", __FILE__, __LINE__), x);
+#else
+# define DEBUG(x)
+#endif /* 0 */
 
 #endif /* __DEBUG_HPP__ */
