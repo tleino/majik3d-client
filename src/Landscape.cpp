@@ -36,7 +36,7 @@
 #include "Debug.hpp"
 #include "Perlin.hpp"
 
-#define TILE_SIZE                 2000.0f      /* cubits */
+#define TILE_SIZE                 400.0f      /* cubits */
 #define LAMBDA                   (TILE_SIZE/48.0f)
 #define TILE_GRID_SIZE            20          /* Even number please! */
 #define TRIANGLE_GRID_SIZE        12          /* Num vertices */
@@ -127,12 +127,12 @@ Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float
       float zzN = (float) elevation_map [ addressN ] * ELEVATION_SCALE;// + z_off ;
       float zzE = (float) elevation_map [ addressE ] * ELEVATION_SCALE;// + z_off ;
 */	   
-	   float zz =  900*Perlin::perlinNoise_2D((x + (float)i/(float)ntris),
-											  (y + (float)j/(float)ntris));
-	   float zzN = 900*Perlin::perlinNoise_2D((x + (float)i/(float)ntris),     
-											  (y + (float)j/(float)ntris + 1));
-	   float zzE = 900*Perlin::perlinNoise_2D((x + (float)i/(float)ntris + 1), 
-											  (y + (float)j/(float)ntris));
+	   float zz =  1100*Perlin::perlinNoise_2D((x + (float)i/(float)ntris)/7,
+											  (y + (float)j/(float)ntris)/7);
+	   float zzN = 1100*Perlin::perlinNoise_2D((x + (float)i/(float)ntris)/7,     
+											  (y + (float)j/(float)ntris + 1)/7);
+	   float zzE = 1100*Perlin::perlinNoise_2D((x + (float)i/(float)ntris + 1)/7, 
+											  (y + (float)j/(float)ntris)/7);
 	   
 	   float rr = (float) image_map [ address * 3 + 0 ] / 255.0f ;
       float gg = (float) image_map [ address * 3 + 1 ] / 255.0f ;
@@ -181,7 +181,7 @@ Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float
 void 
 Landscape::createTile ( ssgTransform *tile, int x, int y, ssgSimpleState *state ) 
 {
-  float rr[] = { 0.0f, 6000.0f, 7000.0f, 12000.0f } ;
+  float rr[] = { 0.0f, 1000.0f, 4000.0f, 8000.0f } ;
   ssgRangeSelector *lod = new ssgRangeSelector () ;
 
   lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE   - 1,    0.0f ) ) ;
