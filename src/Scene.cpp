@@ -28,114 +28,16 @@
 
 #define random()	rand()
 
-/* tux */
-
-sgCoord        tuxpos, campos;
+sgCoord        campos;
 
 Object         *tuxi = NULL;
-puText         *teksti;
 sgMat4         frustumi;
 
 ssgTransform  *trees[100];
+ssgTransform  *lumiukko;
 
 
 //float cam_slide = 0.0f;
-
-void 
-keyboard ( unsigned char k, int, int )
-{
-   if (tuxi == NULL)
-	 return;
-   
-   static int wireframe = FALSE ;
-      
-   puKeyboard (k, PU_DOWN);
-   
-   if ( k == 'w' )
-	 {
-		wireframe = ! wireframe ;
-		
-		glPolygonMode ( GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL ) ;
-	 }
-   
-   if ( k == 0x03 || k == 'x' )
-	 exit ( 0 ) ;
-   
-   switch (k) {
-	case '\t':
-	  if (display->inp->isVisible()) {
-		 display->inp->rejectInput();
-		 display->inp->hide();
-	  }
-	  else {
-		 display->inp->reveal();
-		 display->inp->setCursor(0);
-		 display->inp->acceptInput();
-	  }
-	  break;
-	case '8':
-//	  tuxi->ob_pos.xyz[1] += 1.0f;
-	  tuxi->ob_pos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  tuxi->ob_pos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-//	  campos.xyz[0] += sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-//	  campos.xyz[1] += cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  sock->writePacket(debug->string("50 %d %d %d",
-									  (int) tuxi->ob_pos.xyz[0],
-									  (int) tuxi->ob_pos.xyz[1],
-									  (int) tuxi->ob_pos.hpr[0]));
-
-	  tuxi->movecounter++;
-	  break;
-	case '2':
-//	  tuxi->ob_pos.xyz[1] -= 1.0f;
-	  tuxi->ob_pos.xyz[0] += sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  tuxi->ob_pos.xyz[1] -= cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-//	  campos.xyz[0] -= sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-//	  campos.xyz[1] -= cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-	  sock->writePacket(debug->string("50 %d %d %d",
-									  (int) tuxi->ob_pos.xyz[0],
-									  (int) tuxi->ob_pos.xyz[1],
-									  (int) tuxi->ob_pos.hpr[0]));
-	  
-	  tuxi->movecounter++;
-	  break;
-	case '6':
-	  tuxi->ob_pos.hpr[0] -= 5.0f;
-	  sock->writePacket(debug->string("50 %d %d %d",
-									  (int) tuxi->ob_pos.xyz[0],
-									  (int) tuxi->ob_pos.xyz[1],
-									  (int) tuxi->ob_pos.hpr[0]));
-//	  cam_slide -= 1.0f;
-	  tuxi->movecounter++;
-	  break;
-	case '4':
-	  tuxi->ob_pos.hpr[0] += 5.0f;
-	  sock->writePacket(debug->string("50 %d %d %d",
-									  (int) tuxi->ob_pos.xyz[0],
-									  (int) tuxi->ob_pos.xyz[1],
-									  (int) tuxi->ob_pos.hpr[0]));
-//	  cam_slide += 1.0f;
-	  tuxi->movecounter++;
-	  break;
-	case '+':
-	  if (campos.hpr[1] > 90)
-		campos.hpr[1] = 90;
-	  else
-		campos.hpr[1] += 1.0f;
-	  break;
-	case '-':
-	  if (campos.hpr[1] < -90)
-		campos.hpr[1] = -90;
-	  else
-		campos.hpr[1] -= 1.0f;
-	  break;
-   }
-   
-   
-   //keyflier . incoming_keystroke ( k ) ;
-}
-
-
 
 Scene::Scene()
 {    
@@ -146,10 +48,8 @@ Scene::Scene()
 Scene::~Scene()
 {
    if (scene_root != NULL)
-	 delete scene_root;
-   
-   
-      
+	 delete scene_root; // hmmm
+         
    DEBUG("Scene destructor.");
 }
 
@@ -157,20 +57,15 @@ Scene::~Scene()
 void
 Scene::init()
 {
-   
-   teksti = new puText(0,0);
-   
-   teksti->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
-   
-   
    scene_root = new ssgRoot;
    
    ssgModelPath   ("data");
    ssgTexturePath ("data");
 
    landscape->init(scene_root);
-      
+   
    ssgEntity *tree_obj = ssgLoadAC ("tree.ac" );
+   
    //   ssgFlatten         ( tree_obj );
       
    float tempx, tempy;
@@ -180,49 +75,63 @@ Scene::init()
 		
 		trees[i] = new ssgTransform;
 		trees[i] -> addKid( tree_obj );
-		ssgStripify ( trees[i] );
+//		ssgStripify ( trees[i] );
 		trees[i] -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
 		
-		
 		sgCoord treepos;
-		tempx = -500 + random() % 1000;
-		tempy = -500 + random() % 1000;
+		tempx = -1000 + random() % 20000;
+		tempy = -1000 + random() % 12000;
 		
 		treepos.xyz[0] = tempx;
 		treepos.xyz[1] = tempy;
 		treepos.xyz[2] = getHOT(tempx, tempy);
-		treepos.hpr[0] = 0.0f;
+		treepos.hpr[0] = random() % 360;
 		treepos.hpr[1] = 0.0f;
 		treepos.hpr[2] = 0.0f;
 		
-		trees[i] -> setTransform ( & treepos );
-		
+		trees[i] -> setTransform ( & treepos  );
 		
 		scene_root -> addKid ( trees[i] );
-		   
 	 }
    
-      
+   ssgEntity *snowman_obj = ssgLoadAC ("snowman.ac" );
+   
+   lumiukko = new ssgTransform;
+   lumiukko -> addKid( snowman_obj );
+   lumiukko -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
+   
+   sgCoord ukkopos;
+   ukkopos.xyz[0] = 100;
+   ukkopos.xyz[1] = 100;
+   ukkopos.xyz[2] = getHOT( 100, 100 );
+   ukkopos.hpr[0] = 0.0f;
+   ukkopos.hpr[1] = 0.0f;
+   ukkopos.hpr[2] = 0.0f;
+   
+   lumiukko -> setTransform ( &ukkopos, 10.0f, 10.0f, 10.0f );
+   
+   scene_root -> addKid ( lumiukko );
+   
    sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
    sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
    
    glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
    
-    glEnable ( GL_DEPTH_TEST ) ;
+   glEnable ( GL_DEPTH_TEST ) ;
    
      /*
 	  *     Set up the viewing parameters
 	  *   */
    
-   ssgSetFOV     ( 60.0f, 45.0f ) ;
+   ssgSetFOV     ( 90.0f, 60.0f ) ;
    ssgSetNearFar ( 1.0f, 10000.0f ) ;
 
    float near, far, top, bottom, left, right, hfov, vfov, v, h;
    
    near = 1.0f;
    far = 10000.0f;
-   h = 60.0f;
-   v = 45.0f;
+   h = 90.0f;
+   v = 60.0f;
    
    hfov = ( h <= 0 ) ? ( v * 3.0f / 2.0f ) : h ;
    vfov = ( v <= 0 ) ? ( h * 2.0f / 3.0f ) : v ;
@@ -255,47 +164,11 @@ Scene::init()
    cout << (frustumi[1][3] = 0.0f) << " ";
    cout << (frustumi[2][3] = -1.0f) << " ";
    cout << (frustumi[3][3] = 0.0f) << " " << endl;
-/*
-   sgMat4 temppi, temp2;
-   
-   sgMakeIdentMat4 (temppi);
-   temp2 = frustumi;
-   
-   sgMultMat4 ( frustumi, temppi, temp2 );
-//   sgPreMultMat4( frustumi, temppi );
-
- 
-   cout << frustumi[0][0] << " ";
-   cout << frustumi[0][1] << " ";
-   cout << frustumi[0][2] << " ";
-   cout << frustumi[0][3] << endl;
-   cout << frustumi[1][0] << " ";
-   cout << frustumi[1][1] << " ";
-   cout << frustumi[1][2] << " ";
-   cout << frustumi[1][3] << endl;
-   cout << frustumi[2][0] << " ";
-   cout << frustumi[2][1] << " ";
-   cout << frustumi[2][2] << " ";
-   cout << frustumi[2][3] << endl;
-   cout << frustumi[3][0] << " ";
-   cout << frustumi[3][1] << " ";
-   cout << frustumi[3][2] << " ";
-   cout << frustumi[3][3] << endl;
-   
-  */ 
-   
-    /*
-	 *     Initial Position
-	 *   */
-   
-     sgCoord startpos ;
-     sgSetCoord ( &startpos, 2350.0f, -920.0f, 0.0f,   0.0f, 0.0f, 0.0f ) ;
    
     /*
 	 *     *     Set up some fog
 	 *     *   */
-   
-   
+
    glFogf ( GL_FOG_DENSITY, 0.015 / 100.0f ) ;
    glFogfv( GL_FOG_COLOR  , fogcol    ) ;
    glFogf ( GL_FOG_START  , 0.0       ) ;
@@ -312,9 +185,6 @@ Scene::init()
    sgSetVec3 ( sunposn, 0.2f, -0.5f, 0.5f ) ;
    sgSetVec4 ( sunamb , 0.4f, 0.4f, 0.4f, 1.0f ) ;
    ssgGetLight ( 0 ) -> setPosition ( sunposn ) ;
-
-   
-      
 }
 
 float
@@ -326,7 +196,7 @@ Scene::getHOT( float x, float y )
    
    invmat[3][0] = -x ;
    invmat[3][1] = -y ;
-   invmat[3][2] =  0.0f          ;
+   invmat[3][2] =  0.0f ;
    
    test_vec [0] = 0.0f ;
    test_vec [1] = 0.0f ;
@@ -388,7 +258,7 @@ Scene::update()
 		ob->ob_pos.hpr [ 1 ] = 0.0f ;
 		ob->ob_pos.hpr [ 2 ] = 0.0f ;
 //		cout << "x: " << ob->ob_pos.xyz [ 0 ] << "y: " << ob->ob_pos.xyz [ 1 ] << "z: " << ob->ob_pos.xyz [ 2 ] << "\n";
-				if (strcmp(ob->file_name, "tuxedo.ac"))
+		if (strcmp(ob->file_name, "tuxedo.ac"))
 		  {
 			 poo = ob->ob_pos;
 			 
@@ -429,9 +299,9 @@ Scene::update()
 		  hot = hgt ;
 	 }
    
-   tuxpos . xyz [ 2 ] = hot + 0.1f ;
-   tuxpos . hpr [ 1 ] = 0.0f ;
-   tuxpos . hpr [ 2 ] = 0.0f ;
+//   tuxpos . xyz [ 2 ] = hot + 0.1f ;
+//   tuxpos . hpr [ 1 ] = 0.0f ;
+ //  tuxpos . hpr [ 2 ] = 0.0f ;
 
 //   printf("tuxpos: %f %f %f\n", tuxpos . xyz [ 0 ], tuxpos . xyz [ 1 ], tuxpos . xyz [ 2 ]);
    
@@ -440,15 +310,21 @@ Scene::update()
 //   campos . hpr [ 1 ] = 0.0f ;
 //   campos . hpr [ 2 ] = 0.0f ;
    
-   
    campos.hpr[0] += 180.0f /*+ cam_slide*/;
    
    //cam_slide *= 0.9;
 
-   campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-   campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
-   campos.xyz[2] += 5+(getHOT(campos.xyz[0], campos.xyz[1])-hot);
-   campos.hpr[1] -= 5+(getHOT(campos.xyz[0], campos.xyz[1])-hot);
+   if (display->camera == 0) {
+	  campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
+	  campos.xyz[2] += 5+(getHOT(campos.xyz[0], campos.xyz[1])-hot);
+	  campos.hpr[1] -= 5+(getHOT(campos.xyz[0], campos.xyz[1])-hot);
+   } else {
+	  campos.xyz[0] += 2*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  campos.xyz[1] -= 2*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  campos.xyz[2] += 2;
+	  campos.hpr[1] = display->pitch;
+   }
    
    ssgSetCamera ( & campos ) ;
 
@@ -469,66 +345,27 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
    sgMat4 ploo =
 	 {
 		  {  1.0f,  0.0f,  0.0f,  0.0f },
-		  {  0.0f,  0.0f,  -1.0f,  0.0f },
-		  {  0.0f,  1.0f, 0.0f,  0.0f },
+		  {  0.0f,  0.0f, -1.0f,  0.0f },
+		  {  0.0f,  1.0f,  0.0f,  0.0f },
 		  {  0.0f,  0.0f,  0.0f,  1.0f }
 	 } ;
    
-   sgMat4 viewmat;
+   sgMat4 viewmat, invmat;
    sgVec3 temppos;
    sgVec4 textpos;
  
-   
-   
-//   sgMakeIdentMat4 (invmat);
    sgMakeCoordMat4 (viewmat, campos.xyz, campos.hpr);
 
-      sgMat4 invmat;
-   
-   sgTransposeNegateMat4 ( invmat, viewmat ) ;
+   sgTransposeNegateMat4 ( invmat, viewmat );
    
    sgCopyMat4      ( viewmat, ploo ) ;
    sgPreMultMat4   ( viewmat, invmat ) ;
-   
-//   sgMakeTransMat4 (viewmat, campos.xyz);
-/*   
-   cout << "viewMatrix:" << endl;
-   cout << viewmat[0][0] << " ";
-   cout << viewmat[1][0] << " ";
-   cout << viewmat[2][0] << " ";
-   cout << viewmat[3][0] << endl;
-   cout << viewmat[0][1] << " ";
-   cout << viewmat[1][1] << " ";
-   cout << viewmat[2][1] << " ";
-   cout << viewmat[3][1] << endl;
-   cout << viewmat[0][2] << " ";
-   cout << viewmat[1][2] << " ";
-   cout << viewmat[2][2] << " ";
-   cout << viewmat[3][2] << endl;
-   cout << viewmat[0][3] << " ";
-   cout << viewmat[1][3] << " ";
-   cout << viewmat[2][3] << " ";
-   cout << viewmat[3][3] << endl;
-  */ 
-//   exit(0);
-      
-
-
-//   sgPostMultMat4( invmat, ploo );
-//   sgTransposeNegateMat4 ( invmat, invmat );
    
    temppos[0] = object_pos[0];
    temppos[1] = object_pos[1];
    temppos[2] = object_pos[2];
    
-//   cout << "textpos: " << temppos[0] << " " << temppos[1] << " " << temppos[2] << endl;
-   
-//   sgXformVec3 (temppos, ploo);
-   
    sgFullXformPnt3 (temppos, viewmat);
-   
-
-//   sgXformVec3 (temppos, ploo);
    
    textpos[0] = temppos[0];
    textpos[1] = temppos[1];
@@ -537,8 +374,6 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
   
 //   cout << "textpos xform jalk: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << endl;
    
-   //  sgXformVec3 (textpos, ploo);
-      
    textpos[0] = frustumi[0][0] * textpos[0] +  frustumi[1][0] * textpos[1] + frustumi[2][0] * textpos[2] +  frustumi[3][0] * textpos[3];
    textpos[1] = frustumi[0][1] * textpos[0] +  frustumi[1][1] * textpos[1] + frustumi[2][1] * textpos[2] +  frustumi[3][1] * textpos[3];
    textpos[2] = frustumi[0][2] * textpos[0] +  frustumi[1][2] * textpos[1] + frustumi[2][2] * textpos[2] +  frustumi[3][2] * textpos[3];
@@ -550,28 +385,12 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
 
 //   cout << "textpos frustum jalk.: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << endl;
    
-//      (textpos[0] /= textpos[2])  *= display->width/2;
-//      (textpos[1] /= textpos[2])  *= display->height/2;
-
    textpos[0] *= display->width/2;
    textpos[1] *= display->height/2;
    
-//   sgXformVec3 (textpos, ploo);   
-
-   
 //   cout << "textpos proj. jalk.: " << textpos[0] + display->width/2 << " " << textpos[1] + display->height/2 << " " << textpos[2] << endl;
    
-//   sgVec4 vie = { 0, 0, display->width, display->height 
-//   };
-   
-   //   gluProject( tuxi->ob_pos.xyz[0], tuxi->ob_pos.xyz[1], tuxi->ob_pos.xyz[2], (double *)invmat, (double *)frustumi, (int *)vie, 
-   //            (double *)&textpos[0],  (double *)&textpos[1],  (double *)&textpos[2]);  
-   
-   //   puText *teksti = new puText(textpos[0], textpos[1]);
-
    text_object->setPosition(textpos[0]+ display->width/2, textpos[1] + display->height/2);
-//   text_object->setLabel("hooo!");
-      
 }
    
 
@@ -582,11 +401,6 @@ Scene::draw()
 
   //  frame++;
    
-//   sgCoord campos ;
-   
-//   sgSetCoord ( & campos, 0.0f, 350.0*sin((float)frame/90), 500.0f, 35.0*sin((float)frame/100), -20.0f, 0.0f ) ;
-   
- //  ssgSetCamera ( & campos ) ;
 //   cout << "Kohta rendaa.\n";
    ssgCullAndDraw ( scene_root ) ;
 
@@ -603,7 +417,5 @@ Scene::draw()
 		drawText( ob->puhe, posit);
 		
 		ob = ob->next;
-		
 	 }
-   
 }

@@ -31,12 +31,13 @@ Debug::Debug()
 
 Debug::~Debug()
 {
+   
 }
 
 const char *
 Debug::string(char *fmt, ...)
 {
-   char *buf = new char[80];
+   char *buf = new char[80]; // EORJWPEORJP
    memset (buf, 0, sizeof (buf));
    
    va_list vl;
@@ -50,8 +51,7 @@ Debug::string(char *fmt, ...)
 void
 Debug::put(char *fmt, ...)
 {
-   char *buf;
-   buf = new char[80];
+   char *buf = new char[80];
    memset(buf, 0, sizeof(buf));
    va_list vl;
    va_start (vl, fmt);
@@ -59,4 +59,5 @@ Debug::put(char *fmt, ...)
    va_end (vl);
    
    cerr << buf << endl;
+   delete buf;
 }

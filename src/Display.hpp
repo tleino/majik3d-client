@@ -38,7 +38,7 @@ class Display
  public: 
    int width, height, bpp;
    int mousetrap, nomousetrap, noTexture, wireframe, nomouse, nofog, nosmooth,
-   nomenu;
+   nomenu, camera, pitch;
    puInput *inp;
 };
 

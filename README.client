@@ -1,25 +1,3 @@
-To run this binary you'll need:
-
- - Mesa and GLUT (in MesaDemos package) libraries installed
-     ftp://ftp.mesa3d.org/mesa/MesaLib-3.0.tar.gz
-     ftp://ftp.mesa3d.org/mesa/MesaDemos-3.0.tar.gz
- - PLIB installed
-     http://www.woodsoup.org/~sbaker/plib/dist/plib-1.0.13.tar.gz
- - X Window System
- - Linux/i386 operating system
-
-Optionally you can also install GLIDE from http://www.3dfx.com. You need
-to install it if you are going to use 3DFX-card such as Voodoo Graphics.
-To use fullscreen mode (and thus enable hardware acceleration, if available)
-you need to do this:
-
-  $ xhost +
-  $ su
-  # export MESA_GLX_FX="fullscreen"
-  # ./majik
-  # exit
-  $ xhost -
-
 Right now 3D acceleration is simply 'required'. On PII233 without hardware
 acceleration the client can only give 0.1 frames per second on 640x480
 resolution. That is because of linear mipmapping we are using now by default,
@@ -27,8 +5,9 @@ temporarily, though. So, wait a moment or get yourself an accelerator card.
 Getting one is preferable and highly recommended. This is not the only
 project for which you would like to have such a card.
 
-If you don't have the card you should disable textures from the menu and
-configure the client to use 320x200 resolution.
+If you don't have the card you should disable textures and everything else
+from your majikrc (majik3d.ini in Win32 version) and configure the client
+to use 320x200 (or even smaller!) resolution.
 
 The keys working in the client:
 
@@ -40,6 +19,11 @@ x           = exit
 w           = wireframe
 <insert>    = hide/reveal menu bar
 <tab>       = hide/reveal chatting prompt
+<f1>        = 3rd person
+<f2>        = 1st person
+<f12>       = take a "screenshot"
++           = look up (1st person only)
+-           = look down (1st person only)
 
 Please report problems to majik@majik.netti.fi or
                           majik-users@majik.netti.fi (preferable)

@@ -13,7 +13,7 @@ data 10
 kids 14
 OBJECT poly
 name "disk"
-texture "../images/snow.rgb"
+texture "../gfx/snow.rgb"
 texrep 3 3
 numvert 13
 2.4 -0.35 -0.2
@@ -105,7 +105,7 @@ refs 3
 kids 0
 OBJECT poly
 name "sphere"
-texture "../images/snow.rgb"
+texture "../gfx/snow.rgb"
 texrep 3 3
 numvert 32
 -0.3 -0.3 -0.2
@@ -504,7 +504,7 @@ refs 3
 kids 0
 OBJECT poly
 name "sphere"
-texture "../images/snow.rgb"
+texture "../gfx/snow.rgb"
 texrep 3 3
 numvert 32
 -4.47035e-08 1.6 -1.49012e-08
@@ -904,7 +904,7 @@ kids 0
 OBJECT poly
 name "sphere"
 loc 0 -2.38419e-07 0
-texture "../images/snow.rgb"
+texture "../gfx/snow.rgb"
 texrep 3 3
 numvert 32
 -7.45058e-08 2.65 1.49012e-08

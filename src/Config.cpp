@@ -93,10 +93,7 @@ Config::parseOption(char *option, char *value)
 	 }
    if (strcmp(option, "nosmooth") == 0)
 	 {
-		if (atoi(value) == 1) 
-		  {
-			 menu->flatCB(NULL);
-		  }
+		display->nosmooth = atoi(value);
 	 }
    if (strcmp(option, "nofog") == 0)
 	 {
@@ -111,6 +108,10 @@ Config::parseOption(char *option, char *value)
 		  {
 			 display->nomenu = 1;
 		  }
+	 }
+   if (strcmp(option, "camera") == 0)
+	 {
+		display->camera = atoi(value);
 	 }
 }
 
@@ -212,5 +213,6 @@ Config::readConfig (int argc, char **argv)
    if(config->readOptions("~/.majikrc") == false)
 	 if(config->readOptions("/etc/majikrc") == false)
 	   if(config->readOptions("majikrc") == false)
-		 error->put(ERROR_WARNING, "No majikrc file found.");
+	     if(config->readOptions("majik3d.ini") == false)
+		   error->put(ERROR_WARNING, "No majikrc or majik3d.ini file found.");
 }

@@ -50,13 +50,6 @@ ssgSimpleState *state    = NULL ;
 ssgTransform   *terrain  = NULL ;
 ssgTransform   *tilegrid [ TILE_GRID_SIZE ][ TILE_GRID_SIZE ] ;
 
-//ssgKeyFlier keyflier ;
-
-//ssgSGIHeader *material  ;
-//ssgSGIHeader *elevation ;
-
-#include "image_map.h"
-
 Landscape::Landscape()
 {
       DEBUG("Landscape constructor");
@@ -64,18 +57,19 @@ Landscape::Landscape()
 
 Landscape::~Landscape()
 {
-      DEBUG ("Landscape destructor.");
+      
+   DEBUG ("Landscape destructor.");
 }
-
 
 void 
 Landscape::init( ssgRoot *scene_root)
 {
    terrain  = new ssgTransform ;
    state    = new ssgSimpleState ;
-   state -> setTexture ( "gfx/bumpnoise.rgb" ) ;
+   state -> setTexture ( "gfx/bumpnoise.rgb") ;
    state -> enable     ( GL_TEXTURE_2D ) ;
    state -> enable     ( GL_LIGHTING ) ;
+   printf ("%d\n", display->nosmooth);
    if (display->nosmooth)
 	 state -> setShadeModel ( GL_FLAT ) ;
    else
@@ -122,28 +116,54 @@ Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float
     {
       int address  =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)      ) % 256  +
                      ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)      ) % 256 ) * 256 ;
-      int addressN =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)      ) % 256  +
+/*      int addressN =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)      ) % 256  +
                      ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)+1.0f ) % 256 ) * 256 ;
       int addressE =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)+1.0f ) % 256  +
-                     ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)      ) % 256 ) * 256 ;
+                     ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)      ) % 256 ) * 256 ;*/
 /*
-      float zz  = (float) elevation_map [ address  ] * ELEVATION_SCALE;// + z_off ;
-      float zzN = (float) elevation_map [ addressN ] * ELEVATION_SCALE;// + z_off ;
-      float zzE = (float) elevation_map [ addressE ] * ELEVATION_SCALE;// + z_off ;
-*/	   
-	   float zz =  1100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,
-											  (y + (float)j/(float)ntris)/7);
-	   float zzN = 1100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,     
-											  (y + (float)j/(float)ntris + 1)/7);
-	   float zzE = 1100*perlin->perlinNoise_2D((x + (float)i/(float)ntris + 1)/7, 
-											  (y + (float)j/(float)ntris)/7);
-	   
+      float zz  = (float) elevation_map [ address  ] * ELEVATION_SCALE + z_off ;
+      float zzN = (float) elevation_map [ addressN ] * ELEVATION_SCALE + z_off ;
+      float zzE = (float) elevation_map [ addressE ] * ELEVATION_SCALE + z_off ;
+ */	   
+	   float zz =  2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,
+											   (y + (float)j/(float)ntris)/7) + z_off;
+	   float zzN = 2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,     
+											   (y + (float)j/(float)ntris + 1)/7) + z_off;
+	   float zzE = 2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris + 1)/7, 
+											   (y + (float)j/(float)ntris)/7) + z_off;
+	   /*
 	   float rr = (float) image_map [ address * 3 + 0 ] / 255.0f ;
-      float gg = (float) image_map [ address * 3 + 1 ] / 255.0f ;
-      float bb = (float) image_map [ address * 3 + 2 ] / 255.0f ;
+	   float gg = (float) image_map [ address * 3 + 1 ] / 255.0f ;
+	   float bb = (float) image_map [ address * 3 + 2 ] / 255.0f ;
+		*/
 
-      float xx = (float) i * (TILE_SIZE/(float)ntris) ;
-      float yy = (float) j * (TILE_SIZE/(float)ntris) ;
+	   float rr = (float) 0.2 ;
+//	   float gg = (float) (perlin->perlinNoise_2D( floor( 12.0f * ((float)x + (float)i / (float)ntris)) + 600,
+//												  floor( 12.0f * ((float)y + (float)j / (float)ntris)) + 600) + 1) / 2.0f;
+	   float bb = (float) (perlin->perlinNoise_2D( (float)( 12.0f * ((float)x + (float)i / (float)ntris))/2 + 600,
+												  (float)( 12.0f * ((float)y + (float)j / (float)ntris))/2 + 600) + 1) / 2.0f;
+	   
+//	   rr = 0.2;
+	   
+	   bb = pow (bb, 2);
+//	   if (bb > gg)
+//		 gg -= (bb - gg);
+//	   else
+//		 gg -= bb;
+	   float gg = 1 - bb;
+	   
+//	   if (gg > 1)
+//		 gg = 1;
+	   
+//	   float temp = gg;
+//	   gg *= (1 - bb);
+//	   bb *= (1 - temp);
+
+	   
+	   
+	   
+	   float xx = (float) i * (TILE_SIZE/(float)ntris) ;
+	   float yy = (float) j * (TILE_SIZE/(float)ntris) ;
 
       sgVec3 nrm ;
 
@@ -165,9 +185,9 @@ Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float
 
     for ( int j = 0 ; j < (ntris+1) ; j++ )
 	   {
-	   vlist [   j + j   ] = j + (i+1) * (ntris+1) ;
-      vlist [ j + j + 1 ] = j +   i   * (ntris+1) ;
-    }
+		  vlist [   j + j   ] = j + (i+1) * (ntris+1) ;
+		  vlist [ j + j + 1 ] = j +   i   * (ntris+1) ;
+	   }
 
     ssgLeaf *gset = new ssgVTable ( GL_TRIANGLE_STRIP,
                      2 * (ntris+1), vlist, scoords,
@@ -185,12 +205,12 @@ Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float
 void 
 Landscape::createTile ( ssgTransform *tile, int x, int y, ssgSimpleState *state ) 
 {
-  float rr[] = { 0.0f, 1000.0f, 2000.0f, 4000.0f } ;
+  float rr[] = { 0.0f, 2000.0f, 4000.0f, 8000.0f } ;
   ssgRangeSelector *lod = new ssgRangeSelector () ;
 
-  lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE   - 1,    0.0f ) ) ;
-  lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/2 - 1,  -30.0f ) ) ;
-  lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/4 - 1, -250.0f ) ) ;
+  lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE   - 1,   0.0f ) ) ;
+  lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/4 - 1, -10.0f ) ) ;
+  lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/6 - 1, -20.0f ) ) ;
   lod  -> setRanges ( rr, 4 ) ;
 
   tile -> addKid ( lod ) ;

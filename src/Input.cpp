@@ -26,6 +26,8 @@
 //#include "Landscape.hpp"
 #include "Error.hpp"
 #include "Input.hpp"
+#include "Scene.hpp"
+#include "Socket.hpp"
 #include <fstream.h>
 
 
@@ -34,6 +36,9 @@
 #define DIR_SOUTH   2
 #define DIR_WEST    3
 
+
+extern Object       *tuxi;
+int pitch;
 
 void captureScreen();
 
@@ -48,23 +53,96 @@ Input::~Input()
 }
 
 void
-Input::keyDown(unsigned char key, int x, int y)
+Input::keyDown(unsigned char k, int x, int y)
 {
-   puKeyboard (key, PU_DOWN);
+   if (tuxi == NULL)
+	 return;
    
-   switch (key) {
-  	default:
-	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)", key, x, y);
-	  exit(0);
+   puKeyboard (k, PU_DOWN);
+   
+   static int wireframe = 0;
+      
+   if ( k == 'w' )
+	 {
+		wireframe = ! wireframe ;
+		
+		glPolygonMode ( GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL ) ;
+	 }
+   
+   if ( k == 0x03 || k == 'x' )
+	 exit ( 0 ) ;
+   
+   switch (k) {
+	case '\t':
+	  if (display->inp->isVisible()) {
+		 display->inp->rejectInput();
+		 display->inp->hide();
+	  }
+	  else {
+		 display->inp->reveal();
+		 display->inp->setCursor(0);
+		 display->inp->acceptInput();
+	  }
+	  break;
+	case '8':
+	  
+	  tuxi->ob_pos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  tuxi->ob_pos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  sock->writePacket(debug->string("50 %d %d %d",
+									  (int) tuxi->ob_pos.xyz[0],
+									  (int) tuxi->ob_pos.xyz[1],
+									  (int) tuxi->ob_pos.hpr[0]));
+	  
+	  tuxi->movecounter++;
+	  break;
+	case '2':
+	  tuxi->ob_pos.xyz[0] += sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  tuxi->ob_pos.xyz[1] -= cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+	  sock->writePacket(debug->string("50 %d %d %d",
+									  (int) tuxi->ob_pos.xyz[0],
+									  (int) tuxi->ob_pos.xyz[1],
+									  (int) tuxi->ob_pos.hpr[0]));
+	  
+	  tuxi->movecounter++;
+	  break;
+	case '6':
+	  tuxi->ob_pos.hpr[0] -= 5.0f;
+	  sock->writePacket(debug->string("50 %d %d %d",
+									  (int) tuxi->ob_pos.xyz[0],
+									  (int) tuxi->ob_pos.xyz[1],
+									  (int) tuxi->ob_pos.hpr[0]));
+	  tuxi->movecounter++;
+	  break;
+	case '4':
+	  tuxi->ob_pos.hpr[0] += 5.0f;
+	  sock->writePacket(debug->string("50 %d %d %d",
+									  (int) tuxi->ob_pos.xyz[0],
+									  (int) tuxi->ob_pos.xyz[1],
+									  (int) tuxi->ob_pos.hpr[0]));
+	  tuxi->movecounter++;
+	  break;
+	case '+':
+	  display->pitch += 1.0f;
+	  if (display->pitch > 75.0f)
+		display->pitch = 75.0f;
+	  break;
+	case '-':
+	  display->pitch -= 1.0f;
+	  if (display->pitch < -75.0f)
+		display->pitch = -75.0f;
+	  break;
+	default:
+//	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)", k, x, y);
+//	  exit(0);
 	  break;
    }
-//   glutPostRedisplay();
 }
+   
 
 void 
 Input::specialDown(int key, int x, int y)
-{
-   puKeyboard (key + PU_KEY_GLUT_SPECIAL_OFFSET, PU_DOWN);
+	 {
+		puKeyboard (key + PU_KEY_GLUT_SPECIAL_OFFSET, PU_DOWN);
    
    switch(key) {
     case GLUT_KEY_INSERT:
@@ -73,6 +151,12 @@ Input::specialDown(int key, int x, int y)
 	  else
       menu->menuBar->reveal();
       break;
+	case GLUT_KEY_F2:
+	  display->camera = 1;
+	  break;
+	case GLUT_KEY_F1:
+	  display->camera = 0;
+	  break;	 
 	case GLUT_KEY_F12:
 	  captureScreen();
 	  break;
@@ -81,8 +165,6 @@ Input::specialDown(int key, int x, int y)
 	  error->put(ERROR_WARNING, "Unsupported special key received: %d at (%d,%d)", key, x, y);
 	  break;
    }
-
-//   glutPostRedisplay();
 }
 
 void

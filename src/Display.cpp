@@ -99,6 +99,9 @@ Display::Display(int w, int h, int b)
 Display::~Display()
 {
    closeScreen();
+
+   if (inp != NULL)
+	 delete inp;
    
    DEBUG ("Display destructor");
 }
@@ -113,6 +116,9 @@ Display::openScreen()
    if (display->nomousetrap != 0)
 	 mousetrap = 1;
    
+   display->camera = 0;
+   display->pitch = 0;
+   
    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
    glutInitWindowSize(width, height);
    glutInitWindowPosition(0, 0);
@@ -120,8 +126,7 @@ Display::openScreen()
    
    glutReshapeFunc(resizeScreen);
    glutDisplayFunc(updateScreen);
-//   glutKeyboardFunc(input->keyDown);
-   glutKeyboardFunc(keyboard);
+   glutKeyboardFunc(input->keyDown);
    glutSpecialFunc(input->specialDown);
    glutMouseFunc(input->mouseDown);
    glutPassiveMotionFunc(mouseMotion);
@@ -134,7 +139,7 @@ Display::openScreen()
    /* PLIB: Simple Scene Graph */
    DEBUG ("ssgInit");
    ssgInit();
-   initMaterials();
+   // initMaterials();
    
    /* PLIB: Picoscopic User Interface */
    puInit();
@@ -162,8 +167,9 @@ Display::openScreen()
    inp->hide();
    
    menu->init();   
+   printf ("%d\n", display->nosmooth);
    scene->init();
-
+   
    glEnable ( GL_DEPTH_TEST);
    
    if (display->nofog)
