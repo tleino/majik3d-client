@@ -3,12 +3,15 @@
 
 #include "Object.hpp"
 #include "Detail.hpp"
+#include "Majik.hpp"
+#include "P3D.hpp"
 
 class Landscape
 {
  public:
    Landscape();
    ~Landscape();
+   void init();
    void drawLandscape();
    void setViewport(int, int, int, int);
    void addObject(int);
@@ -25,6 +28,7 @@ class Landscape
    float  *zmap_4;
    Object *first;
  private:
+   void initMap_1Mesh();
    void makeMap_1();    /* These construct the display lists for maps */
    void makeMap_2();
    void makeMap_3();
@@ -35,8 +39,20 @@ class Landscape
    int viewport_w;
    int viewport_h;
    float viewport_ratio;
+
+   struct mesh {
+	  int numVertices;
+	  float *vertices;   
+	  P3D *face_normals;
+	  float *normals;
+   };
+   
+   struct mesh map_1Mesh, map_2Mesh, map_3Mesh, map4Mesh;
    
    int listId_1;    /* Display list ID for map_1 */
+   int listId_2;
+   int listId_3;
+   int listId_4;
    
    float angle;
 };

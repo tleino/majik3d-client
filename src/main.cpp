@@ -93,6 +93,8 @@ main(int argc, char **argv)
       
    // Open the screen
    display->openScreen();
+
+   landscape->init();
    
    // Set event filter and event states
    SDL_SetEventFilter(FilterEvents);
