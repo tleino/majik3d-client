@@ -80,6 +80,7 @@ Socket::connectServer()
 {
    struct hostent *pHostEnt;
    struct sockaddr_in ServerAddr;
+   char buf[80];
    
    szBuffer = strdup("");
    

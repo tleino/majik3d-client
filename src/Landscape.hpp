@@ -35,6 +35,7 @@ class Landscape
    void Landscape::init( ssgRoot*);
 	 
    float getHOT(float, float);
+   int initialized;
  private:
    ssgBranch *createTileLOD (int, int, ssgSimpleState*, int, float);
    void createTile (ssgTransform*, int, int, ssgSimpleState*);

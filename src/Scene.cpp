@@ -59,6 +59,7 @@ Scene::~Scene()
 void
 Scene::init()
 {
+   scene->initialized = 1;
    scene_root = new ssgRoot;
    
    ssgModelPath   ("data");
@@ -187,6 +188,7 @@ Scene::init()
    sgSetVec3 ( sunposn, 0.2f, -0.5f, 0.5f ) ;
    sgSetVec4 ( sunamb , 0.4f, 0.4f, 0.4f, 1.0f ) ;
    ssgGetLight ( 0 ) -> setPosition ( sunposn ) ;
+   scene->initialized = 2;
 }
 
 float

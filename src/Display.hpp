@@ -33,14 +33,16 @@ class Display
    static void resizeScreen(int,int);
    static void mouseMotion(int,int);
 //   static void mouseFun(int, int, int, int);
+   puText *status_text;
  private:
    static void idle();
  public: 
    int width, height, bpp, initialWidth, initialHeight;
    int mousetrap, nomousetrap, noTexture, wireframe, nomouse, nofog, nosmooth,
-   nomenu, camera, fullscreen;
+   nomenu, camera, fullscreen, state;
    float pitch;
    puInput *inp;
+   char stxt[8192*3];
 };
 
 extern Display *display;

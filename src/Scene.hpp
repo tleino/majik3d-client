@@ -50,6 +50,7 @@ class Scene
 //   list<Object*> object_list;
    
    ssgRoot *scene_root;
+   int initialized;
    
 };
 

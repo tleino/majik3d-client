@@ -37,7 +37,6 @@
 #include "Socket.hpp"
 #include "Protocol.hpp"
 
-puText *status_text;
 time_t t = time(NULL);
 int frames = 0;
 int mouse_x, mouse_y;
@@ -119,6 +118,7 @@ Display::openScreen()
    if (display->nomousetrap != 0)
 	 mousetrap = 1;
    
+   display->state = 0; /* PRELOAD */
    display->camera = 0;
    display->pitch = 0;
    
@@ -169,8 +169,7 @@ Display::openScreen()
    inp->setCallback (inputCB);
    inp->hide();
    
-   menu->init();   
-   scene->init();
+   menu->init();
    
    glEnable ( GL_DEPTH_TEST);
    
@@ -204,11 +203,27 @@ Display::updateScreen()
 {
    //int t2 = (int) (time(NULL) - t), warp = 0;
    int warp = 0;
+   char *tmp;
    frames++;
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  
-   char *tmp = sock->readPacket();
+   
+  if (scene->initialized == 0) {
+	 display->status_text->setPosition(5, display->height-25);
+	 menu->menuBar->hide();
+	 scene->init();
+	 goto end_update;
+  } else if (scene->initialized == 1) { 
+	 goto end_update;
+  } else if (scene->initialized == 2) {
+	 if (display->nomenu == 0)
+	   menu->menuBar->reveal();
+	 
+	 memset (display->stxt, 0, sizeof(display->stxt));
+	 display->status_text->setPosition(5, 10);
+	 scene->initialized = 3;
+  }
+   
+   tmp = sock->readPacket();
    
    while (tmp != NULL)
 	 {
@@ -245,19 +260,13 @@ Display::updateScreen()
 		}
 	 }
    
+   sprintf (display->stxt, "fps: %.1f", (float) 1/(read_time_of_day() - start_time));
+   start_time = read_time_of_day();
+   
    /* Draw menus etc using PUI (part of PLIB) */
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
    glAlphaFunc(GL_GREATER,0.1f);
-   
-   if (display->wireframe)
-	 status_text->setColour (PUCOL_LABEL, 0.0, 0.0, 0.0);
-   else
-	 status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
-   
-   status_text->setLabel ((char *) debug->string("fps: %.1f ",
-										(float) 1/(read_time_of_day() - start_time)));
-   start_time = read_time_of_day();
    
    puDisplay();
    glDisable(GL_BLEND);
@@ -265,6 +274,20 @@ Display::updateScreen()
    /* Display the cursor. FIXME: Should be displayed only if using hardware
       acceleration which doesn't provide it's own cursor */
    // display->cursor->draw();
+   
+   end_update:
+   if (display->wireframe)
+	 display->status_text->setColour (PUCOL_LABEL, 0.0, 0.0, 0.0);
+   else
+	 display->status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
+   
+   display->status_text->setLabel ((char *) display->stxt);
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+   glAlphaFunc(GL_GREATER,0.1f);
+
+   puDisplay();
+   glDisable(GL_BLEND);
    
    glutSwapBuffers();
    glutPostRedisplay();
