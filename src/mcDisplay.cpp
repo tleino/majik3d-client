@@ -84,9 +84,15 @@ Display::openScreen()
   display->pitch = 0;
   
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(width, height);
-  glutInitWindowPosition(0, 0);
-  glutCreateWindow("majik");
+
+  if (config->gamemode)
+    glutEnterGameMode();
+  else
+    {
+      glutInitWindowSize(width, height);
+      glutInitWindowPosition(0, 0);
+      glutCreateWindow("majik");
+    }
   
   glutReshapeFunc(resizeScreen);
   glutDisplayFunc(updateScreen);

@@ -18,6 +18,8 @@ port=4000
 screen_width=640
 screen_height=480
 bpp=16
+fullscreen=0
+gamemode=0
 
 # Level of detail parameters.
 notexture=0
@@ -26,7 +28,6 @@ nomousetrap=0
 nofog=0
 nosmooth=0
 nomenu=0
-fullscreen=0
 
 # lod should be of values 7+ (smaller: faster)
 lod=7

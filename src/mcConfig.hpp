@@ -67,6 +67,8 @@ public:
   int fullscreen;
   ///
   int lod;
+  ///
+  int gamemode;
 };
 
 extern Config *config;

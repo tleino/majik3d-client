@@ -46,6 +46,7 @@ Config::Config()
   debug_level = 0;
   protocol_debug = 0;
   lod = 7;
+  gamemode = 0;
 }
 
 Config::~Config()
@@ -134,7 +135,10 @@ Config::parseOption(char *option, char *value)
     {
       lod = atoi(value);
     }
-
+  if (strcmp(option, "gamemode") == 0)
+    {
+      gamemode = atoi(value);
+    }
 }
 
 void
