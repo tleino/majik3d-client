@@ -32,6 +32,16 @@
 #define M_PI 3.141592653f
 #endif /* M_PI */
 
+struct SKYPOINT
+{
+  sgVec3 xyz;      /* X, Y and Z-coordinates */
+  float r, g, b;   /* Red, green, blue */
+  
+  float a_sun;     /* Angle to sun */
+  float a_zenith;  /* Angle to zenith */
+};
+
+
 /**
  * Class constructor
  * 
@@ -40,15 +50,15 @@
 
 mcSky::mcSky(int x_segs, int y_segs)
 {
-	sky = NULL;
+	m_sky = NULL;
 
-	sgSetVec3(this->zenith, 0.0, 1.0, 0.0);
-	this->createSphere(x_segs, y_segs);
-	this->setTurbidity(3.5f);
-	this->setSunPosition(M_PI/2.0f, 1.3f*M_PI/4.0f);
-	this->setLuminanceFactor(1.2f);
+	sgSetVec3(m_zenith, 0.0, 1.0, 0.0);
+	createSphere(x_segs, y_segs);
+	setTurbidity(3.5f);
+	setSunPosition(M_PI/2.0f, 1.3f*M_PI/4.0f);
+	setLuminanceFactor(1.2f);
 
-	this->sky_ok = false;
+	m_skyOk = false;
 }
 
 /**
@@ -57,12 +67,7 @@ mcSky::mcSky(int x_segs, int y_segs)
 
 mcSky::~mcSky()
 {
-//   if (this->sky != NULL)
-	 delete[] sky;
-  // if (this->scolors != NULL)
-	 delete[] scolors;
-//   if (this->scoords != NULL)
-	 delete[] scoords;
+	delete m_sky;
 }
 
 
@@ -70,10 +75,16 @@ mcSky::~mcSky()
  * Class interface functions 
  * **/
 
+/**
+ * void mcSky::setLuminanceFactor(float f)
+ *
+ * Defines the luminance factor. Good values are around 1.0 .. 1.2.
+ * */
+
 void mcSky::setLuminanceFactor(float f)
 {
-   this->luminancefactor = f;
-   this->sky_ok = false;
+   m_luminancefactor = f;
+   m_skyOk = false;
 }
 
 
@@ -85,9 +96,9 @@ void mcSky::setLuminanceFactor(float f)
 
 void mcSky::setTurbidity(float t)
 {
-   this->turbidity = t;
-   this->calculatePerezCoeffs();
-   this->calculateZenithValues();
+   m_turbidity = t;
+   calculatePerezCoeffs();
+   calculateZenithValues();
 }
 
 /**
@@ -98,10 +109,10 @@ void mcSky::setTurbidity(float t)
 
 void mcSky::setSunPosition(sgVec3 &v)
 {
-//   this->sun = v;
-   this->a_sunzenith = (float)acos(sgScalarProductVec3(this->sun, this->zenith));	
-   this->calculateSunAngles();
-   this->calculateZenithValues();
+	sgCopyVec3(m_sun, v);
+	m_aSunZenith = (float)acos(sgScalarProductVec3(m_sun, m_zenith));	
+	calculateSunAngles();
+	calculateZenithValues();
 }
 
 /**
@@ -112,10 +123,10 @@ void mcSky::setSunPosition(sgVec3 &v)
 
 void mcSky::setSunPosition(float heading, float pitch)
 {
-   this->createSGVec(this->sun, heading, pitch);
-   this->a_sunzenith = acosf(sgScalarProductVec3(this->sun, this->zenith));
-   this->calculateSunAngles();
-   this->calculateZenithValues();
+   createSGVec(m_sun, heading, pitch);
+   m_aSunZenith = acosf(sgScalarProductVec3(m_sun, m_zenith));
+   calculateSunAngles();
+   calculateZenithValues();
 }
 
 /**
@@ -129,102 +140,65 @@ ssgEntity *mcSky::Draw()
    int x, y, p = 0;
    SKYPOINT *v;
    
-   if (!this->sky_ok)
-	 this->calculateSkyColors();
-   
-   ssgSimpleState *state = new ssgSimpleState;
-   state->enable(GL_COLOR_MATERIAL);
-   if (config->testFlag(mcConfig::SMOOTH))
-     state->setShadeModel (GL_SMOOTH);
-   else
-     state->setShadeModel (GL_FLAT);
-   state->enable(GL_CULL_FACE);
-   state->disable(GL_TEXTURE_2D);
-   state->setOpaque();
-   state->disable(GL_FOG);
-   //state->setShininess(0);
-   //state->setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
-   //state->setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ; 
-   state->disable(GL_BLEND);
-   state->disable(GL_LIGHTING);
-
-   ssgBranch *skydome = new ssgTransform;
+   if (!m_skyOk)
+	 calculateSkyColors();
    
    /* Draw top fan */
    
-   this->scolors = new sgVec4[(sky_height-3)*(sky_width*2)];
-   this->scoords = new sgVec3[(sky_height-3)*(sky_width*2)];  
    p = 0;
-   v = &this->sky[0];
-   sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-   sgSetVec3(scoords[p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
+   v = &m_sky[0];
+   sgSetVec4(m_scolors[0][p], v->r, v->g, v->b, 1.0f);
+   sgSetVec3(m_scoords[0][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
    p++;
    
-   for (x = 0; x < this->sky_width; x++, p++)
+   for (x = 0; x < m_skyWidth; x++, p++)
 	 {
-		v = &this->sky[x + 1];
-		sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-		sgSetVec3(scoords[p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
+		v = &m_sky[x + 1];
+		sgSetVec4(m_scolors[0][p], v->r, v->g, v->b, 1.0f);
+		sgSetVec3(m_scoords[0][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
 	 }
-   v = &this->sky[1];
-   sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-   sgSetVec3(scoords[p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
+   v = &m_sky[1];
+   sgSetVec4(m_scolors[0][p], v->r, v->g, v->b, 1.0f);
+   sgSetVec3(m_scoords[0][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
    p++;
-   
-   ssgLeaf *topfan = new ssgVTable(GL_TRIANGLE_FAN,
-								   p, scoords,
-								   0, NULL,
-								   0, NULL,
-								   p, scolors);
-   topfan->setState(state);
-   topfan->setCullFace(TRUE);
-   skydome->addKid(topfan);									
+
+   m_strips[0]->recalcBSphere();
    
    /* Draw horizontal strips */
       
-   for (y = 0; y < this->sky_height - 1; y++)
+   for (y = 0; y < m_skyHeight - 1; y++)
 	 {
 		p = 0;
-		this->scolors = new sgVec4[(sky_height-3)*(sky_width*2)];
-		this->scoords = new sgVec3[(sky_height-3)*(sky_width*2)]; 
-		
-		v = &this->sky[y * this->sky_width + x + 1];
-		sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-		sgSetVec3(scoords[p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
+		v = &m_sky[y * m_skyWidth + x + 1];
+		sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
+		sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
 		p++;
 		
-		for (x = 0; x < this->sky_width; x++)
+		for (x = 0; x < m_skyWidth; x++)
 		  {
-			 v = &this->sky[(y + 1) * this->sky_width + x + 1];
-			 sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-			 sgSetVec3(scoords[p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
+			 v = &m_sky[(y + 1) * m_skyWidth + x + 1];
+			 sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
+			 sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
 			 p++;
 			 
-			 v = &this->sky[y * this->sky_width + x + 1];
-			 sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-			 sgSetVec3(scoords[p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
+			 v = &m_sky[y * m_skyWidth + x + 1];
+			 sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
+			 sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
 			 p++;
 		  }	
 		
-		v = &this->sky[(y + 1) * this->sky_width + 1];
-		sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-		sgSetVec3(scoords[p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
+		v = &m_sky[(y + 1) * m_skyWidth + 1];
+		sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
+		sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]);
 		p++;
 		
-		v = &this->sky[y * this->sky_width + 1];
-		sgSetVec4(scolors[p], v->r, v->g, v->b, 1.0f);
-		sgSetVec3(scoords[p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
+		v = &m_sky[y * m_skyWidth + 1];
+		sgSetVec4(m_scolors[y+1][p], v->r, v->g, v->b, 1.0f);
+		sgSetVec3(m_scoords[y+1][p], S*v->xyz[0], S*v->xyz[1], S*v->xyz[2]); 
 		
-		ssgLeaf *hstrip = new ssgVTable(GL_TRIANGLE_STRIP,
-										p+1, scoords,
-										0, NULL,
-										0, NULL,
-										p+1, scolors);
-		hstrip->setState(state);
-		hstrip->setCullFace(TRUE);
-		skydome->addKid(hstrip);
+		m_strips[y]->recalcBSphere();
 	 }
-   return skydome;
+   return m_skydome;
 }
 
 /**
@@ -256,23 +230,23 @@ float mcSky::perez(float *params, float a_viewzenith, float a_sunview, float a_s
 
 void mcSky::calculatePerezCoeffs()
 {
-   this->perez_Y[0] =  0.1787f * this->turbidity - 1.9630f;	// 1.4630   
-   this->perez_Y[1] = -0.3554f * this->turbidity + 0.5275f;	// 0.4275	
-   this->perez_Y[2] = -0.0227f * this->turbidity + 5.3251f;
-   this->perez_Y[3] =  0.1206f * this->turbidity - 2.5771f;		
-   this->perez_Y[4] = -0.0670f * this->turbidity + 0.3703f;	
+   m_perez_Y[0] =  0.1787f * m_turbidity - 1.9630f;	// 1.4630   
+   m_perez_Y[1] = -0.3554f * m_turbidity + 0.5275f;	// 0.4275	
+   m_perez_Y[2] = -0.0227f * m_turbidity + 5.3251f;
+   m_perez_Y[3] =  0.1206f * m_turbidity - 2.5771f;		
+   m_perez_Y[4] = -0.0670f * m_turbidity + 0.3703f;	
    
-   this->perez_x[0] = -0.0193f * this->turbidity - 0.2592f;
-   this->perez_x[1] = -0.0665f * this->turbidity + 0.0008f;	
-   this->perez_x[2] = -0.0004f * this->turbidity + 0.2125f;
-   this->perez_x[3] = -0.0641f * this->turbidity - 0.8989f;		
-   this->perez_x[4] = -0.0033f * this->turbidity + 0.0452f;	
+   m_perez_x[0] = -0.0193f * m_turbidity - 0.2592f;
+   m_perez_x[1] = -0.0665f * m_turbidity + 0.0008f;	
+   m_perez_x[2] = -0.0004f * m_turbidity + 0.2125f;
+   m_perez_x[3] = -0.0641f * m_turbidity - 0.8989f;		
+   m_perez_x[4] = -0.0033f * m_turbidity + 0.0452f;	
 
-   this->perez_y[0] = -0.0167f * this->turbidity - 0.2608f;
-   this->perez_y[1] = -0.0950f * this->turbidity + 0.0092f;	
-   this->perez_y[2] = -0.0079f * this->turbidity + 0.2102f;
-   this->perez_y[3] = -0.0441f * this->turbidity - 1.6537f;		
-   this->perez_y[4] = -0.0109f * this->turbidity + 0.0529f;	
+   m_perez_y[0] = -0.0167f * m_turbidity - 0.2608f;
+   m_perez_y[1] = -0.0950f * m_turbidity + 0.0092f;	
+   m_perez_y[2] = -0.0079f * m_turbidity + 0.2102f;
+   m_perez_y[3] = -0.0441f * m_turbidity - 1.6537f;		
+   m_perez_y[4] = -0.0109f * m_turbidity + 0.0529f;	
 }
 
 /**
@@ -286,10 +260,10 @@ void mcSky::calculateSunAngles()
    int i;
    SKYPOINT *v;
    
-   for (i = 0; i < this->cskypoints; i++)
+   for (i = 0; i < m_cSkyPoints; i++)
 	 {
-		v = &this->sky[i];
-		v->a_sun = (float)acos(sgScalarProductVec3(v->xyz, this->sun));
+		v = &m_sky[i];
+		v->a_sun = (float)acos(sgScalarProductVec3(v->xyz, m_sun));
 	 }
 }
 
@@ -302,26 +276,26 @@ void mcSky::calculateSunAngles()
 void mcSky::calculateZenithValues()
 {
    float chi;
-   float a_sunzenith = this->a_sunzenith,
+   float a_sunzenith = m_aSunZenith,
 	 	a_sunzenith2 = a_sunzenith * a_sunzenith,
 	 	a_sunzenith3 = a_sunzenith * a_sunzenith2;
-   float T = this->turbidity,
+   float T = m_turbidity,
 	    T2 = T * T;
      
-   chi = (float)(4.0f / 9.0f - this->turbidity / 120.0f) * (M_PI - 2.0f * this->a_sunzenith);
-   this->zenith_Y = (4.0453f * this->turbidity - 4.9710f) * tanf(chi) - 0.2155f * this->turbidity + 2.4192f;
+   chi = (float)(4.0f / 9.0f - T / 120.0f) * (M_PI - 2.0f * a_sunzenith);
+   m_zenithY = (4.0453f * T - 4.9710f) * tanf(chi) - 0.2155f * T + 2.4192f;
    
-   this->zenith_x =
+   m_zenithx =
 	 ( 0.00166f*a_sunzenith3 - 0.00375f*a_sunzenith2 + 0.00209f*a_sunzenith + 0.0f)       * T2 +
 	 (-0.02903f*a_sunzenith3 + 0.06377f*a_sunzenith2 - 0.03202f*a_sunzenith + 0.00394f) * T +
 	 ( 0.11693f*a_sunzenith3 - 0.21196f*a_sunzenith2 + 0.06052f*a_sunzenith + 0.25886f);
    
-   this->zenith_y =  
+   m_zenithy =  
 	 ( 0.00275f*a_sunzenith3 - 0.00610f*a_sunzenith2 + 0.00317f*a_sunzenith + 0.0f)       * T2 +
 	 (-0.04214f*a_sunzenith3 + 0.08970f*a_sunzenith2 - 0.04153f*a_sunzenith + 0.00516f) * T +
 	 ( 0.15346f*a_sunzenith3 - 0.26756f*a_sunzenith2 + 0.06670f*a_sunzenith + 0.26688f);
    
-   this->sky_ok = false;
+   m_skyOk = false;
 }
 
 
@@ -337,19 +311,19 @@ void mcSky::calculateSkyColors()
   float x, y, Y;
   SKYPOINT *v = NULL;
 	
-  for (i = 0; i < this->cskypoints; i++)
+  for (i = 0; i < m_cSkyPoints; i++)
     {
-      v = &this->sky[i];
+      v = &m_sky[i];
 
-      Y = this->zenith_Y * perez(this->perez_Y, v->a_zenith, v->a_sun, this->a_sunzenith);// / perez(this->perez_Y, 0.0, this->a_sunzenith);
-      x = this->zenith_x * perez(this->perez_x, v->a_zenith, v->a_sun, this->a_sunzenith);//) / perez(this->perez_x, 0.0, this->a_sunzenith);
-      y = this->zenith_y * perez(this->perez_y, v->a_zenith, v->a_sun, this->a_sunzenith);//) / perez(this->perez_y, 0.0, this->a_sunzenith);
+      Y = m_zenithY * perez(m_perez_Y, v->a_zenith, v->a_sun, m_aSunZenith);
+      x = m_zenithx * perez(m_perez_x, v->a_zenith, v->a_sun, m_aSunZenith);
+      y = m_zenithy * perez(m_perez_y, v->a_zenith, v->a_sun, m_aSunZenith);
 	
-      Y *= this->luminancefactor;
-      this->xyYtoRGB(v, x, y, Y);
+      Y *= m_luminancefactor;
+      xyYtoRGB(v, x, y, Y);
     }
 	
-  this->sky_ok = true;
+  m_skyOk = true;
 }
 
 
@@ -372,38 +346,78 @@ void mcSky::createSphere(int x_segs, int y_segs)
    int x, y, v;
    float theta, phi;
    
-   if (this->sky != NULL)
-	 delete this->sky;
+   if (m_sky != NULL)
+	 delete m_sky;
    
    if (x_segs * y_segs <= 0)
 	 return;
    
-   this->cskypoints = 1 + x_segs * y_segs;
-   this->sky_width = x_segs;
-   this->sky_height = y_segs;
+   m_cSkyPoints = 1 + x_segs * y_segs;
+   m_skyWidth = x_segs;
+   m_skyHeight = y_segs;
 
-   this->sky = new SKYPOINT[this->cskypoints];
+   // Allocate space
+   m_sky = new SKYPOINT[m_cSkyPoints];
+   m_scolors.resize(y_segs+1);
+   for (y = 0; y <= y_segs; y++)
+		m_scolors[y] = new sgVec4[m_skyWidth * 2 + 2];
+
+   m_scoords.resize(y_segs+1);
+   for (y = 0; y <= y_segs; y++)
+		m_scoords[y] = new sgVec3[m_skyWidth * 2 + 2];
+
+   m_strips.resize(y_segs+1);
+   m_skydome = new ssgTransform;
+
+   m_state = new ssgSimpleState;
+   m_state->enable(GL_COLOR_MATERIAL);
+   if (config->testFlag(mcConfig::SMOOTH))
+     m_state->setShadeModel (GL_SMOOTH);
+   else
+     m_state->setShadeModel (GL_FLAT);
+   m_state->enable(GL_CULL_FACE);
+   m_state->disable(GL_TEXTURE_2D);
+   m_state->setOpaque();
+   m_state->disable(GL_FOG);
+   m_state->disable(GL_BLEND);
+   m_state->disable(GL_LIGHTING);
    
-   this->scolors = new sgVec4[(sky_height-3)*(sky_width*2)];
-   this->scoords = new sgVec3[(sky_height-3)*(sky_width*2)];	
-   
+	// Initialize
    v = 0;
-   sgSetVec3(this->sky[v].xyz, 0.0f, 1.0f, 0.0f);
+   sgSetVec3(m_sky[v].xyz, 0.0f, 1.0f, 0.0f);
 
-   this->sky[v].a_zenith = 0.0f;		// Angle to zenith is 0 because we're at zenith
+   m_sky[v].a_zenith = 0.0f;		// Angle to zenith is 0 because we're at zenith
+   m_strips[0] = new ssgVTable(GL_TRIANGLE_FAN,
+								x_segs + 2, m_scoords[0],
+								0, NULL,
+								0, NULL,
+								x_segs + 2, m_scolors[0]);
+   m_strips[0]->setState(m_state);
+   m_strips[0]->setCullFace(TRUE);
+   m_skydome->addKid(m_strips[0]);
+
    v++;
 
    for (y = 1; y <= y_segs; y++)
-    {
+   {
+	   m_strips[y] = new ssgVTable(GL_TRIANGLE_STRIP,
+									x_segs * 2 + 3, m_scoords[y],
+									0, NULL,
+									0, NULL,
+									x_segs * 2 + 3, m_scolors[y]);
+	   m_strips[y]->setState(m_state);
+	   m_strips[y]->setCullFace(TRUE);
+	   m_skydome->addKid(m_strips[y]);
+									
 	   theta = (float)y * M_PI * 0.5f / (float)y_segs;
 	   for (x = 0; x < x_segs; x++, v++)
 		 {
 			phi = (float)x * 2.0f * M_PI / (float)x_segs;
-			sgSetVec3(this->sky[v].xyz,
+			sgSetVec3(m_sky[v].xyz,
 					  sinf(theta) * cosf(phi),
 					  cosf(theta),
 					  sinf(theta) * sinf(phi));
-			this->sky[v].a_zenith = acosf(sgScalarProductVec3(this->sky[v].xyz, this->zenith));
+			m_sky[v].a_zenith = acosf(sgScalarProductVec3(m_sky[v].xyz, m_zenith));
 		 }
     }
 }
@@ -454,40 +468,4 @@ void mcSky::xyYtoRGB(SKYPOINT *v, float x, float y, float Y)
    v->b = gamma( 0.011f * X - 0.184f * Y + 1.078f * Z, 0.8f);
 }
 
-
-/**
- * Sun position functions 
- * */
-
-void mcSky::setTimeInDay(float t)
-{
-   this->stndtime = t;
-   this->updateSunPosition();
-}
- 
-void mcSky::setDayInYear(float d)
-{
-   this->day = 365 * d;
-   this->updateSunPosition();
-}
- 
-void mcSky::setLatLong(float latitude, float longitude)
-{
-   this->latitude = latitude;
-   this->longitude = longitude;
-   this->updateSunPosition();
-}
- 
-void mcSky::updateSunPosition()
-{
-   float solartime, solardeclination;
-   float thetas, omegas;
-   
-   solartime = this->stndtime + 0.170f * sinf((4.0f * M_PI * (this->day - 80.0f)) / 373.0f) - 0.129f * sinf((2 * M_PI * (this->day - 8.0f) / 355.0f)) + 12.0f * (this->latitude - this->longitude) / M_PI;
-   solardeclination = 0.4093f * sinf((2.0f * M_PI * (this->day - 81.0f)) / 368.0f);
- 
-   thetas = (M_PI / 2.0f - asinf(sinf(this->latitude) * sinf(solardeclination) - cosf(this->latitude) * cosf(solardeclination) * cosf((M_PI * this->stndtime) / 12.0f)));
-   omegas = atan2f(-cosf(solardeclination) * sinf((M_PI * this->stndtime)/12.0f), cosf(this->latitude) * sinf(solardeclination) - sinf(this->latitude) * cosf(solardeclination) * cosf((M_PI * this->stndtime) / 12.0f));
-   this->setSunPosition(thetas, omegas);
-}
 

@@ -19,47 +19,46 @@
 #ifndef __SKY_HPP__
 #define __SKY_HPP__
 
+#include <vector>
 #include <sg.h>
 #include <ssg.h>
 
-struct SKYPOINT
-{
-  sgVec3 xyz;      /* X, Y and Z-coordinates */
-  float r, g, b;   /* Red, green, blue */
-  
-  float a_sun;     /* Angle to sun */
-  float a_zenith;  /* Angle to zenith */
-};
+
+struct SKYPOINT;
 
 class mcSky
 {
  private:
-   sgVec3 	zenith;
+   sgVec3 	m_zenith;
    
-   bool 	sky_ok;			/* Has sky been calculated? */
-   float 	turbidity;
-   float 	luminancefactor;
-   sgVec3 	sun;			/* Vector to sun */
+   bool 	m_skyOk;			/* Has sky been calculated? */
+   float 	m_turbidity;
+   float 	m_luminancefactor;
+   sgVec3 	m_sun;				/* Vector to sun */
    
-   float 	a_sunzenith;	/* Angle between sun and zenith */
+   float 	m_aSunZenith;		/* Angle between sun and zenith */
   
-   int 		cskypoints,
-	 		sky_width,		/* Number of horizontal segments */
-	 		sky_height;		/* Number of vertical segments */
-   SKYPOINT* sky;			/* Sky coordinate data */
+   int 		m_cSkyPoints,
+	 		m_skyWidth,			/* Number of horizontal segments */
+	 		m_skyHeight;		/* Number of vertical segments */
+   SKYPOINT* m_sky;				/* Sky coordinate data */
    
-   float   	perez_Y[5],		/* Perez-function parameters */
-	 		perez_x[5],
-	 		perez_y[5];
+   float   	m_perez_Y[5],		/* Perez-function parameters */
+	 		m_perez_x[5],
+	 		m_perez_y[5];
    
    float	latitude, longitude,
 	 		day, stndtime;
   
    // Light intensity and colour at zenith
-   float	zenith_Y, zenith_x, zenith_y;
+   float	m_zenithY, m_zenithx, m_zenithy;
    
-   sgVec4 *	scolors;
-   sgVec3 *	scoords;
+   std::vector<sgVec4 *>	m_scolors;			/* Vertex arrays */
+   std::vector<sgVec3 *>	m_scoords;
+   std::vector<ssgLeaf *>	m_strips;			/* Triangle strips */
+   ssgBranch *m_skydome;
+
+   ssgSimpleState *m_state;
   
   /* Private methods */
   
@@ -72,7 +71,6 @@ class mcSky
    void		calculateSkyColors();
    void    	createSkyPoint(SKYPOINT *v, float heading, float pitch);
    void		xyYtoRGB(SKYPOINT *v, float x, float y, float Y);
-   void		updateSunPosition();
   
  public:
    mcSky();
@@ -83,10 +81,7 @@ class mcSky
    void		setTurbidity(float t);
    void    	setSunPosition(sgVec3 &v);
    void		setSunPosition(float heading, float elevation);
-   void     setTimeInDay(float t);      // [0.0 .. 1.0]
-   void     setDayInYear(float d);      // [0.0 .. 1.0]
-   void     setLatLong(float lat, float lon);   // radians
-  
+ 
    ssgEntity * Draw();
 };
 
