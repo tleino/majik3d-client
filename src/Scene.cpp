@@ -16,16 +16,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <iostream.h>
+#include <pu.h>
+#include <sg.h>
+
 #include "Scene.hpp"
 #include "Display.hpp"
 #include "Debug.hpp"
 #include "Landscape.hpp"
 #include "Socket.hpp"
 #include "Object.hpp"
-
-#include <pu.h>
-#include <sg.h>
-#include <iostream.h>
 
 #define random()	rand()
 
@@ -37,14 +37,10 @@ sgMat4         frustumi;
 ssgTransform  *trees[100];
 ssgTransform  *lumiukko;
 
-
-//float cam_slide = 0.0f;
-
 Scene::Scene()
 {    
    DEBUG("Scene constructor");
 }
-
 
 Scene::~Scene()
 {
@@ -68,7 +64,7 @@ Scene::init()
    
    ssgEntity *tree_obj = ssgLoadAC ("tree.ac" );
    
-   //   ssgFlatten         ( tree_obj );
+   // ssgFlatten         ( tree_obj );
       
    float tempx, tempy;
    
@@ -77,7 +73,7 @@ Scene::init()
 		
 		trees[i] = new ssgTransform;
 		trees[i] -> addKid( tree_obj );
-//		ssgStripify ( trees[i] );
+		// ssgStripify ( trees[i] );
 		trees[i] -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
 		
 		sgCoord treepos;
@@ -117,14 +113,11 @@ Scene::init()
    sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
    sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
    
-   //glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
+   // glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
    
    glEnable ( GL_DEPTH_TEST ) ;
    
-     /*
-	  *     Set up the viewing parameters
-	  *   */
-   
+   /* Set up the viewing parameters */
    ssgSetFOV     ( 90.0f, 60.0f ) ;
    ssgSetNearFar ( 1.0f, 10000.0f ) ;
 
@@ -167,27 +160,22 @@ Scene::init()
    cout << (frustumi[2][3] = -1.0f) << " ";
    cout << (frustumi[3][3] = 0.0f) << " " << endl;
    
-    /*
-	 *     *     Set up some fog
-	 *     *   */
-
+   /* Set up some fog */
    glFogf ( GL_FOG_DENSITY, 0.035f / 100.0f ) ;
    glFogfv( GL_FOG_COLOR  , fogcol    ) ;
    glFogf ( GL_FOG_START  , 3500.0       ) ;
    glFogf ( GL_FOG_END    , 5000.0      ) ;
    glFogi ( GL_FOG_MODE   , GL_EXP2   ) ;
-//   glHint ( GL_FOG_HINT   , GL_NICEST ) ;
+   // glHint ( GL_FOG_HINT   , GL_NICEST ) ;
    glEnable ( GL_FOG ) ;
    
-   /*
-	*     Set up the Sun.
-	*   */
-   
+   /* Set up the Sun */
    sgVec3 sunposn ;
    sgVec4 sunamb  ;
    sgSetVec3 ( sunposn, 0.2f, -0.5f, 0.5f ) ;
    sgSetVec4 ( sunamb , 0.4f, 0.4f, 0.4f, 1.0f ) ;
    ssgGetLight ( 0 ) -> setPosition ( sunposn ) ;
+   ssgGetLight ( 0 ) -> setColour ( GL_AMBIENT, sunamb ) ;
    scene->initialized = 2;
 }
 
@@ -248,7 +236,7 @@ Scene::removeObject(Object *ob)
 void
 Scene::update()
 {
-   static int frameno = 0 ;
+   static int frameno = 0 ;   
    sgCoord poo;
    
    frameno++ ;
@@ -257,63 +245,35 @@ Scene::update()
    
    while (ob != NULL)
 	 {
-//		cout << "x: " << ob->ob_pos.xyz [ 0 ] << "y: " << ob->ob_pos.xyz [ 1 ] << "z: " << ob->ob_pos.xyz [ 2 ] << "\n";
 		poo = ob->getPos();
 		if (strcmp(ob->file_name, "tuxedo.ac"))
 		  {
-			// This MAY need a variant of moveTo to work properly.
+			 // This MAY need a variant of moveTo to work properly.
 			 poo.hpr[0] += 180.0f;
 			 ob->trans->setTransform(&poo, 1.0f, 1.0f, (sin((float)ob->movecounter/2.0))/4+1);
-		
+			 
 		  }
 		else
 		  ob->trans->setTransform( &poo, 1.0f, 1.0f, (sin((float)ob->movecounter/2.0))/4+1);
 		
 		ob = ob->next;
 	 }
-      
-   sgVec3 test_vec ;
-   sgMat4 invmat ;
-   sgMakeIdentMat4 ( invmat ) ;
    
-   sgCoord tuxPos = tuxi->getPos();
-   invmat[3][0] = -tuxPos.xyz[0] ;
-   invmat[3][1] = -tuxPos.xyz[1] ;
-   invmat[3][2] =  0.0f          ;
+   sgCoord tuxpos = tuxi->getPos();
    
-   test_vec [0] = 0.0f ;
-   test_vec [1] = 0.0f ;
-   test_vec [2] = 100000.0f ;
+   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
+   sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
    
-   ssgHit *results ;
-   int num_hits = ssgHOT ( scene_root, test_vec, invmat, &results ) ;
+   campos.hpr[0] += 180.0f;
    
-   float hot = -1000000.0f ;
-   
-   for ( int i = 0 ; i < num_hits ; i++ )
-	 {
-		ssgHit *h = &results [ i ] ;
-		
-		float hgt = - h->plane[3] / h->plane[2] ;
-		
-		if ( hgt >= hot )
-		  hot = hgt ;
-	 }
-   
-   sgCopyVec3 ( campos.xyz, tuxPos.xyz ) ;
-   sgCopyVec3 ( campos.hpr, tuxPos.hpr ) ;
-//   campos . hpr [ 1 ] = 0.0f ;
-//   campos . hpr [ 2 ] = 0.0f ;
-   
-   campos.hpr[0] += 180.0f /*+ cam_slide*/;
-   
-   //cam_slide *= 0.9;
-
    if (display->camera == 0) {
 	  campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
 	  campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
-	  campos.xyz[2] += 5+(getHOT(campos.xyz[0], campos.xyz[1])-hot);
-	  campos.hpr[1] -= 15+(getHOT(campos.xyz[0], campos.xyz[1])-hot);
+	  
+	  float tuxhot = getHOT(tuxpos.xyz[0], tuxpos.xyz[1]);
+	  float camhot = getHOT(campos.xyz[0], campos.xyz[1]);
+	  campos.xyz[2] += 5+(camhot-tuxhot);
+	  campos.hpr[1] -= 15+(camhot-tuxhot);
    } else {
 	  campos.xyz[0] += 2*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
 	  campos.xyz[1] -= 2*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
@@ -330,8 +290,7 @@ Scene::update()
 		poo.hpr[0] += 180.0f;
 		tuxi->trans->setTransform(&poo, 1.0f, 1.0f, (sin((float)tuxi->movecounter/2.0))/4+1);
 		
-	 }	
-      
+	 }
 }
 
 void
@@ -362,12 +321,12 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
    
    sgFullXformPnt3 (temppos, viewmat);
    
-//   textpos[0] = temppos[0];
-//   textpos[1] = temppos[1];
-//   textpos[2] = temppos[2];
-//   textpos[3] = 1.0f;
-  
-//   cout << "textpos xform jalk: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << endl;
+   // textpos[0] = temppos[0];
+   // textpos[1] = temppos[1];
+   // textpos[2] = temppos[2];
+   // textpos[3] = 1.0f;
+   
+   // cout << "textpos xform jalk: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << endl;
    
    textpos[0] = frustumi[0][0] * temppos[0] +  frustumi[1][0] * temppos[1] + frustumi[2][0] * temppos[2] +  frustumi[3][0];
    textpos[1] = frustumi[0][1] * temppos[0] +  frustumi[1][1] * temppos[1] + frustumi[2][1] * temppos[2] +  frustumi[3][1];
@@ -376,18 +335,17 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
    
    textpos[0] /= textpos[3];
    textpos[1] /= textpos[3];
-//   textpos[2] /= textpos[3];     
-
-//   cout << "textpos frustum jalk.: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << " " << textpos[3] << endl;
+   // textpos[2] /= textpos[3];     
+   
+   // cout << "textpos frustum jalk.: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << " " << textpos[3] << endl;
    
    textpos[0] = textpos[0]*display->width/2 + display->width/2;
    textpos[1] = textpos[1]*display->height/2 + display->height/2;
-/*   
-   if (textpos[2] < 0 || textpos[2] > 250)
-	 text_object->hide();
-   else
-	 text_object->reveal();
-  */
+
+   // if (textpos[2] < 0 || textpos[2] > 250)
+   //   text_object->hide();
+   // else
+   //	text_object->reveal();
    
    if (textpos[0] < 0)
 	 textpos[0] = 0;
@@ -406,13 +364,8 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
 void
 Scene::draw()
 {
- //  static int frame =0;
-
-  //  frame++;
-   
-//   cout << "Kohta rendaa.\n";
    ssgCullAndDraw ( scene_root ) ;
-
+   
    sgVec3 posit;
    
    Object *ob = Object::first;
