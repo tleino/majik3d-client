@@ -107,6 +107,9 @@ Object::~Object()
 void
 Object::update(float t)
 {
+	if (m_turnSpeed == 0.0 && m_moveSpeed == 0.0)
+		return;
+
 	sgCoord tempPos = ob_pos;
 	
 	tempPos.hpr[0] += m_turnSpeed * t;

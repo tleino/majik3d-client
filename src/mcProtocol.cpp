@@ -98,6 +98,38 @@ Protocol::parseCommand(char *input)
 
       break;
 
+	  case CMD_TURN:
+		if (sscanf(data, "%d %d", &id, &direction) < 2)
+		{
+			error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
+				"command CMD_TURN.");
+			break;
+		}
+		
+		ob = Object::getObject(id);
+		if (ob)
+		{
+			switch(direction)
+			{
+			case 1:
+				ob->turnRight();
+				break;
+			case -1:
+				ob->turnLeft();
+				break;
+			case 0:
+				ob->stopTurning();
+				break;
+			default:
+				error->put(	mcError::ERROR_WARNING,
+							"invalid parameter to CMD_TURN");
+				break;
+			}
+		}
+		// else error object not found
+
+      break;
+
 	case CMD_MOVE_HEADING:
 		if (sscanf(data, "%d %f", &id, &h) < 2)
 		{
