@@ -16,6 +16,8 @@
 #include "Error.hpp"
 #include "Debug.hpp"
 #include "Keyboard.hpp"
+#include "Matrix.hpp"
+#include "P3D.hpp"
 
 extern Display *display;
 extern Socket *sock;
