@@ -54,8 +54,8 @@ double read_time_of_day ()
 
 Display::Display()
 {
-   width = 800;
-   height = 600;
+   width = 640;
+   height = 480;
    bpp = 32;
 
    // cursor = new Cursor;
