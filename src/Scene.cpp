@@ -21,11 +21,15 @@
 #include "Landscape.hpp"
 #include "ssgKeyFlier.h"
 
+#define random()	rand()
+
 /* tux */
 ssgTransform   *penguin  = NULL ;
 sgCoord tuxpos, campos;
 
 ssgTransform  *trees[100];
+
+float cam_slide = 0.0f;
 
 void 
 keyboard ( unsigned char k, int, int )
@@ -59,9 +63,11 @@ keyboard ( unsigned char k, int, int )
 	  break;
 	case '6':
 	  tuxpos.hpr[0] -= 5.0f;
+	  cam_slide -= 1.0f;
 	  break;
 	case '4':
 	  tuxpos.hpr[0] += 5.0f;
+	  cam_slide += 1.0f;
 	  break;
 	case '+':
 	  if (campos.hpr[1] > 90)
@@ -235,7 +241,7 @@ Scene::getHOT( float x, float y )
 void
 Scene::addObject(Object* ob)
 {
-   object_list.push_back(ob);
+//   object_list.push_back(ob);
       
    object_branch->addKid ( ob-> plop );
       
@@ -296,8 +302,16 @@ Scene::update()
    sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
    sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
 
-   campos.xyz[0] += 10*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-   campos.xyz[1] += 10*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
+	campos.hpr[0] += 180.0f + cam_slide;
+
+
+	cam_slide *= 0.9;
+
+   campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+   campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
+	campos.xyz[2] += 5;
+
+
 
    ssgSetCamera ( & campos ) ;
    penguin -> setTransform ( & tuxpos ) ;

@@ -28,7 +28,7 @@
 #include "Perlin.hpp"
 
 #define PERSISTENCE 0.6
-#define OCTAVES       5
+#define OCTAVES       3
 
 Perlin::Perlin()
 {
@@ -133,6 +133,5 @@ Perlin::perlinNoise_2D(double x, double y)
 
 		total = total + interpolatedNoise(i, (x) * frequency, (y) * frequency) * amplitude;
 	 }
-
    return total;
 }
