@@ -1,0 +1,11 @@
+The known bugs are (P: problem, A: answer, S: solution):
+
+  P: The client crashes when pressing OK button in the about box.
+  A: We don't have any idea why it isn't working. It works fine on
+     Linux and we are using exactly the same code.
+  S: Wait until we figure it out or install Linux.
+
+When you find a bug which isn't listen on this known bugs list, please
+send your bug report to majik-users@majik.netti.fi, subscribe if you
+haven't done that already, or if you don't want to subscribe the address
+is majik@majik.netti.fi.

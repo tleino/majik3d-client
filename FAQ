@@ -1,0 +1,258 @@
+
+                              Palandian Majica
+                                      
+               Majik 3D, the last incarnation of Majik MURPE
+                                      
+        [ [1]introduction | [2]screenshots | [3]latest news | faq |
+   [4]conventions | [5]mailing lists | [6]art gallery | [7]bug tracking ]
+   [ [8]www statistics | [9]download | [10]project status | [11]features
+                       | [12]the team | [13]history ]
+                                      
+Majik FAQ (Frequently Asked Questions)
+
+   1. This file.
+          1.1. [14]What is the purpose of this file?
+          1.2. [15]What does 'FAQ' stand for?
+          1.3. [16]Who is the maintainer of this file?
+          1.4. [17]How can I contribute to the FAQ?
+          
+   2. General information on Majik MURPE.
+          2.1. [18]What is Majik?
+          2.2. [19]What is a MURPE?
+          2.3. [20]What is Majik 3D?
+          2.4. [21]When will Majik 3D be open to the public?
+          2.5. [22]Who are the developers of Majik 3D?
+          2.6. [23]Does Majik have a homepage?
+          2.7. [24]Do you need my help?
+          2.8. [25]What is the difference between WorldForge (former
+          Altima) and Majik?
+          2.9. [26]How much will Majik cost to play, or will it be free?
+          
+   3. Majik client.
+          3.1. [27]Where can I get the client?
+          3.2. [28]What platforms does the client support?
+          3.3. [29]Is the client source available?
+          3.4. [30]Does the client have any special hardware
+          requirements?
+       ______________________________________________________________
+     
+   1.1. What is the purpose of this file?
+          This file is an attempt to present and answer some of most
+          frequently asked questions about Majik MURPE. It is advised
+          that everyone interested in Majik should make him/herself
+          familiar with this file thus avoiding the need for the
+          developers of Majik to answer the questions presented herein.
+          This file is written by members of the Majik core development
+          team so everything presented here is absolutely reliable and is
+          the official view of the Majik development team.
+          
+   1.2. What does "FAQ" stand for?
+          "FAQ" stands for Frequently Asked Questions.
+          
+   1.3. Who is the maintainer of this file?
+          This file is maintained by the members of the Majik 3D core
+          development team.
+          
+   1.4. How can I contribute to the FAQ?
+          If you have a question to ask, and you feel like the question
+          is so common and important that it should be included in this
+          FAQ, just send mail to [31]majik@majik.netti.fi and ask the
+          question.
+       ______________________________________________________________
+     
+   2.1. What is Majik?
+          Majik is an Internet-based role-playing environment. It is
+          essentially unique in it's genre, as it is more influenced by
+          fantasy literature and real-life role-playing games such as
+          AD&D and Rolemaster than typical multiplayer games such as MUDs
+          or Roguelikes. Majik has gone through almost every possible
+          cosmetic appearance, it has been telnet based, a Roguelike,
+          briefly 2D graphical, and now, finally, 3D.
+          
+   2.2. What is a MURPE?
+          MURPE stands for Multi-User Role-Playing Environment.
+          
+   2.3. What is Majik 3D?
+          Majik 3D is the fifth, and hopefully final, distinguishable
+          incarnation of Majik. All of Majik's [32]predecessors have been
+          essentially MUDs, Majik4 being a roguelike, but Majik 3D is a
+          real 3-dimensional rpg that uses a real 3D engine. At the
+          moment Majik 3D is under heavy development.
+          
+   2.4. When will Majik 3D be open to the public?
+          Unknown. It will probably take months, even years. Look at our
+          [33]milestone plan to get some idea where we are going and
+          where we are within next few months.
+          
+   2.5. Who are the developers of Majik 3D?
+          The people responsible for the base code of Majik 3D are listed
+          below:
+          
+          [34]Tommi "Namhas" Leino ([35]namhas@majik.netti.fi)
+          [36]Jari "Dazzt" Saukkonen ([37]dazzt@majik.netti.fi)
+          [38]Atte "Yorkaturr" Koivula ([39]yorkaturr@majik.netti.fi)
+          [40]Otso "Harum" Mäkinen ([41]harum@majik.netti.fi)
+          
+          There are also [42]numerous designers who are designing the
+          world among other things, and doing miscellanious things apart
+          from coding.
+          
+   2.6. Does Majik 3D have a homepage?
+          Yes, the URL for Majik's homepage is: [43]http://majik.netti.fi
+          
+   2.7. Do you need my help?
+          Most of you who imagine that Majik is just like any other MUD
+          are frequently asking if we accept more wizards or builders.
+          The answer is simply: we do not. One of [44]Majik3's worst
+          mistakes was that we had just too much developers in relation
+          to coordination and we will not repeat that mistake. It is
+          easier to organize a project worked on by a handful of active
+          and experienced developers with straight plans than a horde of
+          100 (yes, we really had 100!) wanna-be coders who just wanted
+          to code something "neat" just for fun, not taking it seriously
+          at all.
+          
+          However, we are in need of people capable of doing computer
+          graphics, world design and we are always looking for new
+          dedicated and skilled developers to join our small development
+          team. Also, if you don't want to sell your soul for the
+          project, you can help by suggesting ideas, sending bug reports,
+          fixing bugs in the client by sending patches (show us that
+          there is some reason for the client being Open Source!) and by
+          for example correcting the many spelling mistakes in these
+          pages. Use your imagination. And remember, when you found a
+          bug, do report it immediately and do not wait that someone else
+          will report it anyways. They may not. For a while we had our
+          Win32 port of the client in a condition that it didn't work at
+          all (there were files missing), approx. 500 users downloaded it
+          and only one of them dare to report such a fatal bug when a
+          week has passed already.
+          
+          The address for offering help is the usual,
+          [45]majik@majik.netti.fi.
+          
+   2.8. What is the difference between WorldForge (former Altima) and
+          Majik?
+          WorldForge: To create a GPL/LGPL game with total freedom for
+          anyone. It can be only a "generic" game engine for people to
+          build their own worlds. It can be played with several different
+          kinds of clients, which is a little bit restrictive, even
+          though it brings variety and opens it up for more people to
+          play. Shortly: WorldForge is for Open Source fanatics wanting
+          to watch the development of a generic game engine, and maybe
+          desiring to build their own world.
+          
+          Majik: To create only one consistent and well-designed base for
+          a world which the players themselves can modify to their
+          liking, if they have enough power and influence to do so. That
+          means, Majik will really write its own history. The project
+          will have only one client type and it is true 3D allowing total
+          freedom of movement. Only the client's code is GPLed, the
+          server remains closed from the public to prevent people wasting
+          time on their bad copies of the world instead of participating
+          in the centralized development. Shortly: Majik is for
+          role-players who demand realism, credibility and a
+          well-designed world.
+          
+   2.9. How much will Majik cost to play, or will it be free?
+          Majik is totally free of charge until it is so big that we must
+          distribute it using CDs and at that point the medium will be
+          the only factor determining the price.
+       ______________________________________________________________
+     
+   3.1. Where can I get the client?
+          Right now there is no client you could use for playing Majik.
+          However, if you want to participate bug-testing,
+          portability-fixing, even the development or just want to see
+          how it looks right now, you can download the client from our
+          [46]download page.
+          
+   3.2. What platforms does the client support?
+          The client is primarily developed under Linux and it is ported
+          to Windows (95/98/NT) and in the future will be hopefully
+          ported to all the architectures and operating systems supported
+          by [47]The Mesa 3-D graphics library.
+          
+   3.3. Is the client source available?
+          Yes and no. The Majik 3D client's source code is now GPL'ed and
+          is available for public download from our [48]ftp server.
+          However, the server's source code will not be available
+          because:
+          
+         1. There is no apparent gain for opening the server's source,
+            unlike with the client.
+         2. We wouldn't want to see people taking the source and starting
+            up customized servers for their friends. We see this as waste
+            of resources. Actually if they would have the source, they
+            would of course like to start their own servers just to test
+            the thing and without even having to open their network
+            connection. This would lead in a situation where there is 100
+            Majik servers up and running when they could all be forced to
+            be in an one big server. I think it is better to have 1000
+            users on one server than 10 users per server.
+         3. We believe in centralized development more than distributed
+            in a project such as this. We are doing a consistent world
+            more than a generic game engine for everyone's use.
+            
+   3.4. Does the client have any special hardware requirements?
+          If you want to use the best detail level you will need a 3D
+          card, otherwise the graphics will be just too slow. However, it
+          is possible to reduce the detail levels so it is actually
+          possible to run Majik on systems without additional 3D
+          hardware.
+            __________________________________________________________
+          
+                           Majik Development Team
+                          [49]majik@majik.netti.fi
+
+References
+
+   1. http://majik.netti.fi/index.html
+   2. http://majik.netti.fi/screenshots.html
+   3. http://majik.netti.fi/news.html
+   4. http://majik.netti.fi/conventions.html
+   5. http://majik.netti.fi/archive.html
+   6. http://majik.netti.fi/gallery.html
+   7. http://majik.netti.fi/bugs.html
+   8. http://majik.netti.fi/analog.html
+   9. http://majik.netti.fi/download.html
+  10. http://majik.netti.fi/status.html
+  11. http://majik.netti.fi/features.html
+  12. http://majik.netti.fi/team.html
+  13. http://majik.netti.fi/history.html
+  14. http://majik.netti.fi/faq.html#1.1
+  15. http://majik.netti.fi/faq.html#1.2
+  16. http://majik.netti.fi/faq.html#1.3
+  17. http://majik.netti.fi/faq.html#1.4
+  18. http://majik.netti.fi/faq.html#2.1
+  19. http://majik.netti.fi/faq.html#2.2
+  20. http://majik.netti.fi/faq.html#2.3
+  21. http://majik.netti.fi/faq.html#2.4
+  22. http://majik.netti.fi/faq.html#2.5
+  23. http://majik.netti.fi/faq.html#2.6
+  24. http://majik.netti.fi/faq.html#2.7
+  25. http://majik.netti.fi/faq.html#2.8
+  26. http://majik.netti.fi/faq.html#2.9
+  27. http://majik.netti.fi/faq.html#3.1
+  28. http://majik.netti.fi/faq.html#3.2
+  29. http://majik.netti.fi/faq.html#3.3
+  30. http://majik.netti.fi/faq.html#3.4
+  31. mailto:majik@majik.netti.fi
+  32. http://majik.netti.fi/history.html
+  33. http://majik.netti.fi/milestones.txt
+  34. http://majik.netti.fi/~namhas
+  35. mailto:namhas@majik.netti.fi
+  36. http://majik.netti.fi/~dazzt
+  37. mailto:dazzt@majik.netti.fi
+  38. http://majik.netti.fi/~yorkaturr
+  39. mailto:yorkaturr@majik.netti.fi
+  40. http://majik.netti.fi/~harum
+  41. mailto:harum@majik.netti.fi
+  42. http://majik.netti.fi/team.html
+  43. http://majik.netti.fi/
+  44. http://majik.netti.fi/majik3.html
+  45. mailto:majik@majik.netti.fi
+  46. http://majik.netti.fi/download.html
+  47. http://www.mesa3d.org/
+  48. ftp://majik.netti.fi/pub/majik3d/client/source/
+  49. mailto:majik@majik.netti.fi
