@@ -31,4 +31,4 @@ class Texture
  private:
 };
 
-#endif /* __TEMPLATE_HPP__ */
+#endif /* __TEXTURE_HPP__ */
