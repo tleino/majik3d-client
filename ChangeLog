@@ -1,2 +1,19 @@
-http://majik.netti.fi/milestones.html
+M3 (the clean up milestone) changes are:
 
+  - initial support for sky, night/day changes by color
+  - general code clean up for both client and server
+  - landscape is now sent by the server
+  - caching of landscape pieces
+  - objects are sent with the landscape piece
+  - initial support for npc objects
+  - server controlled prompt system
+  - automatic clean up of landscape pieces
+  - real object system for the client
+  - improved chatting system
+  - old chat-strings are now removed by a delay
+  - initial bounding sphere system for objects
+  - lod levels tuned for speed and visibility
+  - the amount of lod levels is now configurable
+  - win32 version integrated to unix version's cvs tree
+
+For more information see http://majik.netti.fi/milestones.html.
