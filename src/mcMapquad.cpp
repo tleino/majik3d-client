@@ -52,6 +52,20 @@ int quad_sizes[NUM_LEVELS] =
 //ssgSimpleState *Mapquad::state = NULL;
 static ssgEntity *kukkaModel = NULL;
 
+Mapquad Mapquad::root_map(0, 0, 0, 0);
+
+void
+Mapquad::triangulate(int x, int y)
+{
+	root_map.resetBlocks();
+	root_map.selectLOD(4, x, y);
+	root_map.selectLOD(3, x, y);
+	root_map.selectLOD(2, x, y);
+	root_map.selectLOD(1, x, y);
+	root_map.selectLOD(0, x, y);
+	root_map.exchangeBorders();
+	root_map.triangulateBlocks();
+}
 
 Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 {
@@ -75,6 +89,7 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 
   lod_switch = new ssgSelector();
   trans = new ssgTransform();
+  trans->ref();
 
 	block = NULL;
 
@@ -438,7 +453,7 @@ Mapquad::selectLOD(int level, int x, int y)
 	 {
 		int dist = (int) sqrt( (x-mid_x)*(x-mid_x) + (y-mid_y)*(y-mid_y) );
 
-		if (dist<2500)
+		if (dist<5500)
 		{
 			int newBlock = 0;
 			if (!block)
@@ -460,7 +475,7 @@ Mapquad::selectLOD(int level, int x, int y)
 //				else
 					state -> setShadeModel ( GL_SMOOTH );
 
-				state -> enable ( GL_COLOR_MATERIAL ) ;
+				state -> disable ( GL_COLOR_MATERIAL ) ;
 				state -> enable ( GL_CULL_FACE      ) ;
 				state -> disable ( GL_LIGHTING );
 				state -> setColourMaterial ( GL_NONE ) ;
@@ -532,6 +547,87 @@ Mapquad::selectLOD(int level, int x, int y)
 			child4->selectLOD(level, x, y);
 	 }
 }
+/*
+int pnpoly(int npol, float *xp, float *yp, float x, float y)
+{
+  int i, j, c = 0;
+  for (i = 0, j = npol-1; i < npol; j = i++) {
+    if ((((yp[i]<=y) && (y<yp[j])) ||
+         ((yp[j]<=y) && (y<yp[i]))) &&
+        (x < (xp[j] - xp[i]) * (y - yp[i]) / (yp[j] - yp[i]) + xp[i]))
+      c = !c;
+  }
+  return c;
+}
+*/
+
+int pnpoly(int npol, sgVec2* p, float x, float y)
+{
+  int i, j, c = 0;
+  for (i = 0, j = npol-1; i < npol; j = i++) {
+    if ((((p[i][1]<=y) && (y<p[j][1])) ||
+         ((p[j][1]<=y) && (y<p[i][1]))) &&
+        (x < (p[j][0] - p[i][0]) * (y - p[i][1]) / (p[j][1] - p[i][1]) + p[i][0]))
+      c = !c;
+  }
+  return c;
+}
+
+/*
+bool pointInTriangleTest(srVec2& tri[3], float x, float y)
+{
+	for (int i=0;i<3;i++)
+	
+
+}
+*/
+
+bool intersectionTest(sgVec2 tri[3], int x0, int y0, int x1, int y1)
+{
+	for (int i=0; i < 2; i++)
+	{
+		if ((tri[i][0] > x0) && (tri[i][0] < x1) && (tri[i][1] > y0) && (tri[i][1] < y1))
+			return true;
+	}
+
+	if (pnpoly(3, tri, x0, y0)) return true;
+	if (pnpoly(3, tri, x0, y1)) return true;
+	if (pnpoly(3, tri, x1, y1)) return true;
+	if (pnpoly(3, tri, x1, y0)) return true;
+/*
+	if (pointInTriangleTest(tri, x0, y0)) return true;
+	if (pointInTriangleTest(tri, x0, y1)) return true;
+	if (pointInTriangleTest(tri, x1, y1)) return true;
+	if (pointInTriangleTest(tri, x1, y0)) return true;
+*/	
+	return false;
+}
+
+void Mapquad::draw(sgVec2 tri[3])
+{
+	// whee
+	scene->getLandscape()->getTerrain()->removeAllKids();
+	root_map.drawRecursive(tri);
+}
+
+void Mapquad::drawRecursive(sgVec2 tri[3])
+{
+	// can be optimized with pass always flag etc
+	if (!intersectionTest(tri, top_x, top_y, top_x+mid_x*2, top_y+mid_y*2))
+		return;
+
+	if (level == MAX_LEVEL)
+	{
+		scene->getLandscape()->getTerrain()->addKid(trans);
+	}
+	else
+	{
+		if(child1) child1->drawRecursive(tri);
+		if(child2) child2->drawRecursive(tri);
+		if(child3) child3->drawRecursive(tri);
+		if(child4) child4->drawRecursive(tri);
+	}
+}
 
 void
 Mapquad::selectLOD(int lod)
@@ -544,7 +640,7 @@ Mapquad::selectLOD(int lod)
 		block = new TerrainBlock (top_x, top_y );
 		lod_switch->addKid ( block );
 		trans->addKid ( lod_switch );
-		scene->getLandscape()->getTerrain()->addKid ( trans );
+//		scene->getLandscape()->getTerrain()->addKid ( trans );
 	}
 
 	block->reset();

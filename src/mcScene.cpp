@@ -36,20 +36,19 @@
 
 #define random()	rand()
 
-sgCoord        campos;
+//sgMat4         frustumi;
 
-Player        *tuxi = NULL;
-sgMat4         frustumi;
-
-ssgTransform  *trees[100];
-ssgTransform  *lumiukko;
-ssgTransform  *sky_dome = NULL;
+//ssgTransform  *trees[100];
+//ssgTransform  *lumiukko;
+//ssgTransform  *sky_dome = NULL;
 
 Scene::Scene()
 {   
 	m_landscape = new Landscape();
 	m_sky = new mcSky(16, 8);
 	m_camera = new mcCamera();
+	m_player = new Player;
+	sky_dome = NULL;
 
 	debug->put("Scene constructor");
 }
@@ -240,11 +239,9 @@ Scene::update()
 	for (Object *o = Object::getFirst(); o; o = o->getNext())
 		o->update(frameTime);
 
-	 m_camera->setTarget(tuxi);
+	m_camera->setTarget(m_player);
 
 	m_camera->update(frameTime);
-
-//	m_cameraController->update();
 
    static int frameno = 0 ;   
    sgVec3 scale;
@@ -253,7 +250,7 @@ Scene::update()
   
    Object *ob = Object::getFirst();
   
-   sgCoord tuxpos = tuxi->getPos();
+   sgCoord tuxpos = m_player->getPos();
 
    while (ob != NULL)
      {
@@ -278,42 +275,12 @@ Scene::update()
        
      }
    
-   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
-   sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
-   
-   if (config->getCameraMode() == 0)
-     {
-       // 3rd person mode.
-       campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-       campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
-       
-       float tuxhot = getHOT(tuxpos.xyz[0], tuxpos.xyz[1]);
-       float camhot = getHOT(campos.xyz[0], campos.xyz[1]);
-       campos.xyz[2] += 5+(camhot-tuxhot);
-       campos.hpr[1] -= 15+(camhot-tuxhot);
-     }
-   else
-     {
-
-       // 1st person mode.
-       campos.xyz[0] += (tuxi->getLenY()*2.01f)*sin((campos.hpr[0]-180.0f)*
-						    SG_DEGREES_TO_RADIANS);
-       campos.xyz[1] -= (tuxi->getLenY()*2.01f)*cos((campos.hpr[0]-180.0f)*
-						    SG_DEGREES_TO_RADIANS);
-       campos.xyz[2] += tuxi->getRadius();
-	   
-       campos.hpr[1] = tuxi->getRadius()+scene->getCamera()->getPitch()-tuxi->getRadius()*2.0f;
-	   
-     }
-   
    sgCoord skypos;
-   sgCopyVec3 (skypos.xyz, campos.xyz);
+   sgCopyVec3 (skypos.xyz, m_camera->getPosition().xyz);
    skypos.xyz[2] -= 3500.0f;
    skypos.hpr[0] = 0.0f;
    skypos.hpr[1] = 90.0f;
    skypos.hpr[2] = 0.0f;
-
-//   ssgSetCamera ( & campos ) ;
 
    if (sky_dome)
      sky_dome->setTransform (&skypos);
@@ -338,6 +305,7 @@ Scene::drawText(Object *o, sgVec3 object_pos)
   sgMat4 viewmat, invmat;
   sgVec3 temppos;
   sgVec4 textpos;
+  sgCoord campos = m_camera->getPosition();
   
   sgMakeCoordMat4 (viewmat, campos.xyz, campos.hpr);
   
@@ -414,7 +382,7 @@ Scene::drawText(Object *o, sgVec3 object_pos)
 void
 Scene::draw()
 {
-	if (tuxi == NULL)
+	if (!m_player->initialized())
 		return; // We do not exist yet and thus no draw() needed.
   
   // Update camera's position in relation to ourself.
@@ -422,7 +390,7 @@ Scene::draw()
   
   // Draw the stuff to screen.
 
-//	m_landscape->draw(m_camera);
+	m_landscape->draw(m_camera);
 
 	ssgCullAndDraw ( scene_root );
   

@@ -21,6 +21,7 @@
 
 class Object;
 class mcCamera;
+class mcTerrainHeightGen;
 
 #include <ssg.h>
 #include <GL/glu.h>
@@ -54,9 +55,10 @@ public:
   ssgTransform	*getTerrain()const	{ return terrain; }
   
 private:
-  ssgRoot			*scene_root;
-  ssgTransform		*terrain;
-  ssgSimpleState	*m_terrainState;
+  ssgRoot				*scene_root;
+  ssgTransform			*terrain;
+  ssgSimpleState		*m_terrainState;
+  mcTerrainHeightGen	*m_terraingen;
 };
 
 #endif /* __LANDSCAPE_HPP__ */

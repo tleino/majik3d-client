@@ -21,6 +21,8 @@
 
 #include <ssg.h>
 
+#include "mcCamera.hpp"
+
 class TerrainBlock;
 
 /// Size of one map chunk.
@@ -33,12 +35,10 @@ class TerrainBlock;
 class Mapquad
 {
 public:
-
 	enum Treesize
 	{
 		MAX_LEVEL = 12
 	};
-
 
   struct Map_data
   {
@@ -46,12 +46,40 @@ public:
     double *height;
   };
 
- ///
-  Mapquad(Mapquad *parent, int level, int top_x, int top_y);
   ~Mapquad();
   
-  static Mapquad *root_map;
+  ssgTransform *getTrans() { return trans; }
+
+  Mapquad *getMapquad(int level, int x, int y);
+  Mapquad *tryMapquad(int level, int x, int y);
   
+  
+  char *getMap ();
+  void setMap (Map_data);
+  
+
+  bool isMapReceived();
+
+  static Mapquad& getRootMap() { return Mapquad::root_map; }
+
+  static void draw(sgVec2 tri[3]);
+  static void triangulate(int x, int y);
+  
+  //   static int stats[13];
+  // static void printStats();
+private:
+  static Mapquad root_map;
+
+  Mapquad(Mapquad *parent, int level, int top_x, int top_y);
+
+  void drawRecursive(sgVec2 tri[3]);
+
+  void resetBlocks();
+  void triangulateBlocks();
+  void exchangeBorders();
+  void selectLOD(int, int, int );
+  void selectLOD(int);
+
   Mapquad *parent;
   Mapquad *child1;
   Mapquad *child2;
@@ -63,26 +91,14 @@ public:
   Map_data submap3;
   Map_data submap4;
 
-  ///
-  ssgSelector  *lod_switch;
-  
-  ///
   int *lod_indices;
-  
-  ///
-  ssgTransform *trans;
-
-  ssgTransform *getTrans() { return trans; }
-
 
   TerrainBlock *block;
-  
-  //   Object *inventory;
-  //   Object *observers;
-  
-  ///
+  ssgTransform *trans;
+  ssgSelector  *lod_switch;
+
   int level;
-   int top_x;
+  int top_x;
   int top_y;
   int mid_x;
   int mid_y;
@@ -104,43 +120,8 @@ public:
   Mapquad *getChild3();
   Mapquad *getChild4();
 
-  Mapquad *getMapquad(int level, int x, int y);
-  Mapquad *tryMapquad(int level, int x, int y);
-  ///
-  char *getMap ();
-  ///
-  void setMap (Map_data);
-  ///
-//  void setSubMap (int, Map_data);
-  ///
-  void draw(sgVec3, float);
-	// hello
-  void resetBlocks();
-  void triangulateBlocks();
-  void exchangeBorders();
-  void selectLOD(int, int, int );
-  void selectLOD(int);
-  ///
-//  void divideMap(int, Map_data&, Map_data&, Map_data&, Map_data&, Map_data&);
-  ///
-//  void show();
-  //void hide();
-  ///
-  bool isMapReceived();
-  
-  /*
-    getMaps ( ... );
-    getInventory ( ... );
-    getObservers ( ... );
-  */ 
-  
-  //   static int stats[13];
-  
-  // static void printStats();
-private:
    bool mapReceived;
    int current_lod;
-
    
    /* kludge */
 //	static ssgSimpleState *state;

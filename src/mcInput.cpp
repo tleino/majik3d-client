@@ -41,7 +41,6 @@
 #define DIR_WEST    3
 
 
-extern Player       *tuxi;
 int pitch;
 sgCoord temppos;
 
@@ -84,6 +83,7 @@ Input::keyUp(unsigned char k, int x, int y)
 void
 Input::keyDown(unsigned char k, int x, int y)
 {
+	Player *tuxi = scene->getPlayer();
 	if (tuxi == NULL && !overlay->inp->isVisible())
 		return;
 
@@ -244,6 +244,7 @@ Input::mouseMotion(int x, int y)
   float diff_x = (input->mouse_x - x) * (360.0f / (display->getWidth() / 2));
   float diff_y = (input->mouse_y - y) * (360.0f / (display->getHeight() / 2));
 
+  Player *tuxi = scene->getPlayer();
   if (tuxi != NULL && config->getCameraMode() != 0)
     {
       sgCoord temppos = tuxi->getPos();

@@ -50,6 +50,9 @@ Object::Object()
   
   movecounter = 0;
   hotFixed = false;
+  trans = NULL;
+  obu = NULL;
+  puhe = NULL;
 
   ob_pos.xyz[0] = 0;
   ob_pos.xyz[1] = 0;
@@ -60,6 +63,7 @@ Object::Object()
 
   m_turnSpeed = 0.0; 
   m_moveSpeed = 0.0;
+  m_initialized = false;
 }
 
 Object::~Object()
@@ -227,6 +231,8 @@ Object::init(int id, char *file_name)
   
   sgSphere *bs = trans->getBSphere();  
   lenY = bs->getRadius();
+
+  m_initialized = true;
 }
 
 void 

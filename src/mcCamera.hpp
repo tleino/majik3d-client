@@ -16,7 +16,13 @@ class Object;
 class mcCamera
 {
 public:
-	
+
+	struct Tri
+	{
+		sgVec2 a, b, c;
+
+	};
+
 	enum Mode
 	{
 		FREE,
@@ -24,18 +30,23 @@ public:
 		BEHIND
 	};
 
-	mcCamera();
-	virtual ~mcCamera();
+				mcCamera	();
+virtual			~mcCamera	();
+		
+		void	setTarget	(Object *);
+		void	update		(float);
+		void	setMode		(Mode);
+	
+		void	pitch		(float p);		
+		void	pitchUp		(float p)	{ m_pitch += p; }
+		void	pitchDown	(float p)	{ m_pitch -= p; }
+		void	setPitch	(float p)	{ m_pitch = p; }
+		float	getPitch	()			{ return m_pitch; }
+		
+		void	getPosition	(sgCoord& c) { sgCopyVec3(c.xyz, m_position.xyz); sgCopyVec3(c.hpr, m_position.hpr); }
+const	sgCoord	getPosition	()			 { return m_position; }
 
-	void	setTarget	(Object *);
-	void	update		(float);
-	void	setMode		(Mode);
-
-	void	pitch		(float p);
-	void	setPitch	(float p)	{ m_pitch = p; }
-	float	getPitch	()			{ return m_pitch; }
-
-	void	getPosition	(sgCoord& c) { sgCopyVec3(c.xyz, m_position.xyz); sgCopyVec3(c.hpr, m_position.hpr); }
+		void	getFOVTri	(sgVec2& a, sgVec2& b, sgVec2& c);
 
 private:
 

@@ -38,6 +38,7 @@ public:
   
   /// Pointer to status bar.
   puText *status_text;
+  puFrame *status_frame;
   /// Pointer to input prompt.
   puInput *inp;
   /// The command executed after input prompt has received '\n'.

@@ -39,9 +39,9 @@
 #include "mcConfig.hpp"
 #include "mcTexGen.hpp"
 #include "mcTerrainGen.hpp"
-#include "mcTerrainHeightGen.hpp"
 #include "mcMapquad.hpp"
 #include "mcCamera.hpp"
+#include "mcTerrainHeightGen.hpp"
 
 double
 linearInterpolate(double a, double b, double c)
@@ -53,6 +53,7 @@ linearInterpolate(double a, double b, double c)
 Landscape::Landscape()
 {
   terrain  = NULL ;  
+  m_terraingen = new mcTerrainHeightGen();
   debug->put("Landscape constructor");
 }
 
@@ -60,8 +61,6 @@ Landscape::~Landscape()
 {      
   debug->put("Landscape destructor.");
 }
-
-extern class mcTerrainHeightGen *terraingen;
 
 /*
   ssgSetFOV     ( 60.0f, 45.0f ) ;
@@ -142,13 +141,13 @@ Landscape::draw(mcCamera *cam)
 float
 Landscape::getHOT(float x, float y)const
 {
-	return 2000.0f * terraingen->getHeight(x/1280.0, y/1280.0);
+	return 2000.0f * m_terraingen->getHeight(x/1280.0, y/1280.0);
 }
 
 float
 Landscape::getRealHOT(float x, float y)const
 {
-	Mapquad *mq = Mapquad::root_map->getMapquad(Mapquad::MAX_LEVEL, x, y);
+	Mapquad *mq = Mapquad::getRootMap().getMapquad(Mapquad::MAX_LEVEL, x, y);
 
 	sgVec3 test_vec ;
   sgMat4 invmat ;
@@ -225,6 +224,23 @@ Landscape::init( ssgRoot *scene_root)
   
   scene_root -> addKid ( terrain ) ;
   
+}
+
+void
+Landscape::draw(mcCamera *cam)
+{
+
+	static sgVec3	lastRedrawLocation = { 0.0, 0.0, 0.0 };
+
+	sgVec2 tri[3];
+	cam->getFOVTri(tri[0], tri[1], tri[2]);
+
+	if (sgDistanceSquaredVec3(cam->getPosition().xyz, lastRedrawLocation) > 50.0)
+	{
+		sgCopyVec3 (lastRedrawLocation, cam->getPosition().xyz);
+		Mapquad::triangulate(cam->getPosition().xyz[0], cam->getPosition().xyz[1]);
+//		Mapquad::draw(tri);
+	}
 }
 
 GLuint

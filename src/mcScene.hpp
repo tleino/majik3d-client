@@ -24,6 +24,7 @@
 #include <pu.h>
 
 class Object;
+class Player;
 class mcSky;
 class mcCamera;
 class Landscape;
@@ -46,14 +47,17 @@ public:
 		mcSky*		getSky			()	{ return m_sky; }
 		ssgRoot*	getSceneRoot	()	{ return scene_root; }
   const Landscape*	getLandscape	()	{ return m_landscape; }
+		Player*		getPlayer		()	{ return m_player; }
 
 private:
-
+	sgMat4         frustumi;
 	ssgRoot*	scene_root;
 	ssgEntity*	sky_entity;
+	ssgTransform  *sky_dome;
 	mcSky*		m_sky;
 	Landscape*	m_landscape;
 	mcCamera*	m_camera;
+	Player*		m_player;
 };
 
 extern Scene *scene; // PRRRRRRRRRR!!

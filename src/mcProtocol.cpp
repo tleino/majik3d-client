@@ -30,8 +30,8 @@
 #include "mcSky.hpp"
 #include "mcScene.hpp"
 
-extern sgCoord tuxpos;
-extern Player *tuxi;
+//extern sgCoord tuxpos;
+//extern Player *tuxi;
 float meep = 0.0f;
 int flag = 0;
 int ownId = -1;
@@ -251,9 +251,9 @@ Protocol::parseCommand(char *input)
 	  break;
 	}
       
-      if (id == ownId)
+    if (id == ownId)
 	{
-	  ob = tuxi = new Player();
+	  ob = scene->getPlayer();
 	}
       else
 	ob = new Object();

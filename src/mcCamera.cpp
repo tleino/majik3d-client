@@ -114,3 +114,25 @@ mcCamera::setMode(Mode m)
 {
 	m_mode = m;
 }
+
+/*
+  ssgSetFOV     ( 60.0f, 45.0f ) ;
+  ssgSetNearFar ( 0.5f, 10000.0f ) ;
+*/
+
+void
+mcCamera::getFOVTri(sgVec2& a, sgVec2& b, sgVec2& c)
+{
+	a[0] = m_position.xyz[0];
+	a[1] = m_position.xyz[1];
+
+	b[0] = a[0] + 20000.0f*sin( SG_DEGREES_TO_RADIANS*(m_position.hpr[0]-180.f) );
+	b[1] = a[1] - 20000.0f*cos( SG_DEGREES_TO_RADIANS*(m_position.hpr[0]-180.f) );
+	c[0] = a[0] + 20000.0f*sin( SG_DEGREES_TO_RADIANS*(m_position.hpr[0]-180.f) );
+	c[1] = a[1] - 20000.0f*cos( SG_DEGREES_TO_RADIANS*(m_position.hpr[0]-180.f) );
+}
+
+//	tempPos.xyz[0] += sin((tempPos.hpr[0]-180.0f)*
+//		SG_DEGREES_TO_RADIANS)*m_moveSpeed*t;
+//	tempPos.xyz[1] -= cos((tempPos.hpr[0]-180.0f)* 
+//		SG_DEGREES_TO_RADIANS)*m_moveSpeed*t;

@@ -36,8 +36,6 @@ private:
 virtual void	moveTo			(float x, float y, float h);
 
 	bool	m_movementLock;
-	sgVec3	m_lastRedrawLocation;
-
 };
 
 #endif /* __OBJECT_HPP__ */

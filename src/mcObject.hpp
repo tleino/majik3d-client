@@ -79,6 +79,8 @@ public:
   /// FIXME: A kludge.
   bool hotFixed;
 
+		bool	initialized		() { return m_initialized; }
+
 		void	setHeading		(float);
 		void	setMoveSpeed	(float);
 
@@ -98,6 +100,8 @@ static	Object	*getFirst		()			{ return first; }
 private:
 	float	m_moveSpeed;
 	float	m_turnSpeed;
+
+	bool	m_initialized;
 
 	static Object *last;
 	static Object *first;

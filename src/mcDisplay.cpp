@@ -40,7 +40,7 @@
 #include "mcPlayer.hpp"
 
 int mouse_x, mouse_y;
-extern Player *tuxi;
+//extern Player *tuxi;
 
 bool Display::sceneVisible = false;
 
@@ -157,23 +157,23 @@ Display::updateScreen()
   //	 mousetrap();
   //   if (Display::sceneVisible)
 
-  if (mapFound)
-    {
-      scene->draw();
-    }
-  else if (tuxi != NULL)
+//  if (mapFound)
+  //  {
+	scene->draw();
+//    }
+/*  else if (Player *plr = scene->getPlayer() != NULL)
     {
       Mapquad *temp;
-	  sgCoord tuxiPos = tuxi->getPos();
+	  sgCoord plrPos = plr->getPos();
 
-      temp = Mapquad::root_map->tryMapquad(12,
-					   tuxiPos.xyz[0],
-					   tuxiPos.xyz[1]);
+      temp = Mapquad::getRootMap().tryMapquad(12,
+					   plrPos.xyz[0],
+					   plrPos.xyz[1]);
       if (temp != NULL && temp->isMapReceived())  
 		mapFound = true;
     }
-
-  overlay->draw();
+*/
+	overlay->draw();
   
   glutSwapBuffers();
   glutPostRedisplay();
