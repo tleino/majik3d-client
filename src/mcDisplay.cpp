@@ -140,12 +140,10 @@ bool mapFound = true;
 
 void
 Display::updateScreen()
-{
-  char *tmp = 0;
-  
+{ 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
-//  tmp = sock->readPacket();
+  char *tmp = sock->readPacket();
   
   while (tmp != NULL)
     {
@@ -157,11 +155,11 @@ Display::updateScreen()
   //	 mousetrap();
   //   if (Display::sceneVisible)
  
-	if (tuxi == NULL)
-	{
-		protocol->parseCommand("52 1");
-		protocol->parseCommand("55 1 1000 1000 0 dog3.ac");
-	}
+//	if (tuxi == NULL)
+//	{
+//		protocol->parseCommand("52 1");
+//		protocol->parseCommand("55 1 1000 1000 0 dog3.ac");
+//	}
 
   if (mapFound)
     {

@@ -152,7 +152,13 @@ Protocol::parseCommand(char *input)
       char name[80];
       char str[1000];
       
-      sscanf(data, "%d %s %[^\n]", &id, name, str);
+      if (sscanf(data, "%d %s %[^\n]", &id, name, str) < 3)
+	  {
+			error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
+		      "command CMD_SAY.");
+			break;
+	  }
+
       debug->put ("id=%d name=%s str=%s", id, name, str);
       
       ob = Object::getObject(id);
