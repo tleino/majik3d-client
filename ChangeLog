@@ -7,6 +7,7 @@ Version 0.3.1 changes are:
   - portability fixes for the IRIX release
   - the spoken strings are now wrapped according to the screen width
   - README files have been updated and reorganized
+  - free look using the mouse in the 1st person mode
 	
 Version 0.3.0 changes are:
 
