@@ -1,0 +1,44 @@
+These are instructions for installing majik on RedHat systems.  This
+process has been tested by me only on a RedHat 6.0 system, so your mileage
+may vary if you're using something else.
+
+If you're using a 3dfx card, go to http://glide.xxedgexx.com/3DfxRPMS.html
+and download the appropriate Glide drivers AND the Glide SDK.  Install
+them with "rpm -Uvh <filename>".  Now, cd to /usr/local/glide, and copy
+the headers to an include directory like so:
+"cp -r /usr/include/glide include"
+Also, copy the libGlide library to /usr/local/glide/lib like so:
+"cd /usr/local/glide;mkdir lib;cd lib;cp /usr/lib/libglide2x.so ."
+Note that this libglide file is the one used with the Voodoo Graphics
+Glide driver.  If you have Voodoo 2, 3, or Banshee Glide drivers, your
+libglide may be called something else.
+
+Download the MesaLib 3.0 *SOURCE*.  Once again, download the Mesa drivers
+in tar.gz form, not in RPM form.  You can do an FTP search for these, or
+you can just go to http://www.mesa3d.org/ and get them from there.  Untar
+them into an appropriate directory like so:
+"cd /usr/lib;tar -xvzf <path to the source>/MesaLib-3.0.tar.gz;cd \
+Mesa-3.0"
+Now, it's time to decide how to compile Mesa.  This depends on your
+hardware, and you will need to peruse the README files in the Mesa
+directory for appropriate instructions.  If you have a 3dfx card in your
+system, at this point you would type "make linux-glide".  If everything
+compiles OK, cd to /etc, and do "pico ld.so.conf".  To this file you need
+to add the line "<path to your Mesa>/Mesa-3.0/lib".  After you've done
+this, do "ldconfig".
+
+To get acceleration with Majik, you need to set your GLX renderer to
+fullscreen.  If you use bash, do "export MESA_GLX_FX=fullscreen", and if
+you use csh, do "setenv MESA_GLX_FX fullscreen".  Of course, if you use
+majik often it is practical to add this line to a script that starts the
+client.  You have to get the client first, however.
+
+Download Majik from the FTP site (majik.netti.fi), and untar it into an
+appropriate directory ("cd /usr/local/games;tar -xvzf <path to \
+Majik>/majik3d-current_i386.tar.gz;cd majik").  If you've already set your
+GLX renderer to fullscreen, you can start majik with ./majik (if you
+haven't, do it first).
+
+--
+Mladen Gavrilovic
+milang@sprint.ca
