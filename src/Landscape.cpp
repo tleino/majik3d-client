@@ -201,17 +201,7 @@ void Landscape::init()
    int i, k;
    
    groundTex = new GLubyte[picture->width*picture->width*3];
-   
-   k = 0;
-   
-   for (i=0; i < picture->width*picture->width*3 ;)
-	 {
-		groundTex[i+2] = (GLubyte) *((GLubyte *)picture->pixels + k++);
-		groundTex[i+1] = (GLubyte) *((GLubyte *)picture->pixels + k++);
-		groundTex[i] = (GLubyte) *((GLubyte *)picture->pixels + k++);
-		
-		i += 3;
-	 }
+   groundTex = (GLubyte *) picture->pixels;
    
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
    
@@ -235,17 +225,7 @@ void Landscape::init()
    picture->loadTexture("gfx/ukkelipukkeli.png");
    
    playerTex = new GLubyte[picture->width*picture->width*3];
-   
-   k = 0;
-   
-   for (i=0; i < picture->width*picture->width*3 ;)
-	 {
-		playerTex[i+2] = (GLubyte) *((GLubyte *)picture->pixels + k++);
-		playerTex[i+1] = (GLubyte) *((GLubyte *)picture->pixels + k++);
-		playerTex[i] = (GLubyte) *((GLubyte *)picture->pixels + k++);
-		
-		i += 3;
-	 }
+   playerTex = (GLubyte *) picture->pixels;
    
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
    
@@ -580,6 +560,7 @@ double Landscape::getHeight(int x, int y)
 void Landscape::initMap_1Mesh()
 {
    double *temp;
+   int k = 0;
    
    int tempx, tempy;
    temp = map_1Mesh.vertices;
@@ -592,9 +573,6 @@ void Landscape::initMap_1Mesh()
 //		   *(temp++) = random() % 20;
 		}
    }
-   
-   
-   int k = 0;
    
    temp = map_1Mesh.vertices;
    for (int j = 0; j < MAP1_WIDTH; j++) {
