@@ -118,7 +118,7 @@ Scene::init()
    sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
    sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
    
-   glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
+   //glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
    
    glEnable ( GL_DEPTH_TEST ) ;
    

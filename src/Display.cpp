@@ -64,11 +64,35 @@ void inputCB (puObject *o)
 {
    char *val = NULL;
    o->getValue (&val);
-   if (strlen(val) < 3)
-	 return;
+   printf ("got val: %s\n", val);
+   if (strlen(val) < 3) {
+	  return;
+   }
+   
+   if (scene->initialized == 3) {
+	  sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
+	  glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
+	  
+	  scene->initialized = 4;
+	  sock->writePacket ("51 %s", val);
+	  o->setSize(display->width-5, 5+20 ) ;
+	  if (display->nomenu == 0)
+	    menu->menuBar->reveal();
+	  
+	  memset (display->stxt, 0, sizeof(display->stxt));
+	  display->status_text->setPosition(5, 10);
+   } else {
    sock->writePacket ("54 %s", val);
-   o->setValue(" ");
-   o->hide();
+   }
+   delete display->inp;
+   display->inp = new puInput ( 5, 5, display->width-5, 5+20 ) ;
+   display->inp->setLegend    ( "Legend" ) ;
+   display->inp->setValue (" ");
+   display->inp->setLabel ("");
+   display->inp->acceptInput  () ;
+   display->inp->setCursor ( 0 ) ;
+   display->inp->setCallback (inputCB);
+   display->inp->hide();
 }
 
 Display::Display()
@@ -162,8 +186,8 @@ Display::openScreen()
    
    inp = new puInput ( 5, 5, width-5, 5+20 ) ;
    inp->setLegend    ( "Legend" ) ;
-   inp->setValue (" ");
-   inp->setLabel ( " " );
+   inp->setValue ("");
+   inp->setLabel ("");
    inp->acceptInput  () ;
    inp->setCursor ( 0 ) ;
    inp->setCallback (inputCB);
@@ -212,15 +236,23 @@ Display::updateScreen()
 	 menu->menuBar->hide();
 	 scene->init();
 	 goto end_update;
-  } else if (scene->initialized == 1) { 
+  } else if (scene->initialized == 1) {
 	 goto end_update;
   } else if (scene->initialized == 2) {
-	 if (display->nomenu == 0)
-	   menu->menuBar->reveal();
+	 //if (display->nomenu == 0)
+	 //  menu->menuBar->reveal();
 	 
-	 memset (display->stxt, 0, sizeof(display->stxt));
-	 display->status_text->setPosition(5, 10);
+	 // memset (display->stxt, 0, sizeof(display->stxt));
+	 //display->status_text->setPosition(5, 10);
 	 scene->initialized = 3;
+	 display->inp->setSize(10*16, 5+20);
+	 display->inp->reveal();
+	 display->status_text->setPosition(5, 30);
+	 sprintf (display->stxt, "By what name do you wish to be known?\n");
+	 goto end_update;
+  } else if (scene->initialized == 3) {
+	 goto end_update;
+  } else {
   }
    
    tmp = sock->readPacket();
@@ -230,10 +262,13 @@ Display::updateScreen()
 		protocol->parseCommand(tmp);
 		tmp = sock->readPacket();
 	 }
-     
+   
+   if (tuxi == NULL)
+	 goto end_update;
+	   
    if (display->noTexture)
 	 ssgOverrideTexture (1);
-
+   
    scene->update();
    
    if (tuxi != NULL)
@@ -264,12 +299,6 @@ Display::updateScreen()
    start_time = read_time_of_day();
    
    /* Draw menus etc using PUI (part of PLIB) */
-   glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-   glAlphaFunc(GL_GREATER,0.1f);
-   
-   puDisplay();
-   glDisable(GL_BLEND);
    
    /* Display the cursor. FIXME: Should be displayed only if using hardware
       acceleration which doesn't provide it's own cursor */
@@ -305,5 +334,6 @@ Display::resizeScreen(int w,int h)
    display->width = w;
    display->height = h;
    glViewport(0, 0, w, h);
+   display->inp->setSize(display->width-5, 5+20 ) ;
    //glutPostRedisplay();
 }

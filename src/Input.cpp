@@ -55,7 +55,7 @@ Input::~Input()
 void
 Input::keyDown(unsigned char k, int x, int y)
 {
-   if (tuxi == NULL)
+ if (tuxi == NULL && !display->inp->isVisible())
 	 return;
    
    puKeyboard (k, PU_DOWN);

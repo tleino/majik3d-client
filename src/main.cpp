@@ -54,7 +54,7 @@ main(int argc, char **argv)
    // Initialize the necessary global variables as proper objects
    error = new Error;
    debug = new Debug;
-   sock = new Socket("195.197.61.60", 4000);
+   sock = new Socket("195.197.61.60", 4001);
    display = new Display;
    landscape = new Landscape;
    input = new Input;
@@ -76,7 +76,7 @@ main(int argc, char **argv)
 	 }
    
    sock->connectServer();
-   sock->writePacket("51\r\n"); /* Log in to the server */
+   //sock->writePacket("51\r\n"); /* Log in to the server */
 
    // Open the screen
    display->openScreen();
