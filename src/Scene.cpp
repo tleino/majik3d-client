@@ -50,6 +50,25 @@ Scene::~Scene()
    DEBUG("Scene destructor");
 }
 
+void
+Scene::addSpecial(float x, float y, char *model, bool cutout)
+{     
+   ssgTransform *trans = new ssgTransform ();
+   ssgEntity *entity = ssgLoadAC (model);
+   sgCoord tmpPos;
+      
+   tmpPos.xyz[0] = x;
+   tmpPos.xyz[1] = y;
+   tmpPos.xyz[2] = getHOT(x, y);
+   tmpPos.hpr[1] = 0.0f;
+   tmpPos.hpr[2] = 0.0f;
+   
+   trans->addKid (entity);
+   trans->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
+   
+   trans->setTransform (&tmpPos);
+   scene_root->addKid (trans);
+}
 
 void
 Scene::init()
@@ -61,54 +80,6 @@ Scene::init()
    ssgTexturePath ("data");
 
    landscape->init(scene_root);
-   
-   ssgEntity *tree_obj = ssgLoadAC ("tree.ac" );
-   
-   // ssgFlatten         ( tree_obj );
-      
-   float tempx, tempy;
-   
-   for (int i=0; i<100; i++)
-	 {
-		
-		trees[i] = new ssgTransform;
-		trees[i] -> addKid( tree_obj );
-		// ssgStripify ( trees[i] );
-		trees[i] -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
-		
-		sgCoord treepos;
-		tempx = -1000 + random() % 20000;
-		tempy = -1000 + random() % 12000;
-		
-		treepos.xyz[0] = tempx;
-		treepos.xyz[1] = tempy;
-		treepos.xyz[2] = getHOT(tempx, tempy);
-		treepos.hpr[0] = random() % 360;
-		treepos.hpr[1] = 0.0f;
-		treepos.hpr[2] = 0.0f;
-		
-		trees[i] -> setTransform ( & treepos  );
-		
-		scene_root -> addKid ( trees[i] );
-	 }
-   
-   ssgEntity *snowman_obj = ssgLoadAC ("snowman.ac" );
-   
-   lumiukko = new ssgTransform;
-   lumiukko -> addKid( snowman_obj );
-   lumiukko -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
-   
-   sgCoord ukkopos;
-   ukkopos.xyz[0] = 100;
-   ukkopos.xyz[1] = 100;
-   ukkopos.xyz[2] = getHOT( 100, 100 );
-   ukkopos.hpr[0] = 0.0f;
-   ukkopos.hpr[1] = 0.0f;
-   ukkopos.hpr[2] = 0.0f;
-   
-   lumiukko -> setTransform ( &ukkopos, 10.0f, 10.0f, 10.0f );
-   
-   scene_root -> addKid ( lumiukko );
    
    sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
    sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;

@@ -56,6 +56,7 @@ Protocol::parseCommand(char *input)
    sscanf(input, "%s\n", data);
    command = atoi(data);
    
+   printf ("%s\n", input);
    int tmp = strlen(data);
    strcpy(data, &input[tmp+1]);  
 
@@ -161,6 +162,7 @@ Protocol::parseCommand(char *input)
 		 
 		 ob = ob->next;
 	  }	  
+	  
 	  break;
 	case CMD_SAY:
 	  sscanf(data, "%d", &id);

@@ -41,6 +41,8 @@ class Scene
    void removeObject(int);
    ///
    void removeObject(Object *);
+   ///
+   void addSpecial(float x, float y, char *model, bool cutout);
 
    /// Draw the scene to screen.
    void draw();

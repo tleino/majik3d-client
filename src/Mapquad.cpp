@@ -306,6 +306,17 @@ Mapquad::setSubMap(int lod, char *submap)
 			 	 
 		  }
 		
+		/* Add some trees */
+		
+		if (rand() % 3) {
+		   scene->addSpecial (top_x, top_y, "tree.ac", true);
+		}
+		
+		if ((300 > (float) top_x-256.0f && 300 < (float) top_x+256.0f) &&
+			(300 > (float) top_y-256.0f && 300 < (float) top_y+256.0f)) {
+		   scene->addSpecial(300, 300, "snowman.ac", false);
+		}
+		
 		return;
 	 }
    
