@@ -120,6 +120,8 @@ Input::keyDown(unsigned char k, int x, int y)
 		   break;
 		 
 		 temppos.hpr[0] -= 5.0f;
+		 if (temppos.hpr[0] < 0)
+		   temppos.hpr[0] += 360.0f;
 		 
 		 sock->writePacket(debug->string("50 %f %f %f",
 										 (float) temppos.xyz[0],
@@ -132,6 +134,8 @@ Input::keyDown(unsigned char k, int x, int y)
 		   break;
 		 
 		 temppos.hpr[0] += 5.0f;
+		 if (temppos.hpr[0] > 355.0f)
+		   temppos.hpr[0] = 0.0f;
 		 
 		 sock->writePacket(debug->string("50 %f %f %f",
 										 (float) temppos.xyz[0],
