@@ -4,7 +4,7 @@ dnl file is quite directly taken from PLIB sources.
 AC_INIT(src/main.cpp)
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED(CPU_VENDOR_OS, "$host")
-AM_INIT_AUTOMAKE(majik, 0.00)
+AM_INIT_AUTOMAKE(majik3d, 0.00)
 
 dnl Checks for programs.
 AC_PROG_CC
