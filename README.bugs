@@ -7,7 +7,7 @@ The known bugs are (P: problem, A: answer, S: solution):
 
   P: Win32 executable reports missing DLL: WS2_32.DLL
   A: Your WinSock version is too old or it is missing completely.
-  S: Update your Windows or wait if we can fix this problem somehow.
+  S: Get new WinSock version from: http://www.microsoft.com/windows95/downloads/contents/wuadmintools/s_wunetworkingtools/w95sockets2/default.asp
   
   P: I got error message "Unsupported special key" when trying to move.
   A: You're trying to move without your numlock key turned on.
