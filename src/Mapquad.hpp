@@ -117,6 +117,8 @@ public:
   void show();
   ///
   void hide();
+  ///
+  bool isMapReceived();
   
   /*
     getMaps ( ... );
@@ -127,6 +129,8 @@ public:
   //   static int stats[13];
   
   // static void printStats();
+private:
+  bool mapReceived;
 };
 
 

@@ -57,6 +57,7 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
   this->level = level;
   this->top_x = top_x;
   this->top_y = top_y;
+  this->mapReceived = false;
   
   this->mid_x = top_x + quad_sizes[level]/2*32;
   this->mid_y = top_y + quad_sizes[level]/2*32;
@@ -188,6 +189,12 @@ Mapquad::getChild4()
   return this->child4;
 }
 
+bool
+Mapquad::isMapReceived ()
+{
+  return mapReceived;
+}
+
 Mapquad *
 Mapquad::tryMapquad(int level, int x, int y)
 {
@@ -261,6 +268,7 @@ Mapquad::getMap()
 void
 Mapquad::setMap(char *terrain_map)
 {  
+  mapReceived = true;
   //  this->terrain_map = terrain_map;
   this->setSubMap(NUM_LEVELS - 1 - level, terrain_map);
 }

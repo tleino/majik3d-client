@@ -36,6 +36,7 @@
 #include "Protocol.hpp"
 #include "Config.hpp"
 #include "Overlay.hpp"
+#include "Mapquad.hpp"
 
 int mouse_x, mouse_y;
 extern Object *tuxi;
@@ -133,6 +134,8 @@ Display::closeScreen()
   debug->put("Screen closed.");
 }
 
+bool mapFound;
+
 void
 Display::updateScreen()
 {
@@ -152,7 +155,17 @@ Display::updateScreen()
   //	 mousetrap();
   //   if (Display::sceneVisible)
   
-  scene->draw();
+  if (mapFound)
+    scene->draw();
+  else if (tuxi != NULL)
+    {
+      Mapquad *temp;
+      temp = Mapquad::root_map->tryMapquad(12,
+					   tuxi->getPos().xyz[0],
+					   tuxi->getPos().xyz[1]);
+      if (temp != NULL && temp->isMapReceived())  
+	mapFound = true;
+    }
   overlay->draw();
   
   glutSwapBuffers();
