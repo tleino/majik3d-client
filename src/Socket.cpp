@@ -28,6 +28,17 @@
 #include <sys/ioctl.h>
 #include <errno.h>
 
+#if defined(__svr4__)
+// For Solaris...
+#include <unistd.h>
+#include <stropts.h>
+#include <sys/filio.h>
+
+// Not sure what this might break, but its set to this value on Linux
+// and on DEC/UNIX boxes...
+#define INADDR_NONE INADDR_BROADCAST
+#endif
+
 #include "Debug.hpp"
 #include "Error.hpp"
 #include "Socket.hpp"

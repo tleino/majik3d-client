@@ -81,6 +81,13 @@ if test "x$ac_cv_lib_audio_ALopenport" = "xyes" ; then
   LIBS="$LIBS -laudio"
 fi
 
+AC_CHECK_LIB(resolv, inet_aton)
+
+if test "x$ac_cv_lib_resolv_inet_aton" = "xyes" ; then
+  dnl This is probably a Solaris machine...
+  LIBS="$LIBS -lresolv"
+fi
+
 dnl Checks for header files.
 
 AC_HEADER_STDC
@@ -97,6 +104,7 @@ AM_CONDITIONAL(ENABLE_AUDIO, \
     -o -r /usr/include/linux/soundcard.h \
     -o -r /usr/include/machine/soundcard.h \
     -o -r /usr/include/audio.h \
+    -o -r /usr/include/sys/audioio.h
     -o "x$ac_cv_header_windows_h" = "xyes" )
 
 AM_CONDITIONAL(ENABLE_IRIX_AUDIO, test -r /usr/include/audio.h)
