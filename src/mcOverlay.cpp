@@ -50,7 +50,7 @@ void
 Overlay::init()
 {
   puInit();
-  if (config->nomouse != 1)
+  if (config->testFlag(mcConfig::MOUSE))
     puShowCursor();
   
   puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
@@ -60,7 +60,7 @@ Overlay::init()
   status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
   status_text->setLabel ("[status_text]");
   
-  inp = new puInput ( 5, 25, display->width-5, 5+20 ) ;
+  inp = new puInput ( 5, 25, display->getWidth()-5, 5+20 ) ;
   inp->setLegend    ( "Legend" ) ;
   inp->setValue ("");
   inp->setLabel ("");

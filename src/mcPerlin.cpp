@@ -86,7 +86,7 @@ Perlin::noise(int octave, int x, int y)
 			0x7fffffff) / 1073741824.0);
        break;
      default:
-       error->put(ERROR_WARNING, "Noise-function for octave %d not defined",
+		 error->put(mcError::ERROR_WARNING, "Noise-function for octave %d not defined",
 		  octave);
        break;
      }

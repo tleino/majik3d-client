@@ -51,19 +51,19 @@ Socket::Socket(char *szHost,int nPort)
   
   if((hWait = CreateEvent(NULL,FALSE,FALSE,NULL)) == NULL)
     {
-      error->put (ERROR_FATAL, "CreateEvent failed, low on resources?");
+      error->put (mcError::ERROR_FATAL, "CreateEvent failed, low on resources?");
     }
   
   if((LinesSemaphore = CreateSemaphore(NULL,0,10,NULL)) == NULL)
     {
-      error->put (ERROR_FATAL, "CreateSemaphore failed, low on resources?");
+      error->put (mcError::ERROR_FATAL, "CreateSemaphore failed, low on resources?");
     }
   
   DWORD nId;
   if((NetThread = CreateThread(NULL,0,&NonClassFunctionDummy,this,0,&nId))
      == NULL)
     {
-      error->put (ERROR_FATAL, "CreateThread failed, low on resources?");
+      error->put (mcError::ERROR_FATAL, "CreateThread failed, low on resources?");
     }
   // Wait for the network to initialize.
   WaitForSingleObject(LinesSemaphore,INFINITE);
@@ -148,7 +148,7 @@ Socket::writePacket(char *szFmt,...)
   
   if(send(nSocket,szData,strlen(szData),0) == SOCKET_ERROR)
     {
-      error->put (ERROR_WARNING, "Could not send data over the network.");
+      error->put (mcError::ERROR_WARNING, "Could not send data over the network.");
     }  
 }
 
@@ -188,7 +188,7 @@ Socket::Thread()
 		WSADATA wsaData;
 		if(WSAStartup(MAKEWORD( 1, 1 ),&wsaData) != 0)
 		{
-		  error->put (ERROR_FATAL, "winsock.dll could not be loaded.");
+			error->put (mcError::ERROR_FATAL, "winsock.dll could not be loaded.");
 		  return;
 		}
     }
@@ -212,7 +212,7 @@ Socket::Thread()
   
   if((nAddr = inet_addr(szHost)) == INADDR_NONE)
     {
-      error->put (ERROR_FATAL, "Host '%s' not found, can not connect: ",
+      error->put (mcError::ERROR_FATAL, "Host '%s' not found, can not connect: ",
 		  szHost);
     }
   
@@ -220,7 +220,7 @@ Socket::Thread()
   
   if ((nSocket = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
-      error->put (ERROR_FATAL, "Could not create a new socket.");
+      error->put (mcError::ERROR_FATAL, "Could not create a new socket.");
     }
   
   memset (&ServerAddr, 0, sizeof (ServerAddr));
@@ -231,7 +231,7 @@ Socket::Thread()
   if (connect (nSocket, (struct sockaddr *) &ServerAddr, sizeof (ServerAddr))
       < 0)
     {
-      error->put (ERROR_FATAL, "Connection to '%s' failed.", szHost);
+      error->put (mcError::ERROR_FATAL, "Connection to '%s' failed.", szHost);
     }
   
   // Release the other thread.
@@ -246,7 +246,7 @@ Socket::Thread()
       if((nRecived = recv(nSocket,(char *)&szData,sizeof(szData)-1,0))
 	 == SOCKET_ERROR)
 	{
-	  error->put (ERROR_FATAL, "Could not receive data from host, " \
+	  error->put (mcError::ERROR_FATAL, "Could not receive data from host, " \
 		      "connection closed?");
 	}
       szData[nRecived] = 0;

@@ -26,60 +26,51 @@
 #include "mcMenu.hpp"
 #include "mcDisplay.hpp"
 
-Config::Config()
+mcConfig::mcConfig()
 {
-  screen_width = 0;
-  screen_height = 0;
-  bpp = 0;
-  mousetrap = 0;
-  nomousetrap = 0;
-  noTexture = 0;
-  wireframe = 0;
-  nomouse = 0;
-  nofog = 0;
-  nosmooth = 0;
-  nomenu = 0;
-  camera = 0;
-  fullscreen = 0;
-  server_ip = NULL;
-  server_port = 0;
-  debug_level = 0;
-  protocol_debug = 0;
-  lod = 7;
-  gamemode = 0;
+	m_flags			= 0;
+
+	m_screenWidth	= 0;
+	m_screenHeight	= 0;
+	m_screenBpp		= 0;
+	m_cameraMode	= 0;
+	m_serverIP		= NULL;
+	m_serverPort	= 0;
+	m_debugLevel	= 0;
+	m_lod			= 7;
 }
 
-Config::~Config()
+mcConfig::~mcConfig()
 {
 }
 
 void
-Config::parseOption(char *option, char *value)
+mcConfig::parseOption(char *option, char *value)
 {   
   if(strcmp(option, "server") == 0)
     {
-      server_ip = new char [strlen(value)+1];
-      strcpy(server_ip, value);
+      m_serverIP = new char [strlen(value)+1];
+      strcpy(m_serverIP, value);
       return;
     }
   if(strcmp(option, "port") == 0)
     {
-      sscanf(value, "%d", &server_port);
+      sscanf(value, "%d", &m_serverPort);
       return;
     }
   if(strcmp(option, "screen_width") == 0)
     {
-      sscanf(value, "%d", &screen_width);
+      sscanf(value, "%d", &m_screenWidth);
       return;
     }
   if(strcmp(option, "screen_height") == 0)
     {
-      sscanf(value, "%d", &screen_height);
+      sscanf(value, "%d", &m_screenHeight);
       return;
     }
   if(strcmp(option, "bpp") == 0)
     {
-      sscanf(value, "%d", &bpp);
+      sscanf(value, "%d", &m_screenBpp);
       return;
     }
   if(strcmp(option, "notexture") == 0)
@@ -101,7 +92,7 @@ Config::parseOption(char *option, char *value)
     }
   if (strcmp(option, "nosmooth") == 0)
     {
-      this->nosmooth = atoi(value);
+      setFlag(SMOOTH, atoi(value) == 0);
     }
   if (strcmp(option, "nofog") == 0)
     {
@@ -110,39 +101,37 @@ Config::parseOption(char *option, char *value)
     }
   if (strcmp(option, "nomenu") == 0)
     {
-      this->nomenu = atoi (value);
+      setFlag(MENU, (atoi(value) == 0));
     }
   if (strcmp(option, "camera") == 0)
     {
-      this->camera = atoi(value);
+      m_cameraMode=  atoi (value);
     }
   if (strcmp(option, "fullscreen") == 0)
     {
-      if (atoi(value) == 1)
-	this->fullscreen = 2;
-      else
-	this->fullscreen = 0;
+		setFlag(MENU, atoi (value));
     }
   if (strcmp(option, "debug") == 0)
     {
-      debug_level = atoi(value);
+      m_debugLevel = atoi(value);
     }
   if (strcmp(option, "protocol_debug") == 0)
     {
-      protocol_debug = atoi(value);
+      setFlag(PROTOCOL_DEBUG, atoi (value));
     }
   if (strcmp(option, "lod") == 0)
     {
-      lod = atoi(value);
+      m_lod = atoi(value);
     }
-  if (strcmp(option, "gamemode") == 0)
-    {
-      gamemode = atoi(value);
-    }
+
+	if (strcmp(option, "gamemode") == 0)
+	{
+		m_gameMode = atoi(value);
+	}
 }
 
 void
-Config::parseLine(char *strbuf, int line)
+mcConfig::parseLine(char *strbuf, int line)
 {
   int i, j;
   int ostart, oend, vstart, vend;
@@ -168,7 +157,7 @@ Config::parseLine(char *strbuf, int line)
   oend = i;
   if(i == 32)
     {
-      error->put(ERROR_WARNING, "majikrc: parse error at line #%d\n", line);
+      error->put(mcError::ERROR_WARNING, "majikrc: parse error at line #%d\n", line);
       return;
     }
   
@@ -197,7 +186,7 @@ Config::parseLine(char *strbuf, int line)
 }
 
 bool
-Config::readOptions(char *filename)
+mcConfig::readOptions(char *filename)
 {
   FILE *fp;
   char *strbuf;
@@ -232,11 +221,11 @@ Config::readOptions(char *filename)
 }
 
 void
-Config::readConfig ()
+mcConfig::readConfig ()
 {
   if(config->readOptions("~/.majikrc") == false)
     if(config->readOptions("/etc/majikrc") == false)
       if(config->readOptions("majikrc") == false)
 	if(config->readOptions("majik3d.ini") == false)
-	  error->put(ERROR_WARNING, "No majikrc or majik3d.ini file found.");
+		error->put(mcError::ERROR_WARNING, "No majikrc or majik3d.ini file found.");
 }

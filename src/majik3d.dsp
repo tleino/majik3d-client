@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib glut32.lib opengl32.lib glu32.lib pui.lib ssg.lib fnt.lib sg.lib /nologo /subsystem:console /debug /machine:I386 /out:"Majik3D.exe" /pdbtype:sept
+# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib glut32.lib opengl32.lib glu32.lib pui.lib ssg.lib fnt.lib sg.lib /nologo /subsystem:console /map /debug /machine:I386 /out:"Majik3D.exe" /pdbtype:sept
 
 !ENDIF 
 
@@ -92,7 +92,15 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\mcCameraController.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\mcConfig.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mcController.cpp
 # End Source File
 # Begin Source File
 
@@ -136,6 +144,10 @@ SOURCE=.\mcPerlin.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\mcPlayerController.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\mcProtocol.cpp
 # End Source File
 # Begin Source File
@@ -168,15 +180,19 @@ SOURCE=.\mcTexGen.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\mcCameraController.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\mcConfig.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\mcDebug.hpp
+SOURCE=.\mcController.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\mcDetail.hpp
+SOURCE=.\mcDebug.hpp
 # End Source File
 # Begin Source File
 
@@ -200,10 +216,6 @@ SOURCE=.\mcMapquad.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\mcMaterial.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\mcMenu.hpp
 # End Source File
 # Begin Source File
@@ -217,6 +229,10 @@ SOURCE=.\mcOverlay.hpp
 # Begin Source File
 
 SOURCE=.\mcPerlin.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mcPlayerController.hpp
 # End Source File
 # Begin Source File
 

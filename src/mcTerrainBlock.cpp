@@ -1,12 +1,13 @@
 
 #include "mcTerrainBlock.hpp"
 #include "mcPerlin.hpp"
+#include "mcLandscape.hpp"
 
 
 inline float getHeight(float x, float y)
 {
 //	return 0.0f;
-	return 2000.0f*(float)perlin->perlinNoise_2D(x/1500.0, y/1500.0);
+return 2000.0f*(float)perlin->perlinNoise_2D(x/1500.0, y/1500.0);
 };
 
 
@@ -47,6 +48,8 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 	gltype = GL_TRIANGLE_STRIP ;
 	indexed = TRUE ;
 
+	const float UVBias = 1.0/Landscape::TERRAIN_RESOLUTION;
+
 	for(int j=0;j<DIM+1;j++)
 		for(int i=0;i<DIM+1;i++)
 		{
@@ -66,8 +69,9 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 			sgCopyVec3 (vertices[i + j * (DIM+1)], loc);
 
 			sgVec2 UV;
-			UV[0] = (float)i/(DIM);
-			UV[1] = (float)j/(DIM);
+				
+			UV[0] = UVBias+(float)i/(DIM)*(1.0-UVBias*2);
+			UV[1] = UVBias+(float)j/(DIM)*(1.0-UVBias*2);
 
 			sgCopyVec2 (texcoords[i + j * (DIM+1)], UV);
 

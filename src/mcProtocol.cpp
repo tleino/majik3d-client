@@ -70,7 +70,7 @@ Protocol::parseCommand(char *input)
     case CMD_MOVE_DIRECTION:
       if (sscanf(data, "%d %d", &id, &direction) < 2)
 	{
-	  error->put (ERROR_WARNING, "Invalid parameters to protocol " \
+		error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_MOVE_DIRECTION.");
 	  break;
 	}
@@ -87,7 +87,7 @@ Protocol::parseCommand(char *input)
     case CMD_MOVE:
       if (sscanf(data, "%d %f %f %f", &id, &x, &y, &h) < 4)
 	{
-	  error->put (ERROR_WARNING, "Invalid parameters to protocol " \
+		  error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_MOVE.");
 	  break;
 	}
@@ -107,7 +107,7 @@ Protocol::parseCommand(char *input)
       
     if (!found)
 	{
-	  error->put (ERROR_WARNING, "Object %d not found!", id);
+		error->put (mcError::ERROR_WARNING, "Object %d not found!", id);
 	  break;
 	}
 	  
@@ -206,7 +206,7 @@ Protocol::parseCommand(char *input)
     case CMD_ADD_OBJECT:
       if (sscanf(data, "%d %f %f %f %s", &id, &x, &y, &h, file_name) != 5)
 	{
-	  error->put (ERROR_WARNING, "Invalid parameters to protocol " \
+		  error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_ADD_OBJECT.");
 	  break;
 	}
@@ -220,9 +220,9 @@ Protocol::parseCommand(char *input)
       
       ob->init(id, file_name);
       
-      if (id == ownId)
+      if (0)//id == ownId)
 	{
-	  sock->writePacket("%d %f %f %f", CMD_MOVE, x, y, h); 
+//	  sock->writePacket("%d %f %f %f", CMD_MOVE, x, y, h); 
 	}
       else
 	{
@@ -244,7 +244,7 @@ Protocol::parseCommand(char *input)
       
       if (sscanf(data, "%d %d %d %s", &map_level, &map_x, &map_y, tmp) !=4)
 	{
-	  error->put (ERROR_WARNING, "Invalid parameters to protocol " \
+	  error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_MAP.");
 	  delete tmp;
 	  break;
@@ -270,7 +270,9 @@ Protocol::parseCommand(char *input)
 	overlay->status_text->setLabel("By what name do you wish to be known?");
       overlay->inp->reveal();
       break;
-    case CMD_SUN_POS:
+	case CMD_SUN_POS:
+		break;
+	
       float heading, pitch, luminance, turbidity;
       if (sscanf (data, "%f %f %f %f", &heading, &pitch, &luminance,
 		  &turbidity) == 4)
@@ -280,7 +282,7 @@ Protocol::parseCommand(char *input)
 	  mc_sky->setSunPosition(heading, pitch); 
 	  mc_sky->setTurbidity(turbidity);
 	  scene->redrawSky();
-	  //scene->sky_entity = mc_sky->Draw();
+	 //scene->sky_entity = mc_sky->Draw();
 	}
       else
 	{
@@ -289,7 +291,7 @@ Protocol::parseCommand(char *input)
 //	  mc_sky->setTurbidity(2.5);
 	  scene->redrawSky();
 
-	  error->put (ERROR_WARNING, "Invalid parameters to protocol " \
+	  error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_SUN_POS.");
 	}
       /*
@@ -318,7 +320,7 @@ Protocol::parseCommand(char *input)
       */
       break;
     default:
-      error->put (ERROR_WARNING, "Unknown protocol command received: 0x%X",
+      error->put (mcError::ERROR_WARNING, "Unknown protocol command received: 0x%X",
 		  command);
       break;
     }  

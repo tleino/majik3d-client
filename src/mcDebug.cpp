@@ -29,14 +29,14 @@ Debug::Debug()
 {
   put("Debug constructor");
   
-  if (config->protocol_debug > 0)
+  if (config->testFlag(mcConfig::PROTOCOL_DEBUG))
     {
       fp = fopen("protocol.debug", "w");
       if (!fp)
 	{
 	  put("Couldn't open protocol.debug for write, protocol debug " \
 	      "disabled.");
-	  config->protocol_debug = 0;
+	  config->setFlag(mcConfig::PROTOCOL_DEBUG, false);
 	}
       else
 	put("Debugging protocol debug to: protocol.debug");
@@ -73,7 +73,7 @@ Debug::put(char *fmt, ...)
   vsprintf (buf, fmt, vl);
   va_end (vl);
   
-  if (config->debug_level > 0)
+  if (config->getDebugLevel() > 0)
     cerr << "DEBUG: " << buf << endl;
   
   delete buf;

@@ -31,28 +31,35 @@ double interpolate(double, double, double);
 class Landscape
 {
 public:
+
+	enum BlockSettings
+	{
+		TERRAIN_RESOLUTION = 16,
+		BLOCK_WIDTH = 512
+	};
+
+
   Landscape();
   ~Landscape();
   
-  /// A pointer to terrain's ssgTransform.
-  ssgTransform   *terrain;
-  /// Initializes landscape.
   void Landscape::init(ssgRoot *);
-  
-  /// Get height of terrain at the point given as an argument.
+
   float getHOT(float x, float y);
 
   void getNormal(sgVec3& nrm, float x, float y);
 
   GLuint getTextureHandle ( int level, int x, int y);
-  ///
-  ssgBranch *createTileLOD (int level, int x, int y, int ntris,
-			    char *terrain_map);
 
-  ssgBranch *createBlock(int x, int y);
+//  ssgBranch *createTileLOD (int level, int x, int y, int ntris,
+//			    char *terrain_map);
+
+ // ssgBranch *createBlock(int x, int y);
+
+  ssgTransform	*getTerrain()	{ return terrain; }
   
-  /// A pointer to SSG scene's root.
-  ssgRoot *scene_root;  
+private:
+  ssgRoot *scene_root;
+  ssgTransform   *terrain;
 };
 
 extern Landscape *landscape;

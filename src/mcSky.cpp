@@ -134,10 +134,10 @@ ssgEntity *mcSky::Draw()
    
    ssgSimpleState *state = new ssgSimpleState;
    state->enable(GL_COLOR_MATERIAL);
-   if (config->nosmooth)
-     state->setShadeModel (GL_FLAT);
-   else
+   if (config->testFlag(mcConfig::SMOOTH))
      state->setShadeModel (GL_SMOOTH);
+   else
+     state->setShadeModel (GL_FLAT);
    state->enable(GL_CULL_FACE);
    state->disable(GL_TEXTURE_2D);
    state->setOpaque();
@@ -389,6 +389,7 @@ void mcSky::createSphere(int x_segs, int y_segs)
    
    v = 0;
    sgSetVec3(this->sky[v].xyz, 0.0f, 1.0f, 0.0f);
+
    this->sky[v].a_zenith = 0.0f;		// Angle to zenith is 0 because we're at zenith
    v++;
 

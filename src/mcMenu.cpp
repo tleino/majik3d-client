@@ -100,7 +100,7 @@ Menu::init()
   }
   menuBar->close();
   
-  if (config->nomenu)
+  if (!config->testFlag(mcConfig::MENU))
     menuBar->hide();
 }
 
@@ -109,16 +109,16 @@ Menu::init()
 void
 Menu::fullscreenCB(puObject *)
 {
-  if (config->fullscreen == 1)
+	if (config->testFlag(mcConfig::FULLSCREEN))
     {
-      glutReshapeWindow(display->initialWidth, display->initialHeight);
+      glutReshapeWindow(display->getInitialWidth(), display->getInitialHeight());
       glutPositionWindow(0, 0);
-      config->fullscreen = 0;
+      config->setFlag ( mcConfig::FULLSCREEN, 0);
     }
   else
     {
       glutFullScreen();
-      config->fullscreen = 1;
+      config->setFlag ( mcConfig::FULLSCREEN, 1);
     }
 }
 
@@ -126,14 +126,14 @@ void
 Menu::textureCB(puObject *)
 {
   ssgOverrideTexture (0);
-  config->noTexture = 0;
+   config->setFlag(mcConfig::TEXTURED, 0);
 }
 
 void
 Menu::noTextureCB(puObject *)
 {
   ssgOverrideTexture (1);
-  config->noTexture = 1;
+  config->setFlag(mcConfig::TEXTURED, 1);
 }
 
 void
@@ -168,29 +168,30 @@ Menu::aboutCB(puObject *)
 void
 Menu::mouseCB(puObject *)
 {
-  config->nomouse = 0;
+  config->setFlag ( mcConfig::MOUSE, 0);
   puShowCursor();
 }
 
 void
 Menu::noMouseCB(puObject *)
 {
-  config->nomouse = 1;
+  config->setFlag ( mcConfig::MOUSE, 1);
   puHideCursor();
 }
 
 void
 Menu::mousetrapCB(puObject *)
 {
-  config->nomousetrap = 0;
-  config->mousetrap = 1;
+	config->setFlag (mcConfig::MOUSE_TRAP, 1);
+//  config->mousetrap = 1;
 }
 
 void
 Menu::noMousetrapCB(puObject *)
 {
-  config->nomousetrap = 1;
-  config->mousetrap = 0;
+	config->setFlag (mcConfig::MOUSE_TRAP, 0);
+//  config->nomousetrap = 1;
+  //config->mousetrap = 0;
 }
 
 void
@@ -202,7 +203,7 @@ Menu::wireframeCB(puObject *)
   glDisable(GL_LIGHT0);
   glShadeModel(GL_FLAT);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  config->wireframe = 1;
+  config->setFlag(mcConfig::WIREFRAME, 1);
 }
 
 void
@@ -214,7 +215,7 @@ Menu::noWireframeCB(puObject *)
   glEnable(GL_LIGHT0);
   glShadeModel(GL_SMOOTH);
   glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-  config->wireframe = 0;
+  config->setFlag(mcConfig::WIREFRAME, 0);
 }
 
 void
@@ -226,7 +227,7 @@ Menu::fogCB(puObject *)
 void
 Menu::noFogCB(puObject *)
 {
-  config->nofog = 1;
+	config->setFlag(mcConfig::FOG, 0);
 
   // FIXME: Crashes on Mesa-3.1 for an unknown reason.
   // glDisable(GL_FOG);
@@ -235,14 +236,14 @@ Menu::noFogCB(puObject *)
 void
 Menu::flatCB(puObject *)
 {
-  config->nosmooth = 1;
+  config->setFlag(mcConfig::SMOOTH, 0);
   glShadeModel(GL_FLAT);
 }
 
 void
 Menu::smoothCB(puObject *)
 {
-  config->nosmooth = 0;
+  config->setFlag(mcConfig::SMOOTH, 1);
   glShadeModel(GL_SMOOTH);
 }
 

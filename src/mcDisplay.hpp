@@ -27,35 +27,56 @@
 class Display
 {
 public:
-  Display();
-  /// Init the display using width, height and bpp as arguments.
-  Display(int width, int height, int bpp);
-  ~Display();
-  ///
-  void openScreen();
-  ///
-  void closeScreen();
-  ///
-  static void updateScreen();
-  ///
-  static void resizeScreen(int width, int height);
+				Display				();
+				Display				(int width, int height, int bpp);
+				~Display			();
+									
+		void	openScreen			();
+		void	closeScreen			();
+static	void	updateScreen		();
+static	void	resizeScreen		(int width, int height);
+
+		void	setScreenProperties (int width, int height, int bpp)
+		{
+			m_width = width;
+			m_height = height;
+			m_bpp = bpp;
+		}
+
+		void	setWidth			(int w)	{ m_width = w; }
+		void	setHeight			(int h)	{ m_height = h; }
+		int		getWidth			()		{ return m_width; }
+		int		getHeight			()		{ return m_height; }
+		int		getInitialWidth		()		{ return m_initialWidth; }
+		int		getInitialHeight	()		{ return m_initialHeight; }
+
+		void switchWireframe		()
+		{
+			m_wireframe = ! m_wireframe ;		 
+			glPolygonMode ( GL_FRONT_AND_BACK, m_wireframe ? GL_LINE : GL_FILL );
+		}
+
+
 private:
-  static void idle();
-public: 
+
+static	void	idle			();
+
   ///
-  int bpp;
+  int m_bpp;
   ///
-  int width;
+  int m_width;
   ///
-  int height;
+  int m_height;
   ///
-  int initialWidth;
+  int m_initialWidth;
   ///
-  int initialHeight;
+  int m_initialHeight;
   ///
-  int state;
+  int m_state;
   ///
-  float pitch;
+  bool m_wireframe;
+
+  float m_pitch;
   ///
   float sun_x, sun_y, sun_z;
   char stxt[8192*3];

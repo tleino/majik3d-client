@@ -28,6 +28,7 @@ class Input
 public:
   Input();
   ~Input();
+
   /// This method is called when a normal key-press has been detected.
   static void keyDown(unsigned char key, int x, int y);
   /** This method is called when a special key-press has been detected,

@@ -42,8 +42,8 @@
 #include "mcSky.hpp"
 
 bool quit = false;
-Error *error = NULL;
-Config *config = NULL;
+mcError *error = NULL;
+mcConfig *config = NULL;
 Debug *debug = NULL;
 Socket *sock = NULL;
 Display *display = NULL;
@@ -67,8 +67,8 @@ main(int argc, char **argv)
 #endif /* WIN32 */
 
   // Initialize the necessary global variables as proper objects
-  error = new Error;
-  config = new Config;
+  error = new mcError;
+  config = new mcConfig;
   config->readConfig();
   debug = new Debug;
   display = new Display;
@@ -82,25 +82,26 @@ main(int argc, char **argv)
   mc_sky = new mcSky(16, 8);
   Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
 
+
   // Check the config object for ip / port settings and create the socket
   // accordingly.
-  if(config->server_ip != NULL || config->server_port)
-    sock = new Socket(config->server_ip, config->server_port);
-  else
-    sock = new Socket("195.74.0.76", 4000);
+//  if(config->server_ip != NULL || config->server_port)
+  //  sock = new Socket(config->server_ip, config->server_port);
+//  else
+  //  sock = new Socket("195.74.0.76", 4000);
    
   glutInit(&argc, argv);
   
   // Assign proper width / height 
-  if(config->screen_width && config->screen_height && config->bpp)
+  if(config->getScreenWidth() && config->getScreenHeight() && config->getScreenBpp())
     {
-      display->width = config->screen_width;
-      display->height = config->screen_height;
-      display->bpp = config->bpp;
+	  display->setScreenProperties(	config->getScreenWidth(),
+									config->getScreenHeight(),
+									config->getScreenBpp() );
     }
   
 #ifndef WIN32
-  sock->connectServer();
+//  sock->connectServer();
 #endif   
   
   // Open the screen

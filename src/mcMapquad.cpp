@@ -159,7 +159,7 @@ Mapquad::cleanUp()
   if (level != 0)
     delete this;
   else
-    error->put(ERROR_WARNING, "mapquad: Refusing to delete root map.");
+	  error->put(mcError::ERROR_WARNING, "mapquad: Refusing to delete root map.");
 }
 
 Mapquad *
@@ -461,6 +461,7 @@ Mapquad::selectLOD(int level, int x, int y)
 
 				state -> enable ( GL_COLOR_MATERIAL ) ;
 				state -> enable ( GL_CULL_FACE      ) ;
+				state -> disable ( GL_LIGHTING );
 				state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
 				state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
 				state -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
@@ -472,11 +473,11 @@ Mapquad::selectLOD(int level, int x, int y)
 //				block->setTraversalMaskBits ( SSGTRAV_CULL );
 				lod_switch->addKid ( block );
 				trans->addKid ( lod_switch );
-				landscape->terrain->addKid ( trans );
+				landscape->getTerrain()->addKid ( trans );
 			}
 
 			lod_switch->select(1);
-			block->collectVertices ( level,  dist/50);
+			block->collectVertices ( level,  dist/40);
 //			block->triangulateBlock();
 
 			if (newBlock)
@@ -542,7 +543,7 @@ Mapquad::selectLOD(int lod)
 		block = new TerrainBlock (top_x, top_y );
 		lod_switch->addKid ( block );
 		trans->addKid ( lod_switch );
-		landscape->terrain->addKid ( trans );
+		landscape->getTerrain()->addKid ( trans );
 	}
 
 	block->reset();

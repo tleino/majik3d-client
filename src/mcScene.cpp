@@ -43,6 +43,8 @@ ssgTransform  *sky_dome = NULL;
 
 Scene::Scene()
 {    
+	m_playerController = new mcPlayerController();
+	m_cameraController = new mcCameraController();
   debug->put("Scene constructor");
 }
 
@@ -89,7 +91,7 @@ Scene::redrawSky()
   sky_entity = mc_sky->Draw();
   sky_dome->addKid (sky_entity);
   ssgFlatten (sky_entity);
-  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
+//  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
   scene_root->addKid (sky_dome);
 }
 
@@ -269,7 +271,7 @@ Scene::update()
    sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
    sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
    
-   if (config->camera == 0)
+   if (config->getCameraMode() == 0)
      {
        // 3rd person mode.
        campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
@@ -282,13 +284,16 @@ Scene::update()
      }
    else
      {
+/*
        // 1st person mode.
        campos.xyz[0] += (tuxi->getLenY()*2.01f)*sin((campos.hpr[0]-180.0f)*
 						    SG_DEGREES_TO_RADIANS);
        campos.xyz[1] -= (tuxi->getLenY()*2.01f)*cos((campos.hpr[0]-180.0f)*
 						    SG_DEGREES_TO_RADIANS);
        campos.xyz[2] += tuxi->getRadius();
+	   
        campos.hpr[1] = tuxi->getRadius()+display->pitch-tuxi->getRadius()*2.0f;
+	   */
      }
    
    sgCoord skypos;
@@ -349,8 +354,8 @@ Scene::drawText(Object *o, sgVec3 object_pos)
   textpos[0] /= textpos[3];
   textpos[1] /= textpos[3];
   
-  textpos[0] = textpos[0]*display->width/2 + display->width/2;
-  textpos[1] = textpos[1]*display->height/2 + display->height/2;
+  textpos[0] = textpos[0]*display->getWidth()/2 + display->getWidth()/2;
+  textpos[1] = textpos[1]*display->getHeight()/2 + display->getHeight()/2;
   
   int slen = strlen(o->getTextObject()->getLabel())*8;
   textpos[0] -= slen / 2;
@@ -369,7 +374,7 @@ Scene::drawText(Object *o, sgVec3 object_pos)
     {
       if (len > max_len)
 	max_len = len;
-      if (len*8 < display->width && buf[i] != '\n')
+      if (len*8 < display->getWidth() && buf[i] != '\n')
 	sprintf (buf2, "%s%c", buf2, buf[i]);
       else if (buf[i] != '\n')
 	{
@@ -385,13 +390,13 @@ Scene::drawText(Object *o, sgVec3 object_pos)
   
   if (textpos[0] < 0)
     textpos[0] = 0;
-  else if (textpos[0] > display->width-max_len)
-    textpos[0] = display->width-max_len;
+  else if (textpos[0] > display->getWidth()-max_len)
+    textpos[0] = display->getWidth()-max_len;
 
   if (textpos[1] < 0)
     textpos[1] = 0;
-  else if (textpos[1] > display->height-16)
-    textpos[1] = display->height-16;
+  else if (textpos[1] > display->getHeight()-16)
+    textpos[1] = display->getHeight()-16;
 
   o->getTextObject()->setPosition(textpos[0], textpos[1]);
 }

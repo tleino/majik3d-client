@@ -24,53 +24,69 @@
     however also contain all the configuration variables and thus
     encapsulating the whole scheme to this class. */
 
-class Config
+class mcConfig
 {
 public:
-  Config();
-  ~Config();
-  /// Try to read user configuration from configuration files.
-  void readConfig();
+
+	enum e_flag
+	{
+		FULLSCREEN		= (0x1 << 0),
+		WIREFRAME		= (0x1 << 1),
+		MOUSE_TRAP		= (0x1 << 2),
+		MENU			= (0x1 << 3),
+		FOG				= (0x1 << 4),
+		TEXTURED		= (0x1 << 5),
+		SMOOTH			= (0x1 << 6),
+		PROTOCOL_DEBUG	= (0x1 << 7),
+		MOUSE			= (0x1 << 8)
+	};
+
+			mcConfig			();
+			~mcConfig			();
+  
+	/// Try to read user configuration from configuration files.
+	void	readConfig		();
+
+	void	setFlag			(e_flag flag, bool set)
+	{
+		if (set)
+			m_flags |= flag;
+		else
+			m_flags &= ((1>>1) ^ flag);
+	}
+
+	bool	testFlag		(e_flag flag)
+	{
+		return (m_flags & flag) != 0;
+	}
+
+
+	int		getScreenWidth	()	{ return m_screenWidth;	}
+	int		getScreenHeight	()	{ return m_screenHeight; }
+	int		getScreenBpp	()	{ return m_screenBpp; }
+	int		getDebugLevel	()	{ return m_debugLevel; }
+	int		getCameraMode	()	{ return m_cameraMode; }
+
+	void	setCameraMode	(int m) { m_cameraMode = m; }
+
 private:
-  void parseLine(char *strbuf, int line);
-  void parseOption(char *option, char *value);
-  bool readOptions(char *filename);
-public:
-  char *server_ip;
-  int server_port;
-  int debug_level, protocol_debug;
-  ///
-  int screen_width;
-  ///
-  int screen_height;
-  ///
-  int bpp;
-  ///
-  int mousetrap;
-  ///
-  int nomousetrap;
-  ///
-  int noTexture;
-  ///
-  int wireframe;
-  ///
-  int nomouse;
-  ///
-  int nofog;
-  ///
-  int nosmooth;
-  ///
-  int nomenu;
-  ///
-  int camera;
-  ///
-  int fullscreen;
-  ///
-  int lod;
-  ///
-  int gamemode;
+	void	parseLine	(char *strbuf, int line);
+	void	parseOption	(char *option, char *value);
+	bool	readOptions	(char *filename);
+
+	unsigned int	m_flags;
+
+	char *m_serverIP;
+	int	m_serverPort;
+	int	m_debugLevel;
+	int	m_screenWidth;
+	int	m_screenHeight;
+	int	m_screenBpp;
+	int	m_cameraMode;
+	int	m_gameMode;
+	int	m_lod;
 };
 
-extern Config *config;
+extern mcConfig *config;
 
 #endif /* __CONFIG_HPP__ */

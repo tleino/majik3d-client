@@ -27,6 +27,8 @@
 #endif
 #include <math.h>
 #include <ssg.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <GL/glut.h>
 #include <iostream.h>
 
@@ -83,20 +85,15 @@ Landscape::getHOT(float x, float y)
 void 
 Landscape::getNormal(sgVec3& nrm, float x, float y)
 {
-	
-	float x1 = x;
-	float y1 = y;
-
-
 	sgVec3 a, b;
 	
-	a [0] = 16.0;
+	a [0] = 32.0f;
 	a [1] = 0;
-	a [2] = getHOT(x, y) - getHOT(x+16.0, y);
+	a [2] = getHOT(x, y) - getHOT(x+32.0f, y);
 	
 	b [0] = 0; 
-	b [1] = 16.0;
-	b [2] = getHOT(x, y) - getHOT(x, y+16.0);
+	b [1] = 32.0f;
+	b [2] = getHOT(x, y) - getHOT(x, y+32.0f);
 	
 	sgVectorProductVec3 (nrm, a, b);
 	
@@ -114,10 +111,10 @@ Landscape::init( ssgRoot *scene_root)
   state -> enable     ( GL_TEXTURE_2D ) ;
   state -> enable     ( GL_LIGHTING ) ;
   
-  if (config->nosmooth)
-    state -> setShadeModel ( GL_FLAT ) ;
+  if (config->testFlag(mcConfig::SMOOTH))
+    state -> setShadeModel ( GL_SMOOTH ) ;
   else
-    state -> setShadeModel ( GL_SMOOTH );
+    state -> setShadeModel ( GL_FLAT );
   
   state -> enable ( GL_COLOR_MATERIAL ) ;
   state -> enable ( GL_CULL_FACE      ) ;
@@ -132,7 +129,7 @@ Landscape::init( ssgRoot *scene_root)
   
 }
 
-
+/*
 ssgBranch *
 Landscape::createBlock(int x, int y)
 {
@@ -145,7 +142,8 @@ Landscape::createBlock(int x, int y)
 	
 	return branch;
 }
-
+*/
+/*
 ssgBranch *
 Landscape::createTileLOD ( int level, int x, int y, int ntris,
 			   char *terrain_map ) 
@@ -259,11 +257,6 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris,
 	
 	sgVectorProductVec3 (nrm, a, b);
 	
-	/*
-	  nrm [ 0 ] = (zz - zzE)  / (TILE_SIZE/16.0f) ;
-	  nrm [ 1 ] = (zz - zzN)  / (TILE_SIZE/16.0f) ;
-	  nrm [ 2 ] = sqrt ( nrm[0] * nrm[0] + nrm[1] * nrm[1] ) ;
-	*/
 	sgNormalizeVec3( nrm );
 	
 	sgCopyVec3( snorms  [i+j*(ntris+1)], nrm ) ;
@@ -295,33 +288,41 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris,
   
   return branch ;
 }
-
-
+*/
 GLuint
 Landscape::getTextureHandle ( int level, int x, int y)
 {
 	GLuint handle;
 	
-	GLubyte image[32*32*3];
+	GLubyte image[(TERRAIN_RESOLUTION)
+		*(TERRAIN_RESOLUTION)*3];
 
 	mcTexGen *tgen = new mcTerrainGen();
 
-	tgen->getPixels(image, x, y, (x+512.0), (y+512.0), 32, 32);
+	tgen->getPixels(image, x-32, y-32, (x+BLOCK_WIDTH+32), (y+BLOCK_WIDTH+32), TERRAIN_RESOLUTION, TERRAIN_RESOLUTION);
 
 	glGenTextures (1, &handle);
 	glBindTexture (GL_TEXTURE_2D, handle);
 
-	glTexImage2D  ( GL_TEXTURE_2D,
-                 0, 3, 32, 32, 0,
+	gluBuild2DMipmaps(	GL_TEXTURE_2D,
+						3, 
+						TERRAIN_RESOLUTION, 
+						TERRAIN_RESOLUTION,
+						GL_RGB,
+						GL_UNSIGNED_BYTE,
+						(GLvoid *) &image[0] );
+
+/*	glTexImage2D  ( GL_TEXTURE_2D,
+                 0, 3, TERRAIN_RESOLUTION, TERRAIN_RESOLUTION, 0,
                         GL_RGB,
                         GL_UNSIGNED_BYTE, (GLvoid *) &image[0] ) ;
-
+*/
 
 	glTexEnvi ( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ) ;
 	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ) ;
-	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP ) ;
-	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP ) ;
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT ) ;
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT ) ;
 	glBindTexture (GL_TEXTURE_2D, 0);
 
 	return handle;

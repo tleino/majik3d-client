@@ -26,7 +26,7 @@
 
 #include "mcScene.hpp"
 
-/** An object class linked-list. This class contains an interactive object and
+/** An object class. This class contains an interactive object and
     handles all things like moving and removing it. */
 
 class Object
@@ -55,10 +55,10 @@ public:
   void rotateX ( double );
   /// Return the amount of moves made, used for animation kludge.
   int getMoveCounter();
-  /// A pointer to last object.
+  
   static Object *last;
-  /// A pointer to first object.
   static Object *first;
+
   /// A pointer to next object.
   Object *getNext();
   /// Return the Object ID, OID.
@@ -66,12 +66,13 @@ public:
   /// Return the say string object.
   puText *getTextObject() { return puhe; } // a kludge
   /// Return the object's model filename.
+  
   char *getFileName();
-  /// Set the object's say string-
+  
   void setSayString(char *);
-  /// Reveal the say string.
+  
   void revealSayString();
-  /// Hide the say string.
+  
   void hideSayString();
   /// Bounding sphere radius.
   float getRadius();
@@ -82,20 +83,21 @@ public:
   /// FIXME: A kludge.
   bool hotFixed;
 private:
-  ssgTransform *trans;
-  ssgEntity *obu;
-  puText *puhe;  
-  char file_name[80];
-  int movecounter;
-  int id;
   
-  Object *prev;
-  Object *next;
-  
-  int currentSound;
-  sgCoord ob_pos;
-  float scaleZ;
-  float lenY;
+	ssgTransform *trans;
+	ssgEntity *obu;
+	puText *puhe;  
+	char file_name[80];
+	int movecounter;
+	int id;
+
+	Object *prev;
+	Object *next;
+
+	int currentSound;
+	sgCoord ob_pos;
+	float scaleZ;
+	float lenY;
 };
 
 extern Object *object;

@@ -23,6 +23,8 @@
 #include <ssg.h>
 #include <sg.h>
 #include <pu.h>
+#include "mcPlayerController.hpp"
+#include "mcCameraController.hpp"
 
 #include "mcObject.hpp"
 
@@ -57,8 +59,18 @@ public:
   /// Get Height of Terrain of (x,y).
   float getHOT( float x, float y);
   /// A pointer to scene's root node.
-  ssgRoot *scene_root;
-  ssgEntity *sky_entity;
+
+  mcPlayerController	*getPlayerController() { return m_playerController; }
+  mcCameraController	*getCameraController() { return m_cameraController; }
+
+  ssgRoot	*getSceneRoot	()	{ return scene_root; }
+
+private:
+	mcCameraController *m_cameraController;
+	mcPlayerController *m_playerController;
+
+	ssgRoot *scene_root;
+	ssgEntity *sky_entity;
 };
 
 extern Scene *scene; 

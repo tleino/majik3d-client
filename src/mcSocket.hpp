@@ -41,7 +41,8 @@ public:
   virtual void writePacket(char *szFmt,...);
   ///
   void	Dispatch(char *szString);
-public:
+
+private:
   ///
   char *szHost;
   ///

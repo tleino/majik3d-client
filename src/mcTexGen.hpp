@@ -21,13 +21,14 @@
 
 class mcTexGen
 {
+public:
 
-  private:
+	virtual int getPixel(double x, double y) = 0;
+	virtual void getPixels(unsigned char *image, double nwx, double nwy, double sex, double sey, int width, int height) = 0;
 
-	int *primes;		// Prime number table
-	int octave;
+	virtual ~mcTexGen();
 
-  protected:
+protected:
 
 	mcTexGen();
   
@@ -53,13 +54,10 @@ class mcTexGen
 	double bias(double t, double b);					// 0.5 = no bias
 	double gain(double t, double g);					// 0.5 = no gain
 
-  public:
+private:
+	int *primes;		// Prime number table
+	int octave;
 
-	virtual int getPixel(double x, double y) = 0;
-
-	virtual void getPixels(unsigned char *image, double nwx, double nwy, double sex, double sey, int width, int height) = 0;
-	
-	virtual ~mcTexGen();
 };
 
 #endif

@@ -63,67 +63,81 @@ Input::~Input()
 void
 Input::keyDown(unsigned char k, int x, int y)
 {
-  if (tuxi == NULL && !overlay->inp->isVisible())
-    return;
+	if (tuxi == NULL && !overlay->inp->isVisible())
+		return;
+
+	puKeyboard (k, PU_DOWN);
   
-  puKeyboard (k, PU_DOWN);
+	static int wireframe = 0;
   
-  static int wireframe = 0;
-  
-  if (tuxi != NULL)
-    {
-      sgCoord tuxiPos = tuxi->getPos(); // Avoid multiple calls to getPos
-      sgCopyVec3 ( temppos.xyz, tuxiPos.xyz ) ;
-      sgCopyVec3 ( temppos.hpr, tuxiPos.hpr ) ;
-    }
-  
+	if (tuxi != NULL)
+	{
+		sgCoord tuxiPos = tuxi->getPos(); // Avoid multiple calls to getPos
+		sgCopyVec3 ( temppos.xyz, tuxiPos.xyz ) ;
+		sgCopyVec3 ( temppos.hpr, tuxiPos.hpr ) ;
+	}
+
   if (k == '\t')
-    {
-      if (overlay->inp->isVisible())
-	{
-	  overlay->inp->rejectInput();
-	  overlay->inp->hide();
+  {
+    if (overlay->inp->isVisible())
+		{
+		  overlay->inp->rejectInput();
+			overlay->inp->hide();
+		}
+    else
+		{
+			overlay->inp_command = CMD_SAY;
+			overlay->inp->reveal();
+			overlay->inp->setCursor(0);
+			overlay->inp->acceptInput();
+		}
 	}
-      else
-	{
-	  overlay->inp_command = CMD_SAY;
-	  overlay->inp->reveal();
-	  overlay->inp->setCursor(0);
-	  overlay->inp->acceptInput();
-	}
-    }
   else if (!overlay->inp->isVisible()) 
-    {
-      switch (k)
-	{
-	case 'w':
-	  // Wireframe.
-	  wireframe = ! wireframe ;		 
-	  glPolygonMode ( GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL ) ;
-	  break;
-	case 0x03:
-	case 'x':
-	  // Exit.
-	  exit ( 0 ) ;
-	  break;
-	case '8':
-	  // Move forward.
-	  if (tuxi->isMovementLocked() == true)
-	    return;
-	  
+  {
+		tuxi->unLockMovement();
+
+		switch (k)
+		{
+		case 'w':
+			display->switchWireframe();
+			// Wireframe.
+//			wireframe = ! wireframe ;		 
+//			glPolygonMode ( GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL ) ;
+			break;
+		case 0x03:
+		case 'x':
+			// Exit.
+			exit ( 0 ) ;
+			break;
+		case '8':
+			// Move forward.
+			scene->getPlayerController()->moveForward();
+
+//		if (tuxi->isMovementLocked() == true)
+//				return;
+			
 	  temppos.xyz[0] += sin((temppos.hpr[0]-180.0f)*
 				SG_DEGREES_TO_RADIANS)*10.0f;
 	  temppos.xyz[1] -= cos((temppos.hpr[0]-180.0f)*
-				SG_DEGREES_TO_RADIANS)*10.0;;
+				SG_DEGREES_TO_RADIANS)*10.0;
 	  
-	  sock->writePacket(debug->string("50 %f %f %f",
+	  
+/*	  sock->writePacket(debug->string("50 %f %f %f",
 					  (float) temppos.xyz[0],
 					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]));
-	  tuxi->lockMovement();
+					  (float) temppos.hpr[0])); */
+	  protocol->parseCommand(debug->string("50 1 %f %f %f",
+			  (float) temppos.xyz[0],
+			  (float) temppos.xyz[1],
+			  (float) temppos.hpr[0])); 
+			  
+
+//	  tuxi->lockMovement();
 	  break;
 	case '2':
 	  // Move backward.
+		scene->getPlayerController()->moveBackward();
+
 	  if (tuxi->isMovementLocked() == true)
 	    return;
 
@@ -132,14 +146,21 @@ Input::keyDown(unsigned char k, int x, int y)
 	  temppos.xyz[1] += cos((temppos.hpr[0]-180.0f)*
 				SG_DEGREES_TO_RADIANS)*10.0f;
 	  
-	  sock->writePacket(debug->string("50 %f %f %f",
+/*	  sock->writePacket(debug->string("50 %f %f %f",
 					  (float) temppos.xyz[0],
 					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]));
-	  tuxi->lockMovement();
+					  (float) temppos.hpr[0]));*/
+	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
+			  (float) temppos.xyz[0],
+			  (float) temppos.xyz[1],
+			  (float) temppos.hpr[0])); 
+
+//	  tuxi->lockMovement();
 	  break;
 	case '6':
 	  // Turn right.
+		scene->getPlayerController()->turnRight();
+
 	  if (tuxi->isMovementLocked() == true)
 	    return;
 	  
@@ -147,14 +168,21 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (temppos.hpr[0] < 0)
 	    temppos.hpr[0] += 360.0f;
 	  
-	  sock->writePacket(debug->string("50 %f %f %f",
+/*	  sock->writePacket(debug->string("50 %f %f %f",
 					  (float) temppos.xyz[0],
 					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]));
-	  tuxi->lockMovement();
+					  (float) temppos.hpr[0]));*/
+	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
+			  (float) temppos.xyz[0],
+			  (float) temppos.xyz[1],
+			  (float) temppos.hpr[0])); 
+
+//	  tuxi->lockMovement();
 	  break;
 	case '4':
 	  // Turn left.
+		scene->getPlayerController()->turnLeft();
+
 	  if (tuxi->isMovementLocked() == true)
 	    return;
 	  
@@ -162,28 +190,35 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (temppos.hpr[0] > 355.0f)
 	    temppos.hpr[0] = 0.0f;
 	  
-	  sock->writePacket(debug->string("50 %f %f %f",
+/*	  sock->writePacket(debug->string("50 %f %f %f",
 					  (float) temppos.xyz[0],
 					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]));
-	  tuxi->lockMovement();
+					  (float) temppos.hpr[0]));*/
+	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
+			  (float) temppos.xyz[0],
+			  (float) temppos.xyz[1],
+			  (float) temppos.hpr[0])); 
+
+//	  tuxi->lockMovement();
 	  break;
 	case '+':
 	  // Look up.
-	  display->pitch += 1.0f;
-	  if (display->pitch > 75.0f)
-	    display->pitch = 75.0f;
+		scene->getCameraController()->pitchUp(1.0);
+//	  display->pitch += 1.0f;
+//	  if (display->pitch > 75.0f)
+//	    display->pitch = 75.0f;
 	  break;
 	case '-':
 	  // Look down.
-	  display->pitch -= 1.0f;
-	  if (display->pitch < -75.0f)
-	    display->pitch = -75.0f;
+		scene->getCameraController()->pitchDown(1.0);
+//	  display->pitch -= 1.0f;
+//	  if (display->pitch < -75.0f)
+//	    display->pitch = -75.0f;
 	  break;
 	case 13:
 	  break;
 	default:
-	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)",
+		error->put(mcError::ERROR_WARNING, "Unsupported key received: %d at (%d,%d)",
 		     k, x, y);
 	  break;
 	}      
@@ -219,13 +254,13 @@ Input::specialDown(int key, int x, int y)
       break;
     case GLUT_KEY_F2:
       glutSetCursor (GLUT_CURSOR_NONE);
-      glutWarpPointer (display->width/2, display->height/2);
-      config->camera = 1;
+      glutWarpPointer (display->getWidth()/2, display->getHeight()/2);
+      config->setCameraMode(1);
       break;
     case GLUT_KEY_F1:
       glutSetCursor (GLUT_CURSOR_INHERIT);
-      glutWarpPointer (display->width/2, display->height/2);
-      config->camera = 0;
+      glutWarpPointer (display->getWidth()/2, display->getHeight()/2);
+      config->setCameraMode(0);
       break; 
     case GLUT_KEY_F12:
       captureScreen();
@@ -237,7 +272,7 @@ Input::specialDown(int key, int x, int y)
       sock->writePacket("57 -1");
       break;
     default:
-      error->put(ERROR_WARNING, "Unsupported special key received: %d at " \
+		error->put(mcError::ERROR_WARNING, "Unsupported special key received: %d at " \
 		 "(%d,%d)", key, x, y);
       break;
     }
@@ -255,30 +290,30 @@ Input::mouseMotion(int x, int y)
 { 
   puMouse (x, y);
 
-  float diff_x = (input->mouse_x - x) * (360.0f / (display->width / 2));
-  float diff_y = (input->mouse_y - y) * (360.0f / (display->height / 2));
+  float diff_x = (input->mouse_x - x) * (360.0f / (display->getWidth() / 2));
+  float diff_y = (input->mouse_y - y) * (360.0f / (display->getHeight() / 2));
 
-  if (tuxi != NULL && config->camera != 0)
+  if (tuxi != NULL && config->getCameraMode() != 0)
     {
       sgCoord temppos = tuxi->getPos();
       temppos.hpr[0] += diff_x;
-      display->pitch += diff_y;
+      scene->getCameraController()->pitchUp(diff_y);
       
       if (temppos.hpr[0] > 355.0f)
 	temppos.hpr[0] = 0.0f;
       if (temppos.hpr[0] < 0.0f)
 	temppos.hpr[0] += 360.0f;
-      if (display->pitch > 360.0f) 
-	display->pitch = 360.0f; 
+/*      if (display->pitch > 360.0f) 
+	display->getCameraController()->setPitch(360.0f); 
       if (display->pitch < -360.0f) 
-	display->pitch = -360.0f; 
-      
+	display->getCameraController()->setPitch(-360.0f);
+  */    
       tuxi->setPos(temppos);
 
-      if (x >= display->width-1 || y >= display->height-1 || x <= 0 || y <= 0)
+      if (x >= display->getWidth()-1 || y >= display->getHeight()-1 || x <= 0 || y <= 0)
 	{
-	  input->mouse_x = display->width/2;
-	  input->mouse_y = display->height/2;
+	  input->mouse_x = display->getWidth()/2;
+	  input->mouse_y = display->getHeight()/2;
 	  glutWarpPointer (input->mouse_x, input->mouse_y);
 
 	  return;

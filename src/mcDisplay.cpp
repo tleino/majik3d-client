@@ -45,25 +45,25 @@ bool Display::sceneVisible = false;
 
 Display::Display()
 {
-  width = 640;
-  height = 480;
-  initialWidth = width;
-  initialHeight = height;
-  bpp = 16;
+  m_width = 640;
+  m_height = 480;
+  m_initialWidth = m_width;
+  m_initialHeight = m_height;
+  m_bpp = 16;
   
   debug->put("Display constructor");
 }
 
 Display::Display(int w, int h, int b)
 {
-  width = w;
-  height = h;
-  initialWidth = width;
-  initialHeight = height; 
-  bpp = b;
+  m_width = w;
+  m_height = h;
+  m_initialWidth = w;
+  m_initialHeight = h; 
+  m_bpp = b;
   
-  debug->put("Display constructor: width=%d height=%d bpp=%d", width, height,
-	     bpp);
+  debug->put("Display constructor: width=%d height=%d bpp=%d", m_width, m_height,
+	     m_bpp);
 }
 
 Display::~Display()
@@ -77,11 +77,11 @@ void
 Display::openScreen()
 {  
   debug->put("Opening screen...");
-  if (config->nomousetrap != 0)
-    config->mousetrap = 1;
+  if (config->testFlag(mcConfig::MOUSE_TRAP))
+	  config->setFlag ( mcConfig::MOUSE_TRAP, 1);
   
-  config->camera = 0;
-  display->pitch = 0;
+//  config->setCameraMode(0);
+//  display->setPitch(0);
   
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
@@ -91,7 +91,7 @@ Display::openScreen()
 //    glutEnterGameMode();
   else
     {
-      glutInitWindowSize(width, height);
+      glutInitWindowSize(m_width, m_height);
       glutInitWindowPosition(0, 0);
       glutCreateWindow("majik");
     }
@@ -107,8 +107,8 @@ Display::openScreen()
 
 //  glutIgnoreKeyRepeat(1);
   
-  if (config->nomousetrap != 1)
-    glutWarpPointer (width/2, height/2);
+  if (config->testFlag(mcConfig::MOUSE_TRAP) )
+    glutWarpPointer (m_width/2, m_height/2);
   
   /* PLIB: Simple Scene Graph */
   debug->put("ssgInit");
@@ -119,12 +119,12 @@ Display::openScreen()
   
   glEnable (GL_DEPTH_TEST);
   
-  if (config->nofog)
+  if (!config->testFlag(mcConfig::FOG))
     glDisable (GL_FOG);
-  if (config->nosmooth)
-    glShadeModel (GL_FLAT);
-  else
+  if (config->testFlag(mcConfig::SMOOTH))
     glShadeModel (GL_SMOOTH);
+  else
+    glShadeModel (GL_FLAT);
   
   debug->put("Screen opened.");
 }
@@ -141,11 +141,11 @@ bool mapFound = true;
 void
 Display::updateScreen()
 {
-  char *tmp;
+  char *tmp = 0;
   
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
-  tmp = sock->readPacket();
+//  tmp = sock->readPacket();
   
   while (tmp != NULL)
     {
@@ -157,6 +157,12 @@ Display::updateScreen()
   //	 mousetrap();
   //   if (Display::sceneVisible)
  
+	if (tuxi == NULL)
+	{
+		protocol->parseCommand("52 1");
+		protocol->parseCommand("55 1 1000 1000 0 dog3.ac");
+	}
+
   if (mapFound)
     {
       scene->draw();
@@ -182,8 +188,8 @@ Display::updateScreen()
 void
 Display::resizeScreen(int w,int h)
 {
-  display->width = w;
-  display->height = h;
+  display->setWidth(w);
+  display->setHeight(h);
   glViewport(0, 0, w, h);
-  overlay->inp->setSize(display->width-5, 5+20 ) ;
+  overlay->inp->setSize(display->getWidth()-5, 5+20 ) ;
 }

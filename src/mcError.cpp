@@ -23,18 +23,18 @@
 
 #include "mcError.hpp"
 
-Error::Error()
+mcError::mcError()
 {
   buf = new char[1024];
 }
 
-Error::~Error()
+mcError::~mcError()
 {
   delete [] buf;
 }
 
 void
-Error::put(const int severity, const char *fmt, ...)
+mcError::put(e_error severity, const char *fmt, ...)
 {
   va_list vl;
   va_start (vl, fmt);

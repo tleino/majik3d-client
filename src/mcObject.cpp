@@ -96,7 +96,7 @@ Object::~Object()
 	first = NULL;
     }
   
-  scene->scene_root->removeKid( trans );
+  scene->getSceneRoot()->removeKid( trans );
   
 //  delete trans;
   delete puhe;
@@ -139,7 +139,7 @@ Object::init(int id, char *file_name)
   ssgStripify        ( trans  ) ;
   trans  -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
   
-  scene->scene_root -> addKid ( trans ) ;
+  scene->getSceneRoot() -> addKid ( trans ) ;
   
   puhe = new puText(0, 0);
   puhe->setLabel("");
