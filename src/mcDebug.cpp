@@ -18,8 +18,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
-#include <string>
+#include <iostream.h>
+#include <string.h>
 #include <stdarg.h>
 
 #include "mcConfig.hpp"
