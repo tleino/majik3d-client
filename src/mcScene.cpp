@@ -84,13 +84,14 @@ Scene::redrawSky()
   if (sky_dome != NULL) 
     {
       sky_dome->deRef();
-      delete sky_dome; // FIXME: might bug? remove child needed?
+  //    delete sky_dome; // FIXME: might bug? remove child needed?
+	  
     }
   
   sky_dome = new ssgTransform ();
   sky_entity = mc_sky->Draw();
   sky_dome->addKid (sky_entity);
-  ssgFlatten (sky_entity);
+//  ssgFlatten (sky_entity);
 //  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
   scene_root->addKid (sky_dome);
 }
@@ -174,6 +175,8 @@ Scene::init()
   sgSetVec4 ( sunamb , 0.4f, 0.4f, 0.4f, 1.0f ) ;
   ssgGetLight ( 0 ) -> setPosition ( sunposn ) ;
   ssgGetLight ( 0 ) -> setColour ( GL_AMBIENT, sunamb ) ;
+
+  redrawSky();
 }
 
 float

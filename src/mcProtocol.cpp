@@ -267,7 +267,7 @@ Protocol::parseCommand(char *input)
 //	  mc_sky->setLuminanceFactor(1.0);
 //	  mc_sky->setSunPosition(1.0, 1.0); 
 //	  mc_sky->setTurbidity(2.5);
-	  scene->redrawSky();
+//	  scene->redrawSky();
 
 	  error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_SUN_POS.");
