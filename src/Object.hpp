@@ -25,7 +25,7 @@
 
 #include "Scene.hpp"
 
-class Scene;
+// class Scene;
 
 ///
 #define NO_SOUND 0
@@ -49,7 +49,7 @@ class Object
    /// For client to get sound made.
    int getCurrentSound();
    /// Move object to a new position.
-   void moveTo(int x, int y, int h);
+   void moveTo(float x, float y, float h);
 
    ///
    sgCoord ob_pos;

@@ -113,7 +113,7 @@ Object::init(int id, char *file_name)
    puhe->setLabel("");
 }
 
-void Object::moveTo(int x, int y, int h)
+void Object::moveTo(float x, float y, float h)
 {
    // Smooth the movement from point a to point b.
    float old_x, old_y, old_h;
@@ -157,7 +157,14 @@ void Object::moveTo(int x, int y, int h)
    ob_pos.xyz[0] = x;
    ob_pos.xyz[1] = y;
    ob_pos.hpr[0] = h;
+
+   ob_pos.xyz [ 2 ] = scene->getHOT(ob_pos.xyz [ 0 ],
+					  ob_pos.xyz [ 1 ] ) + 0.1f;
+   ob_pos.hpr [ 1 ] = 0.0f ;
+   ob_pos.hpr [ 2 ] = 0.0f ;
+
    movecounter++;
    lock = 0;
+//	cerr << "ID: " << id << " is at pos " << ob_pos.xyz[0] << ", " << ob_pos.xyz[1] << endl;
 }
 

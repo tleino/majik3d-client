@@ -263,10 +263,6 @@ Scene::update()
    
    while (ob != NULL)
 	 {
-		ob->ob_pos.xyz [ 2 ] = getHOT(ob->ob_pos.xyz [ 0 ],
-									  ob->ob_pos.xyz [ 1 ] ) + 0.1f;
-		ob->ob_pos.hpr [ 1 ] = 0.0f ;
-		ob->ob_pos.hpr [ 2 ] = 0.0f ;
 //		cout << "x: " << ob->ob_pos.xyz [ 0 ] << "y: " << ob->ob_pos.xyz [ 1 ] << "z: " << ob->ob_pos.xyz [ 2 ] << "\n";
 		if (strcmp(ob->file_name, "tuxedo.ac"))
 		  {
