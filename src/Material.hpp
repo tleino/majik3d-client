@@ -20,7 +20,7 @@
 #define __MATERIAL_HPP__
 
 #include <stdio.h>
-#include <plib/ssg.h>
+#include <ssg.h>
 
 struct Material {
  public:
