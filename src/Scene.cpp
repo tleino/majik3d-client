@@ -272,8 +272,11 @@ Scene::update()
 }
 
 void
-Scene::drawText(puText *text_object, sgVec3 object_pos)
+Scene::drawText(Object *o, sgVec3 object_pos)
 {
+  if (o != NULL && !strlen(o->getTextObject()->getLabel()) && o != tuxi)
+    return;
+
   sgMat4 ploo =
   {
     {  1.0f,  0.0f,  0.0f,  0.0f },
@@ -314,20 +317,48 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
   textpos[0] = textpos[0]*display->width/2 + display->width/2;
   textpos[1] = textpos[1]*display->height/2 + display->height/2;
   
-  int slen = strlen(text_object->getLabel())*8;
+  int slen = strlen(o->getTextObject()->getLabel())*8;
   textpos[0] -= slen / 2;
 
+  char buf[1000], buf2[1000];
+  int len = 0;
+  int max_len = 0;
+
+  memset (buf, 0, sizeof (buf));
+  memset (buf2, 0, sizeof (buf2));
+
+  strcpy (buf, o->getTextObject()->getLabel());
+  strcpy (buf2, "");
+
+  for (unsigned int i=0;i<strlen(buf);i++,len++)
+    {
+      if (len > max_len)
+	max_len = len;
+      if (len*8 < display->width && buf[i] != '\n')
+	sprintf (buf2, "%s%c", buf2, buf[i]);
+      else if (buf[i] != '\n')
+	{
+	  sprintf (buf2, "%s\n%c", buf2, buf[i]);
+	  len = 0;
+	}
+    }
+  
+  o->setSayString(debug->string("%s", buf2));
+
+  max_len+=8;
+  max_len*=8;
+  
   if (textpos[0] < 0)
     textpos[0] = 0;
-  else if (textpos[0] > display->width-slen)
-    textpos[0] = display->width-slen;
+  else if (textpos[0] > display->width-max_len)
+    textpos[0] = display->width-max_len;
 
   if (textpos[1] < 0)
     textpos[1] = 0;
-  else if (textpos[1] > display->height)
-    textpos[1] = display->height;
+  else if (textpos[1] > display->height-16)
+    textpos[1] = display->height-16;
 
-  text_object->setPosition(textpos[0], textpos[1]);
+  o->getTextObject()->setPosition(textpos[0], textpos[1]);
 }
 
 void
@@ -354,7 +385,7 @@ Scene::draw()
       posit[1] = obPos.xyz[1];
       posit[2] = obPos.xyz[2]+ob->getRadius();
       
-      drawText( ob->getTextObject(), posit);
+      drawText( ob, posit);
       
       ob = ob->getNext();
     }

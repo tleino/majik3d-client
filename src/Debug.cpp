@@ -52,7 +52,7 @@ Debug::~Debug()
 char *
 Debug::string(char *fmt, ...)
 {
-  char *buf = new char[80]; // EORJWPEORJP
+  char *buf = new char[1000]; // EORJWPEORJP
   memset (buf, 0, sizeof (buf));
   
   va_list vl;
@@ -66,7 +66,7 @@ Debug::string(char *fmt, ...)
 void
 Debug::put(char *fmt, ...)
 {
-  char *buf = new char[256];
+  char *buf = new char[1000];
   memset(buf, 0, sizeof(buf));
   va_list vl;
   va_start (vl, fmt);

@@ -50,7 +50,7 @@ public:
   /// Initialize the scene.
   void init();
   /// Draw the chat-string to screen.
-  void drawText(puText *, sgVec3);
+  void drawText(Object *, sgVec3);
   /// Get Height of Terrain of (x,y).
   float getHOT( float x, float y);
   /// A pointer to scene's root node.

@@ -131,6 +131,16 @@ Object::init(int id, char *file_name)
   
   puhe = new puText(0, 0);
   puhe->setLabel("");
+
+  /*if (!strcmp(file_name, "dog3.ac"))
+    puhe->setColour (PUCOL_LABEL, 0.0, 0.5, 1.0);
+  else if (!strcmp(file_name, "jennifers_alien.ac"))
+    puhe->setColour (PUCOL_LABEL, 0.0, 1.0, 1.0);
+  else if (!strcmp(file_name, "elephant.ac"))
+    puhe->setColour (PUCOL_LABEL, 1.0, 0.5, 0.5);
+    else*/
+    puhe->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
+  
   sgSphere *bs = trans->getBSphere();  
   lenY = bs->getRadius();
 }

@@ -140,7 +140,7 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (tuxi->isMovementLocked() == true)
 	    return;
 	  
-	  temppos.hpr[0] -= 5.0f;
+	  temppos.hpr[0] -= 10.0f;
 	  if (temppos.hpr[0] < 0)
 	    temppos.hpr[0] += 360.0f;
 	  
@@ -155,7 +155,7 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (tuxi->isMovementLocked() == true)
 	    return;
 	  
-	  temppos.hpr[0] += 5.0f;
+	  temppos.hpr[0] += 10.0f;
 	  if (temppos.hpr[0] > 355.0f)
 	    temppos.hpr[0] = 0.0f;
 	  
