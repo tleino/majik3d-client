@@ -85,8 +85,8 @@ Display::openScreen()
   
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
-  if (0); //config->gamemode)
-//    glutEnterGameMode();
+  if (config->gamemode)
+    glutEnterGameMode();
   else
     {
       glutInitWindowSize(width, height);
@@ -98,7 +98,7 @@ Display::openScreen()
   glutDisplayFunc(updateScreen);
   glutKeyboardFunc(input->keyDown);
   glutSpecialFunc(input->specialDown);
-//  glutSpecialUpFunc(input->specialUp);
+  glutSpecialUpFunc(input->specialUp);
   glutMouseFunc(input->mouseDown);
   glutPassiveMotionFunc(input->mouseMotion);
   glutMotionFunc(input->mouseMotion);
@@ -111,7 +111,6 @@ Display::openScreen()
   /* PLIB: Simple Scene Graph */
   debug->put("ssgInit");
   ssgInit();
-   // initMaterials();
   
   overlay->init();
   scene->init();

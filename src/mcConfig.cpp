@@ -208,13 +208,13 @@ Config::readOptions(char *filename)
     sprintf(file, "%s/%s", getenv("HOME"), ".majikrc");
   else
     strcpy(file, filename);
-
-  printf ("Reading configuration from: %s\n", file);
   
   fp = fopen(file, "r");
   if(fp == NULL)
     return false;
   
+  printf ("Reading configuration from: %s\n", file);
+
   strbuf = new char [128+32];
   line = 0;
   

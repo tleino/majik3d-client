@@ -162,7 +162,7 @@ Menu::mkDialog(char *str)
 void
 Menu::aboutCB(puObject *)
 {
-  mkDialog("Majik 3D 0.00/M3");
+  // mkDialog("Majik 3D 0.00/M3");
 }
 
 void
@@ -227,7 +227,9 @@ void
 Menu::noFogCB(puObject *)
 {
   config->nofog = 1;
-  glDisable(GL_FOG);
+
+  // FIXME: Crashes on Mesa-3.1 for an unknown reason.
+  // glDisable(GL_FOG);
 }
 
 void

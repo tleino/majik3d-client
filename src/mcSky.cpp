@@ -25,6 +25,7 @@
 #include <math.h>
 #include <GL/gl.h>
 #include "mcSky.hpp"
+#include "mcConfig.hpp"
 
 #define S 6999.0f
 #ifndef M_PI
@@ -133,8 +134,11 @@ ssgEntity *mcSky::Draw()
    
    ssgSimpleState *state = new ssgSimpleState;
    state->enable(GL_COLOR_MATERIAL);
-   state->setShadeModel(GL_SMOOTH);
-   state->disable(GL_CULL_FACE);
+   if (config->nosmooth)
+     state->setShadeModel (GL_FLAT);
+   else
+     state->setShadeModel (GL_SMOOTH);
+   state->enable(GL_CULL_FACE);
    state->disable(GL_TEXTURE_2D);
    state->setOpaque();
    state->disable(GL_FOG);
@@ -173,7 +177,7 @@ ssgEntity *mcSky::Draw()
 								   0, NULL,
 								   p, scolors);
    topfan->setState(state);
-   topfan->setCullFace(FALSE);
+   topfan->setCullFace(TRUE);
    skydome->addKid(topfan);									
    
    /* Draw horizontal strips */
@@ -217,7 +221,7 @@ ssgEntity *mcSky::Draw()
 										0, NULL,
 										p+1, scolors);
 		hstrip->setState(state);
-		hstrip->setCullFace(FALSE);
+		hstrip->setCullFace(TRUE);
 		skydome->addKid(hstrip);
 	 }
    return skydome;

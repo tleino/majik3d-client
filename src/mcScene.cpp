@@ -79,21 +79,18 @@ Scene::addSpecial(float x, float y, char *model, bool cutout)
 void
 Scene::redrawSky()
 {
-  printf ("redrawSky begin.\n");
-  if (sky_dome != NULL) {
-    printf ("sky_dome deRef.\n");
-    sky_dome->deRef();
-    delete sky_dome; // FIXME: might bug? remove child needed?
-  }
-
+  if (sky_dome != NULL) 
+    {
+      sky_dome->deRef();
+      delete sky_dome; // FIXME: might bug? remove child needed?
+    }
+  
   sky_dome = new ssgTransform ();
   sky_entity = mc_sky->Draw();
   sky_dome->addKid (sky_entity);
   ssgFlatten (sky_entity);
   sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
   scene_root->addKid (sky_dome);
-
-  printf ("redrawSky end.\n");
 }
 
 void
@@ -286,10 +283,12 @@ Scene::update()
    else
      {
        // 1st person mode.
-       campos.xyz[0] += (tuxi->getLenY()*2.01f)*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-       campos.xyz[1] -= (tuxi->getLenY()*2.01f)*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+       campos.xyz[0] += (tuxi->getLenY()*2.01f)*sin((campos.hpr[0]-180.0f)*
+						    SG_DEGREES_TO_RADIANS);
+       campos.xyz[1] -= (tuxi->getLenY()*2.01f)*cos((campos.hpr[0]-180.0f)*
+						    SG_DEGREES_TO_RADIANS);
        campos.xyz[2] += tuxi->getRadius();
-       campos.hpr[1] = tuxi->getRadius() + display->pitch - tuxi->getRadius() * 2.0f;
+       campos.hpr[1] = tuxi->getRadius()+display->pitch-tuxi->getRadius()*2.0f;
      }
    
    sgCoord skypos;
@@ -302,11 +301,7 @@ Scene::update()
    ssgSetCamera ( & campos ) ;
 
    if (sky_dome)
-   {
-//		sky_dome->setTransform (&skypos, 100.0, 100.0, 100.0);
-		sky_dome->setTransform (&skypos);
-//		sky_dome->setTransform (&campos);
-   }
+     sky_dome->setTransform (&skypos);
 }
 
 void
@@ -404,9 +399,8 @@ Scene::drawText(Object *o, sgVec3 object_pos)
 void
 Scene::draw()
 {
-  if (tuxi == NULL) {
+  if (tuxi == NULL)
     return; // We do not exist yet and thus no draw() needed.
-  }
   
   // Update camera's position in relation to ourself.
   update();
@@ -437,5 +431,4 @@ Scene::draw()
 
       ob = ob->getNext();
     }
-
 }
