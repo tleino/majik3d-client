@@ -8,7 +8,7 @@ Menu.cpp Menu.hpp Material.cpp Material.hpp main.cpp
 INCLUDES = -I/usr/include/GL -I/usr/local/include -I/usr/local/plib/include
 CLEANFILES = *.debug
 LDADD = -L/usr/X11R6/lib -L/usr/local/lib -L/usr/local/plib/lib \
--lX11 -lXext -lXmu -lXt -lXi -lICE -lglut -lMesaGLU -lMesaGL -lssg -lpu \
--lfnt -lsg -lm
+-lpu -lfnt -lssg -lsg -lglut -lGLU -lGL -lX11 -lXext -lXmu -lXt -lXi \
+-lICE -lm
 toilet  :
 	@-wc *.cpp *.hpp
