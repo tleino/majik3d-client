@@ -180,6 +180,8 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (display->pitch < -75.0f)
 	    display->pitch = -75.0f;
 	  break;
+	case 13:
+	  break;
 	default:
 	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)",
 		     k, x, y);
@@ -230,30 +232,30 @@ Input::mouseMotion(int x, int y)
 { 
   puMouse (x, y);
 
-  int diff_x = input->mouse_x - x;
-  int diff_y = input->mouse_y - y;
+  float diff_x = (input->mouse_x - x) * (360.0f / (display->width / 2));
+  float diff_y = (input->mouse_y - y) * (75.0f / (display->height / 2));
 
-  if (tuxi != NULL && config->camera != 0) {
-    sgCopyVec3 ( temppos.hpr, tuxi->getPos().hpr ) ;
-    temppos.hpr[0] += diff_x;
+  if (tuxi != NULL && config->camera != 0)
+    {
+      sgCoord temppos = tuxi->getPos();
+      temppos.hpr[0] += diff_x;
+      display->pitch += diff_y;
+      
+      if (temppos.hpr[0] > 355.0f)
+	temppos.hpr[0] = 0.0f;
+      if (temppos.hpr[0] < 0.0f)
+	temppos.hpr[0] += 360.0f;
 
-    if (temppos.hpr[0] > 355.0f) 
-      temppos.hpr[0] = 0.0f;
-    if (temppos.hpr[0] < 0) 
-      temppos.hpr[0] += 360.0f;
+      if (display->pitch > 75.0f) 
+	display->pitch = 75.0f; 
+      if (display->pitch < -75.0f) 
+	display->pitch = -75.0f; 
+      
+      tuxi->setPos(temppos);
+    }
 
-    tuxi->moveTo(tuxi->getPos().xyz[0], tuxi->getPos().xyz[1],
-		 temppos.hpr[0]);
-
-    display->pitch += diff_y;
-
-    if (display->pitch > 75.0f)
-      display->pitch = 75.0f;
-    if (display->pitch < -75.0f)
-      display->pitch = -75.0f;
-  }
-
-  input->mouse_x = x; input->mouse_y = y; 
+  input->mouse_x = x; 
+  input->mouse_y = y;
 }
 
 void

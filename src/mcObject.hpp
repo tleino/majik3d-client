@@ -45,7 +45,9 @@ public:
   void moveTo(float x, float y, float h);
   /// Move object to a new position.
   void moveTo(sgCoord where);
-  /// Get the Objects current Position
+  /// Set the Object's current position.
+  void setPos(sgCoord where);
+  /// Get the Object's current position.
   sgCoord getPos();
   /// Set the object's scale.
   void setScale( sgVec3 );

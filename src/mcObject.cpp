@@ -207,11 +207,18 @@ Object::moveTo(sgCoord where)
   moveTo(where.xyz[0], where.xyz[1], where.hpr[0]);
 }
 
+void
+Object::setPos(sgCoord where)
+{
+  sgCopyVec3 (ob_pos.xyz, where.xyz);
+  sgCopyVec3 (ob_pos.hpr, where.hpr);
+}
+
 sgCoord 
 Object::getPos()
 {
   // This may need to be explicitly done using a sgCopyVec3?
-   // hmm, I guess you're right
+  // hmm, I guess you're right
   return ob_pos;
 }
 
