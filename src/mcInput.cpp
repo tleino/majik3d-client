@@ -169,8 +169,16 @@ Input::specialUp(int key, int x, int y)
   switch (key)
     {
     case GLUT_KEY_UP:
+      input->keyUp('8', x, y);
+      break;
     case GLUT_KEY_DOWN:
-      sock->writePacket ("59 0");
+      input->keyUp('2', x, y);
+      break;
+    case GLUT_KEY_LEFT:
+      input->keyUp('4', x, y);
+      break;
+    case GLUT_KEY_RIGHT:
+      input->keyUp('6', x, y);
       break;
     }
 }
@@ -202,10 +210,16 @@ Input::specialDown(int key, int x, int y)
       break;
 
     case GLUT_KEY_UP:
-      sock->writePacket("57 1");
+      input->keyDown('8', x, y);
       break;
     case GLUT_KEY_DOWN:
-      sock->writePacket("57 -1");
+      input->keyDown('2', x, y);
+      break;
+    case GLUT_KEY_LEFT:
+      input->keyDown('4', x, y);
+      break;
+    case GLUT_KEY_RIGHT:
+      input->keyDown('6', x, y);
       break;
     default:
 		error->put(mcError::ERROR_WARNING, "Unsupported special key received: %d at " \
