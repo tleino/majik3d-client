@@ -6,7 +6,7 @@ Display::Display()
 {
    width = 640;
    height = 480;
-   bpp = 16;
+   bpp = 32;
    ctx = NULL;
    #ifdef DEBUG
 	 Debug("Display constructor");
