@@ -34,7 +34,6 @@ extern Object *tuxi;
 float meep = 0.0f;
 int flag = 0;
 
-
 Protocol::Protocol()
 {
 }
@@ -215,7 +214,10 @@ Protocol::parseCommand(char *input)
 	  fp = fopen(debug->string("cache/%01x%05x%05x.map", map_level, map_x, map_y), "w");
 	  fprintf (fp, "%s", tmp);
 	  fclose (fp);
-	  Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(tmp);
+	  Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(tmp);	  
+	  break;
+	case CMD_PROMPT:
+	  display->inp->reveal();
 	  break;
 	case CMD_SUN_POS:
 	  int mod;
