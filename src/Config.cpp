@@ -20,22 +20,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netdb.h>
-#include <getopt.h>
 
 #include "Error.hpp"
 #include "Debug.hpp"
 #include "Config.hpp"
-
-static struct option long_options[] = {
-	 { "version", 0, 0, 'V' },
-	 { "help", 0, 0, '?' },
-	 { "host", 0, 0, 'H' },
-	 { "port", 0, 0, 'p' },
-	 { "width", 0, 0, 'w' },
-	 { "height", 0, 0, 'h' },
-	 { "bpp", 0, 0, 'b' },
-	 { 0, 0, 0, 0 },
-};
 
 Config::Config()
 {

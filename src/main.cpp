@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <getopt.h>
+//#include <getopt.h>
 
 #include "Menu.hpp"
 #include "Error.hpp"
@@ -44,10 +44,10 @@ Input *input = NULL;
 Config *config = NULL;
 Menu *menu = NULL;
 
-void
+int
 main(int argc, char **argv)
 {
-   int c;
+   // int c;
       
    // Initialize the necessary global variables as proper objects
    error = new Error;
@@ -61,7 +61,7 @@ main(int argc, char **argv)
    
    glutInit(&argc, argv);
    config->readConfig(argc, argv);
-
+/*
    // Read the command line arguments 
    while(1)
 	 {
@@ -113,7 +113,7 @@ main(int argc, char **argv)
 			 exit(0);
 		  }
 	 }
-
+*/
    // Assign proper width / height 
    if(config->screen_width && config->screen_height && config->bpp)
 	 {
@@ -140,5 +140,5 @@ main(int argc, char **argv)
    delete config;
    
    // Exit program
-   exit(0);
+   return 0;
 }
