@@ -7,8 +7,8 @@
 #include <math.h>
 #include "Majik.hpp"
 
-#define PERSISTENCE 0.25
-#define OCTAVES        4
+#define PERSISTENCE 0.5
+#define OCTAVES       3
 
 Perlin::Perlin()
 {
@@ -115,7 +115,7 @@ Perlin::perlinNoise_2D(float x, float y)
 		frequency = pow(2,i);
 		amplitude = pow(p,i);
 
-		total = total + interpolatedNoise(i, x * frequency, y * frequency) * amplitude;
+		total = total + interpolatedNoise(i, (x) * frequency, (y) * frequency) * amplitude;
 	 }
    return total;
 }

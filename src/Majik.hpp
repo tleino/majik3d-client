@@ -5,6 +5,8 @@
 
 #include "SDL/SDL.h"
 #include "GL/osmesa.h"
+#include "GL/gl.h"
+#include "GL/glu.h"
 #include "SDLMesa.hpp"
 #include "Detail.hpp"
 #include "Display.hpp"

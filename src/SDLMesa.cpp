@@ -58,7 +58,7 @@ SDLMesaContext::makeContext(SDL_Surface *buffer)
 		   (buffer->format->Gmask == 0x0000FF00) &&
 		   (buffer->format->Bmask == 0x000000FF))
 		  {
-			 format = OSMESA_RGBA;
+			 format = OSMESA_ARGB;
 		  }
 		else if((buffer->format->Rmask == 0xFF000000) &&
 				(buffer->format->Gmask == 0x00FF0000) &&

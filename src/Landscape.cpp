@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "Majik.hpp"
@@ -5,17 +6,17 @@
 #define VectMul(X1,Y1,Z1,X2,Y2,Z2) (Y1)*(Z2)-(Z1)*(Y2),(Z1)*(X2)-(X1)*(Z2),(X1)*(Y2)-(Y1)*(X2)
 
 #define MAP1_WIDTH       20
-#define MAP1_GRID_WIDTH  10
+#define MAP1_GRID_WIDTH   2
 
 #define MAP2_WIDTH       20
-#define MAP2_GAP          6
+#define MAP2_GAP          4
 #define MAP2_RATIO        5
-#define MAP2_GRID_WIDTH  MAP2_RATIO*MAP1_GRID_WIDTH  
+#define MAP2_GRID_WIDTH  ( MAP2_RATIO*MAP1_GRID_WIDTH )  
 
 #define MAP3_WIDTH       20
-#define MAP3_GAP          6
+#define MAP3_GAP          4
 #define MAP3_RATIO        5
-#define MAP3_GRID_WIDTH  MAP3_RATIO*MAP2_GRID_WIDTH  
+#define MAP3_GRID_WIDTH  ( MAP3_RATIO*MAP2_GRID_WIDTH )  
 
 
 Landscape::Landscape()
@@ -41,9 +42,9 @@ Landscape::~Landscape()
 
 void Landscape::init()
 {
-   float light_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+   float light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
    float light_diffuse[] = { 0.6, 0.6, 0.6, 1.0 };
-   float light_specular[] = { 0.0, 0.0, 0.0, 1.0 };
+   float light_specular[] = { 0.3, 0.3, 0.3, 1.0 };
    
    glLightfv (GL_LIGHT0, GL_AMBIENT, light_ambient);
    glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -78,6 +79,8 @@ void Landscape::init()
    listId_2 = -1;
    listId_3 = -1;
    listId_4 = -1;
+
+   makeHeightMaps();
    
    initMap_1Mesh();
    makeMap_1();
@@ -89,11 +92,150 @@ void Landscape::init()
    makeMap_3();
    
    angle = 0;
+   
+//   glEnable(GL_FOG);
+   
+	 {
+		GLfloat fogColor[4] =
+		  {0.5, 0.5, 0.5, 1.0};
+		
+		glFogi(GL_FOG_MODE, GL_LINEAR);
+		glFogfv(GL_FOG_COLOR, fogColor);
+		glFogf(GL_FOG_DENSITY, 0.005);
+		glHint(GL_FOG_HINT, GL_DONT_CARE);
+		glClearColor(0.0, 0.0, 0.0, 1.0);
+	 }
+   
+   glFogf(GL_FOG_START, 100.0);
+   glFogf(GL_FOG_END, 10000.0);
+
+   
+   
+   SDL_Surface *picture;
+   int i, k, c;
+   
+   picture = SDL_LoadBMP("grass.bmp");
+
+   
+   texture = new GLubyte[64*64*4];
+   
+   k = 0;
+   
+   for (i=0; i < 64*64*4 ;)
+	 {
+		c = 0;
+		if (*((GLubyte *)picture->pixels + k) != 255)
+		  c = 1;
+		texture[i+2] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		texture[i+1] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		texture[i] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		
+		i += 3;
+		
+		if (c)
+		  texture[i++] = 255;
+		else
+		  texture[i++] = 0;
+		
+	 }
+   
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64,
+				64, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+				&texture[0]);
+   
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+				   GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				   GL_LINEAR);
+   
+   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+//   glEnable(GL_TEXTURE_2D);
+   
 }
+
+
+void Landscape::makeHeightMaps()
+{
+   zmap_1 = new float[(MAP1_WIDTH+1)*(MAP1_WIDTH+1)];
+   zmap_2 = new float[(MAP2_WIDTH+1)*(MAP2_WIDTH+1)];
+   zmap_3 = new float[(MAP3_WIDTH+1)*(MAP3_WIDTH+1)];
+
+   map1_x = map1_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP1_WIDTH*(MAP1_GRID_WIDTH/2);
+   map2_x = map2_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP2_WIDTH*(MAP2_GRID_WIDTH/2);
+   map3_x = map3_y = 0;
+   
+   
+   int i, j;
+   float *temp;
+   Perlin *perl = new Perlin;
+   
+   temp = zmap_3;
+   
+   for (j = 0; j <= MAP3_WIDTH; j++) 
+	 {
+		for (i = 0; i <= MAP3_WIDTH; i++)
+		  {
+			 *(temp++) = perl->perlinNoise_2D((float)(map3_x+i*MAP3_GRID_WIDTH)/100, 
+											  (float)(map3_y+j*MAP3_GRID_WIDTH)/100)*100;
+		  } 
+	 }
+   
+   temp = zmap_2;
+   for (i = 0; i <= MAP2_WIDTH; i++)
+	 {
+		*(temp++) = getHeight( map2_x + i*MAP2_GRID_WIDTH, map2_y);
+	 }
+   
+   for (j = 1; j < MAP2_WIDTH; j++)
+	 {
+		*(temp++) = getHeight( map2_x, map2_y + j*MAP2_GRID_WIDTH);
+		
+		for (i = 1; i < MAP2_WIDTH; i++)
+		  {
+			 *(temp++) = perl->perlinNoise_2D((float)(map2_x+i*MAP2_GRID_WIDTH)/100, 
+											  (float)(map2_y+j*MAP2_GRID_WIDTH)/100)*100;
+		  } 
+		
+		*(temp++) = getHeight( map2_x + MAP2_GRID_WIDTH*MAP2_WIDTH, map2_y + j*MAP2_GRID_WIDTH);
+	 }
+   for (i = 0; i <= MAP2_WIDTH; i++)
+	 {
+		*(temp++) = getHeight( map2_x + i*MAP2_GRID_WIDTH, map2_y + MAP2_GRID_WIDTH*MAP2_WIDTH);
+	 }
+   
+   float temp2;
+   temp = zmap_1;
+   for (i = 0; i <= MAP1_WIDTH; i++)
+	 {
+		*(temp++) = getHeight( map1_x + i*MAP1_GRID_WIDTH, map1_y);
+	 }
+   
+   for (j = 1; j < MAP1_WIDTH; j++)
+	 {
+		*(temp++) = getHeight( map1_x, map1_y + j*MAP1_GRID_WIDTH);
+		
+		for (i = 1; i < MAP1_WIDTH; i++)
+		  {
+			 *(temp++) = perl->perlinNoise_2D((float)(map1_x+i*MAP1_GRID_WIDTH)/100,
+											   (float)(map1_y+j*MAP1_GRID_WIDTH)/100)*100;
+		  }
+		
+		*(temp++) = getHeight( map1_x + MAP1_GRID_WIDTH*MAP1_WIDTH, map1_y + j*MAP1_GRID_WIDTH);
+	 }
+   for (i = 0; i <= MAP1_WIDTH; i++)
+	 {
+		*(temp++) = getHeight( map1_x + i*MAP1_GRID_WIDTH, map1_y + MAP1_GRID_WIDTH*MAP1_WIDTH);
+	 }
+   
+   delete(perl);
+}
+
 
 void Landscape::drawLandscape()
 {
-   float light_position[] = { 0.0, 0.7071, 0.7071, 0.0 };
+   float light_position[] = { 0.0, 0.0, 1.0, 0.0 };
    
    glViewport(viewport_x, viewport_y, viewport_w, viewport_h);
    glMatrixMode(GL_PROJECTION);
@@ -102,15 +244,18 @@ void Landscape::drawLandscape()
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
    
+   glPushMatrix();
    
    /* Load camera matrix here            */
-   glTranslatef(0.0, 0.0, -15000.0);
-   glRotatef(110.0, 1.0, 0.0, 0.0);
-   glRotatef(angle, 0.0, 0.0, 1.0);
+   gluLookAt(0.0, -700, -300, 
+			 0.0, 0.0, -50, 0.0, 0.0, -1.0);   
+//   glTranslatef(0.0, -300.0, -200.0);
+//   glRotatef(135.0, 1.0, 0.0, 0.0);
+   glRotatef(angle/2, 0.0, 0.0, 1.0);
    
    /* Position sun                       */
    glPushMatrix();
-   glRotatef(angle, 0.0, 1.0, 0.0);
+   glRotatef(1.23*angle, 0.0, 1.0, 0.0);
    glLightfv (GL_LIGHT0, GL_POSITION, light_position);
    glPopMatrix();
    
@@ -138,6 +283,7 @@ void Landscape::drawLandscape()
    /*  - Check for 1st-person/3rd-person */
    /*  - Check for detail settings       */
    
+   glPopMatrix();
    
    angle += 2;
 }
@@ -152,42 +298,161 @@ void Landscape::setViewport(int x, int y, int w, int h)
 
 }
 
+float Landscape::interpolate(float a, float b, float x)
+{
+   return (1-x)*a + x*b;
+}
+
+
+float Landscape::getHeight(int x, int y)
+{
+   int tempx, tempy;
+   
+//   debug->put("%d %d", x, y);
+   tempx = x - map1_x;
+   tempy = y - map1_y;
+	 
+   if (tempx > 0 && tempx < MAP1_WIDTH*MAP1_GRID_WIDTH && 
+	   tempy > 0 && tempy < MAP1_WIDTH*MAP1_GRID_WIDTH)
+	 {           
+		return zmap_1[tempy*(MAP1_WIDTH+1) + tempx];
+	 }
+   else 
+	 {
+		tempx = x - map2_x;
+		tempy = y - map2_y;
+		
+		   if (tempx > 0 && tempx < MAP2_WIDTH*MAP2_GRID_WIDTH &&
+			   tempy > 0 && tempy < MAP2_WIDTH*MAP2_GRID_WIDTH)
+		  {
+
+			 int ax = tempx / MAP2_GRID_WIDTH;
+			 int fx = tempx % MAP2_GRID_WIDTH;
+			 int ay = tempy / MAP2_GRID_WIDTH;
+			 int fy = tempy % MAP2_GRID_WIDTH;
+			 float x1, x2;
+			 
+			 if (fx == 0)
+			   x1 = zmap_2[ay*(MAP2_WIDTH+1) + ax];
+			 else
+			   {
+				  int bx = ax + 1;
+				  x1 = interpolate(zmap_2[ay*(MAP2_WIDTH+1) + ax], 
+								   zmap_2[ay*(MAP2_WIDTH+1) + bx], 
+								   (float)fx / MAP2_GRID_WIDTH);
+			   }
+			 
+			 if (fy == 0)
+			   return x1;
+			 else
+			   {
+				  int by = ay +1;
+				  if (fx == 0)
+					x2 = zmap_2[by*(MAP2_WIDTH+1) + ax];
+				  else
+					{
+					   int bx = ax + 1;
+					   x2 = interpolate(zmap_2[by*(MAP2_WIDTH+1) + ax],
+										zmap_2[by*(MAP2_WIDTH+1) + bx],
+										(float)fx / MAP2_GRID_WIDTH);
+					}
+				  return interpolate(x1, x2, (float)fy / MAP2_GRID_WIDTH);
+			   }
+		  }
+		else
+		  {
+			 tempx = x - map3_x;
+			 tempy = y - map3_y;
+//			 debug->put("%d %d", tempx, tempy);
+			 
+			 if (tempx >= 0 && tempx <= MAP3_WIDTH*MAP3_GRID_WIDTH &&
+				 tempy >= 0 && tempy <= MAP3_WIDTH*MAP3_GRID_WIDTH)
+			   {
+//				  debug->put("%d %d", tempx, MAP3_GRID_WIDTH);
+				  int ax = tempx / MAP3_GRID_WIDTH;
+				  int fx = tempx % MAP3_GRID_WIDTH;
+				  int ay = tempy / MAP3_GRID_WIDTH;
+				  int fy = tempy % MAP3_GRID_WIDTH;
+				  float x1, x2;
+				  
+//				  debug->put("%d %d %d %d %d %d", x, y, ax, fx, ay, fy);
+				  if (fx == 0)
+					x1 = zmap_3[ay*(MAP3_WIDTH+1) + ax];
+				  else
+					{
+					   int bx = ax + 1;
+					   x1 = interpolate(zmap_3[ay*(MAP3_WIDTH+1) + ax],
+										zmap_3[ay*(MAP3_WIDTH+1) + bx],
+										(float)fx / MAP3_GRID_WIDTH);
+					}
+				  if (fy == 0)
+					{
+//					   debug->put("%f", x1);
+					   return x1;
+					}
+				  else
+					{
+					   int by = ay +1;
+					   if (fx == 0)
+						 x2 = zmap_3[by*(MAP3_WIDTH+1) + ax];
+					   else
+						 {
+							int bx = ax + 1;
+							x2 = interpolate(zmap_3[by*(MAP3_WIDTH+1) + ax],
+											 zmap_3[by*(MAP3_WIDTH+1) + bx],
+											 (float)fx / MAP3_GRID_WIDTH);
+						 }
+					   return interpolate(x1, x2, (float)fy / MAP3_GRID_WIDTH);
+					}
+			   }
+			 else
+			   {
+				  error->put(ERROR_WARNING, "getHeight() values out of range");
+				  return 0;
+			   }
+		  }
+	 }
+}
+   
+
 void Landscape::initMap_1Mesh()
 {
    float *temp;
-   Perlin *perl = new Perlin;
    
+   int tempx, tempy;
    temp = map_1Mesh.vertices;
-   for (int j= - MAP1_WIDTH/2; j<=MAP1_WIDTH/2; j++) {
-	  for (int i= - MAP1_WIDTH/2; i<=MAP1_WIDTH/2; i++) 
+   for (int j= - MAP1_WIDTH/2, tempy = 0; j<=MAP1_WIDTH/2; j++, tempy++) {
+	  for (int i= - MAP1_WIDTH/2, tempx = 0; i<=MAP1_WIDTH/2; i++, tempx++)
 		{
 		   *(temp++) = i*MAP1_GRID_WIDTH;
 		   *(temp++) = j*MAP1_GRID_WIDTH;
-		   *(temp++) = perl->perlinNoise_2D((float)i/100, (float)j/100)*200;
-		   
+		   *(temp++) = zmap_1[tempy*(MAP1_WIDTH+1) + tempx];
+//		   *(temp++) = random() % 20;
 		}
    }
-
-   delete(perl);   
+   
    
    int k = 0;
-
+   
    temp = map_1Mesh.vertices;
    for (int j = 0; j < MAP1_WIDTH; j++) {
 	  for (int i = 0; i < MAP1_WIDTH; i++)
 		{
-		   map_1Mesh.face_normals[k++].set(MAP1_GRID_WIDTH*(*(temp+5) - *(temp+2)),
-										   MAP1_GRID_WIDTH*(*(temp+(MAP1_WIDTH+1)*3+2) - *(temp+2)),
+		   map_1Mesh.face_normals[k++].set(-MAP1_GRID_WIDTH*(*(temp+5) - *(temp+2)),
+										   -MAP1_GRID_WIDTH*(*(temp+(MAP1_WIDTH+1)*3+2) - *(temp+2)),
 										   MAP1_GRID_WIDTH*MAP1_GRID_WIDTH);
-//		   Debug("%f %f %f", map_1Mesh.face_normals[k-1].x, map_1Mesh.face_normals[k-1].y, map_1Mesh.face_normals[k-1].z);
+
+//		   debug->put("%f %f %f", map_1Mesh.face_normals[k-1].x, map_1Mesh.face_normals[k-1].y, map_1Mesh.face_normals[k-1].z);
 		   map_1Mesh.face_normals[k++].set(MAP1_GRID_WIDTH*(*(temp+(MAP1_WIDTH+1)*3+2) - *(temp+(MAP1_WIDTH+1)*3+5)),
 										   MAP1_GRID_WIDTH*(*(temp+5) - *(temp+(MAP1_WIDTH+1)*3+5)),
 										   MAP1_GRID_WIDTH*MAP1_GRID_WIDTH);
 		   temp += 3;
-//		   Debug("%f %f %f", map_1Mesh.face_normals[k-1].x, map_1Mesh.face_normals[k-1].y, map_1Mesh.face_normals[k-1].z);
-		}
-   }
+//		   debug->put("%f %f %f", map_1Mesh.face_normals[k-1].x, map_1Mesh.face_normals[k-1].y, map_1Mesh.face_normals[k-1].z);
 
+		}
+	  temp += 3;
+   }
+   
    temp = map_1Mesh.normals;
    
    k = 0;
@@ -198,10 +463,16 @@ void Landscape::initMap_1Mesh()
    
    for (int i = 1; i < MAP1_WIDTH; i++)
 	 {
-		*(temp++) = map_1Mesh.face_normals[i-1].x + map_1Mesh.face_normals[i].x + map_1Mesh.face_normals[i+1].x;
-		*(temp++) = map_1Mesh.face_normals[i-1].y + map_1Mesh.face_normals[i].y + map_1Mesh.face_normals[i+1].y;
-		*(temp++) = map_1Mesh.face_normals[i-1].z + map_1Mesh.face_normals[i].z + map_1Mesh.face_normals[i+1].z;
-		//		Debug("%f %f %f", map_1Mesh.normals[k-1].x, map_1Mesh.normals[k-1].y, map_1Mesh.normals[k-1].z);
+		*(temp++) = map_1Mesh.face_normals[i*2-2].x/2 + 
+		  map_1Mesh.face_normals[i*2-1].x + 
+		  map_1Mesh.face_normals[i*2].x;
+		*(temp++) = map_1Mesh.face_normals[i*2-2].y/2 + 
+		  map_1Mesh.face_normals[i*2-1].y + 
+		  map_1Mesh.face_normals[i*2].y;
+		*(temp++) = map_1Mesh.face_normals[i*2-2].z/2 + 
+		  map_1Mesh.face_normals[i*2-1].z + 
+		  map_1Mesh.face_normals[i*2].z;
+		//      Debug("%f %f %f", map_1Mesh.normals[k-1].x, map_1Mesh.normals[k-1].y, map_1Mesh.normals[k-1].z);
 	 }
    
    *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2-2].x + map_1Mesh.face_normals[MAP1_WIDTH*2-1].x;
@@ -212,61 +483,59 @@ void Landscape::initMap_1Mesh()
    for (int j = 1; j < MAP1_WIDTH; j++)
 	 {
 		
-		*(temp++) = map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)].x + 
-		  map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)+1].x + 
+		*(temp++) = map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)].x +
+		  map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)+1].x +
 		  map_1Mesh.face_normals[(j)*(MAP1_WIDTH*2)].x;
-		
-		*(temp++) = map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)].y + 
+		*(temp++) = map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)].y +
 		  map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)+1].y +
 		  map_1Mesh.face_normals[(j)*(MAP1_WIDTH*2)].y;
 		
-		*(temp++) = map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)].z + 
+		*(temp++) = map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)].z +
 		  map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)+1].z +
 		  map_1Mesh.face_normals[(j)*(MAP1_WIDTH*2)].z;
 		
 		for (int i = 1; i < MAP1_WIDTH; i++)
 		  {
 			 
-			 *(temp++) = map_1Mesh.face_normals[(j-1)*(i)].x + 
-			   map_1Mesh.face_normals[(j-1)*(i+1)].x +
-			   map_1Mesh.face_normals[(j-1)*(i+2)].x +
-			   map_1Mesh.face_normals[(j)*(i-1)].x +
-			   map_1Mesh.face_normals[(j)*(i)].x +
-			   map_1Mesh.face_normals[(j)*(i+1)].x;
+			 *(temp++) = map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2-1)].x +
+			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2)].x +
+			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2+1)].x +
+			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-2)].x +
+			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-1)].x +
+			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2)].x;
 			 
-			 *(temp++) = map_1Mesh.face_normals[(j-1)*(i)].y +
-			   map_1Mesh.face_normals[(j-1)*(i+1)].y +
-			   map_1Mesh.face_normals[(j-1)*(i+2)].y +
-			   map_1Mesh.face_normals[(j)*(i-1)].y +
-			   map_1Mesh.face_normals[(j)*(i)].y +
-			   map_1Mesh.face_normals[(j)*(i+1)].y;
+			 *(temp++) = map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2-1)].y +
+			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2)].y +
+			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2+1)].y +
+			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-2)].y +
+			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-1)].y +
+			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2)].y;
 			 
-			 *(temp++) = map_1Mesh.face_normals[(j-1)*(i)].z +
-			   map_1Mesh.face_normals[(j-1)*(i+1)].z +
-			   map_1Mesh.face_normals[(j-1)*(i+2)].z +
-			   map_1Mesh.face_normals[(j)*(i-1)].z +
-			   map_1Mesh.face_normals[(j)*(i)].z +
-			   map_1Mesh.face_normals[(j)*(i+1)].z;
-			 
+			 *(temp++) = map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2-1)].z +
+			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2)].z +
+			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2+1)].z +
+			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-2)].z +
+			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-1)].z +
+			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2)].z;
 		  }
-
-		*(temp++) = map_1Mesh.face_normals[(j)*MAP1_WIDTH*2-1].x + 
+		
+		*(temp++) = map_1Mesh.face_normals[(j)*MAP1_WIDTH*2-1].x +
 		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-2].x +
 		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-1].x;
 		
-		*(temp++) = map_1Mesh.face_normals[(j)*MAP1_WIDTH*2-1].y + 
+		*(temp++) = map_1Mesh.face_normals[(j)*MAP1_WIDTH*2-1].y +
 		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-2].y +
 		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-1].y;
 		
-		*(temp++) = map_1Mesh.face_normals[(j)*MAP1_WIDTH*2-1].z + 
+		*(temp++) = map_1Mesh.face_normals[(j)*MAP1_WIDTH*2-1].z +
 		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-2].z +
 		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-1].z;
 		
 	 }
-
+   
    *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)].x +
 	 map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+1].x;
-
+   
    *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)].y +
 	 map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+1].y;
    
@@ -275,23 +544,23 @@ void Landscape::initMap_1Mesh()
    
    for (int i = 1; i < MAP1_WIDTH; i++)
 	 {
-		*(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i)].x +
-		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i+1)].x +
-		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i+2)].x;
+		*(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2-1)].x +
+		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2)].x +
+		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2+1)].x;
+		*(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2-1)].y +
+		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2)].y +
+		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2+1)].y;
 		
-		*(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i)].y +
-		            map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i+1)].y +
-		            map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i+2)].y;
-		
-		*(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i)].z +
-		            map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i+1)].z +
-		            map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i+2)].z;
+		*(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2-1)].z +
+		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2)].z +
+		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2+1)].z;
 		
 	 }
-
+   
    *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*(MAP1_WIDTH*2)-1].x;
    *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*(MAP1_WIDTH*2)-1].y;
    *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*(MAP1_WIDTH*2)-1].z;
+   
 
    float length;
    
@@ -313,20 +582,19 @@ void Landscape::initMap_1Mesh()
 void Landscape::initMap_2Mesh()
 {
    float *temp;
-   Perlin *perl = new Perlin;
+   int tempx, tempy;
    
    temp = map_2Mesh.vertices;
-   for (int j= - MAP2_WIDTH/2; j<=MAP2_WIDTH/2; j++) {
-	  for (int i= - MAP2_WIDTH/2; i<=MAP2_WIDTH/2; i++)
+   for (int j= - MAP2_WIDTH/2, tempy = 0; j<=MAP2_WIDTH/2; j++, tempy++) {
+	  for (int i= - MAP2_WIDTH/2, tempx = 0; i<=MAP2_WIDTH/2; i++, tempx++)
 		{
 		   *(temp++) = i*MAP2_GRID_WIDTH;
 		   *(temp++) = j*MAP2_GRID_WIDTH;
-		   *(temp++) = perl->perlinNoise_2D((float)i/20, (float)j/20)*300;
-		   
+//		   *(temp++) = perl->perlinNoise_2D((float)i/4, (float)j/4)*500;
+		   *(temp++) = zmap_2[tempy*(MAP2_WIDTH+1) + tempx];
 		}
    }
    
-   delete(perl);
    
    int k = 0;
    
@@ -334,16 +602,19 @@ void Landscape::initMap_2Mesh()
    for (int j = 0; j < MAP2_WIDTH; j++) {
 	  for (int i = 0; i < MAP2_WIDTH; i++)
 		{
-		   map_2Mesh.face_normals[k++].set(MAP2_GRID_WIDTH*(*(temp+5) - *(temp+2)),
-										   MAP2_GRID_WIDTH*(*(temp+(MAP2_WIDTH+1)*3+2) - *(temp+2)),
+		   map_2Mesh.face_normals[k++].set(-MAP2_GRID_WIDTH*(*(temp+5) - *(temp+2)),
+										   -MAP2_GRID_WIDTH*(*(temp+(MAP2_WIDTH+1)*3+2) - *(temp+2)),
 										   MAP2_GRID_WIDTH*MAP2_GRID_WIDTH);
-		   //         Debug("%f %f %f", map_2Mesh.face_normals[k-1].x, map_2Mesh.face_normals[k-1].y, map_2Mesh.face_normals[k-1].z);
+
+//		   debug->put("%f %f %f", map_2Mesh.face_normals[k-1].x, map_2Mesh.face_normals[k-1].y, map_2Mesh.face_normals[k-1].z);
 		   map_2Mesh.face_normals[k++].set(MAP2_GRID_WIDTH*(*(temp+(MAP2_WIDTH+1)*3+2) - *(temp+(MAP2_WIDTH+1)*3+5)),
 										   MAP2_GRID_WIDTH*(*(temp+5) - *(temp+(MAP2_WIDTH+1)*3+5)),
 										   MAP2_GRID_WIDTH*MAP2_GRID_WIDTH);
 		   temp += 3;
-		   //         Debug("%f %f %f", map_2Mesh.face_normals[k-1].x, map_2Mesh.face_normals[k-1].y, map_2Mesh.face_normals[k-1].z);
+//		   debug->put("%f %f %f", map_2Mesh.face_normals[k-1].x, map_2Mesh.face_normals[k-1].y, map_2Mesh.face_normals[k-1].z);
+
 		}
+	  temp += 3;
    }
    
    temp = map_2Mesh.normals;
@@ -356,9 +627,15 @@ void Landscape::initMap_2Mesh()
    
    for (int i = 1; i < MAP2_WIDTH; i++)
 	 {
-		*(temp++) = map_2Mesh.face_normals[i-1].x + map_2Mesh.face_normals[i].x + map_2Mesh.face_normals[i+1].x;
-		*(temp++) = map_2Mesh.face_normals[i-1].y + map_2Mesh.face_normals[i].y + map_2Mesh.face_normals[i+1].y;
-		*(temp++) = map_2Mesh.face_normals[i-1].z + map_2Mesh.face_normals[i].z + map_2Mesh.face_normals[i+1].z;
+		*(temp++) = map_2Mesh.face_normals[i*2-2].x/2 + 
+		  map_2Mesh.face_normals[i*2-1].x + 
+		  map_2Mesh.face_normals[i*2].x;
+		*(temp++) = map_2Mesh.face_normals[i*2-2].y/2 + 
+		  map_2Mesh.face_normals[i*2-1].y + 
+		  map_2Mesh.face_normals[i*2].y;
+		*(temp++) = map_2Mesh.face_normals[i*2-2].z/2 + 
+		  map_2Mesh.face_normals[i*2-1].z + 
+		  map_2Mesh.face_normals[i*2].z;
 		//      Debug("%f %f %f", map_2Mesh.normals[k-1].x, map_2Mesh.normals[k-1].y, map_2Mesh.normals[k-1].z);
 	 }
    
@@ -384,26 +661,26 @@ void Landscape::initMap_2Mesh()
 		for (int i = 1; i < MAP2_WIDTH; i++)
 		  {
 			 
-			 *(temp++) = map_2Mesh.face_normals[(j-1)*(i)].x +
-			   map_2Mesh.face_normals[(j-1)*(i+1)].x +
-			   map_2Mesh.face_normals[(j-1)*(i+2)].x +
-			   map_2Mesh.face_normals[(j)*(i-1)].x +
-			   map_2Mesh.face_normals[(j)*(i)].x +
-			   map_2Mesh.face_normals[(j)*(i+1)].x;
+			 *(temp++) = map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2-1)].x +
+			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2)].x +
+			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2+1)].x +
+			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-2)].x +
+			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-1)].x +
+			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2)].x;
 			 
-			 *(temp++) = map_2Mesh.face_normals[(j-1)*(i)].y +
-			   map_2Mesh.face_normals[(j-1)*(i+1)].y +
-			   map_2Mesh.face_normals[(j-1)*(i+2)].y +
-			   map_2Mesh.face_normals[(j)*(i-1)].y +
-			   map_2Mesh.face_normals[(j)*(i)].y +
-			   map_2Mesh.face_normals[(j)*(i+1)].y;
+			 *(temp++) = map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2-1)].y +
+			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2)].y +
+			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2+1)].y +
+			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-2)].y +
+			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-1)].y +
+			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2)].y;
 			 
-			 *(temp++) = map_2Mesh.face_normals[(j-1)*(i)].z +
-			   map_2Mesh.face_normals[(j-1)*(i+1)].z +
-			   map_2Mesh.face_normals[(j-1)*(i+2)].z +
-			   map_2Mesh.face_normals[(j)*(i-1)].z +
-			   map_2Mesh.face_normals[(j)*(i)].z +
-			   map_2Mesh.face_normals[(j)*(i+1)].z;
+			 *(temp++) = map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2-1)].z +
+			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2)].z +
+			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2+1)].z +
+			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-2)].z +
+			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-1)].z +
+			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2)].z;
 		  }
 		
 		*(temp++) = map_2Mesh.face_normals[(j)*MAP2_WIDTH*2-1].x +
@@ -431,22 +708,23 @@ void Landscape::initMap_2Mesh()
    
    for (int i = 1; i < MAP2_WIDTH; i++)
 	 {
-		*(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i)].x +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i+1)].x +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i+2)].x;
-		*(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i)].y +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i+1)].y +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i+2)].y;
+		*(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2-1)].x +
+		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2)].x +
+		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2+1)].x;
+		*(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2-1)].y +
+		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2)].y +
+		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2+1)].y;
 		
-		*(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i)].z +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i+1)].z +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i+2)].z;
+		*(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2-1)].z +
+		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2)].z +
+		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2+1)].z;
 		
 	 }
    
    *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*(MAP2_WIDTH*2)-1].x;
    *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*(MAP2_WIDTH*2)-1].y;
    *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*(MAP2_WIDTH*2)-1].z;
+   
    
    float length;
    
@@ -469,20 +747,18 @@ void Landscape::initMap_2Mesh()
 void Landscape::initMap_3Mesh()
 {
    float *temp;
-   Perlin *perl = new Perlin;
+   int tempx, tempy;
    
    temp = map_3Mesh.vertices;
-   for (int j= - MAP3_WIDTH/2; j<=MAP3_WIDTH/2; j++) {
-	  for (int i= - MAP3_WIDTH/2; i<=MAP3_WIDTH/2; i++)
+   for (int j= - MAP3_WIDTH/2, tempy = 0; j<=MAP3_WIDTH/2; j++, tempy++) {
+	  for (int i= - MAP3_WIDTH/2, tempx = 0; i<=MAP3_WIDTH/2; i++, tempx++)
 		{
 		   *(temp++) = i*MAP3_GRID_WIDTH;
 		   *(temp++) = j*MAP3_GRID_WIDTH;
-		   *(temp++) = perl->perlinNoise_2D((float)i/4, (float)j/4)*400;
-		   
+		   *(temp++) = zmap_3[tempy*(MAP3_WIDTH+1) + tempx];
 		}
    }
    
-   delete(perl);
    
    int k = 0;
    
@@ -490,16 +766,19 @@ void Landscape::initMap_3Mesh()
    for (int j = 0; j < MAP3_WIDTH; j++) {
 	  for (int i = 0; i < MAP3_WIDTH; i++)
 		{
-		   map_3Mesh.face_normals[k++].set(MAP3_GRID_WIDTH*(*(temp+5) - *(temp+2)),
-										   MAP3_GRID_WIDTH*(*(temp+(MAP3_WIDTH+1)*3+2) - *(temp+2)),
+		   map_3Mesh.face_normals[k++].set(-MAP3_GRID_WIDTH*(*(temp+5) - *(temp+2)),
+										   -MAP3_GRID_WIDTH*(*(temp+(MAP3_WIDTH+1)*3+2) - *(temp+2)),
 										   MAP3_GRID_WIDTH*MAP3_GRID_WIDTH);
-		   //         Debug("%f %f %f", map_3Mesh.face_normals[k-1].x, map_3Mesh.face_normals[k-1].y, map_3Mesh.face_normals[k-1].z);
+
+//		   debug->put("%f %f %f", map_3Mesh.face_normals[k-1].x, map_3Mesh.face_normals[k-1].y, map_3Mesh.face_normals[k-1].z);
 		   map_3Mesh.face_normals[k++].set(MAP3_GRID_WIDTH*(*(temp+(MAP3_WIDTH+1)*3+2) - *(temp+(MAP3_WIDTH+1)*3+5)),
 										   MAP3_GRID_WIDTH*(*(temp+5) - *(temp+(MAP3_WIDTH+1)*3+5)),
 										   MAP3_GRID_WIDTH*MAP3_GRID_WIDTH);
 		   temp += 3;
-		   //         Debug("%f %f %f", map_3Mesh.face_normals[k-1].x, map_3Mesh.face_normals[k-1].y, map_3Mesh.face_normals[k-1].z);
+//		   debug->put("%f %f %f", map_3Mesh.face_normals[k-1].x, map_3Mesh.face_normals[k-1].y, map_3Mesh.face_normals[k-1].z);
+
 		}
+	  temp += 3;
    }
    
    temp = map_3Mesh.normals;
@@ -512,9 +791,15 @@ void Landscape::initMap_3Mesh()
    
    for (int i = 1; i < MAP3_WIDTH; i++)
 	 {
-		*(temp++) = map_3Mesh.face_normals[i-1].x + map_3Mesh.face_normals[i].x + map_3Mesh.face_normals[i+1].x;
-		*(temp++) = map_3Mesh.face_normals[i-1].y + map_3Mesh.face_normals[i].y + map_3Mesh.face_normals[i+1].y;
-		*(temp++) = map_3Mesh.face_normals[i-1].z + map_3Mesh.face_normals[i].z + map_3Mesh.face_normals[i+1].z;
+		*(temp++) = map_3Mesh.face_normals[i*2-2].x/2 + 
+		  map_3Mesh.face_normals[i*2-1].x + 
+		  map_3Mesh.face_normals[i*2].x;
+		*(temp++) = map_3Mesh.face_normals[i*2-2].y/2 + 
+		  map_3Mesh.face_normals[i*2-1].y + 
+		  map_3Mesh.face_normals[i*2].y;
+		*(temp++) = map_3Mesh.face_normals[i*2-2].z/2 + 
+		  map_3Mesh.face_normals[i*2-1].z + 
+		  map_3Mesh.face_normals[i*2].z;
 		//      Debug("%f %f %f", map_3Mesh.normals[k-1].x, map_3Mesh.normals[k-1].y, map_3Mesh.normals[k-1].z);
 	 }
    
@@ -540,26 +825,26 @@ void Landscape::initMap_3Mesh()
 		for (int i = 1; i < MAP3_WIDTH; i++)
 		  {
 			 
-			 *(temp++) = map_3Mesh.face_normals[(j-1)*(i)].x +
-			   map_3Mesh.face_normals[(j-1)*(i+1)].x +
-			   map_3Mesh.face_normals[(j-1)*(i+2)].x +
-			   map_3Mesh.face_normals[(j)*(i-1)].x +
-			   map_3Mesh.face_normals[(j)*(i)].x +
-			   map_3Mesh.face_normals[(j)*(i+1)].x;
+			 *(temp++) = map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2-1)].x +
+			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2)].x +
+			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2+1)].x +
+			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-2)].x +
+			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-1)].x +
+			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2)].x;
 			 
-			 *(temp++) = map_3Mesh.face_normals[(j-1)*(i)].y +
-			   map_3Mesh.face_normals[(j-1)*(i+1)].y +
-			   map_3Mesh.face_normals[(j-1)*(i+2)].y +
-			   map_3Mesh.face_normals[(j)*(i-1)].y +
-			   map_3Mesh.face_normals[(j)*(i)].y +
-			   map_3Mesh.face_normals[(j)*(i+1)].y;
+			 *(temp++) = map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2-1)].y +
+			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2)].y +
+			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2+1)].y +
+			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-2)].y +
+			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-1)].y +
+			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2)].y;
 			 
-			 *(temp++) = map_3Mesh.face_normals[(j-1)*(i)].z +
-			   map_3Mesh.face_normals[(j-1)*(i+1)].z +
-			   map_3Mesh.face_normals[(j-1)*(i+2)].z +
-			   map_3Mesh.face_normals[(j)*(i-1)].z +
-			   map_3Mesh.face_normals[(j)*(i)].z +
-			   map_3Mesh.face_normals[(j)*(i+1)].z;
+			 *(temp++) = map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2-1)].z +
+			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2)].z +
+			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2+1)].z +
+			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-2)].z +
+			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-1)].z +
+			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2)].z;
 		  }
 		
 		*(temp++) = map_3Mesh.face_normals[(j)*MAP3_WIDTH*2-1].x +
@@ -587,16 +872,16 @@ void Landscape::initMap_3Mesh()
    
    for (int i = 1; i < MAP3_WIDTH; i++)
 	 {
-		*(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i)].x +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i+1)].x +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i+2)].x;
-		*(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i)].y +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i+1)].y +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i+2)].y;
+		*(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2-1)].x +
+		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2)].x +
+		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2+1)].x;
+		*(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2-1)].y +
+		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2)].y +
+		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2+1)].y;
 		
-		*(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i)].z +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i+1)].z +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i+2)].z;
+		*(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2-1)].z +
+		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2)].z +
+		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2+1)].z;
 		
 	 }
    
@@ -615,7 +900,7 @@ void Landscape::initMap_3Mesh()
 		map_3Mesh.normals[i++] /= length;
 		map_3Mesh.normals[i++] /= length;
 		
-		//      Debug("%f %f %f", map_3Mesh.normals[i-3], map_3Mesh.normals[i-2], map_3Mesh.normals[i-1]);
+//		debug->put("%f %f %f", map_3Mesh.normals[i-3], map_3Mesh.normals[i-2], map_3Mesh.normals[i-1]);
 		
 	 }
    
@@ -647,7 +932,9 @@ void Landscape::makeMap_1()
 		
 		for (int i=0;i<MAP1_WIDTH+1;i++)
 		  {
+			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP1_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
 			 glArrayElement( (j+1)*(MAP1_WIDTH+1) + i);
 		  }
 		glEnd();
@@ -687,7 +974,9 @@ void Landscape::makeMap_2()
 		
 		for (i=0;i<MAP2_WIDTH+1;i++)
 		  {
+             glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
 			 glArrayElement( (j+1)*(MAP2_WIDTH+1) + i);
 		  }
 		glEnd();
@@ -699,7 +988,9 @@ void Landscape::makeMap_2()
 		
 		for (i=0;i<(MAP2_WIDTH/2 - MAP2_GAP/2)+1;i++)
 		  {
+             glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
+             glTexCoord2f(i, 1.0);
 			 glArrayElement( (j+1)*(MAP2_WIDTH+1) + i);
 		  }
 		glEnd();
@@ -708,7 +999,9 @@ void Landscape::makeMap_2()
 		
 		for (i += MAP2_GAP-1;i<MAP2_WIDTH+1;i++)
 		  {
+			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
 			 glArrayElement( (j+1)*(MAP2_WIDTH+1) + i);
 		  }
 		glEnd();
@@ -721,7 +1014,9 @@ void Landscape::makeMap_2()
 		
 		for (i=0;i<MAP2_WIDTH+1;i++)
 		  {
+			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
 			 glArrayElement( (j+1)*(MAP2_WIDTH+1) + i);
 		  }
 		glEnd();
@@ -761,7 +1056,9 @@ void Landscape::makeMap_3()
 		
 		for (i=0;i<MAP3_WIDTH+1;i++)
 		  {
+			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
 			 glArrayElement( (j+1)*(MAP3_WIDTH+1) + i);
 		  }
 		glEnd();
@@ -773,7 +1070,9 @@ void Landscape::makeMap_3()
 		
 		for (i=0;i<(MAP3_WIDTH/2 - MAP3_GAP/2)+1;i++)
 		  {
+			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
 			 glArrayElement( (j+1)*(MAP3_WIDTH+1) + i);
 		  }
 		glEnd();
@@ -782,7 +1081,9 @@ void Landscape::makeMap_3()
 		
 		for (i += MAP3_GAP-1;i<MAP3_WIDTH+1;i++)
 		  {
+			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
 			 glArrayElement( (j+1)*(MAP3_WIDTH+1) + i);
 		  }
 		glEnd();
@@ -795,7 +1096,9 @@ void Landscape::makeMap_3()
 		
 		for (i=0;i<MAP3_WIDTH+1;i++)
 		  {
+			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
 			 glArrayElement( (j+1)*(MAP3_WIDTH+1) + i);
 		  }
 		glEnd();

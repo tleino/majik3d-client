@@ -16,16 +16,23 @@ class Landscape
    void setViewport(int, int, int, int);
    void addObject(int);
    void removeObject(int);
+   float getHeight(int, int);
  public:
    unsigned long detail;
    char *map_1;   /* Terrains for map parts                          */
    char *map_2;   /* Map_1 is the area nearest to player and has the */
    char *map_3;   /* smallest polygons                               */
    char *map_4;
-   float  *zmap_1;  /* Height maps */
-   float  *zmap_2;
-   float  *zmap_3;
-   float  *zmap_4;
+   float *zmap_1;  /* Height maps */
+   float *zmap_2;
+   float *zmap_3;
+   float *zmap_4;
+   int map1_x;
+   int map1_y;
+   int map2_x;
+   int map2_y;
+   int map3_x;
+   int map3_y;
    Object *first;
  private:
    void initMap_1Mesh();
@@ -36,6 +43,8 @@ class Landscape
    void makeMap_2();
    void makeMap_3();
    void makeMap_4();
+   void makeHeightMaps();
+   float interpolate(float, float, float);
  private:
    int viewport_x;
    int viewport_y;
@@ -57,7 +66,12 @@ class Landscape
    int listId_3;
    int listId_4;
    
+   
+   
+   
+   
    float angle;
+   GLubyte *texture;
 };
 
 #endif
