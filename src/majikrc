@@ -4,6 +4,12 @@
 # usually located at ~/.majikrc, but it is also searched from /etc and
 # the current directory.
 
+# If you have no hardware acceleration you should set screen_width 
+# to 320, height to 200, bpp to 8, notexture to 1, nomouse to 1 
+# nomousetrap to 1, nofog to 1, nosmooth to 1, nomenu to 1, fullscreen 
+# to 0, lod to 7 (or even smaller!), debug and protocol_debug to 0. 
+# Otherwise the default values will do. 
+
 # Majik host configuration.
 server=195.197.61.60
 port=4001
@@ -21,7 +27,8 @@ nofog=0
 nosmooth=0
 nomenu=0
 fullscreen=0
-# lod should be of values 7+
+
+# lod should be of values 7+ (smaller: faster)
 lod=7
 
 # Debugging settings.
