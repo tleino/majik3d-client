@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 #include <pu.h>
 #include "Majik.hpp"
 
@@ -28,6 +28,7 @@ time_t t = time(NULL);
 int frames = 0;
 int mouse_x, mouse_y;
 int mousetrap = 1;
+double start_time;
 
 void exit_cb(puObject *);
 void flat_cb(puObject *);
@@ -43,6 +44,23 @@ char *effects_submenu[] = { "Smooth", "Flat", "Fog", "No Fog", "Wireframe", "No 
 char *majik_submenu[] = { "Exit", NULL };
 puCallback effects_submenu_cb[] = { smooth_cb, flat_cb, fog_cb, nofog_cb, wireframe_cb, nowireframe_cb, mousetrap_cb, nomousetrap_cb, NULL };
 puCallback majik_submenu_cb[] = { exit_cb, NULL };
+
+double read_time_of_day();
+
+double read_time_of_day ()
+{
+#ifdef WIN32
+   _int64 u, v ;
+   QueryPerformanceCounter   ((LARGE_INTEGER*) &u ) ;
+   QueryPerformanceFrequency ((LARGE_INTEGER*) &v ) ;
+   return (double)u / (double)v ;
+#else
+   timeval tv ;
+   gettimeofday ( &tv, NULL ) ;
+   
+   return (double) tv . tv_sec + (double) tv . tv_usec / 1000000.0 ;
+#endif
+}
 
 void
 mousetrap_cb(puObject *)
@@ -222,8 +240,11 @@ Display::closeScreen()
 /*void
 Display::idle()
 {
+<<<<<<< Display.cpp
+=======
 //   landscape->angle += 2.0;
    puDisplay();
+>>>>>>> 1.23
    glutPostRedisplay();
 }*/
 
@@ -235,7 +256,7 @@ Display::updateScreen()
    char fps[80];
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
-   landscape->drawLandscape();
+   landscape->draw();
    
    /* Trap the mouse */
       
@@ -264,11 +285,14 @@ Display::updateScreen()
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
    glAlphaFunc(GL_GREATER,0.1f);
-   sprintf (fps, "fps: %f", (float) frames/t2);
+
+   sprintf (fps, "fps: %f", (float) 1/(read_time_of_day() - start_time));
    fps_text->setLabel (fps);
+   start_time = read_time_of_day();
+   
    puDisplay();
    glDisable(GL_BLEND);
-
+   
    /* Display the cursor. FIXME: Should be displayed only if using hardware
       acceleration which doesn't provide it's own cursor */
    // display->cursor->draw();
