@@ -228,37 +228,9 @@ Display::closeScreen()
 void 
 Display::updateScreen()
 {
-   //int t2 = (int) (time(NULL) - t), warp = 0;
-   int warp = 0;
    char *tmp;
 
-   frames++;
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   
-  if (scene->initialized == 0) {
-	 display->status_text->setPosition(5, display->height-25);
-	 menu->menuBar->hide();
-	 scene->init();
-	 goto end_update;
-  } else if (scene->initialized == 1) {
-	 goto end_update;
-  } else if (scene->initialized == 2) {
-	 //if (display->nomenu == 0)
-	 //  menu->menuBar->reveal();
-	 
-	 // memset (display->stxt, 0, sizeof(display->stxt));
-	 //display->status_text->setPosition(5, 10);
-	 scene->initialized = 3;
-	 display->inp_command = CMD_LOGIN;
-	 display->inp->setSize(10*16, 5+20);
-	 display->inp->reveal();
-	 display->status_text->setPosition(5, 30);
-	 sprintf (display->stxt, "By what name do you wish to be known?\n");
-	 goto end_update;
-  } else if (scene->initialized == 3) {
-	 goto end_update;
-  } else {
-  }
    
    tmp = sock->readPacket();
    
@@ -268,70 +240,12 @@ Display::updateScreen()
 		tmp = sock->readPacket();
 	 }
    
-   if (tuxi == NULL)
-	 goto end_update;
-	   
-   if (config->noTexture)
-	 ssgOverrideTexture (1);
+   if (mousetrap)
+	 mousetrap();
    
-   scene->update();
+   scene->draw();
    
-   if (tuxi != NULL)
-	 scene->draw();
-   
-   /* Trap the mouse */
-      
-   if (config->nomousetrap == 0) 
-	 {
-		if (mouse_x < 1 && config->mousetrap) {
-		   mouse_x = 2; warp = TRUE;
-		} else if (mouse_x > display->width-1 && config->mousetrap) {
-		   mouse_x = display->width-2; warp = TRUE;
-		}
-		if (mouse_y < 1 && config->mousetrap) {
-		   mouse_y = 2; warp = TRUE;
-		} else if (mouse_y > display->height-1 && config->mousetrap) {
-		   mouse_y = display->height-2; warp = TRUE;
-		}
-		
-		if (warp) {
-		   glutWarpPointer (mouse_x, mouse_y);
-		   warp = 0;
-		}
-	 }
-   
-   sprintf (display->stxt, "fps: %.1f", (float) 1/(read_time_of_day() - start_time));
-   start_time = read_time_of_day();
-   
-   /* Draw menus etc using PUI (part of PLIB) */
-
-   
-   /* Display the cursor. FIXME: Should be displayed only if using hardware
-      acceleration which doesn't provide it's own cursor */
-   // display->cursor->draw();
-   
-   end_update:   
-   if (config->wireframe)
-	 display->status_text->setColour (PUCOL_LABEL, 0.0, 0.0, 0.0);
-   else
-	 display->status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
-   
-   display->status_text->setLabel ((char *) display->stxt);
-   glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-   glAlphaFunc(GL_GREATER,0.1f);
-
-   puDisplay();
-   glDisable(GL_BLEND);
-   
-   glutSwapBuffers();
-   glutPostRedisplay();
-   
-   /* A kludge to avoid fullscreen before window is open for real when it is enabled from rc file. */
-   if (config->fullscreen == 2) {
-	  glutFullScreen();
-	  config->fullscreen = 1;
-   }
+   overlay->draw();
 }
 
 void

@@ -18,9 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "Landscape.hpp"
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -36,6 +33,7 @@
 #include <GL/glut.h>
 #include <iostream.h>
 
+#include "Landscape.hpp"
 #include "Debug.hpp"
 #include "Perlin.hpp"
 #include "Display.hpp"
@@ -91,43 +89,13 @@ Landscape::init( ssgRoot *scene_root)
    state -> setOpaque () ;
    state -> disable ( GL_BLEND ) ;
 
-
-   /*
-   for ( int i = 0 ; i < TILE_GRID_SIZE ; i++ ) {
-	  sprintf (display->stxt, "Pre-calculation: %d%%", i*100/TILE_GRID_SIZE);
-	  display->updateScreen();
-	  	  
-	  for ( int j = 0 ; j < TILE_GRID_SIZE ; j++ ) {		 
-		 tilegrid [ i ][ j ] = new ssgTransform ;
-		 
-		 terrain -> addKid ( tilegrid [ i ][ j ] ) ;
-		 
-		 sgVec3 tilepos ;
-		 sgSetVec3 ( tilepos, (float)i * TILE_SIZE - ONLINE_TERRAIN_RANGE,
-					(float)j * TILE_SIZE - ONLINE_TERRAIN_RANGE, 0.0f ) ;
-
-
-		 tilegrid [ i ][ j ] -> setTransform ( tilepos ) ;
-		 createTile ( tilegrid [ i ][ j ], i, j, state ) ;
-	  }
-   }
-     */ 
-   sprintf (display->stxt, "%s\nPre-calculation done. %d texels loaded.\n", display->stxt, ssgGetNumTexelsLoaded());
-
-   
-
    scene_root -> addKid ( terrain ) ;
    landscape->initialized = 2;
-
 }
 
 ssgBranch *
 Landscape::createTileLOD ( int level, int x, int y, int ntris, char *terrain_map ) 
 {
-//   float tile_size;
-   
-//   tile_size = TILE_SIZE/2 * ((12-level+1)*2);
-   
    sgVec4 *scolors = new sgVec4 [ (ntris+1) * (ntris+1) ] ;
    sgVec2 *tcoords = new sgVec2 [ (ntris+1) * (ntris+1) ] ;
    sgVec3 *snorms  = new sgVec3 [ (ntris+1) * (ntris+1) ] ;
@@ -145,22 +113,6 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris, char *terrain_map
 		 float zzE = 1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)ntris*TILE_SIZE)/1000,
 												(y + (float)j/(float)ntris*TILE_SIZE)/1000 );
 		 
-		 /*
-		 float zz =  1100*perlin->perlinNoise_2D((x + (float)i/(float)ntris*tile_size)/1256,
-												  (y + (float)j/(float)ntris*tile_size)/1256);
-		 float zzN = 1100*perlin->perlinNoise_2D((x + (float)i/(float)ntris*tile_size)/1256,     
-												 (y + (float)(j+1)/(float)ntris*tile_size)/1256);
-		 float zzE = 1100*perlin->perlinNoise_2D((x + (float)(i+1)/(float)ntris*tile_size + 1)/1256, 
-												(y + (float)j/(float)ntris*tile_size)/1256);
-		 */
-/*
-	  float zz =  2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,
-											  (y + (float)j/(float)ntris)/7);
-	  float zzN = 2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris)/7,
-											  (y + (float)j/(float)ntris + 1)/7);
-	  float zzE = 2100*perlin->perlinNoise_2D((x + (float)i/(float)ntris + 1)/7,
-											  (y + (float)j/(float)ntris)/7);
-	*/  
 		 float rr = (float) 0.2 ;
 		 float gg;
 		 float bb = (perlin->perlinNoise_2D((x + (float)i/(float)ntris*TILE_SIZE)/200,
@@ -224,21 +176,3 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris, char *terrain_map
    return branch ;
 
 }
-
-void 
-Landscape::createTile ( ssgTransform *tile, int x, int y, ssgSimpleState *state ) 
-{
-
-/*
-   float rr[] = { 0.0f, 1000.0f, 2000.0f, 8000.0f } ;
-   ssgRangeSelector *lod = new ssgSelector () ;
-   
-   lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE   - 1,   0.0f ) ) ;
-   lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/4 - 1, -10.0f ) ) ;
-   lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/6 - 1, -20.0f ) ) ;
-//   lod  -> setRanges ( rr, 4 ) ;
-   
-   tile -> addKid ( lod ) ;
-*/
-}
-
