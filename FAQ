@@ -133,13 +133,18 @@ Majik FAQ (Frequently Asked Questions)
           
    2.8. What is the difference between WorldForge (former Altima) and
           Majik?
-          WorldForge: The WorldForge Project began in 1998 with an idea
-          to create a roleplaying game system, focusing on freedom and
-          playability. It wouldn't be just a 2D or 3D game; it could be
-          playable using with various frontends from 2D text-based to
-          true 3D frontend. Anyone could start a server and in fact there
-          would actually be many servers, each with unique maps,
-          histories, creatures, rulesets and legends.
+          WorldForge: The WorldForge Project germinated via Slashdot 10
+          months ago with an idea to create a roleplaying game system,
+          focusing on freedom and playability. It wouldn't be just a 2D
+          or 3D game; it could be playable using with various frontends
+          from 2D text-based to true 3D frontend. Anyone could start a
+          server and in fact there would actually be many servers, each
+          with unique maps, histories, creatures, rulesets and legends.
+          Shortly: The WorldForge is a project to create a base system
+          for roleplaying games, which enables anyone to create new
+          worlds on new servers offering various kinds of 2D and 3D
+          frontends. You could say it is a net-RPG-toolkit, not a
+          net-RPG.
           
           Majik: The Majik Project began in 1995 with an idea to create
           an online roleplaying world, focusing on realism, credibility
@@ -152,15 +157,18 @@ Majik FAQ (Frequently Asked Questions)
           see for miles from a top of a mountain if only using a 2D-based
           client? Also, in the Majik there could be only one server, with
           one large, well-designed and dynamic world, where the players
-          themselves could modify the rules for their liking. There is no
-          restrictions. For example, if player killing becomes a
+          themselves could modify the rules for their liking. There are
+          no restrictions. For example, if player killing becomes a
           nuisance, the players could group together and punish all the
           player killers. Not only by allowing players to modify rules
           they could change the world and its history by merely
           roleplaying their character. If one burns a house in a city, it
           will remain burned. If one kills an NPC, it will remain dead
           and if one builds a city it will be there until destroyed by
-          someone.
+          someone. Shortly: The Majik Project strives to create not a
+          system for creating roleplaying worlds, which is what
+          WorldForge aims at, but is a concentrated effort to create one
+          complete and evolving roleplaying world.
           
    2.9. How much will Majik cost to play, or will it be free?
           Majik is totally free of charge until it is so big that we must
