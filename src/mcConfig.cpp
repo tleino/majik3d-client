@@ -21,10 +21,8 @@
 #include <string.h>
 
 #include "mcError.hpp"
-#include "mcDebug.hpp"
 #include "mcConfig.hpp"
 #include "mcMenu.hpp"
-#include "mcDisplay.hpp"
 
 mcConfig::mcConfig()
 {

@@ -34,13 +34,9 @@
 
 #include "mcLandscape.hpp"
 #include "mcDebug.hpp"
-#include "mcPerlin.hpp"
-#include "mcDisplay.hpp"
 #include "mcConfig.hpp"
-#include "mcTexGen.hpp"
 #include "mcTerrainGen.hpp"
 #include "mcMapquad.hpp"
-#include "mcCamera.hpp"
 #include "mcTerrainHeightGen.hpp"
 
 double

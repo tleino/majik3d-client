@@ -17,7 +17,6 @@
  */
 
 #include "mcPlayer.hpp"
-#include "mcMapquad.hpp"
 
 Player::Player()
 {

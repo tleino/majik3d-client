@@ -1,8 +1,5 @@
 #include "mcTerrainBlock.hpp"
-#include "mcPerlin.hpp"
 #include "mcLandscape.hpp"
-#include "mcTerrainHeightGen.hpp"
-
 #include "mcScene.hpp"
 
 inline float getHeight(float x, float y)

@@ -33,8 +33,6 @@
 #include "mcProtocol.hpp"
 #include "mcInput.hpp"
 #include "mcDisplay.hpp"
-#include "mcSocket.hpp"
-#include "mcScene.hpp"
 #include "mcConfig.hpp"
 #include "mcMenu.hpp"
 

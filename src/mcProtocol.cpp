@@ -20,8 +20,6 @@
 #include <sg.h>
 
 #include "mcProtocol.hpp"
-#include "mcMenu.hpp"
-#include "mcDebug.hpp"
 #include "mcObject.hpp"
 #include "mcPlayer.hpp"
 #include "mcError.hpp"
