@@ -69,6 +69,7 @@ Display::openScreen()
    glutInitWindowSize(width, height);
    glutInitWindowPosition(0, 0);
    glutCreateWindow("majik");
+   glutReshapeFunc(resizeScreen);
    glutDisplayFunc(updateScreen);
    glutKeyboardFunc(input->keyDown);
    glutSpecialFunc(input->specialDown);
@@ -114,4 +115,15 @@ Display::updateScreen()
    display->cursor->draw();
    
    glutSwapBuffers();
+}
+
+void
+Display::resizeScreen(int w,int h)
+{
+   display->width = w;
+   display->height = h;
+   
+   landscape->setViewport(0,0,w,h);
+   glViewport(0,0,w,h);
+   glutPostRedisplay();
 }

@@ -31,6 +31,7 @@ class Display
    void openScreen();
    void closeScreen();
    static void updateScreen();
+   static void resizeScreen(int,int);
 //   static void mouseFun(int, int, int, int);
  private:
    static void idle();
