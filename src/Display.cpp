@@ -233,9 +233,6 @@ Display::updateScreen()
    frames++;
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  
-   tmp = sock->readPacket();
-   
   if (scene->initialized == 0) {
 	 display->status_text->setPosition(5, display->height-25);
 	 menu->menuBar->hide();
