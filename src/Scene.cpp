@@ -140,7 +140,7 @@ Scene::init()
    top   = near * (SGfloat) tan ( vfov * SG_DEGREES_TO_RADIANS / SG_TWO ) ;
    left  = -right ;
    bottom   = -top   ;
-/*
+   
    cout << "near: " << near;
    cout << "far: " << far;
    cout << "left: " << left;
@@ -164,7 +164,7 @@ Scene::init()
    cout << (frustumi[1][3] = 0.0f) << " ";
    cout << (frustumi[2][3] = -1.0f) << " ";
    cout << (frustumi[3][3] = 0.0f) << " " << endl;
-  */ 
+   
     /*
 	 *     *     Set up some fog
 	 *     *   */
