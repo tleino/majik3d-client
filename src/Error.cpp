@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <iostream.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 #include "Error.hpp"
 

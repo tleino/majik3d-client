@@ -279,11 +279,11 @@ Input::promptDown (puObject *o)
 void
 captureScreen()
 {
-  GLubyte *pixels = new GLubyte[display->width*display->height*3];
+  /*  GLubyte *pixels = new GLubyte[display->width*display->height*3];
   
   glReadPixels( 0, 0, display->width, display->height, GL_RGB,
 		GL_UNSIGNED_BYTE, pixels );
   ofstream to("screenshot.rgb", ios::binary | ios::app | ios::trunc);
   to.write( pixels, display->width*display->height*3);
-  to.close();
+  to.close(); */
 }

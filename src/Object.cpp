@@ -17,7 +17,7 @@
  */
 
 #include <stdio.h>
-#include <iostream>
+#include <iostream.h>
 
 #include "Debug.hpp"
 #include "Object.hpp"

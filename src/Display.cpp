@@ -154,9 +154,11 @@ Display::updateScreen()
   else if (tuxi != NULL)
     {
       Mapquad *temp;
+      sgCoord tuxiPos = tuxi->getPos();
+
       temp = Mapquad::root_map->tryMapquad(12,
-					   tuxi->getPos().xyz[0],
-					   tuxi->getPos().xyz[1]);
+					   tuxiPos.xyz[0],
+					   tuxiPos.xyz[1]);
       if (temp != NULL && temp->isMapReceived())  
 	mapFound = true;
     }
