@@ -307,7 +307,7 @@ Display::updateScreen()
       acceleration which doesn't provide it's own cursor */
    // display->cursor->draw();
    
-   end_update:
+   end_update:   
    if (display->wireframe)
 	 display->status_text->setColour (PUCOL_LABEL, 0.0, 0.0, 0.0);
    else

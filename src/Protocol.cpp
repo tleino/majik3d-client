@@ -31,6 +31,8 @@
 
 extern sgCoord tuxpos;
 extern Object *tuxi;
+float meep = 0.0f;
+int flag = 0;
 
 
 Protocol::Protocol()
@@ -214,6 +216,41 @@ Protocol::parseCommand(char *input)
 	  fprintf (fp, "%s", tmp);
 	  fclose (fp);
 	  Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(tmp);
+	  break;
+	case CMD_SUN_POS:
+	  int mod;
+	  float r_add, g_add, b_add;
+	  sscanf (data, "%d", &mod);
+	  mod = mod % 40;
+	  if (mod == 0) {
+		flag = 0;
+	  }
+	  
+	  if (flag == 1 || mod > 20) {
+		 mod -= (mod-20)*2;
+		 flag = 1;
+	  }
+
+	  sgVec3 sunposn ;
+	  sgVec4 sunamb  ;
+	  sgSetVec3 ( sunposn, -1.0f+(float) mod/10.0f, 0.0f, 0.1f ) ;
+	  sgSetVec4 ( sunamb , 1.0f, 1.0f, 1.0f, 1.0f ) ;
+	  ssgGetLight ( 0 ) -> setPosition ( sunposn ) ;
+	  ssgGetLight ( 0 ) -> setColour ( GL_AMBIENT_AND_DIFFUSE, sunamb ) ;
+	  r_add = (float) mod/20.0f;
+	  g_add = (float) mod/20.0f;
+	  b_add = (float) mod/20.0f;
+	  r_add = r_add/1.6f;
+	  g_add = g_add/1.3f;
+	  b_add = b_add;
+	  if (r_add > 0.4f)
+		r_add = 0.4f;
+	  if (g_add > 0.7f)
+		g_add = 0.7f;
+	  if (b_add > 1.0f)
+		b_add = 1.0f;
+	  sgVec4 skycol ; sgSetVec4 ( skycol, 0.0f+r_add, 0.0f+g_add, 0.0f+b_add, 1.0f ) ;
+	  glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
 	  break;
 	default:
 	  error->put (ERROR_WARNING, "Unknown protocol command received: 0x%X", command);
