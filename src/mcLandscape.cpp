@@ -106,7 +106,6 @@ Landscape::init( ssgRoot *scene_root)
 
   terrain  = new ssgTransform ;
   state    = new ssgSimpleState ;
-  state -> setTexture ( "gfx/bumpnoise.rgb") ;
   state -> enable     ( GL_TEXTURE_2D ) ;
   state -> enable     ( GL_LIGHTING ) ;
   
