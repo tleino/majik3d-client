@@ -8,7 +8,6 @@
 #include "SDLMesa.hpp"
 #include "Detail.hpp"
 #include "Display.hpp"
-#include "Landscape.hpp"
 #include "Object.hpp"
 #include "Protocol.hpp"
 #include "Socket.hpp"
@@ -19,6 +18,7 @@
 #include "Matrix.hpp"
 #include "P3D.hpp"
 #include "Perlin.hpp"
+#include "Landscape.hpp"
 
 extern Error *error;
 extern Debug *debug;
