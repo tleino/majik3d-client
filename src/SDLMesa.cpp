@@ -16,7 +16,7 @@ SDLMesaContext::SDLMesaContext(SDL_Surface *buffer)
 SDLMesaContext::~SDLMesaContext()
 {
    if(surface != NULL)
-	 free(surface);
+	 SDL_FreeSurface(surface);
    if(context != NULL)
 	 OSMesaDestroyContext(context);
 }
