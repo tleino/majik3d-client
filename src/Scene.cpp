@@ -128,40 +128,40 @@ Scene::init()
    ssgSetFOV     ( 90.0f, 60.0f ) ;
    ssgSetNearFar ( 1.0f, 10000.0f ) ;
 
-   float near, far, top, bottom, left, right, hfov, vfov, v, h;
+   float nnear, ffar, top, bottom, left, right, hfov, vfov, v, h;
    
-   near = 1.0f;
-   far = 10000.0f;
+   nnear = 1.0f;
+   ffar = 10000.0f;
    h = 90.0f;
    v = 60.0f;
    
    hfov = ( h <= 0 ) ? ( v * 3.0f / 2.0f ) : h ;
    vfov = ( v <= 0 ) ? ( h * 2.0f / 3.0f ) : v ;
    
-   right = near * (SGfloat) tan ( hfov * SG_DEGREES_TO_RADIANS / SG_TWO ) ;
-   top   = near * (SGfloat) tan ( vfov * SG_DEGREES_TO_RADIANS / SG_TWO ) ;
+   right = nnear * (SGfloat) tan ( hfov * SG_DEGREES_TO_RADIANS / SG_TWO ) ;
+   top   = nnear * (SGfloat) tan ( vfov * SG_DEGREES_TO_RADIANS / SG_TWO ) ;
    left  = -right ;
    bottom   = -top   ;
    
-   cout << "near: " << near;
-   cout << "far: " << far;
+   cout << "near: " << nnear;
+   cout << "far: " << ffar;
    cout << "left: " << left;
    cout << "right: " << right;
    cout << "bottom: " << bottom;
    cout << "top: " << top << endl;
    
-   cout << (frustumi[0][0] = (2*near)/(right-left)) << " ";
+   cout << (frustumi[0][0] = (2*nnear)/(right-left)) << " ";
    cout << (frustumi[1][0] = 0.0f) << " ";
    cout << (frustumi[2][0] = (right+left)/(right-left)) << " ";
    cout << (frustumi[3][0] = 0.0f) << " " << endl;
    cout << (frustumi[0][1] = 0.0f) << " ";
-   cout << (frustumi[1][1] = (2*near)/(top-bottom)) << " ";
+   cout << (frustumi[1][1] = (2*nnear)/(top-bottom)) << " ";
    cout << (frustumi[2][1] = (top+bottom)/(top-bottom)) << " ";
    cout << (frustumi[3][1] = 0.0f) << " " << endl;
    cout << (frustumi[0][2] = 0.0f) << " ";
    cout << (frustumi[1][2] = 0.0f) << " ";
-   cout << (frustumi[2][2] = -(far+near)/(far-near)) << " ";
-   cout << (frustumi[3][2] = (-2*far*near)/(far-near)) << " " << endl;
+   cout << (frustumi[2][2] = -(ffar+nnear)/(ffar-nnear)) << " ";
+   cout << (frustumi[3][2] = (-2*ffar*nnear)/(ffar-nnear)) << " " << endl;
    cout << (frustumi[0][3] = 0.0f) << " ";
    cout << (frustumi[1][3] = 0.0f) << " ";
    cout << (frustumi[2][3] = -1.0f) << " ";

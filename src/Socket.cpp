@@ -36,18 +36,18 @@ Socket::Socket(char *szHost,int nPort)
 
 	if((hWait = CreateEvent(NULL,FALSE,FALSE,NULL)) == NULL)
 	{
-		DEBUG("CreateEvent failed, low on resources?\n");
+	//	DEBUG("CreateEvent failed, low on resources?\n");
 	}
 
 	if((LinesSemaphore = CreateSemaphore(NULL,0,10,NULL)) == NULL)
 	{
-		DEBUG("CreateSemaphore failed, low on resources?\n");
+	//	DEBUG("CreateSemaphore failed, low on resources?\n");
 	}
 
 	DWORD nId;
 	if((NetThread = CreateThread(NULL,0,&NonClassFunctionDummy,this,0,&nId)) == NULL)
 	{
-		DEBUG("CreateThread failed, low on resources?\n");
+	//	DEBUG("CreateThread failed, low on resources?\n");
 	}
 	// Wait for the network to initialize.
 	WaitForSingleObject(LinesSemaphore,INFINITE);
@@ -132,7 +132,7 @@ Socket::writePacket(char *szFmt,...)
 
 	if(send(nSocket,szData,strlen(szData),0) == SOCKET_ERROR)
 	{
-		DEBUG("Could not send data over the network\n");
+	//	DEBUG("Could not send data over the network\n");
 //		Sleep(1000);
 	}
 
@@ -174,7 +174,7 @@ Socket::Thread()
 		WSADATA wsaData;
 		if(WSAStartup(MAKEWORD( 1, 1 ),&wsaData) != 0)
 		{
-				DEBUG("winsock.dll could not be loaded");
+	//			DEBUG("winsock.dll could not be loaded");
 				return;
 		}
 	}
@@ -198,14 +198,14 @@ Socket::Thread()
 
 	if((nAddr = inet_addr(szHost)) == INADDR_NONE)
 	{
-		DEBUG(debug->string("Host '%s' not found, can not connect\n",szHost));
+	//	DEBUG(debug->string("Host '%s' not found, can not connect\n",szHost));
 	}
 
 	// Connect.
 
 	if ((nSocket = socket (AF_INET, SOCK_STREAM, 0)) < 0)
 	{
-		DEBUG("Could not create a new socket\n");
+	//	DEBUG("Could not create a new socket\n");
 	}
 
 	memset (&ServerAddr, 0, sizeof (ServerAddr));
@@ -215,7 +215,7 @@ Socket::Thread()
 
     if (connect (nSocket, (struct sockaddr *) &ServerAddr, sizeof (ServerAddr)) < 0)
 	{
-		DEBUG(debug->string("Connection to '%s' failed\n",szHost));
+	//	DEBUG(debug->string("Connection to '%s' failed\n",szHost));
 	}
 
 	// Release the other thread.
@@ -229,7 +229,7 @@ Socket::Thread()
 		long	nRecived;
 		if((nRecived = recv(nSocket,(char *)&szData,sizeof(szData)-1,0)) == SOCKET_ERROR)
 		{
-			DEBUG("Could not recive data from host, connection closed?\n");
+	//		DEBUG("Could not recive data from host, connection closed?\n");
 			Sleep(10000);
 		}
 		szData[nRecived] = 0;

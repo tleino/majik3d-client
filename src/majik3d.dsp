@@ -65,7 +65,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /ML /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x40b /d "_DEBUG"
 # ADD RSC /l 0x40b /d "_DEBUG"
 BSC32=bscmake.exe
@@ -114,11 +114,7 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Material.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Matrix.cpp
+SOURCE=.\Mapquad.cpp
 # End Source File
 # Begin Source File
 
@@ -127,10 +123,6 @@ SOURCE=.\Menu.cpp
 # Begin Source File
 
 SOURCE=.\Object.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\P3D.cpp
 # End Source File
 # Begin Source File
 
@@ -182,11 +174,11 @@ SOURCE=.\Landscape.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Material.hpp
+SOURCE=.\Mapquad.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Matrix.hpp
+SOURCE=.\Material.hpp
 # End Source File
 # Begin Source File
 
@@ -195,10 +187,6 @@ SOURCE=.\Menu.hpp
 # Begin Source File
 
 SOURCE=.\Object.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\P3D.hpp
 # End Source File
 # Begin Source File
 

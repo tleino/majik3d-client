@@ -86,7 +86,7 @@ main(int argc, char **argv)
 		display->bpp = config->bpp;
 	 }
   
-   sock->writePacket("51\r\n"); /* Log in to the server */
+//   sock->writePacket("51\r\n"); /* Log in to the server */
 
   // sock->connectServer();
 #ifndef WIN32
