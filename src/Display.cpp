@@ -27,6 +27,7 @@ puMenuBar *main_menu_bar;
 time_t t = time(NULL);
 int frames = 0;
 int mouse_x, mouse_y;
+int mousetrap = 0;
 
 void exit_cb(puObject *);
 void flat_cb(puObject *);
@@ -35,19 +36,33 @@ void wireframe_cb(puObject *);
 void nowireframe_cb(puObject *);
 void fog_cb(puObject *);
 void nofog_cb(puObject *);
+void mousetrap_cb(puObject *);
+void nomousetrap_cb(puObject *);
 
-char *effects_submenu[] = { "Smooth", "Flat", "Fog", "No Fog", "Wireframe", "No Wireframe", NULL };
+char *effects_submenu[] = { "Smooth", "Flat", "Fog", "No Fog", "Wireframe", "No Wireframe", "Mousetrap", "No Mousetrap", NULL };
 char *majik_submenu[] = { "Exit", NULL };
-puCallback effects_submenu_cb[] = { smooth_cb, flat_cb, fog_cb, nofog_cb, wireframe_cb, nowireframe_cb, NULL };
+puCallback effects_submenu_cb[] = { smooth_cb, flat_cb, fog_cb, nofog_cb, wireframe_cb, nowireframe_cb, mousetrap_cb, nomousetrap_cb, NULL };
 puCallback majik_submenu_cb[] = { exit_cb, NULL };
+
+void
+mousetrap_cb(puObject *)
+{
+  mousetrap = 1;
+}
+   
+void
+nomousetrap_cb(puObject *)
+{
+   mousetrap = 0;
+}
 
 void
 wireframe_cb(puObject *)
 {
+   glClearColor (1.0, 1.0, 1.0, 0.0);
    glDisable(GL_LIGHTING);
    glDisable(GL_FOG);
    glDisable(GL_LIGHT0);
-   glDisable(GL_DEPTH_TEST);   
    glShadeModel(GL_FLAT);
    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
@@ -55,10 +70,10 @@ wireframe_cb(puObject *)
 void
 nowireframe_cb(puObject *)
 {
+   glClearColor (0.0, 0.0, 1.0, 0.0);
    glEnable(GL_LIGHTING);
    glEnable(GL_FOG);
    glEnable(GL_LIGHT0);
-   glEnable(GL_DEPTH_TEST);
    glShadeModel(GL_SMOOTH);
    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
 }
@@ -224,17 +239,17 @@ Display::updateScreen()
    
    /* Trap the mouse */
       
-   if (mouse_x < 1) {
+   if (mouse_x < 1 && mousetrap) {
 	  printf ("mouse_x <\n");
 	  mouse_x = 2; warp = TRUE;
-   } else if (mouse_x > display->width-1) {
+   } else if (mouse_x > display->width-1 && mousetrap) {
 	  printf ("mouse_x >\n");
 	  mouse_x = display->width-2; warp = TRUE;
    }
-   if (mouse_y < 1) {
+   if (mouse_y < 1 && mousetrap) {
 	  printf ("mouse_y <\n");
 	  mouse_y = 2; warp = TRUE;
-   } else if (mouse_y > display->height-1) {
+   } else if (mouse_y > display->height-1 && mousetrap) {
 	  printf ("mouse_y >\n");
 	  mouse_y = display->height-2; warp = TRUE;
    }
