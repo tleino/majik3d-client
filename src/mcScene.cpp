@@ -104,7 +104,7 @@ Scene::init()
   scene_root = new ssgRoot;
   
   ssgModelPath   ("data");
-  ssgTexturePath ("data");
+  ssgTexturePath ("gfx");
 
   m_landscape->init(scene_root);
         
