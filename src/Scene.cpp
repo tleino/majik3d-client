@@ -20,7 +20,6 @@
 #include "Display.hpp"
 #include "Debug.hpp"
 #include "Landscape.hpp"
-#include "ssgKeyFlier.h"
 #include "Socket.hpp"
 #include "Object.hpp"
 
