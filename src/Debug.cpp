@@ -1,15 +1,22 @@
-#include <iostream.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <iostream.h>
 #include <stdarg.h>
-#include <string.h>
 #include "Majik.hpp"
 
+Debug::Debug()
+{
+   buf = new char[1024];
+}
+
+Debug::~Debug()
+{
+   delete [] buf;
+}
+
 void
-Debug(char *fmt, ...)
+Debug::put(const char *fmt, ...)
 {
    va_list vl;
-   static char buf[1024];
    va_start (vl, fmt);
    vsprintf (buf, fmt, vl);
    va_end (vl);

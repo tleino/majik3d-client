@@ -6,19 +6,34 @@ SDLMesaContext::SDLMesaContext()
 {
    surface = NULL;
    context = NULL;
+   #ifdef DEBUG
+	 debug->put("SDLMesaContext constructor");
+   #endif
 }
 
 SDLMesaContext::SDLMesaContext(SDL_Surface *buffer)
 {
    makeContext(buffer);
+   #ifdef DEBUG
+	 debug->put("SDLMesaContext constructor");
+   #endif
 }
 
 SDLMesaContext::~SDLMesaContext()
 {
    if(surface != NULL)
-	 SDL_FreeSurface(surface);
+	 {
+		SDL_FreeSurface(surface);
+		surface = NULL;
+	 }
    if(context != NULL)
-	 OSMesaDestroyContext(context);
+	 {
+		OSMesaDestroyContext(context);
+		context = NULL;
+	 }
+   #ifdef DEBUG
+	 debug->put("SDLMesaContext destructor");
+   #endif
 }
 
 void 
@@ -28,7 +43,7 @@ SDLMesaContext::makeContext(SDL_Surface *buffer)
    
    if(SDL_MUSTLOCK(buffer))
 	 {
-		Error(ERROR_FATAL, "Surface is not safe for writes (%s)",
+		error->put(ERROR_FATAL, "Surface is not safe for writes (%s)",
 			  "surface requires locking");
 	 }
    	       
@@ -62,14 +77,14 @@ SDLMesaContext::makeContext(SDL_Surface *buffer)
       
    if(format == -1)
 	 {
-		Error(ERROR_FATAL, "Unknown surface pixel format");
+		error->put(ERROR_FATAL, "Unknown surface pixel format");
 	 }
    
    surface = buffer;
    context = OSMesaCreateContext(format, NULL);
    if(context == NULL)
 	 {
-		Error(ERROR_FATAL, "OSMesaCreateContext() failed");
+		error->put(ERROR_FATAL, "OSMesaCreateContext() failed");
 	 }
 }
 
@@ -79,7 +94,7 @@ SDLMesaContext::makeCurrent()
    if(!OSMesaMakeCurrent(context, surface->pixels, GL_UNSIGNED_BYTE, 
 						 surface->w, surface->h))
 	 {
-		Error(ERROR_FATAL, "OSMesaMakeCurrent() failed");
+		error->put(ERROR_FATAL, "OSMesaMakeCurrent() failed");
 	 }
    
    OSMesaPixelStore(OSMESA_Y_UP, 0);

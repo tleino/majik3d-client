@@ -20,6 +20,8 @@
 #include "P3D.hpp"
 #include "Perlin.hpp"
 
+extern Error *error;
+extern Debug *debug;
 extern Display *display;
 extern Socket *sock;
 extern Landscape *landscape;

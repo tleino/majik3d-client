@@ -13,25 +13,29 @@ Socket::Socket()
 {
    ip = NULL;
    #ifdef DEBUG
-	 Debug("Socket constructor");
+	 debug->put("Socket constructor");
    #endif
 }
 
 Socket::Socket(char *addr, int nport)
 {
+   ip = new char[strlen(addr)];
    strcpy(ip, addr);
    port = nport;
    #ifdef DEBUG
-	 Debug("Socket constructor: ip=%s, port=%d", ip, port);
+	 debug->put("Socket constructor: ip=%s, port=%d", ip, port);
    #endif
 }
 
 Socket::~Socket()
 {
    if(ip != NULL)
-	 free(ip);
+	 {
+		delete [] ip;
+		ip = NULL;
+	 }
    #ifdef DEBUG
-	 Debug("Socket destructor");
+	 debug->put("Socket destructor");
    #endif
 }
 

@@ -15,7 +15,7 @@ Landscape::Landscape()
    
    first = NULL;
    #ifdef DEBUG
-	 Debug("Landscape constructor");
+	 debug->put("Landscape constructor");
    #endif
 }
 
@@ -23,11 +23,11 @@ Landscape::~Landscape()
 {
    if(first != NULL)
 	 {
-		delete first;
+	    delete first;
 		first = NULL;
 	 }
    #ifdef DEBUG
-	 Debug("Landscape destructor");
+	 debug->put("Landscape destructor");
    #endif
 }
 

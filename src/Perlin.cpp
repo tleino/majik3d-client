@@ -13,16 +13,15 @@
 Perlin::Perlin()
 {
    #ifdef DEBUG
-	 Debug("Perlin constructor");
+	 debug->put("Perlin constructor");
    #endif
 }
 
 Perlin::~Perlin()
 {
    #ifdef DEBUG
-	 Debug("Perlin destructor");
+	 debug->put("Perlin destructor");
    #endif
-	 
 }
 
 float
@@ -61,7 +60,7 @@ Perlin::noise(int octave, int x, int y)
 		return ( 1.0 - ( (n * (n * n * 15661 + 787939) + 1378991399) & 0x7fffffff) / 1073741824.0);
 		break;
 	  default:
-		printf("ERROR: Noise-function for octave %d not defined.\n", octave);
+		error->put(ERROR_WARNING, "Noise-function for octave %d not defined", octave);
 		break;
 	 }
 }

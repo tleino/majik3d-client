@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Object.hpp"
+#include "Majik.hpp"
 
 Object::Object()
 {
@@ -8,7 +8,7 @@ Object::Object()
    id = Object::lastId;
    next = NULL;
    #ifdef DEBUG
-	 Debug("Object constructor: id=%d", id);
+	 debug->put("Object constructor: id=%d", id);
    #endif
 }
 
@@ -16,9 +16,10 @@ Object::~Object()
 {
    if(next != NULL)
 	 {
+		delete next;
 		next = NULL;
 	 }
    #ifdef DEBUG
-	 Debug("Object destructor: id=%d", id);
+	 debug->put("Object destructor: id=%d", id);
    #endif
 }

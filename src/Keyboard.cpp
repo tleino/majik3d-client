@@ -5,14 +5,14 @@
 Keyboard::Keyboard()
 {
    #ifdef DEBUG
-	 Debug("Keyboard constructor");
+	 debug->put("Keyboard constructor");
    #endif
 }
 
 Keyboard::~Keyboard()
 {
    #ifdef DEBUG
-	 Debug("Keyboard destructor");
+	 debug->put("Keyboard destructor");
    #endif
 }
 

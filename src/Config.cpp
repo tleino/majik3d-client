@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Config.hpp"
 #include "Majik.hpp"
 
 Config::Config()

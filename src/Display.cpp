@@ -10,7 +10,7 @@ Display::Display()
    sdlmesactx = NULL;
    
    #ifdef DEBUG
-	 Debug("Display constructor");
+	 debug->put("Display constructor");
    #endif
 }
 
@@ -22,14 +22,17 @@ Display::Display(int w, int h, int b)
    sdlmesactx = NULL;
 
    #ifdef DEBUG
-	 Debug("Display constructor: width=%d height=%d bpp=%d", width, height, bpp);
+	 debug->put("Display constructor: width=%d height=%d bpp=%d", width, height, bpp);
    #endif
 }
 
 Display::~Display()
 {
+   if(sdlmesactx != NULL)
+	 closeScreen();
+   
    #ifdef DEBUG
-	 Debug("Display destructor");
+	 debug->put("Display destructor");
    #endif
 }
 
@@ -41,7 +44,7 @@ Display::openScreen()
    SDL_Surface *screen;
    
    #ifdef DEBUG
-	 Debug("Opening screen...");
+	 debug->put("Opening screen...");
    #endif
    
    flags = SDL_SWSURFACE;
@@ -55,14 +58,14 @@ Display::openScreen()
    screen = SDL_SetVideoMode(width, height, bpp, flags);
    if(screen == NULL) 
 	 {
-		Error(ERROR_FATAL, "Unable to set video mode");
+		error->put(ERROR_FATAL, "Unable to set video mode");
 	 }
    
    sdlmesactx = new SDLMesaContext(screen);
    sdlmesactx->makeCurrent();
    
    #ifdef DEBUG
-	 Debug("Screen opened.");
+	 debug->put("Screen opened.");
    #endif
 }
 
@@ -70,7 +73,7 @@ void
 Display::closeScreen()
 {
    #ifdef DEBUG
-	 Debug("Closing screen...");
+	 debug->put("Closing screen...");
    #endif
 	 
    if(sdlmesactx != NULL)
@@ -80,7 +83,7 @@ Display::closeScreen()
 	 }
       
    #ifdef DEBUG
-	 Debug("Screen closed.");
+	 debug->put("Screen closed.");
    #endif
 }
 

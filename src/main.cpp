@@ -9,6 +9,8 @@
 int Object::lastId = 0;
 bool quit = false;
 SDL_Event event;
+Error *error = NULL;
+Debug *debug = NULL;
 Socket *sock = NULL;
 Display *display = NULL;
 Landscape *landscape = NULL;
@@ -17,20 +19,25 @@ Keyboard *keyboard = NULL;
 int
 FilterEvents(const SDL_Event *event)
 {
-   #ifdef DEBUG
-	 switch(event->type)
+   switch(event->type)
 	 {
 	  case SDL_QUIT:
-		Debug("Quit request sent, closing down...");
+		#ifdef DEBUG
+		  debug->put("Quit request sent, closing down...");
+		#endif
 		break;
 	  case SDL_KEYDOWN:
-		Debug("Key pressed: %c", SDL_SymToASCII(&event->key.keysym, NULL));
+		#ifdef DEBUG
+		  debug->put("Key pressed: %c", SDL_SymToASCII(&event->key.keysym, NULL));
+		#endif
 		break;
 	  case SDL_MOUSEMOTION:
-		Debug("Mouse moved to: %dx %dy", event->motion.x, event->motion.y);
+		#ifdef DEBUG
+		  debug->put("Mouse moved to: %dx %dy", event->motion.x, event->motion.y);
+         #endif
+		return 0;
 		break;
 	 }
-   #endif
    return 1;
 }
 
@@ -68,6 +75,8 @@ main(int argc, char **argv)
 	 }
    
    // Initialize the necessary global variables as proper objects
+   error = new Error;
+   debug = new Debug;
    sock = new Socket;
    display = new Display;
    landscape = new Landscape;
@@ -75,8 +84,10 @@ main(int argc, char **argv)
    
    // Initialize the SDL library
    if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
-	 Error(ERROR_FATAL, "Unable to init SDL");
-	   
+	 {
+		error->put(ERROR_FATAL, "Unable to init SDL");
+	 }
+   	   
    // Automate the SDL_Quit -call when ending the program
    atexit(SDL_Quit);
       
@@ -117,6 +128,8 @@ main(int argc, char **argv)
    display->closeScreen();
    
    // Clean up
+   delete error;
+   delete debug;
    delete sock;
    delete display;
    delete landscape;
