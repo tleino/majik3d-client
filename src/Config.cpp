@@ -35,6 +35,10 @@ Config::Config()
    bpp = 0;
 }
 
+Config::~Config()
+{
+}
+
 void
 Config::parseOption(char *option, char *value)
 {   
