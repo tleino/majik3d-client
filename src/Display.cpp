@@ -282,5 +282,5 @@ Display::resizeScreen(int w,int h)
    display->width = w;
    display->height = h;
    glViewport(0, 0, w, h);
-   glutPostRedisplay();
+   //glutPostRedisplay();
 }

@@ -109,9 +109,10 @@ void
 Menu::fullscreenCB(puObject *)
 {
    if (display->fullscreen == 1) {
-	  glViewport(0, 0, display->initialWidth, display->initialHeight);
 	  glutReshapeWindow(display->initialWidth, display->initialHeight);
+	  glutPositionWindow(0, 0);
 	  display->fullscreen = 0;
+	  //glutPostRedisplay();
    } else {
 	  glutFullScreen();
 	  display->fullscreen = 1;
