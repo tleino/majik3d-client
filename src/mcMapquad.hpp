@@ -52,30 +52,53 @@ public:
   
   static Mapquad *root_map;
   
-  
+  Mapquad *parent;
+  Mapquad *child1;
+  Mapquad *child2;
+  Mapquad *child3;
+  Mapquad *child4;
+
   Map_data submap1;
   Map_data submap2;
   Map_data submap3;
   Map_data submap4;
 
   ///
-  ssgSelector  *m_lodSwitch;
+  ssgSelector  *lod_switch;
   
   ///
   int *lod_indices;
   
   ///
-  TerrainBlock *m_block;
+  ssgTransform *trans;
+
+  ssgTransform *getTrans() { return trans; }
+
+
+  TerrainBlock *block;
+  
+  //   Object *inventory;
+  //   Object *observers;
   
   ///
-  int m_mapRequested;
+  int level;
+   int top_x;
+  int top_y;
+  int mid_x;
+  int mid_y;
+
+  int reference_count;
+  ///
+  int map_requested;
   ///
   Map_data map_data[NUM_VISIBLE_LEVELS];
-
+  ///
   int  incRef  ();
+  ///
   int  decRef  ();
+  /// Clean up the map from the memory when it is no longer needed.
   void cleanUp ();
-  
+  ///
   Mapquad *getChild1();
   Mapquad *getChild2();
   Mapquad *getChild3();
@@ -90,7 +113,7 @@ public:
   ///
 //  void setSubMap (int, Map_data);
   ///
-  void draw(); //sgVec3, float);
+  void draw(sgVec3, float);
 	// hello
   void resetBlocks();
   void triangulateBlocks();
@@ -114,26 +137,14 @@ public:
   //   static int stats[13];
   
   // static void printStats();
-  ssgTransform	*getTrans() { return m_trans; }
-
 private:
-	bool m_mapReceived;
-	int m_currentLod;
-	int m_refCount;
+   bool mapReceived;
+   int current_lod;
 
-	Mapquad*	m_parent;
-	Mapquad*	m_child1;
-	Mapquad*	m_child2;
-	Mapquad*	m_child3;
-	Mapquad*	m_child4;
+   
+   /* kludge */
+//	static ssgSimpleState *state;
 
-	ssgTransform *m_trans;
-
-	int m_level;
-	int m_top_x;
-	int m_top_y;
-	int m_mid_x;
-	int m_mid_y;   
 };
 
 

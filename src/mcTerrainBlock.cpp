@@ -9,9 +9,6 @@ extern mcTerrainHeightGen *terraingen;
 
 inline float getHeight(float x, float y)
 {
-	return 0;
-
-
 	return 2000.0f * terraingen->getHeight(x/1280.0, y/1280.0);
 	//return 2000.0f*(float)perlin->perlinNoise_2D(x/1500.0, y/1500.0);
 };
@@ -39,19 +36,19 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 	m_next = NULL;
 	blockHash.put(m_x, m_y, this);
 
-//	vertices = new sgVec3[(DIM+1)*(DIM+1)];
-//	v_index = new unsigned short[1000];
-//	texcoords = new sgVec2[(DIM+1)*(DIM+1)];
-//	t_index = v_index;
-//	colours = new sgVec4[1];
-//	sgSetVec4 (colours[0], 1.0, 1.0, 1.0, 1.0);
-//	c_index = new unsigned short[1000];
-//	memset(c_index, 0, sizeof(unsigned short)*1000);
-//	num_colours = 1;
+	vertices = new sgVec3[(DIM+1)*(DIM+1)];
+	v_index = new unsigned short[1000];
+	texcoords = new sgVec2[(DIM+1)*(DIM+1)];
+	t_index = v_index;
+	colours = new sgVec4[1];
+	sgSetVec4 (colours[0], 1.0, 1.0, 1.0, 1.0);
+	c_index = new unsigned short[1000];
+	memset(c_index, 0, sizeof(unsigned short)*1000);
+	num_colours = 1;
 	
-//	type |= SSG_TYPE_VTABLE ;
-//	gltype = GL_TRIANGLE_STRIP ;
-//	indexed = TRUE ;
+	type |= SSG_TYPE_VTABLE ;
+	gltype = GL_TRIANGLE_STRIP ;
+	indexed = TRUE ;
 
 	const float UVBias = 1.0/(DIM);
 
@@ -61,22 +58,24 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 			sgVec3 loc;
 			loc[0] = (float)i/(float)(DIM) * BLOCK_SIZE;
 			loc[1] = (float)j/(float)(DIM) * BLOCK_SIZE;
+//			loc[0] = rand()*1000;
+//			loc[1] = rand()*1000;
 			loc[2] = getHeight(x + (float)i/(DIM) * BLOCK_SIZE,y + (float)j/(DIM) * BLOCK_SIZE);
 
 //				loc /= 10.0;
 //				loc[0] -= 0.9;
 //				loc[1] -= 0.9;
 			
-			vertex& v = m_vertices[i + j * (DIM+1)];
+			vertex& v = myVertices[i + j * (DIM+1)];
 
-			sgCopyVec3 (m_vertices[i + j * (DIM+1)].coord, loc);
+			sgCopyVec3 (vertices[i + j * (DIM+1)], loc);
 
 			sgVec2 UV;
 				
 			UV[0] = /*UVBias+*/(float)i/DIM;//*(1.0-UVBias*2);
 			UV[1] = /*UVBias+*/(float)j/DIM;//*(1.0-UVBias*2);
 
-			sgCopyVec2 (m_vertices[i + j * (DIM+1)].UV, UV);
+			sgCopyVec2 (texcoords[i + j * (DIM+1)], UV);
 
 			v.error = 0;
 			v.marked = false;
@@ -112,27 +111,41 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 
 };
 
+
 TerrainBlock::~TerrainBlock()
 {
 	blockHash.remove(m_x, m_y);
 }
 
-
-void 
-TerrainBlock::draw()
-{
-	glVertexPointer(3, GL_FLOAT, sizeof(vertex), &m_vertices[0].coord);
-	glTexCoordPointer(3, GL_FLOAT, sizeof(vertex), &m_vertices[0].UV);
-	glDrawElements(GL_TRIANGLE_STRIP, numSelectedVertices, GL_UNSIGNED_SHORT, &list);	
-}	
 /*
 
+void 
+TerrainBlock::draw_geometry()
+{
+	ssgVTable::draw_geometry();
+
+	int i;
+
+	glEnable (GL_VERTEX_ARRAY);
+	glEnable (GL_TEXTURE_COORD_ARRAY);
+
+	glColor3f(0.0, 1.0, 0.0);
+
+	glVertexPointer(3, GL_FLOAT, sizeof(vertex), &vertices[0].coord);
+	glTexCoordPointer(3, GL_FLOAT, sizeof(vertex), &vertices[0].UV);
+
+	glDrawElements(GL_TRIANGLE_STRIP, numSelectedVertices, GL_UNSIGNED_SHORT, &list);
+
+	glDisable(GL_VERTEX_ARRAY);
+*/	
+	
+/*
 	glBegin(GL_TRIANGLE_STRIP);
 
 	glColor3f ( 0.0, 1.0, 0.0 );
 	glNormal3f ( 0.0, 0.0, 1.0 );
 
-	for (int i = 0; i < numSelectedVertices; i++)
+	for (i = 0; i < numSelectedVertices; i++)
 	{
 //			glColor4fv;
 //			glNormal3fv;
@@ -156,26 +169,25 @@ TerrainBlock::draw()
 //			glColor4fv;
 //			glNormal3fv;
 //			glTexCoord2fv;
-		if (m_vertices[v_index[i]].left != 0xffff)
+		if (myVertices[v_index[i]].left != 0xffff)
 		{
 			glVertex3fv   ( vertices[v_index[i]] ) ;
-			glVertex3fv   ( vertices[m_vertices[v_index[i]].left] ) ;
+			glVertex3fv   ( vertices[myVertices[v_index[i]].left] ) ;
 		}
 
-		if (m_vertices[v_index[i]].right != 0xffff && )
+		if (myVertices[v_index[i]].right != 0xffff && )
 		{
 			glVertex3fv   ( vertices[v_index[i]] ) ;
-			glVertex3fv   ( vertices[m_vertices[v_index[i]].right] ) ;
+			glVertex3fv   ( vertices[myVertices[v_index[i]].right] ) ;
 
 		}
 
 	}
 	
 	glEnd ();
+
+}
 */
-
-//}
-
 /*
 void
 TerrainBlock::setSphere( sgSphere& sp)
@@ -213,7 +225,7 @@ TerrainBlock::vertex& TerrainBlock::getVertexFromCoords (Index x, Index y)
 {
 	assert(!(x>DIM||y>DIM));
 
-	return m_vertices[ x + (DIM+1) * y];
+	return myVertices[ x + (DIM+1) * y];
 }
 
 TerrainBlock::vertex& TerrainBlock::getVertex (Index i, bool neighbour)
@@ -232,12 +244,12 @@ TerrainBlock::vertex& TerrainBlock::getVertex (Index i, bool neighbour)
 		else if (i & DIR_SOUTH)
 			return getVertexFromNeighbour(DIR_SOUTH, i ^ DIR_SOUTH );
 		else
-			return m_vertices[i];
+			return myVertices[i];
 	}
 	else if (i & DIR_SOME)
 		return nullVertex;
 	else
-		return m_vertices[i];
+		return myVertices[i];
 }
 
 TerrainBlock::Index TerrainBlock::getVertexIndex (short x, short y, bool border)
@@ -301,8 +313,8 @@ void TerrainBlock::calculateErrors()
 {
 	for (int i = 0; i < NUM_VERTICES; i++)
 	{
-		vertex &v = m_vertices[i];
-		v.error = getError(v.coord[0], v.coord[1]);
+		vertex &v = myVertices[i];
+		v.error = getError(vertices[i][0], vertices[i][1]);
 	}
 }
 
@@ -408,10 +420,10 @@ void TerrainBlock::triangulateBlock()
 	addVertex(0);
 
 	numSelectedVertices = listCounter;
-//	num_vertices = listCounter;
-//	num_texcoords = listCounter;
+	num_vertices = listCounter;
+	num_texcoords = listCounter;
 
-//	recalcBSphere();
+	recalcBSphere();
 }
 
 void TerrainBlock::triangulateQuadrant(Index iL, Index iT, Index iR, Index level)
@@ -419,7 +431,7 @@ void TerrainBlock::triangulateQuadrant(Index iL, Index iT, Index iR, Index level
 	if (level <= 0)
 		return;
 
-	if ( m_vertices[iT].enabled )
+	if ( myVertices[iT].enabled )
 	{
 		triangulateQuadrant(iL, (iL+iR)/2, iT, level-1);
 		if ( !myBuffer.contains(iT) )
@@ -438,11 +450,6 @@ void TerrainBlock::triangulateQuadrant(Index iL, Index iT, Index iR, Index level
 
 void TerrainBlock::collectVertices(unsigned short l, unsigned int errMax)
 {
-	/*
-	for (int i = 0; i < numVertices; i++)
-		if (m_vertices[i].error > errMax)
-			m_vertices[i].enabled = true;
-  */
 	const int inc = DIM>>l;
 	const int res = LEVELS-l;
 
@@ -458,7 +465,7 @@ void TerrainBlock::collectVertices(unsigned short l, unsigned int errMax)
 
 			int ind = i + j * (DIM+1);
 
-			vertex& v = m_vertices[ind];
+			vertex& v = myVertices[ind];
 
 			if (v.error >= errMax || v.marked)
 			{
@@ -486,7 +493,7 @@ void TerrainBlock::collectVertices(unsigned short l, unsigned int errMax)
 
 			int ind = i + j * (DIM+1);
 
-			vertex& v = m_vertices[ind];
+			vertex& v = myVertices[ind];
 
 			if (v.error >= errMax || v.marked)
 			{
@@ -507,7 +514,7 @@ void TerrainBlock::collectVertices(unsigned short l, unsigned int errMax)
 void TerrainBlock::reset()
 {
 	for (int k =0;k<(DIM+1)*(DIM+1);k++)
-		m_vertices[k].enabled = false;
+		myVertices[k].enabled = false;
 }
 
 void TerrainBlock::makeDeps(Index level, Index x, Index y, int segment, int dir)

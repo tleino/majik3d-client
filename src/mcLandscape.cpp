@@ -82,7 +82,15 @@ extern class mcTerrainHeightGen *terraingen;
   left  = -right ;
   bottom   = -top   ;
 */
-
+/*
+  sgMakeCoordMat4 (viewmat, campos.xyz, campos.hpr);
+  
+  sgTransposeNegateMat4 ( invmat, viewmat );
+  
+  sgCopyMat4      ( viewmat, ploo ) ;
+  sgPreMultMat4   ( viewmat, invmat ) ;
+*/
+/*
 void
 Landscape::draw(mcCamera *cam)
 {
@@ -113,8 +121,10 @@ Landscape::draw(mcCamera *cam)
 	sgMakeCoordMat4( mtx, c.xyz, c.hpr );
 	sgTransposeNegateMat4 ( inv, mtx );
 	
-	glLoadMatrixf((float *)ploo);
-	glMultMatrixf((float *)inv);
+	sgCopyMat4      ( mtx, ploo );
+	sgPreMultMat4   ( mtx, inv );
+	
+	glLoadMatrixf((float *)mtx);
 
 	m_terrainState->apply();
 
@@ -127,6 +137,7 @@ Landscape::draw(mcCamera *cam)
 	glDisable(GL_VERTEX_ARRAY);
 	glDisable (GL_TEXTURE_COORD_ARRAY);
 }
+*/
 
 float
 Landscape::getHOT(float x, float y)const
@@ -137,9 +148,6 @@ Landscape::getHOT(float x, float y)const
 float
 Landscape::getRealHOT(float x, float y)const
 {
-	return 0;
-
-
 	Mapquad *mq = Mapquad::root_map->getMapquad(Mapquad::MAX_LEVEL, x, y);
 
 	sgVec3 test_vec ;

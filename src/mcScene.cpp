@@ -422,7 +422,7 @@ Scene::draw()
   
   // Draw the stuff to screen.
 
-	m_landscape->draw(m_camera);
+//	m_landscape->draw(m_camera);
 
 	ssgCullAndDraw ( scene_root );
   

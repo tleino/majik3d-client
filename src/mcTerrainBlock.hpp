@@ -15,7 +15,7 @@ typedef unsigned int DWORD;
 typedef unsigned short WORD;
 #endif
 
-class TerrainBlock
+class TerrainBlock : public ssgVTable
 {
 public:
 			TerrainBlock				(WORD x, WORD y);
@@ -24,7 +24,6 @@ public:
 	void	exchangeBorderVertices		();
 	void	triangulateBlock			();
 	void	collectVertices				(unsigned short, unsigned int);
-	void	draw						();
 
 private:
 
@@ -39,8 +38,8 @@ private:
 
 	struct vertex
 	{
-		sgVec3 coord;
-		sgVec2 UV;
+//		sgVec3 coord;
+//		sgVec2 UV;
 		Index left;
 		Index right;
 		bool marked;
@@ -166,9 +165,9 @@ private:
 			m_hashSize	= nSize;
 		}
 
-		TerrainBlock **m_hash;
-		DWORD		m_hashSize;
-		DWORD		m_nodes;
+		TerrainBlock **m_hash;							// hash table
+		DWORD		m_hashSize;						// always power of two
+		DWORD		m_nodes;						// number of nodes
 	};
 
 	class VertexBuffer
@@ -222,7 +221,7 @@ private:
 
 	inline void addVertex		(Index i)
 	{
-		list[listCounter++] = i;
+		v_index[listCounter++] = i;
 	}
 
 	inline void swap ()
@@ -242,7 +241,7 @@ private:
 //	Index	list[(DIM+1)*(DIM+1)];
 
 private:
-	vertex	m_vertices[(DIM+1)*(DIM+1)];
+	vertex	myVertices[(DIM+1)*(DIM+1)];
 	Index	list[(DIM+1)*(DIM+1)*3];
 	Index	listCounter;
 	quadrant quadrants[4];
