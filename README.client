@@ -27,17 +27,20 @@ temporarily, though. So, wait a moment or get yourself an accelerator card.
 Getting one is preferable and highly recommended. This is not the only
 project for which you would like to have such a card.
 
+If you don't have the card you should disable textures from the menu and
+configure the client to use 320x200 resolution.
+
 The keys working in the client:
 
+8           = move forward
 4           = turn left
-5           = stop turning
 6           = turn right
-enter       = speed up
-0           = stop
-,           = walk backwards
+2           = move backward
 x           = exit
 insert      = insert menu bar
 end         = remove menu bar
++           = look up
+-           = look down
 
 Please report problems to majik@majik.netti.fi or
                           majik-users@majik.netti.fi (preferable)
