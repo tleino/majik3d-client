@@ -248,7 +248,7 @@ Scene::update()
   
    sgCoord tuxpos = m_player->getPos();
 
-   while (ob != NULL)
+   while (ob != NULL)   //TODO: move this to Object!!
      {
        sgCoord pos = ob->getPos();
        
@@ -334,7 +334,8 @@ Scene::drawText(Object *o, sgVec3 object_pos)
   int slen = strlen(o->getTextObject()->getLabel())*8;
   textpos[0] -= slen / 2;
 
-  char buf[1000], buf2[1000];
+  char buf[1000];
+  char *buf2 = new char[1000];
   int len = 0;
   int max_len = 0;
 
@@ -357,7 +358,7 @@ Scene::drawText(Object *o, sgVec3 object_pos)
 	}
     }
   
-//  o->setSayString(buf2);
+  o->setSayString(buf2);
 
   max_len+=8;
   max_len*=8;
@@ -406,7 +407,7 @@ Scene::draw()
 
 		posit[0] = obPos.xyz[0];
 		posit[1] = obPos.xyz[1];
-		posit[2] = obPos.xyz[2]+ob->getRadius();
+		posit[2] = obPos.xyz[2]+ob->getRadius()*2 - .1f;
 
 		drawText( ob, posit);
 	}

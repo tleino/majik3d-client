@@ -515,7 +515,7 @@ Mapquad::selectLOD(int level, int x, int y)
 //			block->triangulateBlock();
 
 			if (newBlock)
-				while ((rand() % 10))
+				while (/*(rand() % 10)*/ 0)
 				{
 					if (!kukkaModel)
 						kukkaModel = ssgLoadAC ("kukka.ac");
