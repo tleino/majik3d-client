@@ -5,15 +5,15 @@
 # the current directory.
 
 # Screen initialization.
-screen_width=640
-screen_height=480
-bpp=16
+screen_width=320
+screen_height=240
+bpp=32
 
 # Level of detail parameters.
-notexture=0
-nomouse=0
-nomousetrap=0
-nofog=0
+notexture=1
+nomouse=1
+nomousetrap=1
+nofog=1
 nosmooth=0
 nomenu=0
 fullscreen=0

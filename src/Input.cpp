@@ -93,7 +93,14 @@ Input::keyDown(unsigned char k, int x, int y)
 			
 			break;
 		 }
-		 
+		 tuxi->ob_pos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		 tuxi->ob_pos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		 sock->writePacket(debug->string("50 %d %d %d",
+			 (int) tuxi->ob_pos.xyz[0],
+			 (int) tuxi->ob_pos.xyz[1],
+			 (int) tuxi->ob_pos.hpr[0]));
+
+		 tuxi->movecounter++;
 		 temppos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
 		 temppos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0;;
 				 
@@ -104,6 +111,13 @@ Input::keyDown(unsigned char k, int x, int y)
 		 tuxi->lock = 1;
 		 break;
 	   case '2':
+		 tuxi->ob_pos.xyz[0] += sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		 tuxi->ob_pos.xyz[1] -= cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+		 sock->writePacket(debug->string("50 %d %d %d",
+										 (int) tuxi->ob_pos.xyz[0],
+										 (int) tuxi->ob_pos.xyz[1],
+										 (int) tuxi->ob_pos.hpr[0]));
+		 tuxi->movecounter++;
 		 if (tuxi->lock == 1)
 		   break;
 		 

@@ -21,7 +21,6 @@
 
 #include "Debug.hpp"
 #include "Object.hpp"
-#include "Display.hpp"
 
 Object *Object::first = NULL;
 Object *Object::last = NULL;
@@ -96,7 +95,7 @@ Object::init(int id, char *file_name)
 {
    this->id = id;
    strcpy(this->file_name, file_name);
-   
+  
    trans = new ssgTransform;
    
    ssgEntity *pengu = ssgLoadAC(file_name);
@@ -114,48 +113,10 @@ Object::init(int id, char *file_name)
 
 void Object::moveTo(int x, int y, int h)
 {
-   // Smooth the movement from point a to point b.
-   float old_x, old_y, old_h;
-   float dif_x, dif_y, dif_h;
-   int counter = 0;
-   
-   old_x = ob_pos.xyz[0];
-   old_y = ob_pos.xyz[1];
-   old_h = ob_pos.hpr[0];
-   dif_x = x-old_x; dif_y = y-old_y; dif_h = h-old_h;
-   
-   // Disabled for a while.
-   while (0) {
-	  counter++;
-	  
-	  if (dif_h) {
-		 old_h += dif_h/5.0f;
-		 ob_pos.hpr[0] = old_h;
-	  }
-	  if (dif_x) {
-		 old_x += dif_x/5.0f;
-		 ob_pos.xyz[0] = old_x;
-	  }
-	  if (dif_y) {
-		 old_y += dif_y/5.0f;
-		 ob_pos.xyz[1] = old_y;
-	  }
-	  
-	  if (counter == 5) {
-		 ob_pos.xyz[0] = x;
-		 ob_pos.xyz[1] = y;
-		 ob_pos.hpr[0] = h;
-		 break;
-	  }
-	  else {
-		 movecounter++;
-		 display->updateScreen();
-	  }
-   } 
-   
-   ob_pos.xyz[0] = x;
-   ob_pos.xyz[1] = y;
-   ob_pos.hpr[0] = h;
-   movecounter++;
-   lock = 0;
+	ob_pos.xyz[0] = x;
+	ob_pos.xyz[1] = y;
+	ob_pos.hpr[0] = h;
+	movecounter++;
+	lock = 0;
+//	cerr << "ID: " << id << " moved to " << x << ", " << y << ", " << h << endl;
 }
