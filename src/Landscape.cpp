@@ -1,5 +1,5 @@
 /** Hieno landscape classi. */
-
+ 
 /* Majik 3D client
  * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
  *
@@ -88,6 +88,28 @@ Landscape::init( ssgRoot *scene_root)
    state -> setOpaque () ;
    state -> disable ( GL_BLEND ) ;
 
+   /*
+   for ( int i = 0 ; i < TILE_GRID_SIZE ; i++ ) {
+	  sprintf (display->stxt, "Pre-calculation: %d%%", i*100/TILE_GRID_SIZE);
+	  display->updateScreen();
+	  	  
+	  for ( int j = 0 ; j < TILE_GRID_SIZE ; j++ ) {		 
+		 tilegrid [ i ][ j ] = new ssgTransform ;
+		 
+		 terrain -> addKid ( tilegrid [ i ][ j ] ) ;
+		 
+		 sgVec3 tilepos ;
+		 sgSetVec3 ( tilepos, (float)i * TILE_SIZE - ONLINE_TERRAIN_RANGE,
+					(float)j * TILE_SIZE - ONLINE_TERRAIN_RANGE, 0.0f ) ;
+
+
+		 tilegrid [ i ][ j ] -> setTransform ( tilepos ) ;
+		 createTile ( tilegrid [ i ][ j ], i, j, state ) ;
+	  }
+   }
+     */ 
+   sprintf (display->stxt, "%s\nPre-calculation done. %d texels loaded.\n", display->stxt, ssgGetNumTexelsLoaded());
+
    scene_root -> addKid ( terrain ) ;
    landscape->initialized = 2;
 }
@@ -173,5 +195,20 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris, char *terrain_map
    }
 
    return branch ;
+}
 
+void 
+Landscape::createTile ( ssgTransform *tile, int x, int y, ssgSimpleState *state ) 
+{
+/*
+   float rr[] = { 0.0f, 1000.0f, 2000.0f, 8000.0f } ;
+   ssgRangeSelector *lod = new ssgSelector () ;
+   
+   lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE   - 1,   0.0f ) ) ;
+   lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/4 - 1, -10.0f ) ) ;
+   lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/6 - 1, -20.0f ) ) ;
+//   lod  -> setRanges ( rr, 4 ) ;
+   
+   tile -> addKid ( lod ) ;
+*/
 }

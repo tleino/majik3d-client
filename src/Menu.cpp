@@ -160,7 +160,7 @@ Menu::mkDialog(char *str)
 void
 Menu::aboutCB(puObject *)
 {
-   mkDialog("Majik 3D 0.00/M1");
+   mkDialog("Majik 3D 0.00/M3");
 }
 
 void
@@ -227,6 +227,7 @@ Menu::noFogCB(puObject *)
    config->nofog = 1;
    glDisable(GL_FOG);
 }
+
 void
 Menu::flatCB(puObject *)
 {

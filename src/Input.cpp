@@ -94,24 +94,6 @@ Input::keyDown(unsigned char k, int x, int y)
 	   case 'x':
 		 exit ( 0 ) ;
 		 break;
-	   case 'e':
-		 display->sun_x+=0.1f;
-		 break;
-	   case 'r':
-		 display->sun_y+=0.1f;
-		 break;
-	   case 't':
-		 display->sun_z+=0.1f;
-		 break;
-	   case 'd':
-		 display->sun_x-=0.1f;
-		 break;
-	   case 'f':
-		 display->sun_y-=0.1f;
-		 break;
-	   case 'g':
-		 display->sun_z-=0.1f;
-		 break;
 	   case '8':
 		 if (tuxi->lock == 0) {
 			tuxi->movecounter++;
@@ -226,10 +208,7 @@ captureScreen()
    GLubyte *pixels = new GLubyte[display->width*display->height*3];
    
    glReadPixels( 0, 0, display->width, display->height, GL_RGB, GL_UNSIGNED_BYTE, pixels );
-   
    ofstream to("screenshot.rgb", ios::binary | ios::app | ios::trunc);
-   
    to.write( pixels, display->width*display->height*3);
-
    to.close();
 }
