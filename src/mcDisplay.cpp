@@ -148,27 +148,8 @@ Display::updateScreen()
       tmp = sock->readPacket();
     }
   
-  //   if (mousetrap)
-  //	 mousetrap();
-  //   if (Display::sceneVisible)
-
-//  if (mapFound)
-  //  {
-	scene->draw();
-//    }
-/*  else if (Player *plr = scene->getPlayer() != NULL)
-    {
-      Mapquad *temp;
-	  sgCoord plrPos = plr->getPos();
-
-      temp = Mapquad::getRootMap().tryMapquad(12,
-					   plrPos.xyz[0],
-					   plrPos.xyz[1]);
-      if (temp != NULL && temp->isMapReceived())  
-		mapFound = true;
-    }
-*/
-	overlay->draw();
+  scene->draw();
+  overlay->draw();
   
   glutSwapBuffers();
   glutPostRedisplay();
