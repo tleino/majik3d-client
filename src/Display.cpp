@@ -27,7 +27,7 @@ puMenuBar *main_menu_bar;
 time_t t = time(NULL);
 int frames = 0;
 int mouse_x, mouse_y;
-int mousetrap = 0;
+int mousetrap = 1;
 
 void exit_cb(puObject *);
 void flat_cb(puObject *);
