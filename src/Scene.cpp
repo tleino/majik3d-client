@@ -222,11 +222,10 @@ Scene::update()
 		scale[1] = 1.0f;
 		scale[2] = sin( (float)ob->getMoveCounter() / 2.0 ) / 4 + 1;
 		
-		if (strcmp(ob->getFileName(), "tuxedo.ac"))
+		if (!strcmp(ob->getFileName(), "tuxedo.ac"))
 		  {
 			 ob->rotateX( 180.0f );
-			 ob->setScale( scale );
-			 
+			 ob->setScale( scale );	 
 		  }
 		else
 		  ob->setScale( scale );
@@ -239,7 +238,7 @@ Scene::update()
    sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
    sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
    
-   campos.hpr[0] += 180.0f;
+   // campos.hpr[0] += 180.0f;
    
    if (config->camera == 0) {
 	  campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
@@ -256,11 +255,11 @@ Scene::update()
 	  campos.hpr[1] = display->pitch;
    }
    
-   if (strcmp(tuxi->getFileName(), "tuxedo.ac"))
+   if (!strcmp(tuxi->getFileName(), "tuxedo.ac"))
 	 {
-		tuxi->rotateX( 180.0f );
+		tuxi->rotateX( -180.0f );
 	 }
-
+   
    ssgSetCamera ( & campos ) ;
 }
 

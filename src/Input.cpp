@@ -29,6 +29,7 @@
 #include "Socket.hpp"
 #include "Config.hpp"
 #include "Overlay.hpp"
+#include "Protocol.hpp"
 
 #include <fstream.h>
 
@@ -78,6 +79,7 @@ Input::keyDown(unsigned char k, int x, int y)
 		 overlay->inp->hide();
 	  }
 	  else {
+		 overlay->inp_command = CMD_SAY;
 		 overlay->inp->reveal();
 		 overlay->inp->setCursor(0);
 		 overlay->inp->acceptInput();
