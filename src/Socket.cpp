@@ -94,9 +94,12 @@ Socket::connectServer()
    if ((nSocket = socket (AF_INET, SOCK_STREAM, 0)) < 0)
      error->put(ERROR_FATAL, "Could not create a socket: %s", strerror (errno));
    
-   if (connect (nSocket, (struct sockaddr *) &ServerAddr, sizeof (ServerAddr)) < 0)
-      error->put(ERROR_FATAL, "Unable to connect to remote host: %s", strerror (errno));
-  
+   if (connect (nSocket, (struct sockaddr *) &ServerAddr, sizeof (ServerAddr)) < 0) {
+      printf ("Unable to connect to remote host: %s\n", strerror (errno));
+	  printf ("Attempting to reconnect...\n");
+	  sleep (10);
+	  connectServer();
+   }
 }
 
 void 
