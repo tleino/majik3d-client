@@ -267,6 +267,7 @@ Display::updateScreen()
    sprintf (fps, "fps: %f", (float) frames/t2);
    fps_text->setLabel (fps);
    puDisplay();
+   glDisable(GL_BLEND);
 
    /* Display the cursor. FIXME: Should be displayed only if using hardware
       acceleration which doesn't provide it's own cursor */
