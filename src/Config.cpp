@@ -46,26 +46,10 @@ Config::~Config()
 void
 Config::parseOption(char *option, char *value)
 {
-   struct hostent *h;
-   
    if(strcmp(option, "server") == 0)
 	 {
-		if(sscanf(value, "%*d.%*d.%*d.%*d") == 4)
-		  {
-			 server_ip = new char [16];
-			 strcpy(&server_ip[0], &value[0]);
-		  }
-		else
-		  {
-			 h = gethostbyname(value);
-			 if(h == NULL)
-			   error->put(ERROR_FATAL, "Invalid host in majikrc.");
-			 sprintf(&server_ip[0], "%d.%d.%d.%d",
-					 (unsigned char)h->h_addr_list[0][0],
-					 (unsigned char)h->h_addr_list[0][1],
-					 (unsigned char)h->h_addr_list[0][2],
-					 (unsigned char)h->h_addr_list[0][3]);
-		  }
+		server_ip = new char [strlen(value)];
+		strcpy(server_ip, value);
 		return;
 	 }
    if(strcmp(option, "port") == 0)
@@ -159,6 +143,8 @@ Config::readOptions(char *filename)
 	 {
 		sprintf(file, "%s/%s", getenv("HOME"), ".majikrc");
 	 }
+   else
+	 strcpy(file, filename);
       
    fp = fopen(file, "r");
    if(fp == NULL)
