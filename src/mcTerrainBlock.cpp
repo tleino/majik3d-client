@@ -37,6 +37,11 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 	v_index = new unsigned short[1000];
 	texcoords = new sgVec2[(DIM+1)*(DIM+1)];
 	t_index = v_index;
+	colours = new sgVec4[1];
+	sgSetVec4 (colours[0], 0.0, 1.0, 0.0, 1.0);
+	c_index = new unsigned short[1000];
+	memset(c_index, 0, sizeof(unsigned short)*1000);
+	num_colours = 1;
 	
 	type |= SSG_TYPE_VTABLE ;
 	gltype = GL_TRIANGLE_STRIP ;

@@ -36,6 +36,7 @@ extern Player *tuxi;
 float meep = 0.0f;
 int flag = 0;
 int ownId = -1;
+sgVec3 tempPos = { 0, 0, 0 };
 
 Protocol::Protocol()
 {
@@ -109,29 +110,39 @@ Protocol::parseCommand(char *input)
 	  error->put (ERROR_WARNING, "Object %d not found!", id);
 	  break;
 	}
-	   
-    if (ob == tuxi)
+	  
+	
+	if (ob == tuxi)  
 	{
-	  int i, j;
-	  ((Player *)tuxi)->unLockMovement();
-	  for (j= - 4; j < 4; j++)
-	    for (i= - 4; i < 4; i++)
+		((Player *)tuxi)->unLockMovement();
+
+		sgCoord tuxPos = ob->getPos();
+
+		if (abs(tempPos[0]-tuxPos.xyz[0]) > 10 || abs(tempPos[1]-tuxPos.xyz[1]) > 10)
 		{
-			Mapquad::root_map->getMapquad(12, (int)x + 256+ i*512, (int)y +256 + j*512);
+			sgCopyVec3 (tempPos, tuxPos.xyz);
+
+			int i, j;
+			
+			for (j= - 4; j < 4; j++)
+				for (i= - 4; i < 4; i++)
+				{
+					Mapquad::root_map->getMapquad(12, (int)x + 256+ i*512, (int)y +256 + j*512);
+				}
+
+			Mapquad::root_map->resetBlocks();
+
+			Mapquad::root_map->selectLOD(4, x, y);
+			Mapquad::root_map->selectLOD(3, x, y);
+			Mapquad::root_map->selectLOD(2, x, y);
+			Mapquad::root_map->selectLOD(1, x, y);
+			Mapquad::root_map->selectLOD(0, x, y);
+
+			Mapquad::root_map->triangulateBlocks();
 		}
 
-		Mapquad::root_map->resetBlocks();
+	}
 
-		Mapquad::root_map->selectLOD(4, x, y);
-		Mapquad::root_map->selectLOD(3, x, y);
-		Mapquad::root_map->selectLOD(2, x, y);
-		Mapquad::root_map->selectLOD(1, x, y);
-		Mapquad::root_map->selectLOD(0, x, y);
-
-		Mapquad::root_map->triangulateBlocks();
-
-//	      }
-	}  
       break;
     case CMD_OWN_ID:
       sscanf(data, "%d", &id);
@@ -144,15 +155,15 @@ Protocol::parseCommand(char *input)
       
       ob = Object::first;
 	   
-      while (ob != NULL)
+	while (ob != NULL)
 	{
-	  if (ob->getID() == id)
+		if (ob->getID() == id)
 	    {
-	      delete ob;
-	      break;
+			delete ob;
+			break;
 	    }
 			
-	  ob = ob->getNext();
+		ob = ob->getNext();
 	}
       
       break;
@@ -264,14 +275,19 @@ Protocol::parseCommand(char *input)
 		  &turbidity) == 4)
 	{
 	  printf ("CMD_SUN_POS %f %f %f %f\n", heading, pitch, luminance, turbidity);
-//	  mc_sky->setLuminanceFactor(luminance);
-//	  mc_sky->setSunPosition(heading, pitch); 
-//	  mc_sky->setTurbidity(turbidity);
-//	  scene->redrawSky();
+	  mc_sky->setLuminanceFactor(luminance);
+	  mc_sky->setSunPosition(heading, pitch); 
+	  mc_sky->setTurbidity(turbidity);
+	  scene->redrawSky();
 	  //scene->sky_entity = mc_sky->Draw();
 	}
       else
 	{
+//	  mc_sky->setLuminanceFactor(1.0);
+//	  mc_sky->setSunPosition(1.0, 1.0); 
+//	  mc_sky->setTurbidity(2.5);
+	  scene->redrawSky();
+
 	  error->put (ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_SUN_POS.");
 	}

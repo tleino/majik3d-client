@@ -48,6 +48,8 @@ int quad_sizes[NUM_LEVELS] =
 };
 
 //ssgSimpleState *Mapquad::state = NULL;
+static ssgEntity *kukkaModel = NULL;
+
 
 extern ssgSimpleState *state;
 
@@ -397,8 +399,10 @@ Mapquad::selectLOD(int level, int x, int y)
 
 		if (dist<2500)
 		{
+			int newBlock = 0;
 			if (!block)
 			{
+				newBlock = 1;
 				block = new TerrainBlock (top_x, top_y );
 
 				sgSphere sp;
@@ -410,27 +414,39 @@ Mapquad::selectLOD(int level, int x, int y)
 				lod_switch->addKid ( block );
 				trans->addKid ( lod_switch );
 				landscape->terrain->addKid ( trans );
-/*
-				ssgTransform *kukka = new ssgTransform ();
-				ssgEntity *entity = ssgLoadAC ("tuxedo.ac");
-				sgCoord tmpPos;
-
-				tmpPos.xyz[0] = 0;
-				tmpPos.xyz[1] = 0;
-				tmpPos.xyz[2] = landscape->getHOT(top_x, top_y);
-				tmpPos.hpr[1] = 0.0f;
-				tmpPos.hpr[2] = 0.0f;
-
-				kukka->addKid (entity);
-				kukka->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
-
-				kukka->setTransform (&tmpPos);
-				trans->addKid(kukka);
-*/
 			}
 
 			lod_switch->select(1);
 			block->collectVertices ( level,  dist/50);
+			block->triangulateBlock();
+
+			if (newBlock)
+				while (!(rand() % 2))
+				{
+					if (!kukkaModel)
+						kukkaModel = ssgLoadAC ("kukka.ac");
+
+					ssgTransform *kukka = new ssgTransform ();
+					sgCoord tmpPos;
+
+					tmpPos.xyz[0] = rand() % 512;
+					tmpPos.xyz[1] = rand() % 512;
+					tmpPos.xyz[2] = landscape->getHOT(top_x+tmpPos.xyz[0], top_y+tmpPos.xyz[1]);
+					tmpPos.hpr[1] = 0.0f;
+					tmpPos.hpr[2] = 0.0f;
+
+					kukka->addKid (kukkaModel);
+					kukka->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
+
+					kukka->setTransform (&tmpPos);
+
+					ssgRangeSelector *rangeSelect = new ssgRangeSelector();
+					rangeSelect->addKid(kukka);
+					float ranges[2] = { 0, 500 };
+					rangeSelect->setRanges ( ranges, 2 );
+					
+					trans->addKid(rangeSelect);
+				}
 		}
 		else if (block)
 		{

@@ -42,12 +42,15 @@ float min_x, max_x, min_y, max_y, min_Y, max_Y;
 
 mcSky::mcSky(int x_segs, int y_segs)
 {
-   sgSetVec3(this->zenith, 0.0, 1.0, 0.0);
-   this->createSphere(x_segs, y_segs);
-   this->setTurbidity(3.5);
-   this->setSunPosition(M_PI/2.0, 1.3*M_PI/4.0);
-   this->setLuminanceFactor(1.2);
-   this->sky_ok = false;
+	sky = NULL;
+
+	sgSetVec3(this->zenith, 0.0, 1.0, 0.0);
+	this->createSphere(x_segs, y_segs);
+	this->setTurbidity(3.5);
+	this->setSunPosition(M_PI/2.0, 1.3*M_PI/4.0);
+	this->setLuminanceFactor(1.2);
+
+	this->sky_ok = false;
 }
 
 /**
@@ -135,6 +138,7 @@ ssgEntity *mcSky::Draw()
    state->enable(GL_COLOR_MATERIAL);
    state->setShadeModel(GL_SMOOTH);
    state->disable(GL_CULL_FACE);
+   state->disable(GL_TEXTURE_2D);
    state->setOpaque();
    state->disable(GL_FOG);
    //state->setShininess(0);
@@ -368,7 +372,7 @@ void mcSky::createSphere(int x_segs, int y_segs)
    float theta, phi;
    
    if (this->sky != NULL)
-	 delete[] this->sky;
+	 delete this->sky;
    
    if (x_segs * y_segs <= 0)
 	 return;
