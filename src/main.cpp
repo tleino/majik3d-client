@@ -85,10 +85,10 @@ main(int argc, char **argv)
 
   // Check the config object for ip / port settings and create the socket
   // accordingly.
-//  if(config->server_ip != NULL || config->server_port)
-  //  sock = new Socket(config->server_ip, config->server_port);
-//  else
-  //  sock = new Socket("195.74.0.76", 4000);
+ if(config->getServerIP() != NULL || config->getServerPort())
+   sock = new Socket(config->getServerIP(), config->getServerPort());
+  else
+   sock = new Socket("195.74.0.76", 4000);
    
   glutInit(&argc, argv);
   
@@ -101,7 +101,7 @@ main(int argc, char **argv)
     }
   
 #ifndef WIN32
-//  sock->connectServer();
+  sock->connectServer();
 #endif   
   
   // Open the screen
