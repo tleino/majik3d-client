@@ -48,10 +48,12 @@ class Scene
    void update();
    /// Initialize the scene.
    void init();
+
    ///
    void drawText(puText *, sgVec3);
    
    ///
+
    float getHOT( float, float );
    
 
@@ -59,8 +61,10 @@ class Scene
    
    ///
    ssgRoot *scene_root;
+
    ///
    int initialized;
+
    
 };
 

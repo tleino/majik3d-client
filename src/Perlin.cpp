@@ -24,6 +24,7 @@
 #include "Perlin.hpp"
 
 #define PERSISTENCE 0.6
+
 #define OCTAVES       1
 
 #define INTERPOLATION_TABLE_SIZE	256

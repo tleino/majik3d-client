@@ -41,6 +41,7 @@ extern Object       *tuxi;
 int pitch;
 sgCoord temppos;
 
+
 void captureScreen();
 
 Input::Input()
@@ -56,6 +57,7 @@ Input::~Input()
 void
 Input::keyDown(unsigned char k, int x, int y)
 {
+
  if (tuxi == NULL && !display->inp->isVisible())
 	 return;
    
@@ -174,6 +176,7 @@ Input::keyDown(unsigned char k, int x, int y)
 		 //	  exit(0);
 		 break;
 	  }
+
    }
 }
 

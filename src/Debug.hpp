@@ -26,13 +26,18 @@
 class Debug
 {
  public:
+	Debug();
+	~Debug();
    /// Add a new debug message.
    void put(char *, ...);
+
    /// Allow printf() style formatting in DEBUG() macro.
    char *string(char *, ...);
+
 };
 
 extern Debug *debug;
+
 
 #if 0
 /// Use this macro to add all the unnecessary information to your debug messages.
@@ -40,5 +45,6 @@ extern Debug *debug;
 #else
 # define DEBUG(x)
 #endif /* 0 */
+
 
 #endif /* __DEBUG_HPP__ */

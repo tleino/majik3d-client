@@ -95,6 +95,7 @@ void inputCB (puObject *o)
    display->inp->hide();
 }
 
+
 Display::Display()
 {
    width = 640;
@@ -228,8 +229,12 @@ Display::updateScreen()
    //int t2 = (int) (time(NULL) - t), warp = 0;
    int warp = 0;
    char *tmp;
+
    frames++;
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  
+   tmp = sock->readPacket();
    
   if (scene->initialized == 0) {
 	 display->status_text->setPosition(5, display->height-25);
@@ -299,6 +304,7 @@ Display::updateScreen()
    start_time = read_time_of_day();
    
    /* Draw menus etc using PUI (part of PLIB) */
+
    
    /* Display the cursor. FIXME: Should be displayed only if using hardware
       acceleration which doesn't provide it's own cursor */
@@ -336,4 +342,5 @@ Display::resizeScreen(int w,int h)
    glViewport(0, 0, w, h);
    display->inp->setSize(display->width-5, 5+20 ) ;
    //glutPostRedisplay();
+
 }

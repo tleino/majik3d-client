@@ -1,26 +1,40 @@
-/* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+#ifndef _SOCKET_HPP_
+#define _SOCKET_HPP_
 
-#ifndef __SOCKET_HPP__
-#define __SOCKET_HPP__
+#ifdef WIN32
+
+#include <windows.h>
 
 /** A socket class. Handles the connecting, disconnecting, reading
     and writing packets with the server. */
+class Socket
+{
+
+public:
+	Socket(char *szHost,int nPort);					// Connect to a host.
+	virtual ~Socket();
+	void	Thread();									// The new thread.
+public:
+	virtual char *readPacket();					// Reads a line of data, returns NULL if there is no line ready. (The tailing \r is removed)
+	virtual void writePacket(char *szFmt,...);	// Writes data.
+
+	void	Dispatch(char *szString);
+public:
+	char	*szHost;
+	int		nPort;
+	int		nSocket;
+	char	*szBuffer;
+	HANDLE	hWait;	// The wait handle.
+	HANDLE	NetThread;
+	HANDLE	LinesSemaphore;	// We need a semaphore to be sure that the linked list of lines recived is ok.
+	struct LinkedList_s {
+		char *szText;
+		struct LinkedList_s *pNext;
+	};
+	struct LinkedList_s *pFirstLine;
+};
+
+#else
 
 class Socket
 {
@@ -45,8 +59,13 @@ class Socket
  private:
    int nSocket;
    char *szBuffer;
+
 };
+
+
+#endif /* __WIN32__ */
 
 extern Socket *sock;
 
 #endif /* __SOCKET_HPP__ */
+

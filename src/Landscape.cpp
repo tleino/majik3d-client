@@ -57,6 +57,7 @@ Landscape::Landscape()
    terrain  = NULL ;
    
    DEBUG("Landscape constructor");
+
 }
 
 Landscape::~Landscape()
@@ -89,6 +90,7 @@ Landscape::init( ssgRoot *scene_root)
    state -> setOpaque () ;
    state -> disable ( GL_BLEND ) ;
 
+
    /*
    for ( int i = 0 ; i < TILE_GRID_SIZE ; i++ ) {
 	  sprintf (display->stxt, "Pre-calculation: %d%%", i*100/TILE_GRID_SIZE);
@@ -102,16 +104,20 @@ Landscape::init( ssgRoot *scene_root)
 		 sgVec3 tilepos ;
 		 sgSetVec3 ( tilepos, (float)i * TILE_SIZE - ONLINE_TERRAIN_RANGE,
 					(float)j * TILE_SIZE - ONLINE_TERRAIN_RANGE, 0.0f ) ;
-		
+
+
 		 tilegrid [ i ][ j ] -> setTransform ( tilepos ) ;
 		 createTile ( tilegrid [ i ][ j ], i, j, state ) ;
 	  }
    }
      */ 
    sprintf (display->stxt, "%s\nPre-calculation done. %d texels loaded.\n", display->stxt, ssgGetNumTexelsLoaded());
+
    
+
    scene_root -> addKid ( terrain ) ;
    landscape->initialized = 2;
+
 }
 
 ssgBranch *
@@ -215,11 +221,13 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris, char *terrain_map
    }
 
    return branch ;
+
 }
 
 void 
 Landscape::createTile ( ssgTransform *tile, int x, int y, ssgSimpleState *state ) 
 {
+
 /*
    float rr[] = { 0.0f, 1000.0f, 2000.0f, 8000.0f } ;
    ssgRangeSelector *lod = new ssgSelector () ;
@@ -231,4 +239,5 @@ Landscape::createTile ( ssgTransform *tile, int x, int y, ssgSimpleState *state 
    
    tile -> addKid ( lod ) ;
 */
- }
+}
+

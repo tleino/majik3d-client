@@ -83,6 +83,7 @@ class Display
    puInput *inp;
    ///
    char stxt[8192*3];
+
 };
 
 extern Display *display;

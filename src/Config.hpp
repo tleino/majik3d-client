@@ -28,6 +28,7 @@ class Config
 {
  public:
    Config();
+   ~Config();
    /// Try to read user configuration from configuration files.
    void readConfig();
  private:

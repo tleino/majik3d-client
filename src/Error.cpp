@@ -55,7 +55,7 @@ Error::put(const int severity, const char *fmt, ...)
    switch (severity)
 	 {
 	  case ERROR_FATAL:
-		exit(1);
+//		exit(1);
 		break;
 	  case ERROR_WARNING:
 		break;

@@ -32,9 +32,11 @@
 #include "Input.hpp"
 #include "Config.hpp"
 #include "Scene.hpp"
+
 #include "Protocol.hpp"
 #include "Perlin.hpp"
 #include "Mapquad.hpp"
+
 
 bool quit = false;
 Error *error = NULL;
@@ -50,24 +52,30 @@ Protocol *protocol = NULL;
 Perlin *perlin = NULL;
 Mapquad *Mapquad::root_map = NULL;
 
+
 int
 main(int argc, char **argv)
 {      
    // Initialize the necessary global variables as proper objects
    error = new Error;
    debug = new Debug;
+
    sock = new Socket("195.197.61.60", 4001);
+
    display = new Display;
    landscape = new Landscape;
    input = new Input;
    config = new Config;
    menu = new Menu;
    scene = new Scene;
+
    protocol = new Protocol;
    perlin = new Perlin;
    Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
+
    
    glutInit(&argc, argv);
+
    config->readConfig();
    
    // Assign proper width / height 
@@ -77,10 +85,14 @@ main(int argc, char **argv)
 		display->height = config->screen_height;
 		display->bpp = config->bpp;
 	 }
-   
-   sock->connectServer();
-   //sock->writePacket("51\r\n"); /* Log in to the server */
+  
+   sock->writePacket("51\r\n"); /* Log in to the server */
 
+  // sock->connectServer();
+#ifndef WIN32
+   sock->connectServer();
+#endif   
+      
    // Open the screen
    display->openScreen();
    
