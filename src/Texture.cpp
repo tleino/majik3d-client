@@ -44,6 +44,10 @@ Texture::loadTexture(char *fname)
 {
    GLubyte *tex;
    
+   glGenTextures(1, &textureId);
+   glBindTexture(GL_TEXTURE_2D, textureId);
+   return textureId;
+   
    loadPNG (fname);
    
    tex = new GLubyte[this->width*this->width*3];

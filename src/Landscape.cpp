@@ -24,11 +24,11 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include "Material.hpp"
 #include "Error.hpp"
 #include "Display.hpp"
 #include "Debug.hpp"
 #include "Perlin.hpp"
-#include "Texture.hpp"
 #include "Landscape.hpp"
 
 /* These should be moved into headers */
@@ -214,20 +214,20 @@ void Landscape::init()
    glEndList();
    
    int i, k;
-   Texture *picture;
+   ssgTexture *picture;
    
    /* Load textures. FIXME: loadTexture shouldn't return the id instantly,
 	* it would be nicer to be able to fetch it using findTexture, so we
 	* wouldn't need to assign those ids as global */
    
-   picture = new Texture;
-   grassTex_id = picture->loadTexture("gfx/grass.png");
+   picture = new ssgTexture("gfx/grass.rgb", TRUE, TRUE);
+   grassTex_id = picture->getHandle();
    
-   picture = new Texture;
-   sandstoneTex_id = picture->loadTexture("gfx/sandstone.png");
+   picture = new ssgTexture("gfx/sandstone.rgb", TRUE, TRUE);
+   sandstoneTex_id = picture->getHandle();
 
-   picture = new Texture;
-   playerTex_id = picture->loadTexture("gfx/ukkelipukkeli.png");
+   picture = new ssgTexture("gfx/ukkelipukkeli.rgb", FALSE, FALSE);
+   playerTex_id = picture->getHandle();
 }
 
 /* This should be cut into several smaller functions */
@@ -343,7 +343,10 @@ void Landscape::draw()
    
    if (!display->noTexture) {
 	  glEnable(GL_TEXTURE_2D);
+	  // DEBUG("sandstone_gst");
+	  // sandstone_gst->apply();
 	  glBindTexture(GL_TEXTURE_2D, sandstoneTex_id);
+	  // DEBUG("applied");
    }
    glPushMatrix();
    //   glTranslatef(0.0, 0.0, -500);

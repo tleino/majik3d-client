@@ -20,7 +20,9 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <pu.h>
+#include <ssg.h>
 
+#include "Material.hpp"
 #include "Menu.hpp"
 #include "Landscape.hpp"
 #include "Input.hpp"
@@ -92,6 +94,7 @@ Display::openScreen()
    glutInitWindowSize(width, height);
    glutInitWindowPosition(0, 0);
    glutCreateWindow("majik");
+   
    glutReshapeFunc(resizeScreen);
    glutDisplayFunc(updateScreen);
    glutKeyboardFunc(input->keyDown);
@@ -102,6 +105,11 @@ Display::openScreen()
    //glutIdleFunc(idle);
    
    glutWarpPointer (width/2, height/2);
+      
+   /* PLIB: Simple Scene Graph */
+   DEBUG ("ssgInit");
+   ssgInit();
+   initMaterials();
    
    /* PLIB: Picoscopic User Interface */
    puInit();
