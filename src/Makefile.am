@@ -6,7 +6,7 @@ mcLandscape.hpp mcObject.cpp mcObject.hpp mcProtocol.cpp mcProtocol.hpp \
 mcSocket.cpp mcSocket.hpp mcPerlin.cpp mcPerlin.hpp mcMenu.cpp mcMenu.hpp \
 mcScene.cpp mcMapquad.hpp mcMapquad.cpp mcScene.hpp mcOverlay.cpp \
 mcOverlay.hpp mcSky.cpp mcSky.hpp mcTerrainBlock.cpp mcTerrainBlock.hpp \
-main.cpp
+mcTexGen.cpp mcTexGen.hpp main.cpp
 INCLUDES=-I/usr/local/plib/include
 CFLAGS=-pg
 CLEANFILES = *.debug *~

@@ -52,7 +52,7 @@ class mcTexGen
 	virtual int getPixel(double x, double y) = 0;
 	virtual void getPixels(unsigned char *image, double nwx, double nwy, double sex, double sey, int width, int height) = 0;
 	
-	~mcTexGen();
+	virtual ~mcTexGen();
 };
 
 #endif
