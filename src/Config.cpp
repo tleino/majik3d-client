@@ -20,7 +20,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netdb.h>
-#include "Majik.hpp"
+#include <getopt.h>
+
+#include "Error.hpp"
+#include "Debug.hpp"
+#include "Config.hpp"
+
+static struct option long_options[] = {
+	 { "version", 0, 0, 'V' },
+	 { "help", 0, 0, '?' },
+	 { "host", 0, 0, 'H' },
+	 { "port", 0, 0, 'p' },
+	 { "width", 0, 0, 'w' },
+	 { "height", 0, 0, 'h' },
+	 { "bpp", 0, 0, 'b' },
+	 { 0, 0, 0, 0 },
+};
 
 Config::Config()
 {
@@ -28,9 +43,7 @@ Config::Config()
    server_port = 0;
    screen_width = screen_height = bpp = 0;
    
-   #ifdef DEBUG
-	 debug->put("Config constructor");
-   #endif
+   DEBUG ("Config constructor");
 }
 
 Config::~Config()
@@ -38,9 +51,7 @@ Config::~Config()
    if(server_ip != NULL)
 	 delete [] server_ip;
    
-   #ifdef DEBUG
-	 debug->put("Config destructor");
-   #endif
+   DEBUG ("Config destructor");
 }
 
 void
@@ -125,9 +136,7 @@ Config::parseLine(char *strbuf, int line)
    
    memcpy(&value[0], &strbuf[vstart], vend - vstart);
    
-   #ifdef DEBUG
-	 debug->put("option: '%s' = '%s'\n", option, value);
-   #endif
+   DEBUG (debug->string("option: '%s' = '%s'", option, value));
    parseOption(&option[0], &value[0]);
 }
 
@@ -166,4 +175,13 @@ Config::readOptions(char *filename)
 	 }
    delete strbuf;
    return true;
+}
+
+void
+Config::readConfig (int argc, char **argv)
+{
+   if(config->readOptions("~/.majikrc") == false)
+	 if(config->readOptions("/etc/majikrc") == false)
+	   if(config->readOptions("majikrc") == false)
+		 error->put(ERROR_WARNING, "No majikrc file found.");
 }

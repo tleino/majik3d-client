@@ -19,8 +19,7 @@
 #ifndef __P3D_HPP__
 #define __P3D_HPP__
 
-#include <stdio.h>
-#include "Majik.hpp"
+#include "Matrix.hpp"
 
 class P3D
 {

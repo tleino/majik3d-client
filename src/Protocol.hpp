@@ -28,6 +28,8 @@ class Protocol
    void sendCommand();
 };
 
+extern Protocol *protocol;
+
 /* A list of valid MCP commands. Almost every command can be sent from server
  * to client, but only some commands can be sent from client to server. These
  * commands are marked with a #.

@@ -29,4 +29,6 @@ class Input
    static void mouseDown(int,int,int,int);
 };
 
+extern Input *input;
+
 #endif /* __INPUT_HPP__ */

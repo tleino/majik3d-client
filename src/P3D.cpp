@@ -16,9 +16,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <stdio.h>
 #include <math.h>
-#include "Majik.hpp"
+
+#include "P3D.hpp"
 
 P3D::P3D(double x1, double y1, double z1)
 {

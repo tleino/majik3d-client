@@ -24,14 +24,17 @@ class Config
  public:
    Config();
    ~Config();
-   bool readOptions(char *);
+   void readConfig(int, char **);
  private:
    void parseLine(char *, int);
    void parseOption(char *, char *);
+   bool readOptions(char *);
  public:
    char *server_ip;
    int server_port;
    int screen_height, screen_width, bpp;
 };
+
+extern Config *config;
 
 #endif /* __CONFIG_HPP__ */

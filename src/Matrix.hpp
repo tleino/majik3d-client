@@ -20,7 +20,6 @@
 #define __MATRIX_HPP__
 
 #include <stdio.h>
-#include "Majik.hpp"
 
 class Matrix
 {
@@ -41,5 +40,7 @@ class Matrix
    Matrix operator*=(const Matrix &);
    double mdata[4][4];
 };
+
+extern Matrix *matrix;
 
 #endif /* __MATRIX_HPP__ */

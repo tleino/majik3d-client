@@ -30,4 +30,6 @@ class Object
    int id;
 };
 
+extern Object *object;
+
 #endif /* __OBJECT_HPP__ */

@@ -20,7 +20,11 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <pu.h>
-#include "Majik.hpp"
+
+#include "Landscape.hpp"
+#include "Input.hpp"
+#include "Debug.hpp"
+#include "Display.hpp"
 
 puText *fps_text;
 puMenuBar *main_menu_bar;
@@ -39,10 +43,15 @@ void fog_cb(puObject *);
 void nofog_cb(puObject *);
 void mousetrap_cb(puObject *);
 void nomousetrap_cb(puObject *);
+void mouse_cb(puObject *);
+void nomouse_cb(puObject *);
+void about_cb(puObject *);
 
-char *effects_submenu[] = { "Smooth", "Flat", "Fog", "No Fog", "Wireframe", "No Wireframe", "Mousetrap", "No Mousetrap", NULL };
+char *help_submenu[] = { "About...", NULL };
+char *settings_submenu[] = { "Smooth", "Flat", "Fog", "No Fog", "Wireframe", "No Wireframe", "Mousetrap", "No Mousetrap", "Mouse", "No Mouse", NULL };
 char *majik_submenu[] = { "Exit", NULL };
-puCallback effects_submenu_cb[] = { smooth_cb, flat_cb, fog_cb, nofog_cb, wireframe_cb, nowireframe_cb, mousetrap_cb, nomousetrap_cb, NULL };
+puCallback help_submenu_cb[] = { about_cb, NULL };
+puCallback settings_submenu_cb[] = { smooth_cb, flat_cb, fog_cb, nofog_cb, wireframe_cb, nowireframe_cb, mousetrap_cb, nomousetrap_cb, mouse_cb, nomouse_cb, NULL };
 puCallback majik_submenu_cb[] = { exit_cb, NULL };
 
 double read_time_of_day();
@@ -60,6 +69,23 @@ double read_time_of_day ()
    
    return (double) tv . tv_sec + (double) tv . tv_usec / 1000000.0 ;
 #endif
+}
+
+void
+about_cb(puObject *)
+{
+}
+
+void
+mouse_cb(puObject *)
+{
+   puShowCursor();
+}
+
+void
+nomouse_cb(puObject *)
+{
+   puHideCursor();
 }
 
 void
@@ -135,9 +161,7 @@ Display::Display()
 
    // cursor = new Cursor;
    
-   #ifdef DEBUG
-	 debug->put("Display constructor");
-   #endif
+   DEBUG("Display constructor");
 }
 
 Display::Display(int w, int h, int b)
@@ -148,18 +172,14 @@ Display::Display(int w, int h, int b)
 
    // cursor = new Cursor;
    
-   #ifdef DEBUG
-	 debug->put("Display constructor: width=%d height=%d bpp=%d", width, height, bpp);
-   #endif	 
+   DEBUG (debug->string("Display constructor: width=%d height=%d bpp=%d", width, height, bpp));
 }
 
 Display::~Display()
 {
    closeScreen();
    
-   #ifdef DEBUG
-	 debug->put("Display destructor");
-   #endif
+   DEBUG ("Display destructor");
 }
 
 void
@@ -168,9 +188,7 @@ Display::openScreen()
    unsigned long flags;
    GLenum format;
    
-   #ifdef DEBUG
-	 debug->put("Opening screen...");
-   #endif
+   DEBUG ("Opening screen...");
    
    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
    glutInitWindowSize(width, height);
@@ -205,16 +223,15 @@ Display::openScreen()
    main_menu_bar = new puMenuBar();
      {
 	main_menu_bar->add_submenu ("Majik", majik_submenu, majik_submenu_cb);
-	main_menu_bar->add_submenu ("Effects", effects_submenu, effects_submenu_cb);
+	main_menu_bar->add_submenu ("Settings", settings_submenu, settings_submenu_cb);
+		main_menu_bar->add_submenu ("Help", help_submenu, help_submenu_cb);
      }
    main_menu_bar->close();
    
    landscape->init();
    // cursor->init();
    
-   #ifdef DEBUG
-	 debug->put("Screen opened.");
-   #endif
+   DEBUG ("Screen opened.");
 }
 
 void
@@ -228,25 +245,9 @@ Display::mouseMotion(int x, int y)
 void 
 Display::closeScreen()
 {
-   #ifdef DEBUG
-	 debug->put("Closing screen...");
-   #endif
-      
-   #ifdef DEBUG
-	 debug->put("Screen closed.");
-   #endif
+   DEBUG ("Closing screen...");
+   DEBUG ("Screen closed.");
 }
-
-/*void
-Display::idle()
-{
-<<<<<<< Display.cpp
-=======
-//   landscape->angle += 2.0;
-   puDisplay();
->>>>>>> 1.23
-   glutPostRedisplay();
-}*/
 
 void 
 Display::updateScreen()
@@ -261,22 +262,17 @@ Display::updateScreen()
    /* Trap the mouse */
       
    if (mouse_x < 1 && mousetrap) {
-	  printf ("mouse_x <\n");
 	  mouse_x = 2; warp = TRUE;
    } else if (mouse_x > display->width-1 && mousetrap) {
-	  printf ("mouse_x >\n");
 	  mouse_x = display->width-2; warp = TRUE;
    }
    if (mouse_y < 1 && mousetrap) {
-	  printf ("mouse_y <\n");
 	  mouse_y = 2; warp = TRUE;
    } else if (mouse_y > display->height-1 && mousetrap) {
-	  printf ("mouse_y >\n");
 	  mouse_y = display->height-2; warp = TRUE;
    }
 
    if (warp) {
-	  printf ("warping to: %d %d\n", mouse_x, mouse_y);
 	  glutWarpPointer (mouse_x, mouse_y);
 	  warp = 0;
    }

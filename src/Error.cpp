@@ -19,7 +19,8 @@
 #include <stdio.h>
 #include <iostream.h>
 #include <stdarg.h>
-#include "Majik.hpp"
+
+#include "Error.hpp"
 
 Error::Error()
 {

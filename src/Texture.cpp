@@ -21,9 +21,10 @@
 #include <errno.h>
 #include <stdlib.h>
 
+#include <GL/gl.h>
+
 #include "Texture.hpp"
 #include "Debug.hpp"
-#include "Majik.hpp"
 
 unsigned int width, height, pitch;
 void *pixels;
@@ -31,17 +32,12 @@ void *pixels;
 Texture::Texture()
 {
    glGenTextures(1, &textureId);
-  
-#ifdef DEBUG
-//   debug->put("New texture object: %d",textureId);
-#endif
+   DEBUG(debug->string("Texture constructor: textureId=%d", textureId));
 }
 
 Texture::~Texture()
 {
-#ifdef DEBUG
-   debug->put("Texture destructed.");
-#endif
+   DEBUG ("Texture destructor.");
 }
 
 void
@@ -129,7 +125,7 @@ Texture::loadPNG (char *file_name) {
 	  return;
    }
    
-   printf ("%-25s: textureId=%3d width=%4d height=%4d pitch=%4d\n", file_name, textureId, width, height, pitch);
+   DEBUG (debug->string("%s (width=%d height=%d)", file_name, width, height));
    
    /* Strip the image to 8bpp because our code might not support 16bpp
 	* textures, I think. FIXME: Verify */

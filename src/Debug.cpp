@@ -17,26 +17,46 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <iostream.h>
 #include <stdarg.h>
-#include "Majik.hpp"
+
+#include "Debug.hpp"
 
 Debug::Debug()
 {
-   buf = new char[1024];
+   DEBUG("Debug constructor");
 }
 
 Debug::~Debug()
 {
-   delete [] buf;
 }
 
-void
-Debug::put(const char *fmt, ...)
+const char *
+Debug::string(char *fmt, ...)
 {
+   char *buf;
+   buf = new char[10000];
+   memset(buf, 0, sizeof(buf));
    va_list vl;
    va_start (vl, fmt);
    vsprintf (buf, fmt, vl);
    va_end (vl);
+   
+   return buf;
+}
+
+void
+Debug::put(char *fmt, ...)
+{
+   char *buf;
+   buf = new char[10000];
+   memset(buf, 0, sizeof(buf));
+   va_list vl;
+   va_start (vl, fmt);
+   vsprintf (buf, fmt, vl);
+   va_end (vl);
+   
    cerr << buf << endl;
 }

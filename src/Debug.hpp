@@ -24,9 +24,12 @@ class Debug
  public:
    Debug();
    ~Debug();
-   void put(const char *, ...);
- private:
-   char *buf;
+   void put(char *, ...);
+   const char *string(char *, ...);
 };
+
+extern Debug *debug;
+
+#define DEBUG(x) debug->put("%-17s: debug: %s", debug->string("%s:%d", __FILE__, __LINE__), x);
 
 #endif /* __DEBUG_HPP__ */

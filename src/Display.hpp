@@ -20,8 +20,6 @@
 #define __DISPLAY_HPP__
 
 #include <pu.h>
-#include "Cursor.hpp"
-#include "Majik.hpp"
 
 class Display
 {
@@ -40,8 +38,9 @@ class Display
  public: 
    int width, height, bpp;
    int flat; /* FIXME: Temporary kludge to test one feature */
-   Cursor *cursor;
    puMenuBar *main_menu_bar;
 };
-   
+
+extern Display *display;
+
 #endif /* __DISPLAY_HPP__ */

@@ -21,7 +21,6 @@
 
 #include "Object.hpp"
 #include "Detail.hpp"
-#include "Majik.hpp"
 #include "P3D.hpp"
 
 class Landscape
@@ -111,5 +110,7 @@ class Landscape
    
    float counter;
 };
+
+extern Landscape *landscape;
 
 #endif /* __LANDSCAPE_HPP__ */

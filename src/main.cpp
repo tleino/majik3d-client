@@ -23,7 +23,14 @@
 #include <stdarg.h>
 #include <string.h>
 #include <getopt.h>
-#include "Majik.hpp"
+
+#include "Error.hpp"
+#include "Debug.hpp"
+#include "Socket.hpp"
+#include "Display.hpp"
+#include "Landscape.hpp"
+#include "Input.hpp"
+#include "Config.hpp"
 
 int Object::lastId = 0;
 bool quit = false;
@@ -50,13 +57,8 @@ main(int argc, char **argv)
    config = new Config;
    
    glutInit(&argc, argv);
-   
-   // Read majikrc
-   if(config->readOptions("~/.majikrc") == false)
-	 if(config->readOptions("/etc/majikrc") == false)
-	   if(config->readOptions("majikrc") == false)
-		 error->put(ERROR_WARNING, "No majikrc file found.");
-     
+   config->readConfig(argc, argv);
+
    // Read the command line arguments 
    while(1)
 	 {

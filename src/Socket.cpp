@@ -27,15 +27,15 @@
 #include <sys/ioctl.h>
 #include <errno.h>
 
-#include "Majik.hpp"
+#include "Debug.hpp"
+#include "Error.hpp"
+#include "Socket.hpp"
 
 Socket::Socket()
 {
    ip = NULL;
    szBuffer = NULL;
-   #ifdef DEBUG
-	 debug->put("Socket constructor");
-   #endif
+   DEBUG ("Socket constructor");
 }
 
 Socket::Socket(char *addr, int nport)
@@ -43,9 +43,7 @@ Socket::Socket(char *addr, int nport)
    ip = new char[strlen(addr)];
    strcpy(ip, addr);
    port = nport;
-   #ifdef DEBUG
-	 debug->put("Socket constructor: ip=%s, port=%d", ip, port);
-   #endif
+   DEBUG (debug->string("Socket constructor: ip=%s port=%d", ip, port));
 }
 
 Socket::~Socket()
@@ -61,10 +59,8 @@ Socket::~Socket()
 		free(szBuffer);
 		szBuffer = NULL;
 	 }
-      
-   #ifdef DEBUG
-	 debug->put("Socket destructor");
-   #endif
+   
+   DEBUG ("Socket destructor");
 }
 
 void 

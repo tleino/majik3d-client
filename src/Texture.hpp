@@ -36,4 +36,6 @@ class Texture
    void *pixels; /* FIXME: Should be private */
 };
 
+extern Texture *texture;
+
 #endif /* __TEXTURE_HPP__ */

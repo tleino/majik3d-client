@@ -19,7 +19,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pu.h>
-#include "Majik.hpp"
+
+#include "Display.hpp"
+#include "Debug.hpp"
+#include "Landscape.hpp"
+#include "Error.hpp"
+#include "Input.hpp"
 
 #define DIR_NORTH   0
 #define DIR_EAST    1
@@ -28,16 +33,12 @@
 
 Input::Input()
 {
-   #ifdef DEBUG
-	 debug->put("Input constructor");
-   #endif
+   DEBUG ("Input constructor");
 }
 
 Input::~Input()
 {
-   #ifdef DEBUG
-	 debug->put("Input destructor");
-   #endif
+   DEBUG ("Input destructor");
 }
 
 void
@@ -115,8 +116,6 @@ void
 Input::mouseDown(int button, int updown, int x, int y)
 {
       puMouse (button, updown, x, y);
-#ifdef DEBUG
-      debug->put("mouseDown: %d %d %d %d", button, updown, x, y);
-#endif /* DEBUG */
+      DEBUG (debug->string("mouseDown: %d %d %d %d", button, updown, x, y));
       glutPostRedisplay();
 }

@@ -32,4 +32,6 @@ class Perlin
    static float interpolatedNoise(int, float, float);
 };
 
+extern Perlin *perlin;
+
 #endif /* __PERLIN_HPP__ */

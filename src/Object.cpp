@@ -17,17 +17,16 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include "Majik.hpp"
+
+#include "Debug.hpp"
+#include "Object.hpp"
 
 Object::Object()
 {
    Object::lastId++;
    id = Object::lastId;
    next = NULL;
-   #ifdef DEBUG
-	 debug->put("Object constructor: id=%d", id);
-   #endif
+   DEBUG (debug->string("Object constructor: id=%d", id));
 }
 
 Object::~Object()
@@ -37,7 +36,5 @@ Object::~Object()
 		delete next;
 		next = NULL;
 	 }
-   #ifdef DEBUG
-	 debug->put("Object destructor: id=%d", id);
-   #endif
+   DEBUG (debug->string("Object destructor: id=%d", id));
 }

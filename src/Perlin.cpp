@@ -21,25 +21,23 @@
  * and needs some serious optimization and tuning.
  */
 
-#include <stdio.h>
 #include <math.h>
-#include "Majik.hpp"
+
+#include "Debug.hpp"
+#include "Error.hpp"
+#include "Perlin.hpp"
 
 #define PERSISTENCE 0.4
 #define OCTAVES       3
 
 Perlin::Perlin()
 {
-   #ifdef DEBUG
-	 debug->put("Perlin constructor");
-   #endif
+   DEBUG ("Perlin constructor");
 }
 
 Perlin::~Perlin()
 {
-   #ifdef DEBUG
-	 debug->put("Perlin destructor");
-   #endif
+   DEBUG ("Perlin destructor");
 }
 
 float
@@ -122,8 +120,8 @@ Perlin::interpolatedNoise(int octave, float x, float y)
 float
 Perlin::perlinNoise_2D(float x, float y)
 {
-   int frequency, i, n;
-   float p, amplitude, total = 0;
+   int i, n;
+   float p, amplitude, frequency, total = 0;
  
    p = PERSISTENCE;
    n = OCTAVES;

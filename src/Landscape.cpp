@@ -20,11 +20,16 @@
  *  Note that much of this file is experimental code and thus yet quite uncommented. 
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 
+#include "Error.hpp"
+#include "Display.hpp"
+#include "Debug.hpp"
+#include "Perlin.hpp"
 #include "Texture.hpp"
-#include "Majik.hpp"
+#include "Landscape.hpp"
 
 /* These should be moved into headers */
 #define DIR_NORTH   0
@@ -56,9 +61,7 @@ Landscape::Landscape()
 {
    first = NULL;
    
-   #ifdef DEBUG
-	 debug->put("Landscape constructor");
-   #endif
+   DEBUG("Landscape constructor");
 }
 
 Landscape::~Landscape()
@@ -68,9 +71,8 @@ Landscape::~Landscape()
 	    delete first;
 		first = NULL;
 	 }
-   #ifdef DEBUG
-	 debug->put("Landscape destructor");
-   #endif
+   
+   DEBUG ("Landscape destructor");
 }
 
 void Landscape::init()

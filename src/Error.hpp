@@ -19,6 +19,8 @@
 #ifndef __ERROR_HPP__
 #define __ERROR_HPP__
 
+#include <errno.h>
+
 #define ERROR_FATAL	   -1
 #define ERROR_WARNING	1
 
@@ -31,5 +33,7 @@ class Error
  private:
    char *buf;
 };
+
+extern Error *error;
 
 #endif /* __ERROR_HPP__ */
