@@ -39,6 +39,7 @@
 #include "mcProtocol.hpp"
 #include "mcPerlin.hpp"
 #include "mcMapquad.hpp"
+#include "mcTerrainHeightGen.hpp"
 //#include "mcSky.hpp"
 
 bool quit = false;
@@ -55,6 +56,7 @@ Protocol *protocol = NULL;
 Perlin *perlin = NULL;
 Overlay *overlay = NULL;
 Mapquad *Mapquad::root_map = NULL;
+mcTerrainHeightGen *terraingen = NULL;
 //mcSky *mc_sky = NULL;
 
 
@@ -79,6 +81,7 @@ main(int argc, char **argv)
   protocol = new Protocol;
   perlin = new Perlin;
   overlay = new Overlay;
+  terraingen = new mcTerrainHeightGen();
 //  mc_sky = new mcSky(16, 8);
   Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
 

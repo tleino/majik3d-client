@@ -15,6 +15,8 @@
 #endif
 #include <GL/glu.h>
 
+#include "sg.h"
+
 class mcTerrainGen : public mcTexGen  
 {
 public:
@@ -26,9 +28,8 @@ public:
 
 private:
 
-	int r1, g1, b1, r2, g2, b2;
-	int r3, g3, b3, r4, g4, b4;
-
+	sgVec3			c_shadow;
+	sgVec3			c_snow;
 };
 
 #endif // !defined(AFX_MCTERRAINGEN_H__A9897833_C1C6_11D3_8175_0060080624AC__INCLUDED_)
