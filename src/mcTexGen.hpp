@@ -23,7 +23,7 @@ class mcTexGen
 {
 public:
 
-	virtual int getPixel(double x, double y) { return 0; };
+	virtual void getPixel(unsigned char *ptr, double x, double y) { };
 	virtual void getPixels(unsigned char *image, double nwx, double nwy, double sex, double sey, int width, int height) { };
 
 	virtual ~mcTexGen();
@@ -31,6 +31,8 @@ public:
 protected:
 
 	mcTexGen();
+
+	// TODO: Create a separate toolkit class for these
   
 	// Perlin noise functions
 	double perlin(int x);

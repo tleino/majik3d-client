@@ -9,7 +9,7 @@ extern mcTerrainHeightGen *terraingen;
 
 inline float getHeight(float x, float y)
 {
-	return 2000.0f * terraingen->getHeight(x/1280.0, y/1280.0);
+	return 1000.0f * terraingen->getHeight(x/1280.0, y/1280.0);
 	//return 2000.0f*(float)perlin->perlinNoise_2D(x/1500.0, y/1500.0);
 };
 

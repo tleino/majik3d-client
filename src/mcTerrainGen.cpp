@@ -22,26 +22,23 @@ mcTerrainGen::~mcTerrainGen()
 
 }
 
-int mcTerrainGen::getPixel(double x, double y)
+void mcTerrainGen::getPixel(GLubyte *ptr, double x, double y)
 {
-	double val;
-	int r, g, b;
-	
-	sgVec3 lightDir = { 0.0, 0.707, 0.707 };
+	sgVec3 lightDir = { 0.0, 0.70710678, 0.70710678 };
 	sgVec3 nrm;
 	
 	scene->getLandscape()->getNormal(nrm, x, y);
-//	nrm[0] *= nrm[0];
-//	nrm[1] *= nrm[1];
-//	nrm[2] *= nrm[2];
-
 
 	float d = sgScalarProductVec3(lightDir, nrm);
-	r = (int)lerp(c_shadow[0], c_snow[0], d);
-	g = (int)lerp(c_shadow[1], c_snow[1], d);
-	b = (int)lerp(c_shadow[2], c_snow[2], d);
+	if (d < 0.0)
+		d = 0.0;
+	if (d > 1.0)
+		d = 1.0;
+
+	ptr[0] = (GLubyte)lerp(c_snow[0], c_shadow[0], d);
+	ptr[1] = (GLubyte)lerp(c_snow[1], c_shadow[1], d);
+	ptr[2] = (GLubyte)lerp(c_snow[2], c_shadow[2], d);
 	
-	return (int)((r << 16) + (g << 8) + b);
 }
 
 void mcTerrainGen::getPixels(GLubyte *image, double nwx, double nwy, double sex, double sey, int width, int height)
@@ -58,14 +55,10 @@ void mcTerrainGen::getPixels(GLubyte *image, double nwx, double nwy, double sex,
 
 		for (int x = 0; x < width; x++)
 		{
-			/* Haetaan pikselin väri, voitaisiin optimoida 2d:tä varten oma koodi */
+			/* Fetch pixel color, we could optimize the algorithm here for bigger blocks */
 
-			int px = getPixel(xc, yc);
-
-			*image++ = (px & 0xFF0000) >> 16;
-			*image++ = (px & 0xFF00) >> 8;
-			*image++ = px & 0xFF;
-
+			getPixel(image, xc, yc);
+			image += 3;
 			xc += dx;
 		}
 

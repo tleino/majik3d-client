@@ -23,7 +23,7 @@ public:
 					mcTerrainGen	();
 	virtual			~mcTerrainGen	();
 
-	virtual int		getPixel		(double x, double y);
+	virtual void	getPixel		(unsigned char *ptr, double x, double y);
 	virtual void	getPixels		(GLubyte *image, double nwx, double nwy, double sex, double sey, int width, int height);
 
 private:
