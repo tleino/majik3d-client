@@ -9,7 +9,8 @@ mcOverlay.hpp mcSky.cpp mcSky.hpp mcTerrainBlock.cpp mcTerrainBlock.hpp \
 mcTexGen.cpp mcTexGen.hpp mcTerrainGen.cpp mcTerrainGen.hpp \
 mcCameraController.cpp mcCameraController.hpp mcController.cpp \
 mcController.hpp mcPlayerController.cpp mcPlayerController.hpp \
-mcPlayer.cpp mcPlayer.hpp main.cpp
+mcPlayer.cpp mcPlayer.hpp mcTerrainHeightGen.cpp mcTerrainHeightGen.hpp \
+main.cpp
 INCLUDES=-I/usr/local/plib/include
 CFLAGS=-pg
 CLEANFILES = *.debug *~
