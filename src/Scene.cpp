@@ -302,9 +302,9 @@ Scene::update()
    sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
    sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
 
-   campos.hpr[0] += 180.0f + cam_slide;
+   campos.hpr[0] += 180.0f /*+ cam_slide*/;
    
-   cam_slide *= 0.9;
+   //cam_slide *= 0.9;
 
    campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
    campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
