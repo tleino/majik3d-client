@@ -341,10 +341,10 @@ Socket::connectServer()
   ServerAddr.sin_port = htons (port);
   
   if (inet_aton(ip,&ServerAddr.sin_addr) <= 0)
-    error->put(ERROR_FATAL, "%s: Unknown host", ip);
+	 error->put(mcError::ERROR_FATAL, "%s: Unknown host", ip);
   
   if ((nSocket = socket (AF_INET, SOCK_STREAM, 0)) < 0)
-    error->put(ERROR_FATAL, "Could not create a socket: %s", strerror (errno));
+	 error->put(mcError::ERROR_FATAL, "Could not create a socket: %s", strerror (errno));
   
   if (connect (nSocket, (struct sockaddr *) &ServerAddr, sizeof (ServerAddr)) < 0) {
     printf ("Unable to connect to remote host: %s\n", strerror (errno));
@@ -368,16 +368,16 @@ Socket::readPacket()
 	  long nReceived;
 	  if ((nReceived = recv(nSocket,(char *)&szData,sizeof(szData)-1,0))
 	      == -1)
-	    error->put(ERROR_FATAL, "Connection closed: %s", strerror (errno));
+		 error->put(mcError::ERROR_FATAL, "Connection closed: %s", strerror (errno));
 	  
 	  szData[nReceived] = 0;
-	  
-	  if (config->protocol_debug)
-	    {
-	      fprintf (debug->fp, ">> %s", szData);
-	      fflush (debug->fp);
-	    }
-	  
+	  	   
+	   if (config->testFlag(mcConfig::PROTOCOL_DEBUG) == true)
+		 {
+			fprintf (debug->fp, ">> %s", szData);
+			fflush (debug->fp);
+		 }
+	   
 	  // Resize the buffer
 	  szBuffer = (char *) realloc(szBuffer,strlen(szData)+
 				      strlen(szBuffer)+1);
@@ -418,14 +418,14 @@ Socket::writePacket(char *szFmt, ...)
   
   sprintf (szData, "%s\r\n", szData);
   
-  if (config->protocol_debug)
+   if (config->testFlag(mcConfig::PROTOCOL_DEBUG) == true)
     {
       fprintf (debug->fp, "<< %s", szData);
       fflush (debug->fp);
     }
   
   if (send(nSocket, szData,strlen(szData),0) == -1)
-    error->put(ERROR_FATAL, "Could not send data: %s", strerror (errno));
+	 error->put(mcError::ERROR_FATAL, "Could not send data: %s", strerror (errno));
 }
 
 #endif /* __WIN32__ */
