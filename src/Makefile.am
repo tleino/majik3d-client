@@ -10,7 +10,7 @@ mcTexGen.cpp mcTexGen.hpp mcTerrainGen.cpp mcTerrainGen.hpp \
 mcCameraController.cpp mcCameraController.hpp mcController.cpp \
 mcController.hpp mcPlayerController.cpp mcPlayerController.hpp \
 mcPlayer.cpp mcPlayer.hpp mcTerrainHeightGen.cpp mcTerrainHeightGen.hpp \
-mcCamera.cpp mcCamera.hpp main.cpp
+mcCamera.cpp mcCamera.hpp version.hpp main.cpp
 INCLUDES=-I/usr/local/plib/include
 CFLAGS=-pg
 CLEANFILES = *.debug *~
