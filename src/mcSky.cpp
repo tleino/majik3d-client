@@ -123,6 +123,8 @@ void mcSky::setSunPosition(sgVec3 &v)
 
 void mcSky::setSunPosition(float heading, float pitch)
 {
+   if (sin(pitch) < -0.4)
+	  pitch = M_PI + 0.5;
    createSGVec(m_sun, heading, pitch);
    m_aSunZenith = acosf(sgScalarProductVec3(m_sun, m_zenith));
    calculateSunAngles();
