@@ -19,15 +19,26 @@
 #ifndef __OBJECT_HPP__
 #define __OBJECT_HPP__
 
+#include <stdio.h>
+#include <ssg.h>
+
+#include "Scene.hpp"
+
+class Scene;
+
 class Object
 {
  public:
    Object();
    ~Object();
- public:
-   Object *next;
-   static int lastId;
-   int id;
+
+   ssgTransform *plop;
+   
+ private:
+   draw();
+
+   friend Scene draw();
+   
 };
 
 extern Object *object;

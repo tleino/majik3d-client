@@ -59,45 +59,20 @@
 
 Landscape::Landscape()
 {
-   first = NULL;
-   
    DEBUG("Landscape constructor");
 }
 
 Landscape::~Landscape()
-{
-   if(first != NULL)
-	 {
-	    delete first;
-		first = NULL;
-	 }
-   
+{   
    DEBUG ("Landscape destructor");
 }
 
 void Landscape::init()
 {
-   float light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
-   float light_diffuse[] = { 0.6, 0.6, 0.6, 1.0 };
-   float light_specular[] = { 0.0, 0.0, 0.0, 1.0 };
-   float lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-   
-   glLightfv (GL_LIGHT0, GL_AMBIENT, light_ambient);
-   glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-   glLightfv (GL_LIGHT0, GL_SPECULAR, light_specular);
-   
-   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-   
-   glEnable(GL_CULL_FACE);
-   glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
-   glEnable(GL_DEPTH_TEST);
-   glEnable(GL_FOG);
-   
-   glShadeModel(GL_SMOOTH);
-   
-   setViewport(0, 0, display->width, display->height);
-   
+   map1_branch = new ssgBranch;
+   map2_branch = new ssgBranch;
+   map3_branch = new ssgBranch;
+      
    map_1Mesh.numVertices = (MAP1_WIDTH+1)*(MAP1_WIDTH+1);
    map_1Mesh.vertices  =  new double[3*map_1Mesh.numVertices];
    map_1Mesh.face_normals = new P3D[(MAP1_WIDTH)*(MAP1_WIDTH)*2];
@@ -131,103 +106,17 @@ void Landscape::init()
    map2_shift_x = 0;
    map2_shift_y = 0;
 
-   angle = 75;
-   tilt = 15;
-   distance = -20; 
-   sun_pos = 0;
-   
    makeHeightMaps();
    
    initMap_1Mesh();
-   makeMap_1();
+//   makeMap_1();
 
    initMap_2Mesh();
-   makeMap_2();
+  // makeMap_2();
    
    initMap_3Mesh();
-   makeMap_3();
+ //  makeMap_3();
    
-//   glEnable(GL_FOG);
-   
-	 {
-		GLfloat fogColor[4] =
-		  {0.5, 0.5, 0.5, 1.0};
-		
-		glFogi(GL_FOG_MODE, GL_LINEAR);
-		glFogfv(GL_FOG_COLOR, fogColor);
-		glFogf(GL_FOG_DENSITY, 0.005);
-		glHint(GL_FOG_HINT, GL_DONT_CARE);
-		glClearColor(0.0, 0.0, 1.0, 1.0);
-	 }
-   
-   glFogf(GL_FOG_START, 400.0);
-   glFogf(GL_FOG_END, 7000.0);
-
-   /* THE FOLLOWING IS MEANT TO BE VERY TEMPORARY */
-   
-   playerId = glGenLists(1);
-   glNewList(playerId, GL_COMPILE);
-   glDisable(GL_CULL_FACE);
-   glBegin(GL_QUADS);
-	 {
-		float color[4] = { 1.0, 1.0, 1.0, 1.0 };
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-		
-		glNormal3f( 0.0, 1.0, 0.0);
-		glTexCoord2f(0.00, 0.25); glVertex3f( -1.0, -1.0, 0.0);
-		glTexCoord2f(0.00, 0.50); glVertex3f( -1.0, -1.0, 2.0);
-		glTexCoord2f(0.25, 0.50); glVertex3f( 1.0, -1.0, 2.0);
-		glTexCoord2f(0.25, 0.25); glVertex3f( 1.0, -1.0, 0.0);
-		
-		glNormal3f( -1.0, 0.0, 0.0);
-		glTexCoord2f(0.25, 0.25); glVertex3f( 1.0, -1.0, 0.0);
-		glTexCoord2f(0.25, 0.50); glVertex3f( 1.0, -1.0, 2.0);
-		glTexCoord2f(0.50, 0.50); glVertex3f( 1.0, 1.0, 2.0);
-		glTexCoord2f(0.50, 0.25); glVertex3f( 1.0, 1.0, 0.0);
-
-		glNormal3f( 0.0, -1.0, 0.0);
-		glTexCoord2f(0.50, 0.25); glVertex3f( 1.0, 1.0, 0.0);
-		glTexCoord2f(0.50, 0.50); glVertex3f( 1.0, 1.0, 2.0);
-		glTexCoord2f(0.75, 0.50); glVertex3f( -1.0, 1.0, 2.0);
-		glTexCoord2f(0.75, 0.25); glVertex3f( -1.0, 1.0, 0.0);
-		
-		glNormal3f( 1.0, 0.0, 0.0);
-		glTexCoord2f(1.0, 0.25); glVertex3f( -1.0, 1.0, 0.0);
-		glTexCoord2f(1.0, 0.50); glVertex3f( -1.0, 1.0, 2.0);
-		glTexCoord2f(0.75, 0.50); glVertex3f( -1.0, -1.0, 2.0);
-		glTexCoord2f(0.75, 0.25); glVertex3f( -1.0, -1.0, 0.0);
-		
-		glNormal3f( 0.0, 0.0, -1.0);
-		glTexCoord2f(0.25, 0.75); glVertex3f( -1.0, -1.0, 2.0);
-		glTexCoord2f(0.25, 0.50); glVertex3f( -1.0, 1.0, 2.0);
-		glTexCoord2f(0.50, 0.50); glVertex3f( 1.0, 1.0, 2.0);
-		glTexCoord2f(0.50, 0.75); glVertex3f( 1.0, -1.0, 2.0);
-		
-		glNormal3f( 0.0, 0.0, 1.0);
-		glTexCoord2f(0.50, 0.25); glVertex3f( 1.0, 1.0, 0.0);
-		glTexCoord2f(0.25, 0.25); glVertex3f( 1.0, -1.0, 0.0);
-		glTexCoord2f(0.25, 0.00); glVertex3f( -1.0, -1.0, 0.0);
-		glTexCoord2f(0.50, 0.00); glVertex3f( -1.0, 1.0, 0.0);
-	 }
-   glEnd();
-   glEnable(GL_CULL_FACE);
-   glEndList();
-   
-   int i, k;
-   ssgTexture *picture;
-   
-   /* Load textures. FIXME: loadTexture shouldn't return the id instantly,
-	* it would be nicer to be able to fetch it using findTexture, so we
-	* wouldn't need to assign those ids as global */
-   
-   picture = new ssgTexture("gfx/grass.rgb", TRUE, TRUE);
-   grassTex_id = picture->getHandle();
-   
-   picture = new ssgTexture("gfx/sandstone.rgb", TRUE, TRUE);
-   sandstoneTex_id = picture->getHandle();
-
-   picture = new ssgTexture("gfx/ukkelipukkeli.rgb", FALSE, FALSE);
-   playerTex_id = picture->getHandle();
 }
 
 /* This should be cut into several smaller functions */
@@ -301,108 +190,10 @@ void Landscape::makeHeightMaps()
 
 void Landscape::draw()
 {
-   float light_position[] = { 0.0, 0.0, 1.0, 0.0 };
-   /* move viewport & perspective setting into the Display.cpp, maybe */
-   glViewport(viewport_x, viewport_y, viewport_w, viewport_h);
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   glFrustum(-1.0, 1.0, -viewport_ratio, viewport_ratio, 3.0, 10000.0);
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-
-   glEnable(GL_CULL_FACE);
-   glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
-   glEnable(GL_DEPTH_TEST);
-   
-   glPushMatrix();
-   
-   /* Load camera matrix here            */
-//   gluLookAt(0.0, -500.0, -200, 
-//			 0.0, 100.0, getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2), 0.0, 0.0, -1.0);   
-//   glTranslatef(0.0, -300.0, -200.0);
-//   glRotatef(135.0, 1.0, 0.0, 0.0);
-   glTranslatef(0.0, 0.0, distance);
-   glRotatef(90+tilt, 1.0, 0.0, 0.0);
-   glRotatef(angle, 0.0, 0.0, 1.0);
-   glTranslatef(0.0, 0.0, - getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2)+2);
-   
-   /* Position sun                       */
-   glPushMatrix();
-   glRotatef(sun_pos, 0.0, 1.0, 0.0);
-   glLightfv (GL_LIGHT0, GL_POSITION, light_position);
-   glPopMatrix();
-   
-   /* Draw sky                           */
-   /* - Check for detail settings        */
-
-   
-   /* Draw terrain                       */
-   /*  - Check for detail settings       */
-   /*  - Cull map regions                */
-   
-   if (!display->noTexture) {
-	  glEnable(GL_TEXTURE_2D);
-	  // DEBUG("sandstone_gst");
-	  // sandstone_gst->apply();
-	  glBindTexture(GL_TEXTURE_2D, sandstoneTex_id);
-	  // DEBUG("applied");
-   }
-   glPushMatrix();
-   //   glTranslatef(0.0, 0.0, -500);
-   glCallList(listId_1);
-   glPopMatrix();
-   glDisable(GL_TEXTURE_2D);
-   
-   if (!display->noTexture) {
-	  glEnable(GL_TEXTURE_2D);
-	  glBindTexture(GL_TEXTURE_2D, grassTex_id);   
-   }
-   glPushMatrix();
-   
-   glTranslatef(-map1_shift_x*MAP1_GRID_WIDTH, map1_shift_y*MAP1_GRID_WIDTH, 0.0);
-   
-   glCallList(listId_2);
-
-   glTranslatef(-map2_shift_x*MAP2_GRID_WIDTH, map2_shift_y*MAP2_GRID_WIDTH, 0.0);
-   
-   glCallList(listId_3);
-
-   glPopMatrix();
-   glDisable(GL_TEXTURE_2D);
-   
-   /* Draw objects                       */
-   /*  - Check for 1st-person/3rd-person */
-   /*  - Check for detail settings       */
-
-   if (!display->noTexture) {
-	  glEnable(GL_TEXTURE_2D);
-	  glBindTexture(GL_TEXTURE_2D, playerTex_id);
-   }
-   glPushMatrix();
-   glTranslatef(0.0, 0.0, getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2)-2.5);
-   glRotatef( Perlin::perlinNoise_2D(0, counter/5)*50, 1.0, 0.0, 0.0);
-   glCallList(playerId);
-   glPopMatrix();
-   
-   glDisable(GL_TEXTURE_2D);
-   
-   glPopMatrix();
-   
-   counter += 0.1;
+   drawMap_1();
 }
 
-void Landscape::setViewport(int x, int y, int w, int h)
-{
-   viewport_x = x;
-   viewport_y = y;
-   viewport_w = w;
-   viewport_h = h;
-   viewport_ratio = (float)h/(float)w;
-
-}
-
-double Landscape::interpolate(double a, double b, double x)
+double interpolate(double a, double b, double x)
 {
    return (1-x)*a + x*b;
 }
@@ -1040,11 +831,63 @@ void Landscape::initMap_3Mesh()
    
 }
 
+void Landscape::drawMap_1()
+{
+   int mat_index;
+
+   glVertexPointer(3, GL_DOUBLE, 0, map_1Mesh.vertices);
+   glNormalPointer(GL_DOUBLE, 0, map_1Mesh.normals);
+      
+   glEnableClientState( GL_VERTEX_ARRAY );
+   glEnableClientState( GL_NORMAL_ARRAY );
+      
+   for (int j = 0; j < MAP1_WIDTH;j++)
+	 {
+		for (int i = 0; i < MAP1_WIDTH+1;) 
+		  {
+//			 MATERIAL[ mat_index = MAP1(i,j) ] -> apply();
+
+//			 grass_gst->apply();
+
+			 
+			 glBegin (GL_TRIANGLE_STRIP);
+				  
+			 glTexCoord2f(i, 0.0);
+			 glArrayElement( (j)*(MAP1_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
+			 glArrayElement( (j+1)*(MAP1_WIDTH+1) + i);
+			 			 
+			 i++;
+			 glTexCoord2f(i, 0.0);
+			 glArrayElement( (j)*(MAP1_WIDTH+1) + i);
+			 glTexCoord2f(i, 1.0);
+			 glArrayElement( (j+1)*(MAP1_WIDTH+1) + i);
+
+			 
+			 while( (i < MAP1_WIDTH) )//&& (mat_index == MAP(i, j)) )
+			   {
+				  i++;
+				  glTexCoord2f(i, 0.0);
+				  glArrayElement( (j)*(MAP1_WIDTH+1) + i);
+				  glTexCoord2f(i, 1.0);
+				  glArrayElement( (j+1)*(MAP1_WIDTH+1) + i);
+				  
+			   }
+			 
+			 glEnd();
+		  }
+	 }
+
+   glDisableClientState(GL_VERTEX_ARRAY);
+   glDisableClientState(GL_NORMAL_ARRAY);
+
+}
+
+
+
 /* These construct the display lists */
 void Landscape::makeMap_1()
 {
-   float color[4] = { 0.7, 0.7, 0.0, 1.0 };
- 
    /* Check for already existing display list */
    if (listId_1 != -1)
 	 glDeleteLists(listId_1, 1);
@@ -1058,8 +901,6 @@ void Landscape::makeMap_1()
    /* Generate new list ID */
    listId_1 = glGenLists(1);
    glNewList(listId_1, GL_COMPILE);
-
-   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
 
    for (int j=0;j<MAP1_WIDTH;j++)
 	 {
@@ -1084,7 +925,6 @@ void Landscape::makeMap_1()
 
 void Landscape::makeMap_2()
 {
-   float color[4] = { 0.0, 1.0, 0.0, 1.0  };
    
    /* Check for already existing display list */
    if (listId_2 != -1)
@@ -1099,7 +939,6 @@ void Landscape::makeMap_2()
    /* Generate new list ID */
    listId_2 = glGenLists(1);
    glNewList(listId_2, GL_COMPILE);
-   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
    
    int j, i, north = 0, south = 0, west = 0, east = 0;
    
@@ -1175,7 +1014,6 @@ void Landscape::makeMap_2()
 
 void Landscape::makeMap_3()
 {
-   float color[4] = { 0.0, 1.0, 0.0, 1.0 };
    
    /* Check for already existing display list */
    if (listId_3 != -1)
@@ -1190,7 +1028,7 @@ void Landscape::makeMap_3()
    /* Generate new list ID */
    listId_3 = glGenLists(1);
    glNewList(listId_3, GL_COMPILE);
-   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+
    
    int j, i, north = 0, south = 0, west = 0, east = 0;
    
@@ -1491,12 +1329,4 @@ Landscape::shiftMap_3(int side)
    makeHeightMaps();
    initMap_3Mesh();
    makeMap_3();
-}
-
-void Landscape::addObject(int oid)
-{
-}
-
-void Landscape::removeObject(int oid)
-{
 }

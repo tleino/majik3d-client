@@ -26,11 +26,16 @@
 #include "Landscape.hpp"
 #include "Error.hpp"
 #include "Input.hpp"
+#include <fstream.h>
+
 
 #define DIR_NORTH   0
 #define DIR_EAST    1
 #define DIR_SOUTH   2
 #define DIR_WEST    3
+
+
+void captureScreen();
 
 Input::Input()
 {
@@ -46,25 +51,7 @@ void
 Input::keyDown(unsigned char key, int x, int y)
 {
    switch (key) {
-	case ',':
-	  landscape->sun_pos += 2;
-	  break;
-	case '.':
-	  landscape->sun_pos -= 2;
-	  break;
-	case 'a':
-	  landscape->shiftMap_1(DIR_WEST);
-	  break;
-	case 'd':
-      landscape->shiftMap_1(DIR_EAST);
-	  break;
-	case 's':
-      landscape->shiftMap_1(DIR_SOUTH);
-	  break;
- case 'w':
-	  landscape->shiftMap_1(DIR_NORTH);
-	  break;
-	default:
+  	default:
 	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)", key, x, y);
 	  exit(0);
 	  break;
@@ -76,35 +63,16 @@ void
 Input::specialDown(int key, int x, int y)
 {
    switch(key) {
-	case GLUT_KEY_LEFT:
-	  landscape->angle -= 2;
-	  break;
-	case GLUT_KEY_UP:
-	  landscape->tilt += 2;
-	  break;
-	case GLUT_KEY_RIGHT:
-	  landscape->angle += 2;
-	  break;
-	case GLUT_KEY_DOWN:
-	  landscape->tilt -= 2;
-	  break;
-	case GLUT_KEY_PAGE_UP:
-	  landscape->distance += 2;
-	  break;
-	case GLUT_KEY_PAGE_DOWN:
-	  landscape->distance -= 2;
-	  break;
-	case GLUT_KEY_HOME:
-	  landscape->angle = 75;
-	  landscape->tilt = 15;
-	  landscape->distance = -20;
-	  break;
     case GLUT_KEY_INSERT:
       menu->menuBar->reveal();
       break;
     case GLUT_KEY_END:
       menu->menuBar->hide();
-      break;
+	  break;
+	case GLUT_KEY_F12:
+	  captureScreen();
+	  break;
+	
 	default:
 	  error->put(ERROR_WARNING, "Unsupported special key received: %d at (%d,%d)", key, x, y);
 	  break;
@@ -119,4 +87,19 @@ Input::mouseDown(int button, int updown, int x, int y)
       puMouse (button, updown, x, y);
       DEBUG (debug->string("mouseDown: %d %d %d %d", button, updown, x, y));
       glutPostRedisplay();
+}
+
+
+void
+captureScreen()
+{
+   GLubyte *pixels = new GLubyte[display->width*display->height*3];
+   
+   glReadPixels( 0, 0, display->width, display->height, GL_RGB, GL_UNSIGNED_BYTE, pixels );
+   
+   ofstream to("screenshot.rgb", ios::binary | ios::app | ios::trunc);
+   
+   to.write( pixels, display->width*display->height*3);
+
+   to.close();
 }

@@ -16,43 +16,40 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <stdio.h>
+#ifndef __SCENE_HPP__
+#define __SCENE_HPP__
 
-#include "Debug.hpp"
+#include <stl.h>
+#include <stdio.h>
+#include <ssg.h>
 #include "Object.hpp"
 
+class Object;
 
-Object::Object()
+class Scene
 {
-   plop = new ssgTransform;
+ public:
+   Scene();
+   ~Scene();
    
-   ssgEntity *tux_obj = ssgLoadAC ( "tuxedo.ac"   ) ;
-   plop->addKid (tux_obj);
+   addObject(Object *);
+   removeObject(int);
+   removeObject(Object *);
 
-     ssgFlatten         ( tux_obj  ) ;
-     ssgStripify        ( plop  ) ;
-   
-   
-   sgCoord tuxpos ;
-   sgSetCoord ( & tuxpos, (random() % 10 ) - 7,  random() % 100, random() % 10, 0, 0.0f, 0.0f ) ;
-   
-   plop -> setTransform ( &tuxpos );
-   
-//   scene->addObject(this);
-      
-   DEBUG (debug->string("Object constructor"));
-}
+   draw();
+   update();
+   init();
 
-Object::~Object()
-{
-//   scene->removeObject(this);
-   DEBUG (debug->string("Object destructor"));
-}
+ private:
+   list<Object*> object_list;
+   
+   ssgRoot *scene_root;
+   ssgBranch *object_branch;
+   
+};
 
-/*
-Object::draw()
-{
+extern Scene *scene; 
+
+#endif /* __SCENE_HPP__ */
 
 
-}
-*/

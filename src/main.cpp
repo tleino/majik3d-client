@@ -32,8 +32,8 @@
 #include "Landscape.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
+#include "Scene.hpp"
 
-int Object::lastId = 0;
 bool quit = false;
 Error *error = NULL;
 Debug *debug = NULL;
@@ -43,7 +43,7 @@ Landscape *landscape = NULL;
 Input *input = NULL;
 Config *config = NULL;
 Menu *menu = NULL;
-
+Scene *scene = NULL;
 int
 main(int argc, char **argv)
 {
@@ -58,6 +58,7 @@ main(int argc, char **argv)
    input = new Input;
    config = new Config;
    menu = new Menu;
+   scene = new Scene;
    
    glutInit(&argc, argv);
    config->readConfig(argc, argv);

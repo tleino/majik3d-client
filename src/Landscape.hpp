@@ -22,6 +22,10 @@
 #include "Object.hpp"
 #include "Detail.hpp"
 #include "P3D.hpp"
+#include <glu.h>
+
+
+double interpolate(double, double, double);
 
 class Landscape
 {
@@ -30,9 +34,6 @@ class Landscape
    ~Landscape();
    void init();
    void draw();
-   void setViewport(int, int, int, int);
-   void addObject(int);
-   void removeObject(int);
    double getHeight(int, int);
    void setMap_1(char *);
    void setMap_2(char *);
@@ -72,14 +73,9 @@ class Landscape
    void makeMap_4();
    void makeHeightMaps();
  private:
-   double interpolate(double, double, double);
- private:
-   int viewport_x;
-   int viewport_y;
-   int viewport_w;
-   int viewport_h;
-   float viewport_ratio;
-
+   void drawMap_1();
+   
+   
    struct mesh {
 	  int numVertices;
 	  double *vertices;   
@@ -88,25 +84,18 @@ class Landscape
    };
    
    struct mesh map_1Mesh, map_2Mesh, map_3Mesh, map4Mesh;
+
+   ssgBranch *map1_branch;
+   ssgBranch *map2_branch;
+   ssgBranch *map3_branch;
    
    int listId_1;    /* Display list ID for map_1 */
    int listId_2;
    int listId_3;
    int listId_4;
 
-   int playerId;
-   
-   GLuint grassTex_id;
-   GLuint sandstoneTex_id;
-   GLuint playerTex_id;
-   
- public:
-   float angle;
-   float tilt;
-   float distance;
-   float sun_pos;
-   
-   float counter;
+
+
 };
 
 extern Landscape *landscape;

@@ -34,6 +34,7 @@
 #include "Input.hpp"
 #include "Debug.hpp"
 #include "Display.hpp"
+#include "Scene.hpp"
 
 puText *status_text;
 time_t t = time(NULL);
@@ -134,6 +135,9 @@ Display::openScreen()
    
    menu->init();   
    landscape->init();
+   scene->init();
+
+   glEnable ( GL_DEPTH_TEST);
    
    DEBUG ("Screen opened.");
 }
@@ -160,7 +164,7 @@ Display::updateScreen()
    frames++;
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
-   landscape->draw();
+   scene->draw();
    
    /* Trap the mouse */
       
@@ -190,9 +194,8 @@ Display::updateScreen()
    else
 	 status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
    
-   status_text->setLabel ((char *) debug->string("fps: %.1f angle: %.1f tilt: %.1f distance: %.1f",
-										(float) 1/(read_time_of_day() - start_time),
-										landscape->angle, landscape->tilt, landscape->distance));
+   status_text->setLabel ((char *) debug->string("fps: %.1f ",
+										(float) 1/(read_time_of_day() - start_time)));
    start_time = read_time_of_day();
    
    puDisplay();
@@ -211,8 +214,6 @@ Display::resizeScreen(int w,int h)
 {
    display->width = w;
    display->height = h;
-   
-   landscape->setViewport(0,0,w,h);
-   glViewport(0,0,w,h);
+/* set viewport... */
    glutPostRedisplay();
 }
