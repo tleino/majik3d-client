@@ -13,6 +13,8 @@ Landscape::Landscape()
 
 Landscape::~Landscape()
 {
+   if(first != NULL)
+	 free(first);
    #ifdef DEBUG
 	 Debug("Landscape destructor");
    #endif
@@ -20,8 +22,24 @@ Landscape::~Landscape()
 
 void Landscape::addObject(int oid)
 {
+   Object *newob = new Object;
+   newob->id = oid;
+   newob->next = first;
+   first = newob;
 }
 
 void Landscape::removeObject(int oid)
 {
+   Object **obj = &first;
+   while(*obj != NULL)
+	 {
+		if((*obj)->id == oid)
+		  {
+			 Object *now = *obj;
+			 *obj = now->next;
+			 free(now);
+			 continue;
+		  }
+		obj = &((*obj)->next);
+	 }
 }

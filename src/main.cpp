@@ -25,7 +25,7 @@ main(int argc, char *argv[])
       
    display->openScreen();
      
-   delete socket;
+   delete sock;
    delete display;
    delete landscape;
 }

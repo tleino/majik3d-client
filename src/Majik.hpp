@@ -17,7 +17,7 @@
 #include "Debug.hpp"
 
 extern Display *display;
-extern Socket *socket;
+extern Socket *sock;
 extern Landscape *landscape;
 
 #endif
