@@ -6,6 +6,8 @@ To run this binary you'll need:
  - libpng and zlib installed
      ftp://ftp.uu.net/graphics/png/libpng-1.0.3.tar.gz
      ftp://ftp.uu.net/graphics/png/zlib-1.1.3.tar.gz
+ - PLIB installed
+     http://www.woodsoup.org/~sbaker/plib/dist/plib-1.0.12.tar.gz
  - X Window System
  - Linux/i386 operating system
 
