@@ -16,16 +16,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/*
+ *  Note that much of this file is experimental code and thus yet quite uncommented. 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "Texture.hpp"
 #include "Majik.hpp"
 
-#define NORTH   0
-#define EAST    1
-#define SOUTH   2
-#define WEST    3
+/* These should be moved into headers */
+#define DIR_NORTH   0
+#define DIR_EAST    1
+#define DIR_SOUTH   2
+#define DIR_WEST    3
 
 #define MAP1_WIDTH       20
 #define MAP1_GRID_WIDTH   2
@@ -72,8 +77,8 @@ void Landscape::init()
 {
    float light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
    float light_diffuse[] = { 0.6, 0.6, 0.6, 1.0 };
-   float light_specular[] = { 0.3, 0.3, 0.3, 1.0 };
-   float lmodel_ambient[] = { 0.075, 0.075, 0.075, 1.0 };
+   float light_specular[] = { 0.0, 0.0, 0.0, 1.0 };
+   float lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
    
    glLightfv (GL_LIGHT0, GL_AMBIENT, light_ambient);
    glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -105,7 +110,14 @@ void Landscape::init()
    map_3Mesh.vertices  =  new double[3*map_2Mesh.numVertices];
    map_3Mesh.face_normals = new P3D[(MAP3_WIDTH)*(MAP3_WIDTH)*2];
    map_3Mesh.normals = new double[3*map_3Mesh.numVertices];
+
+   zmap_1 = new double[(MAP1_WIDTH+1)*(MAP1_WIDTH+1)];
+   zmap_2 = new double[(MAP2_WIDTH+1)*(MAP2_WIDTH+1)];
+   zmap_3 = new double[(MAP3_WIDTH+1)*(MAP3_WIDTH+1)];
    
+   map1_x = map1_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP1_WIDTH*(MAP1_GRID_WIDTH/2);
+   map2_x = map2_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP2_WIDTH*(MAP2_GRID_WIDTH/2);
+   map3_x = map3_y = 0;
    
    listId_1 = -1;
    listId_2 = -1;
@@ -149,7 +161,7 @@ void Landscape::init()
    glFogf(GL_FOG_START, 400.0);
    glFogf(GL_FOG_END, 7000.0);
 
-   /* THIS IS MEANT TO BE VERY TEMPORARY */
+   /* THE FOLLOWING IS MEANT TO BE VERY TEMPORARY */
    
    playerId = glGenLists(1);
    glNewList(playerId, GL_COMPILE);
@@ -248,18 +260,9 @@ void Landscape::init()
    
 }
 
-
+/* This should be cut into several smaller functions */
 void Landscape::makeHeightMaps()
 {
-   zmap_1 = new double[(MAP1_WIDTH+1)*(MAP1_WIDTH+1)];
-   zmap_2 = new double[(MAP2_WIDTH+1)*(MAP2_WIDTH+1)];
-   zmap_3 = new double[(MAP3_WIDTH+1)*(MAP3_WIDTH+1)];
-
-   map1_x = map1_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP1_WIDTH*(MAP1_GRID_WIDTH/2);
-   map2_x = map2_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP2_WIDTH*(MAP2_GRID_WIDTH/2);
-   map3_x = map3_y = 0;
-   
-   
    int i, j;
    double *temp;
    Perlin *perl = new Perlin;
@@ -326,10 +329,10 @@ void Landscape::makeHeightMaps()
 }
 
 
-void Landscape::drawLandscape()
+void Landscape::draw()
 {
    float light_position[] = { 0.0, 0.0, 1.0, 0.0 };
-   
+   /* move viewport & perspective setting into the Display.cpp, maybe */
    glViewport(viewport_x, viewport_y, viewport_w, viewport_h);
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
@@ -367,23 +370,32 @@ void Landscape::drawLandscape()
    /* Draw terrain                       */
    /*  - Check for detail settings       */
    /*  - Cull map regions                */
-   glCallList(listId_3);
-
-   glPushMatrix();
-//   glTranslatef(0.0, 0.0, -250);
-   glCallList(listId_2);
-   glPopMatrix();
-
    glEnable(GL_TEXTURE_2D);
    glBindTexture(GL_TEXTURE_2D, groundTex_id);
    glPushMatrix();
-//   glTranslatef(0.0, 0.0, -500);
+   //   glTranslatef(0.0, 0.0, -500);
    glCallList(listId_1);
+   glPopMatrix();
+   glDisable(GL_TEXTURE_2D);
+   
+   
+   glPushMatrix();
+   
+   glTranslatef(-map1_shift_x*MAP1_GRID_WIDTH, map1_shift_y*MAP1_GRID_WIDTH, 0.0);
+   
+   glCallList(listId_2);
+
+   glTranslatef(-map2_shift_x*MAP2_GRID_WIDTH, map2_shift_y*MAP2_GRID_WIDTH, 0.0);
+   
+   glCallList(listId_3);
+
    glPopMatrix();
    
    /* Draw objects                       */
    /*  - Check for 1st-person/3rd-person */
    /*  - Check for detail settings       */
+
+   glEnable(GL_TEXTURE_2D);
    
    glBindTexture(GL_TEXTURE_2D, playerTex_id);
    
@@ -415,8 +427,8 @@ double Landscape::interpolate(double a, double b, double x)
    return (1-x)*a + x*b;
 }
 
-
-double Landscape::getHeight(int x, int y)
+/* Gives z coordinate at given (x, y) */
+double Landscape::getHeight(int x, int y) 
 {
    int tempx, tempy;
    
@@ -557,7 +569,7 @@ double Landscape::getHeight(int x, int y)
 	 }
 }
    
-
+/* The following functions calculate the vertices and normals */
 void Landscape::initMap_1Mesh()
 {
    double *temp;
@@ -576,19 +588,20 @@ void Landscape::initMap_1Mesh()
    }
    
    temp = map_1Mesh.vertices;
-   for (int j = 0; j < MAP1_WIDTH; j++) {
+   for (int j = 0; j < MAP1_WIDTH; j++) { 
 	  for (int i = 0; i < MAP1_WIDTH; i++)
 		{
+		   /* This is somewhat optimized way to calculate normals for tris with two constant
+			* sides. If the constant sides are A, normal = ( A(Z3-Z1), A(Z2-Z1), A*A )
+			*/
 		   map_1Mesh.face_normals[k++].set(-MAP1_GRID_WIDTH*(*(temp+5) - *(temp+2)),
 										   -MAP1_GRID_WIDTH*(*(temp+(MAP1_WIDTH+1)*3+2) - *(temp+2)),
 										   MAP1_GRID_WIDTH*MAP1_GRID_WIDTH);
 
-//		   debug->put("%f %f %f", map_1Mesh.face_normals[k-1].x, map_1Mesh.face_normals[k-1].y, map_1Mesh.face_normals[k-1].z);
 		   map_1Mesh.face_normals[k++].set(MAP1_GRID_WIDTH*(*(temp+(MAP1_WIDTH+1)*3+2) - *(temp+(MAP1_WIDTH+1)*3+5)),
 										   MAP1_GRID_WIDTH*(*(temp+5) - *(temp+(MAP1_WIDTH+1)*3+5)),
 										   MAP1_GRID_WIDTH*MAP1_GRID_WIDTH);
 		   temp += 3;
-//		   debug->put("%f %f %f", map_1Mesh.face_normals[k-1].x, map_1Mesh.face_normals[k-1].y, map_1Mesh.face_normals[k-1].z);
 
 		}
 	  temp += 3;
@@ -604,13 +617,13 @@ void Landscape::initMap_1Mesh()
    
    for (int i = 1; i < MAP1_WIDTH; i++)
 	 {
-		*(temp++) = map_1Mesh.face_normals[i*2-2].x/2 + 
+		*(temp++) = map_1Mesh.face_normals[i*2-2].x + 
 		  map_1Mesh.face_normals[i*2-1].x + 
 		  map_1Mesh.face_normals[i*2].x;
-		*(temp++) = map_1Mesh.face_normals[i*2-2].y/2 + 
+		*(temp++) = map_1Mesh.face_normals[i*2-2].y + 
 		  map_1Mesh.face_normals[i*2-1].y + 
 		  map_1Mesh.face_normals[i*2].y;
-		*(temp++) = map_1Mesh.face_normals[i*2-2].z/2 + 
+		*(temp++) = map_1Mesh.face_normals[i*2-2].z + 
 		  map_1Mesh.face_normals[i*2-1].z + 
 		  map_1Mesh.face_normals[i*2].z;
 		//      Debug("%f %f %f", map_1Mesh.normals[k-1].x, map_1Mesh.normals[k-1].y, map_1Mesh.normals[k-1].z);
@@ -768,13 +781,13 @@ void Landscape::initMap_2Mesh()
    
    for (int i = 1; i < MAP2_WIDTH; i++)
 	 {
-		*(temp++) = map_2Mesh.face_normals[i*2-2].x/2 + 
+		*(temp++) = map_2Mesh.face_normals[i*2-2].x + 
 		  map_2Mesh.face_normals[i*2-1].x + 
 		  map_2Mesh.face_normals[i*2].x;
-		*(temp++) = map_2Mesh.face_normals[i*2-2].y/2 + 
+		*(temp++) = map_2Mesh.face_normals[i*2-2].y + 
 		  map_2Mesh.face_normals[i*2-1].y + 
 		  map_2Mesh.face_normals[i*2].y;
-		*(temp++) = map_2Mesh.face_normals[i*2-2].z/2 + 
+		*(temp++) = map_2Mesh.face_normals[i*2-2].z + 
 		  map_2Mesh.face_normals[i*2-1].z + 
 		  map_2Mesh.face_normals[i*2].z;
 		//      Debug("%f %f %f", map_2Mesh.normals[k-1].x, map_2Mesh.normals[k-1].y, map_2Mesh.normals[k-1].z);
@@ -932,13 +945,13 @@ void Landscape::initMap_3Mesh()
    
    for (int i = 1; i < MAP3_WIDTH; i++)
 	 {
-		*(temp++) = map_3Mesh.face_normals[i*2-2].x/2 + 
+		*(temp++) = map_3Mesh.face_normals[i*2-2].x + 
 		  map_3Mesh.face_normals[i*2-1].x + 
 		  map_3Mesh.face_normals[i*2].x;
-		*(temp++) = map_3Mesh.face_normals[i*2-2].y/2 + 
+		*(temp++) = map_3Mesh.face_normals[i*2-2].y + 
 		  map_3Mesh.face_normals[i*2-1].y + 
 		  map_3Mesh.face_normals[i*2].y;
-		*(temp++) = map_3Mesh.face_normals[i*2-2].z/2 + 
+		*(temp++) = map_3Mesh.face_normals[i*2-2].z + 
 		  map_3Mesh.face_normals[i*2-1].z + 
 		  map_3Mesh.face_normals[i*2].z;
 		//      Debug("%f %f %f", map_3Mesh.normals[k-1].x, map_3Mesh.normals[k-1].y, map_3Mesh.normals[k-1].z);
@@ -1047,7 +1060,7 @@ void Landscape::initMap_3Mesh()
    
 }
 
-
+/* These construct the display lists */
 void Landscape::makeMap_1()
 {
    float color[4] = { 1.0, 1.0, 1.0, 1.0 };
@@ -1120,7 +1133,6 @@ void Landscape::makeMap_2()
    else if (map1_shift_y < 0)
 	 south = 1;
    
-   
    for (j=0;j<(MAP2_WIDTH/2 - MAP2_GAP/2)-north;j++)
 	 {
 		glBegin(GL_TRIANGLE_STRIP);
@@ -1150,7 +1162,7 @@ void Landscape::makeMap_2()
 		
 		glBegin(GL_TRIANGLE_STRIP);
 		
-		for (i += MAP2_GAP-1+east;i<MAP2_WIDTH+1;i++)
+		for (i += MAP2_GAP-1+east+west;i<MAP2_WIDTH+1;i++)
 		  {
 			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
@@ -1200,9 +1212,19 @@ void Landscape::makeMap_3()
    glNewList(listId_3, GL_COMPILE);
    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
    
-   int i, j;
-
-   for (j=0;j<(MAP3_WIDTH/2 - MAP3_GAP/2);j++)
+   int j, i, north = 0, south = 0, west = 0, east = 0;
+   
+   if (map2_shift_x > 0)
+	 east = 1;
+   else if (map2_shift_x < 0)
+	 west = 1;
+   
+   if (map2_shift_y > 0)
+	 north = 1;
+   else if (map2_shift_y < 0)
+	 south = 1;
+   
+   for (j=0;j<(MAP3_WIDTH/2 - MAP3_GAP/2)-north;j++)
 	 {
 		glBegin(GL_TRIANGLE_STRIP);
 		
@@ -1216,11 +1238,11 @@ void Landscape::makeMap_3()
 		glEnd();
 	 }
    
-   for (;j<(MAP3_WIDTH/2 - MAP3_GAP/2 + MAP3_GAP);j++)
+   for (;j<(MAP3_WIDTH/2 - MAP3_GAP/2 + MAP3_GAP)+south;j++)
 	 {
 		glBegin(GL_TRIANGLE_STRIP);
 		
-		for (i=0;i<(MAP3_WIDTH/2 - MAP3_GAP/2)+1;i++)
+		for (i=0;i<(MAP3_WIDTH/2 - MAP3_GAP/2)+1-west;i++)
 		  {
 			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
@@ -1231,7 +1253,7 @@ void Landscape::makeMap_3()
 		
 		glBegin(GL_TRIANGLE_STRIP);
 		
-		for (i += MAP3_GAP-1;i<MAP3_WIDTH+1;i++)
+		for (i += MAP3_GAP-1+east+west;i<MAP3_WIDTH+1;i++)
 		  {
 			 glTexCoord2f(i, 0.0);
 			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
@@ -1285,80 +1307,210 @@ Landscape::setMap_3(char *map)
    
 }
 
+/* Some initial bugs for moving around (shifting the maps) */
 void
-Landscape::shiftMap_1(int side, char *slice)
+Landscape::shiftMap_1(int side)
 {
    int x, y;
    
    switch (side)
 	 {
-	  case NORTH:
+	  case DIR_NORTH:
+		map1_y += MAP1_GRID_WIDTH;
+		map1_shift_y++;
+		if (map1_shift_y == 5)
+		  {
+			 map1_shift_y = 0;
+			 shiftMap_2(side);
+		  }
+			 
 		for (y = 0; y < MAP1_WIDTH-1; y++)
 		  for (x = 0; x < MAP1_WIDTH; x++)
 			{
-			   MAP1(x, y) = MAP1(x, y+1);
-			   map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + x*2] =
-				 map_1Mesh.face_normals[(y+1)*MAP1_WIDTH*2 + x*2];
+//			   MAP1(x, y) = MAP1(x, y+1);
 			}
-		for (x = 0; x < MAP1_WIDTH; x++)
-		  MAP1(x, 0) = slice[x];
-		
+//		for (x = 0; x < MAP1_WIDTH; x++)
+//		  MAP1(x, 0) = slice[x];
 		break;
 		
-	  case EAST:
+	  case DIR_EAST:
+		map1_x += MAP1_GRID_WIDTH;
+		map1_shift_x++;
+		if (map1_shift_x == 5)
+		  {
+			 map1_shift_x = 0;
+			 shiftMap_2(side);
+		  }
+		
 		for (x = 0; x < MAP1_WIDTH-1; x++)
 		  for (y = 0; y < MAP1_WIDTH; y++)
 			{
-			   MAP1(x, y) = MAP1(x+1, y);
-			   map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + x*2] =
-				 map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + (x+1)*2];
+//			   MAP1(x, y) = MAP1(x+1, y);
 			}
-		for (y = 0; y < MAP1_WIDTH; y++)
-		  MAP1(MAP1_WIDTH-1, y) = slice[y];
+//		for (y = 0; y < MAP1_WIDTH; y++)
+//		  MAP1(MAP1_WIDTH-1, y) = slice[y];
 		break;
 		
-	  case SOUTH:
+	  case DIR_SOUTH:
+		map1_y -= MAP1_GRID_WIDTH;
+		map1_shift_y--;
+		if (map1_shift_y == -5)
+		  {
+			 map1_shift_y = 0;
+			 shiftMap_2(side);
+		  }
+			 
         for (y = MAP1_WIDTH-1; y > 0; y--)
 		  for (x = 0; x < MAP1_WIDTH; x++)
 		  {
-			 MAP1(x, y) = MAP1(x, y+1);
-			 
-			 map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + x*2] =
-			   map_1Mesh.face_normals[(y+1)*MAP1_WIDTH*2 + x*2];
+//			 MAP1(x, y) = MAP1(x, y+1);
 		  }
-		for (x = 0; x < MAP1_WIDTH; x++)
-		  MAP1(x, MAP1_WIDTH-1) = slice[x];
+//		for (x = 0; x < MAP1_WIDTH; x++)
+//		  MAP1(x, MAP1_WIDTH-1) = slice[x];
 		break;
 		
-	  case WEST:
+	  case DIR_WEST:
+		map1_x -= MAP1_GRID_WIDTH;
+		map1_shift_x--;
+		if (map1_shift_x == -5)
+		  {
+			 map1_shift_x = 0;
+			 shiftMap_2(side);
+		  }
+			 
 		for (x = MAP1_WIDTH-1; x > 0; x--)
 		  for (y = 0; y < MAP1_WIDTH; y++)
 			{
-			   MAP1(x, y) = MAP1(x-1, y);
-			   map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + x*2] =
-				 map_1Mesh.face_normals[(y)*MAP1_WIDTH*2 + (x-1)*2];
+//			   MAP1(x, y) = MAP1(x-1, y);
 			}
-		for (y = 0; y < MAP1_WIDTH; y++)
-		  MAP1(0, y) = slice[y];
+//		for (y = 0; y < MAP1_WIDTH; y++)
+//		  MAP1(0, y) = slice[y];
 		break;
 
 	  default:
 		error->put(ERROR_FATAL, "invalid first argument to updateMap_1Slice()");
 		break;
 	 }
+
+   makeHeightMaps();
+   initMap_1Mesh();
+   makeMap_1();
+   makeMap_2();
 }
 
 void
-Landscape::shiftMap_2(int side, char *slice)
+Landscape::shiftMap_2(int side)
 {
+   int x, y;
    
+   switch (side)
+	 {
+	  case DIR_NORTH:
+		map2_y += MAP2_GRID_WIDTH;
+		map2_shift_y++;
+		if (map2_shift_y == 5)
+		  {
+			 map2_shift_y = 0;
+			 shiftMap_3(side);
+		  }
+			 
+		for (y = 0; y < MAP2_WIDTH-1; y++)
+		  for (x = 0; x < MAP2_WIDTH; x++)
+			{
+//			   MAP2(x, y) = MAP2(x, y+1);
+			}
+//		for (x = 0; x < MAP2_WIDTH; x++)
+//		  MAP2(x, 0) = slice[x];
+		break;
+		
+	  case DIR_EAST:
+		map2_x += MAP2_GRID_WIDTH;
+		map2_shift_x++;
+		if (map2_shift_x == 5)
+		  {
+			 map2_shift_x = 0;
+			 shiftMap_3(side);
+		  }
+		
+		for (x = 0; x < MAP2_WIDTH-1; x++)
+		  for (y = 0; y < MAP2_WIDTH; y++)
+			{
+//			   MAP2(x, y) = MAP2(x+1, y);
+			}
+//		for (y = 0; y < MAP2_WIDTH; y++)
+//		  MAP2(MAP2_WIDTH-1, y) = slice[y];
+		break;
+		
+	  case DIR_SOUTH:
+		map2_y -= MAP2_GRID_WIDTH;
+		map2_shift_y--;
+		if (map2_shift_y == -5)
+		  {
+			 map2_shift_y = 0;
+			 shiftMap_3(side);
+		  }
+			 
+        for (y = MAP2_WIDTH-1; y > 0; y--)
+		  for (x = 0; x < MAP2_WIDTH; x++)
+		  {
+//			 MAP2(x, y) = MAP2(x, y+1);
+		  }
+//		for (x = 0; x < MAP2_WIDTH; x++)
+//		  MAP2(x, MAP2_WIDTH-1) = slice[x];
+		break;
+		
+	  case DIR_WEST:
+		map2_x -= MAP2_GRID_WIDTH;
+		map2_shift_x--;
+		if (map2_shift_x == -5)
+		  {
+			 map2_shift_x = 0;
+			 shiftMap_3(side);
+		  }
+			 
+		for (x = MAP2_WIDTH-1; x > 0; x--)
+		  for (y = 0; y < MAP2_WIDTH; y++)
+			{
+//			   MAP2(x, y) = MAP2(x-1, y);
+			}
+//		for (y = 0; y < MAP2_WIDTH; y++)
+//		  MAP2y(0, y) = slice[y];
+		break;
+
+	  default:
+		error->put(ERROR_FATAL, "invalid first argument to updateMap_1Slice()");
+		break;
+	 }
+
+   makeHeightMaps();
+   initMap_2Mesh();
+   makeMap_2();
+   makeMap_3();
    
 }
 
 void
-Landscape::shiftMap_3(int side, char *slice)
+Landscape::shiftMap_3(int side)
 {
-   
+   switch (side)
+	 {
+	  case DIR_NORTH:
+		map3_y += MAP3_GRID_WIDTH;
+		break;
+	  case DIR_SOUTH:
+		map3_y -= MAP3_GRID_WIDTH;
+		break;
+	  case DIR_EAST:
+		map3_x += MAP3_GRID_WIDTH;
+		break;
+	  case DIR_WEST:
+		map3_x -= MAP3_GRID_WIDTH;
+		break;
+	 }
+
+   makeHeightMaps();
+   initMap_3Mesh();
+   makeMap_3();
 }
 
 void Landscape::addObject(int oid)

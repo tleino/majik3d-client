@@ -21,6 +21,11 @@
 #include <pu.h>
 #include "Majik.hpp"
 
+#define DIR_NORTH   0
+#define DIR_EAST    1
+#define DIR_SOUTH   2
+#define DIR_WEST    3
+
 Input::Input()
 {
    #ifdef DEBUG
@@ -44,6 +49,18 @@ Input::keyDown(unsigned char key, int x, int y)
 	  break;
 	case '.':
 	  landscape->sun_pos -= 2;
+	  break;
+	case 'a':
+	  landscape->shiftMap_1(DIR_WEST);
+	  break;
+	case 'd':
+      landscape->shiftMap_1(DIR_EAST);
+	  break;
+	case 's':
+      landscape->shiftMap_1(DIR_SOUTH);
+	  break;
+ case 'w':
+	  landscape->shiftMap_1(DIR_NORTH);
 	  break;
 	default:
 	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)", key, x, y);

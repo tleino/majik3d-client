@@ -30,7 +30,7 @@ class Landscape
    Landscape();
    ~Landscape();
    void init();
-   void drawLandscape();
+   void draw();
    void setViewport(int, int, int, int);
    void addObject(int);
    void removeObject(int);
@@ -38,9 +38,9 @@ class Landscape
    void setMap_1(char *);
    void setMap_2(char *);
    void setMap_3(char *);
-   void shiftMap_1(int, char *);
-   void shiftMap_2(int, char *);
-   void shiftMap_3(int, char *);
+   void shiftMap_1(int);
+   void shiftMap_2(int);
+   void shiftMap_3(int);
  public:
    unsigned long detail;
    char *map_1;   /* Terrains for map parts                          */
@@ -62,7 +62,7 @@ class Landscape
    int map2_shift_x;
    int map2_shift_y;
    Object *first;
- private:
+ public:
    void initMap_1Mesh();
    void initMap_2Mesh();
    void initMap_3Mesh();
@@ -72,6 +72,7 @@ class Landscape
    void makeMap_3();
    void makeMap_4();
    void makeHeightMaps();
+ private:
    double interpolate(double, double, double);
  private:
    int viewport_x;

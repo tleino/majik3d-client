@@ -25,8 +25,8 @@
 #include <math.h>
 #include "Majik.hpp"
 
-#define PERSISTENCE 0.5
-#define OCTAVES       4
+#define PERSISTENCE 0.4
+#define OCTAVES       3
 
 Perlin::Perlin()
 {
