@@ -26,6 +26,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include "Cursor.hpp"
 #include "Detail.hpp"
 #include "Display.hpp"
 #include "Object.hpp"
@@ -39,7 +40,6 @@
 #include "P3D.hpp"
 #include "Perlin.hpp"
 #include "Landscape.hpp"
-#include "Cursor.hpp"
 
 extern Error *error;
 extern Debug *debug;

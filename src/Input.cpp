@@ -80,9 +80,9 @@ Input::specialDown(int key, int x, int y)
 void
 Input::mousePassiveMotion(int x, int y)
 {
-   #ifdef DEBUG
-	 debug->put("Mouse moved to: %d %d", x, y);
-   #endif
+//   #ifdef DEBUG
+//	 debug->put("Mouse moved to: %d %d", x, y);
+//   #endif
 	 
    display->cursor->x_pos = x;
    display->cursor->y_pos = y;   

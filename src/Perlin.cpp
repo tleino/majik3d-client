@@ -26,7 +26,7 @@
 #include "Majik.hpp"
 
 #define PERSISTENCE 0.5
-#define OCTAVES       3
+#define OCTAVES       4
 
 Perlin::Perlin()
 {

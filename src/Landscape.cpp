@@ -131,8 +131,8 @@ void Landscape::init()
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 	 }
    
-   glFogf(GL_FOG_START, 200.0);
-   glFogf(GL_FOG_END, 2500.0);
+   glFogf(GL_FOG_START, 400.0);
+   glFogf(GL_FOG_END, 3000.0);
 
 }
 
@@ -224,6 +224,11 @@ void Landscape::drawLandscape()
    glFrustum(-1.0, 1.0, -viewport_ratio, viewport_ratio, 5.0, 100000.0);
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
+
+   glEnable(GL_CULL_FACE);
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+   glEnable(GL_DEPTH_TEST);
    
    glPushMatrix();
    
@@ -904,7 +909,7 @@ void Landscape::makeMap_1()
    /* Generate new list ID */
    listId_1 = glGenLists(1);
    glNewList(listId_1, GL_COMPILE);
-   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+//   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
    
    
    for (int j=0;j<MAP1_WIDTH;j++)
@@ -1026,7 +1031,7 @@ void Landscape::makeMap_3()
    /* Generate new list ID */
    listId_3 = glGenLists(1);
    glNewList(listId_3, GL_COMPILE);
-   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+ //  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
    
    int i, j;
 

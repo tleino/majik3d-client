@@ -17,6 +17,7 @@
  */
 
 #include <iostream.h>
+#include <GL/gl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -32,12 +33,12 @@ Socket *sock = NULL;
 Display *display = NULL;
 Landscape *landscape = NULL;
 Input *input = NULL;
-
+ 
 void
 main(int argc, char **argv)
 {
    int c;
-   
+
    glutInit(&argc, argv);
       
    // Read the command line arguments 
@@ -75,7 +76,8 @@ main(int argc, char **argv)
 			 exit(0);
 		  }
 	 }
-      
+
+ 
    // Initialize the necessary global variables as proper objects
    error = new Error;
    debug = new Debug;

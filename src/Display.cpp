@@ -72,6 +72,8 @@ Display::openScreen()
    glutSpecialFunc(input->specialDown);
    glutPassiveMotionFunc(input->mousePassiveMotion);
    glutIdleFunc(idle);
+
+   cursor->init();
    
    #ifdef DEBUG
 	 debug->put("Screen opened.");
@@ -103,7 +105,10 @@ Display::updateScreen()
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
    landscape->drawLandscape();
+   
    /* INSERT HERE: Draw menus etc */
+   
+   display->cursor->draw();
    
    glutSwapBuffers();
 }

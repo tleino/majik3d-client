@@ -7,8 +7,7 @@ Protocol.cpp Protocol.hpp Socket.cpp Socket.hpp Cursor.cpp Cursor.hpp \
 Perlin.cpp Perlin.hpp main.cpp
 INCLUDES = -I. -I/usr/include/GL -I/usr/local/include
 CLEANFILES = *.debug
-LDFLAGS =
-LDADD = -L/usr/X11R6/lib -L/usr/local/lib \
--lX11 -lXext -lXmu -lXt -lXi -lICE -lglut -lMesaGLU -lMesaGL -lm
+LDADD = -L/usr/X11R6/lib -L/usr/local/lib -lX11 -lXext -lXmu -lXt -lXi \
+-lICE -lSDL -ldl -lpthread -lglut -lMesaGLU -lMesaGL -lm
 toilet  :
 	@-wc *.cpp *.hpp

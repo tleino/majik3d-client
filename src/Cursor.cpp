@@ -18,10 +18,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "Cursor.hpp"
 #include "Majik.hpp"
+
+#define IMAGE_WIDTH   32
+#define IMAGE_FILE    "gfx/cursor.bmp"
 
 Cursor::Cursor()
 {
+   SDL_Init(SDL_INIT_VIDEO);
    #ifdef DEBUG
 	 debug->put("Cursor constructor");
    #endif
@@ -35,22 +41,105 @@ Cursor::~Cursor()
 }
 
 void
+Cursor::init()
+{
+   /* Kludged until we get the png-reader */
+
+   //   SDL_Surface *picture;
+   int i, k, c;
+   
+   tex = new GLubyte[IMAGE_WIDTH*IMAGE_WIDTH*4];
+   
+   picture = SDL_LoadBMP(IMAGE_FILE);
+   
+   k = 0;
+   
+   for (i=0; i < IMAGE_WIDTH*IMAGE_WIDTH*4 ;)
+	 {
+		c = 0;
+		if (*((GLubyte *)picture->pixels + k) != 255)
+		  c = 1;
+		tex[i+2] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		tex[i+1] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		tex[i] = (GLubyte) *((GLubyte *)picture->pixels + k++);
+		
+		i += 3;
+		
+		if (c)
+		  tex[i++] = 255;
+		else
+		  tex[i++] = 0;
+	 }
+		
+   
+   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+   
+   glGenTextures(1, &tex_id);
+   glBindTexture(GL_TEXTURE_2D, tex_id);
+
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+				   GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				   GL_NEAREST);
+   
+   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+   glTexImage2D(GL_TEXTURE_2D, 0, 4, IMAGE_WIDTH,
+				IMAGE_WIDTH, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+				&tex[0]);
+   
+}
+
+void
 Cursor::draw()
 {
+   glViewport(0, 0, display->width, display->height);
+   
    glMatrixMode(GL_PROJECTION);
-   glPushMatrix();
    glLoadIdentity();
-   glOrtho(0, display->width, 0, display->height, -1, 250);
+   gluOrtho2D(0, display->width, display->height, 0);
    
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
-   glScalef(1.0f/640.0f, 1.0f/640.0f, 1.0f);
    
-   glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glEnable(GL_ALPHA_TEST);
+   glAlphaFunc(GL_GREATER, 0.1);
+   
+   glEnable(GL_TEXTURE_2D);
+   glDisable(GL_DEPTH_TEST);
+   glDisable(GL_DITHER);  
+   glDisable(GL_LIGHTING);
+   glDisable(GL_CULL_FACE);
+   
+   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+   glPushMatrix();
+   
+   glTranslatef(x_pos, y_pos, 0.0);
 
+   glBindTexture(GL_TEXTURE_2D, tex_id);
    
+   glBegin(GL_QUADS);
+	 {
+		glTexCoord2f(0.0, 0.0);
+		glVertex2f( 0.0, 0.0);
+		glTexCoord2f(0.0, 1.0);
+		glVertex2f( IMAGE_WIDTH, 0.0);
+		glTexCoord2f(1.0, 1.0);
+		glVertex2f( IMAGE_WIDTH, IMAGE_WIDTH);
+		glTexCoord2f(1.0, 0.0);
+		glVertex2f( 0.0, IMAGE_WIDTH);    
+		
+	 }
+   glEnd();
    
+   glPopMatrix();
    
+   glEnable(GL_LIGHTING);
+   glEnable(GL_DEPTH_TEST);
+   glEnable(GL_DITHER);
+   glDisable(GL_ALPHA_TEST);
    glDisable(GL_BLEND);
+   glDisable(GL_TEXTURE_2D);
 }

@@ -19,16 +19,23 @@
 #ifndef __CURSOR_HPP__
 #define __CURSOR_HPP__
 
+#include "GL/gl.h"
+#include "SDL/SDL.h"
+
 class Cursor
 {
  public:
    Cursor();
    ~Cursor();
    void draw();
+   void init();
  public:
    int x_pos;
    int y_pos;
-
+   unsigned int tex_id;
+ private:
+   SDL_Surface *picture;
+   GLubyte *tex;
 };
 
 #endif /* __CURSOR_HPP__ */
