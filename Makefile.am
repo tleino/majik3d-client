@@ -1,3 +1,2 @@
 SUBDIRS = src
-DIST_SUBDIRS = template
-EXTRA_DIST = template/*
+EXTRA_DIST = template/* src/gfx/*
