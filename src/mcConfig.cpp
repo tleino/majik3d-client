@@ -109,7 +109,7 @@ mcConfig::parseOption(char *option, char *value)
     }
   if (strcmp(option, "fullscreen") == 0)
     {
-		setFlag(MENU, atoi (value));
+		setFlag(FULLSCREEN, atoi (value) != 0);
     }
   if (strcmp(option, "debug") == 0)
     {
@@ -117,7 +117,7 @@ mcConfig::parseOption(char *option, char *value)
     }
   if (strcmp(option, "protocol_debug") == 0)
     {
-      setFlag(PROTOCOL_DEBUG, atoi (value));
+      setFlag(PROTOCOL_DEBUG, atoi (value) != 0);
     }
   if (strcmp(option, "lod") == 0)
     {

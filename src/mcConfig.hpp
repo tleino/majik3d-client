@@ -52,7 +52,7 @@ public:
 		if (set)
 			m_flags |= flag;
 		else
-			m_flags &= ((1>>1) ^ flag);
+			m_flags &= ~flag;
 	}
 
 	bool	testFlag		(e_flag flag)

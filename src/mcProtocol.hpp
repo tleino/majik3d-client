@@ -19,40 +19,30 @@
 #ifndef __PROTOCOL_HPP__
 #define __PROTOCOL_HPP__
 
-///
-#define CMD_MOVE           50
-///
-#define CMD_LOGIN          51
-///
-#define CMD_OWN_ID         52
-///
-#define CMD_QUIT           53
-///
-#define CMD_SAY            54
-///
-#define CMD_ADD_OBJECT     55
-///
-#define CMD_SUN_POS        56
-///
-#define CMD_MOVE_DIRECTION 57
-///
-#define CMD_MOVE_HEADING   58
-///
-#define CMD_MOVE_STOP      59
-///
-#define CMD_DIALOG         100
-///
-#define CMD_MAP            189
-///
-#define CMD_PROMPT         220
-///
-#define CMD_SAYHIDE        223
-
 /** A protocol class. This class parses commands sent by the server. */
 
 class Protocol
 {
 public:
+
+	enum Command
+	{
+		CMD_MOVE           = 50,
+		CMD_LOGIN          = 51,
+		CMD_OWN_ID         = 52,
+		CMD_QUIT           = 53,
+		CMD_SAY            = 54,
+		CMD_ADD_OBJECT     = 55,
+		CMD_SUN_POS        = 56,
+		CMD_MOVE_DIRECTION = 57,
+		CMD_MOVE_HEADING   = 58,
+		CMD_MOVE_STOP      = 59,
+		CMD_DIALOG         = 100,
+		CMD_MAP            = 189,
+		CMD_PROMPT         = 220,
+		CMD_SAYHIDE        = 223
+	};
+
   Protocol();
   ~Protocol();
   

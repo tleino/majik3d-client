@@ -102,6 +102,22 @@ Object::~Object()
   delete puhe;
 }
 
+
+Object *
+Object::getObject(int id)
+{
+	Object *o = first;
+
+	while (o != NULL)
+	{
+		if (o->getID() == id)
+			return o;
+		o = o->getNext();
+	}
+	return NULL;
+}
+
+
 float
 Object::getRadius()
 {

@@ -52,7 +52,10 @@ Perlin::~Perlin()
 double
 Perlin::cosine_Interpolate(double a, double b, double x)
 {
-  double f = interpolation_table[(int)(x*255)];
+	int i = (int)(x*255);
+	if (i > 255)
+		i = 255;
+  double f = interpolation_table[i];
   return a*(1-f) + b*f;
 }
 

@@ -21,12 +21,9 @@
 
 #include "mcProtocol.hpp"
 #include "mcMenu.hpp"
-#include "mcSocket.hpp"
 #include "mcDebug.hpp"
 #include "mcObject.hpp"
 #include "mcError.hpp"
-#include "mcMapquad.hpp"
-#include "mcDisplay.hpp"
 #include "mcOverlay.hpp"
 #include "mcConfig.hpp"
 #include "mcSky.hpp"
@@ -67,51 +64,41 @@ Protocol::parseCommand(char *input)
   
   switch (command)
     {
-    case CMD_MOVE_DIRECTION:
+    case CMD_MOVE_DIRECTION: // hmmm????
       if (sscanf(data, "%d %d", &id, &direction) < 2)
 	{
 		error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 		      "command CMD_MOVE_DIRECTION.");
 	  break;
 	}
-      ob = Object::first;
-      while (ob != NULL)
+
+    for (ob = Object::getFirst(); ob; ob = ob->getNext())
 	{
 	  ob->moveTo(ob->getPos().xyz[0]+direction,
 		     ob->getPos().xyz[1]+direction,
 		     ob->getPos().xyz[2]);
 	  break;
 	}
-      ob = ob->getNext();  
+
       break;
-    case CMD_MOVE:
-      if (sscanf(data, "%d %f %f %f", &id, &x, &y, &h) < 4)
-	{
-		  error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
-		      "command CMD_MOVE.");
-	  break;
-	}
-      
-      ob = Object::first;
-      while (ob != NULL)
-	{
-	  if (ob->getID() == id)
-	    {
-	      ob->moveTo(x, y, h);
-	      found = 1;
-	      break;
-	    }
-	  
-	  ob = ob->getNext();
-	}
-      
-    if (!found)
-	{
-		error->put (mcError::ERROR_WARNING, "Object %d not found!", id);
-	  break;
-	}
-	  
-	
+	case CMD_MOVE:
+		if (sscanf(data, "%d %f %f %f", &id, &x, &y, &h) < 4)
+		{
+			error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
+												"command CMD_MOVE.");
+			break;
+		}
+
+		ob = Object::getObject (id);
+
+		if (ob)
+		  ob->moveTo(x, y, h);
+		else
+		{
+			error->put (mcError::ERROR_WARNING, "Object %d not found!", id);
+			break;
+		}
+/*	
 	if (ob == tuxi)  
 	{
 		((Player *)tuxi)->unLockMovement();
@@ -143,7 +130,7 @@ Protocol::parseCommand(char *input)
 		}
 
 	}
-
+*/
       break;
     case CMD_OWN_ID:
       sscanf(data, "%d", &id);
@@ -154,19 +141,12 @@ Protocol::parseCommand(char *input)
     case CMD_QUIT:
       sscanf(data, "%d", &id);
       
-      ob = Object::first;
-	   
-	while (ob != NULL)
-	{
-		if (ob->getID() == id)
-	    {
-			delete ob;
-			break;
-	    }
-			
-		ob = ob->getNext();
-	}
-      
+      ob = Object::getObject(id);
+	  if (ob)
+		delete ob;
+	  else
+		  ;// ERROR - object not found
+
       break;
     case CMD_SAY:
       char name[80];
@@ -175,33 +155,23 @@ Protocol::parseCommand(char *input)
       sscanf(data, "%d %s %[^\n]", &id, name, str);
       debug->put ("id=%d name=%s str=%s", id, name, str);
       
-      ob = Object::first;
-      
-      while (ob != NULL)
-	{
-	  if (ob->getID() == id)
-	    {
+      ob = Object::getObject(id);
+      if (ob)
+	  {
 	      ob->setSayString(debug->string("%s: %s", name, str));
 	      ob->revealSayString();
-	      break;
-	    }
-	  ob = ob->getNext();
-	}
+	  }
+	  // else ERROR - object not found
+
       break;
     case CMD_SAYHIDE:
       sscanf(data, "%d", &id);
       
-      ob = Object::first;
-      
-      while(ob != NULL)
-	{
-	  if(ob->getID() == id)
-	    {
-	      ob->hideSayString();
-	      break;
-	    }
-	  ob = ob->getNext();
-	}
+      ob = Object::getObject(id);
+      if (ob)
+		ob->hideSayString();
+	  // else ERROR - object not found
+
       break;
     case CMD_ADD_OBJECT:
       if (sscanf(data, "%d %f %f %f %s", &id, &x, &y, &h, file_name) != 5)
@@ -256,11 +226,11 @@ Protocol::parseCommand(char *input)
       fprintf (fp, "%s", tmp);
       fclose (fp);
       
-      Mapquad::Map_data map_data;
+//      Mapquad::Map_data map_data;
       
-      map_data.terrain = tmp;
+  //    map_data.terrain = tmp;
       
-      Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(map_data);
+//      Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(map_data);
       break;
     case CMD_PROMPT:
       // The data written to the prompt is handled in the input object's

@@ -1,15 +1,12 @@
-
 #include "mcTerrainBlock.hpp"
 #include "mcPerlin.hpp"
 #include "mcLandscape.hpp"
-
 
 inline float getHeight(float x, float y)
 {
 //	return 0.0f;
 return 2000.0f*(float)perlin->perlinNoise_2D(x/1500.0, y/1500.0);
 };
-
 
 TerrainBlock::TerrainBlockHash TerrainBlock::blockHash;
 
@@ -117,18 +114,6 @@ TerrainBlock::~TerrainBlock()
 {
 	blockHash.remove(m_x, m_y);
 }
- 
-
-
-/*
-void
-TerrainBlock::draw()
-{
-	ssgVTable::draw();
-//	draw_geometry();
-}
-*/
-
 
 /*
 
@@ -221,8 +206,96 @@ TerrainBlock::recalcBSphere()
 }
 */
 
-inline void
-TerrainBlock::calculateErrors()
+TerrainBlock::vertex& TerrainBlock::getVertexFromNeighbour(Index mask, Index i)
+{
+	Index x = (mask & DIR_WEST ? -1 : 0) + (mask & DIR_EAST ? 1 : 0);
+	Index y = (mask & DIR_NORTH ? 1 : 0) + (mask & DIR_SOUTH ? -1 : 0);
+
+	TerrainBlock *b = blockHash.get( m_x + x, m_y + y);
+
+	if (b)
+		return b->getVertex(i, true);
+	else
+		return nullVertex;
+}
+
+TerrainBlock::vertex& TerrainBlock::getVertexFromCoords (Index x, Index y)
+{
+	assert(!(x>DIM||y>DIM));
+
+	return myVertices[ x + (DIM+1) * y];
+}
+
+TerrainBlock::vertex& TerrainBlock::getVertex (Index i, bool neighbour)
+{
+	if (i == 0xffff)
+		return nullVertex;
+
+	if (neighbour)
+	{
+		if (i & DIR_WEST)
+			return getVertexFromNeighbour(DIR_WEST, i ^ DIR_WEST );
+		else if (i & DIR_EAST)
+			return getVertexFromNeighbour(DIR_EAST, i ^ DIR_EAST );
+		else if (i & DIR_NORTH)
+			return getVertexFromNeighbour(DIR_NORTH, i ^ DIR_NORTH );
+		else if (i & DIR_SOUTH)
+			return getVertexFromNeighbour(DIR_SOUTH, i ^ DIR_SOUTH );
+		else
+			return myVertices[i];
+	}
+	else if (i & DIR_SOME)
+		return nullVertex;
+	else
+		return myVertices[i];
+}
+
+TerrainBlock::Index TerrainBlock::getVertexIndex (short x, short y, bool border)
+{
+	Index flags = 0;
+
+//		border = false; // disabled
+	if (border)
+	{
+		if (x < 0)
+		{
+			flags |= DIR_WEST;
+//				x += (DIM+1);
+			x = DIM;
+		}
+			
+		if (x > DIM)
+		{
+			flags |= DIR_EAST;
+//				x -= (DIM+1); 
+			x = 0;
+		}
+
+		if (y < 0)
+		{
+			flags |= DIR_SOUTH;
+//				y += (DIM+1); 
+			y = DIM;
+		}
+			
+		if (y > DIM)
+		{
+			flags |= DIR_NORTH;
+//				y -= (DIM+1); 
+			y = 0;
+		}
+		Index ret = x + (DIM+1) * y;
+	
+		return ret | flags;
+	}
+
+	if (x<0||x>DIM||y<0||y>DIM)
+		return DISABLED;
+
+	return x + (DIM+1) * y;
+}
+
+void TerrainBlock::calculateErrors()
 {
 	for (int i = 0; i < NUM_VERTICES; i++)
 	{
@@ -240,5 +313,236 @@ TerrainBlock::calculateErrors()
 	}
 }
 
+void TerrainBlock::resolveDependencies ( vertex& v )
+{ 
+//	vertex& v;// = getVertex( i );
+	if (!v.enabled)
+	{
+		v.enabled = true;
+	}
 
+	if (v.left != DISABLED)
+	{
+		vertex& left = getVertex ( v.left, true) ;
 
+		if (!left.enabled && &left != &nullVertex)
+		{
+//			TerrainBlock *b;
+			if (v.left & DIR_WEST)
+				blockHash.get(m_x-1, m_y)->resolveDependencies(left);
+			else if (v.left & DIR_EAST)
+				blockHash.get(m_x+1, m_y)->resolveDependencies(left);
+			else if (v.left & DIR_NORTH)
+				blockHash.get(m_x, m_y+1)->resolveDependencies(left);
+			else if (v.left & DIR_SOUTH)
+				blockHash.get(m_x, m_y-1)->resolveDependencies(left);
+			else resolveDependencies( left );
+		}
+	}
+
+	if (v.right != DISABLED)
+	{
+		vertex& right = getVertex ( v.right, true) ;
+
+		if (!right.enabled && &right != &nullVertex)
+		{
+			if (v.right & DIR_WEST)
+				blockHash.get(m_x-1, m_y)->resolveDependencies(right);
+			else if (v.right & DIR_EAST)
+				blockHash.get(m_x+1, m_y)->resolveDependencies(right);
+			else if (v.right & DIR_NORTH)
+				blockHash.get(m_x, m_y+1)->resolveDependencies(right);
+			else if (v.right & DIR_SOUTH)
+				blockHash.get(m_x, m_y-1)->resolveDependencies(right);
+			else resolveDependencies( right );
+			
+		}
+	}
+}
+
+void TerrainBlock::exchangeBorderVertices()
+{
+	TerrainBlock *b;
+	
+	if (b = blockHash.get(m_x+1, m_y) )
+	{
+		for (int i = 0; i < DIM+1; i++)
+		{
+			vertex &t = getVertexFromCoords	( DIM, i );
+			vertex &o = b->getVertexFromCoords ( 0, i );
+
+			if ( t.enabled && !o.enabled )
+				b->resolveDependencies (o);
+			else if ( o.enabled && !t.enabled )
+				resolveDependencies (t);
+		}	
+	}
+
+	if (b = blockHash.get(m_x, m_y+1) )
+	{
+		for (int i = 0; i < DIM+1; i++)
+		{
+			vertex &t = getVertexFromCoords	( i, DIM );
+			vertex &o = b->getVertexFromCoords ( i, 0 );
+
+			if ( t.enabled && !o.enabled )
+				b->resolveDependencies (o);
+			else if ( o.enabled && !t.enabled )
+				resolveDependencies (t);
+		}	
+	}  
+}
+
+void TerrainBlock::triangulateBlock()
+{
+	listCounter = 0;
+
+	addVertex(0);
+	myBuffer.push(0);
+	previousLevel = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		if (!(previousLevel % 2))
+			myBuffer.toggle();
+		else
+			addVertex(myBuffer.getSecondMostRecent() );
+		addVertex ( quadrants[i].left);
+		myBuffer.push(quadrants[i].left);
+		previousLevel = 2*(LEVELS)+1;
+		triangulateQuadrant(quadrants[i].left, quadrants[i].top, quadrants[i].right, 2*(LEVELS));
+	}
+
+	addVertex(0);
+
+	numSelectedVertices = listCounter;
+	num_vertices = listCounter;
+	num_texcoords = listCounter;
+
+	recalcBSphere();
+}
+
+void TerrainBlock::triangulateQuadrant(Index iL, Index iT, Index iR, Index level)
+{
+	if (level <= 0)
+		return;
+
+	if ( myVertices[iT].enabled )
+	{
+		triangulateQuadrant(iL, (iL+iR)/2, iT, level-1);
+		if ( !myBuffer.contains(iT) )
+		{
+			if ((level + previousLevel) % 2)
+				myBuffer.toggle();
+			else
+				addVertex(myBuffer.getSecondMostRecent() );
+			addVertex(iT);
+			myBuffer.push(iT);
+			previousLevel = level;
+		}
+		triangulateQuadrant(iT, (iL+iR)/2, iR, level-1);
+	}
+}
+
+void TerrainBlock::collectVertices(unsigned short l, unsigned int errMax)
+{
+	const int inc = DIM>>l;
+	const int res = LEVELS-l;
+
+	int j, i;
+	for (j=0;j<DIM+1;j += inc)
+	{
+		for(i=0;i<DIM+1;i += inc)
+		{ 
+			if (! ((i>>res) % 2 != 0 || (j>>res) % 2 != 0))
+				continue;
+			if ((i>>res) % 2 != 0 && (j>>res) % 2 != 0)
+				continue;
+
+			int ind = i + j * (DIM+1);
+
+			vertex& v = myVertices[ind];
+
+			if (v.error >= errMax || v.marked)
+			{
+//						set.insert ( ind );
+				v.enabled = true;
+
+				if (v.left != 0xffff)
+					getVertex(v.left).marked = true;
+
+				if (v.right != 0xffff)
+					getVertex(v.right).marked = true;
+
+			}
+			v.marked = false;
+		}
+	}
+
+	
+	for (j=0;j<DIM+1;j += inc)
+	{
+		for(int i=0;i<DIM+1;i += inc)
+		{ 
+			if (! ((i>>res) % 2 != 0 && (j>>res) % 2 != 0))
+				continue;
+
+			int ind = i + j * (DIM+1);
+
+			vertex& v = myVertices[ind];
+
+			if (v.error >= errMax || v.marked)
+			{
+				v.enabled = true;
+
+				if (v.left != 0xffff)
+					getVertex(v.left).marked = true;
+
+				if (v.right != 0xffff)
+					getVertex(v.right).marked = true;
+
+			}
+			v.marked = false;
+		}
+	}
+}
+
+void TerrainBlock::makeDeps(Index level, Index x, Index y, int segment, int dir)
+{
+	const Index d = DIM>>(level+1);
+
+	vertex& vN = getVertexFromCoords(x,	y+d);
+	vertex& vW = getVertexFromCoords(x-d,	y);
+	vertex& vE = getVertexFromCoords(x+d, y);
+	vertex& vS = getVertexFromCoords(x,	y-d);
+	vertex& vC = getVertexFromCoords(x,	y);
+
+	vN.left = getVertexIndex ( x, y, 0 );
+	vN.right = getVertexIndex ( x, y+2*d, (y+d == DIM) );
+
+	vS.left = getVertexIndex  ( x, y-2*d, (y-d == 0) );
+	vS.right = getVertexIndex ( x, y, 0 );
+
+	vW.left = getVertexIndex ( x-2*d, y, (x-d == 0) );
+	vW.right = getVertexIndex ( x, y, 0 );
+
+	vE.left = getVertexIndex ( x, y, 0 );
+	vE.right = getVertexIndex ( x+2*d, y, (x+d == DIM) );
+
+	vC.left = getVertexIndex ( x-d, y+dir*d, 0 );
+	vC.right = getVertexIndex ( x+d, y-dir*d, 0 );
+
+//		v.left = x+d + (DIM+1)*(y+d);
+//		v.right = x+d + (DIM+1)*(y-d);
+//
+//		vertex& v = getVertex(x+d, y);
+//		v.left = x+d + (DIM+1)*(y+d);
+//		v.right = x+d + (DIM+1)*(y-d);
+
+	if (level == LEVELS-1)
+		return;
+
+	makeDeps(level+1, x-d/2,	y+d/2, 0, -1);
+	makeDeps(level+1, x+d/2,	y+d/2, 1, ((segment == 0 || segment == 3) && level != 0) ? -dir : dir);
+	makeDeps(level+1, x-d/2,	y-d/2, 2, ((segment == 0 || segment == 3) && level != 0) ? -dir : dir);
+	makeDeps(level+1, x+d/2,	y-d/2, 3, -1);
+}

@@ -42,7 +42,7 @@ public:
   /// For client to get sound made.
   int getCurrentSound();
   /// Move object to a new position.
-  void moveTo(float x, float y, float h);
+  virtual void moveTo(float x, float y, float h);
   /// Move object to a new position.
   void moveTo(sgCoord where);
   /// Set the Object's current position.
@@ -56,9 +56,6 @@ public:
   /// Return the amount of moves made, used for animation kludge.
   int getMoveCounter();
   
-  static Object *last;
-  static Object *first;
-
   /// A pointer to next object.
   Object *getNext();
   /// Return the Object ID, OID.
@@ -82,8 +79,15 @@ public:
   float getLenY();
   /// FIXME: A kludge.
   bool hotFixed;
+
+	static Object *getObject	(int id);
+	static Object *getFirst		()			{ return first; }
+
 private:
-  
+
+	static Object *last;
+	static Object *first;
+
 	ssgTransform *trans;
 	ssgEntity *obu;
 	puText *puhe;  
@@ -104,12 +108,45 @@ extern Object *object;
 
 /** Class definition for the player object */
 
+#include "mcMapquad.hpp"
+
 class Player : public Object
 {
 public:
-  Player()    { movementLock = false; }
+  Player()    { sgSetVec3(m_lastRedrawLocation, 0.0, 0.0, 0.0);  movementLock = false; }
   ~Player();
   
+
+	virtual void moveTo(float x, float y, float h)
+	{
+		Object::moveTo(x, y, h);
+
+		if (sgDistanceSquaredVec3(getPos().xyz, m_lastRedrawLocation) > 10.0)
+		{
+			sgCopyVec3 (m_lastRedrawLocation, getPos().xyz);
+
+			int i, j;
+
+			for (j= - 4; j < 4; j++)
+				for (i= - 4; i < 4; i++)
+				{
+					Mapquad::root_map->getMapquad(12, (int)x + 256+ i*512, (int)y +256 + j*512);
+				}
+
+			Mapquad::root_map->resetBlocks();
+
+			Mapquad::root_map->selectLOD(4, x, y);
+			Mapquad::root_map->selectLOD(3, x, y);
+			Mapquad::root_map->selectLOD(2, x, y);
+			Mapquad::root_map->selectLOD(1, x, y);
+			Mapquad::root_map->selectLOD(0, x, y);
+
+			Mapquad::root_map->exchangeBorders();
+			Mapquad::root_map->triangulateBlocks();
+		}
+
+	}
+
   /// Lock the movement.
   void lockMovement()  { movementLock = true; }
   /// Release the movement lock, done when the server has acknowledged it.
@@ -118,6 +155,8 @@ public:
   bool isMovementLocked()   { return movementLock; }
 private:  
   bool movementLock;
+
+  sgVec3	m_lastRedrawLocation;
 };
 
 #endif /* __OBJECT_HPP__ */

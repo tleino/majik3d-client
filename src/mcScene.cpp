@@ -25,7 +25,6 @@
 #include "mcDisplay.hpp"
 #include "mcDebug.hpp"
 #include "mcLandscape.hpp"
-#include "mcSocket.hpp"
 #include "mcObject.hpp"
 #include "mcConfig.hpp"
 #include "mcSky.hpp"
@@ -241,10 +240,10 @@ Scene::update()
   
    frameno++ ;
   
-   Object *ob = Object::first;
+   Object *ob = Object::getFirst();
   
    sgCoord tuxpos = tuxi->getPos();
-   
+
    while (ob != NULL)
      {
        sgCoord pos = ob->getPos();
@@ -416,24 +415,22 @@ Scene::draw()
   // Overlay chat-strings, if any.
   sgVec3 posit;
   
-  Object *ob = Object::first;
-  
-  while (ob != NULL)
-    {
-      sgCoord obPos = ob->getPos();
+	for (Object *ob = Object::getFirst(); ob; ob = ob->getNext())
+	{
+		sgCoord obPos = ob->getPos();
 
-      if (!ob->hotFixed) {
-	ob->moveTo(obPos.xyz[0], obPos.xyz[1],
-		   obPos.hpr[0]);
-	ob->hotFixed = true;
-      }
+		if (!ob->hotFixed)
+		{
+			ob->moveTo(	obPos.xyz[0],
+						obPos.xyz[1],
+						obPos.hpr[0]);
+			ob->hotFixed = true;
+		}
 
-      posit[0] = obPos.xyz[0];
-      posit[1] = obPos.xyz[1];
-      posit[2] = obPos.xyz[2]+ob->getRadius();
-      
-      drawText( ob, posit);
+		posit[0] = obPos.xyz[0];
+		posit[1] = obPos.xyz[1];
+		posit[2] = obPos.xyz[2]+ob->getRadius();
 
-      ob = ob->getNext();
-    }
+		drawText( ob, posit);
+	}
 }

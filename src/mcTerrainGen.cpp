@@ -92,7 +92,7 @@ int mcTerrainGen::getPixel(double x, double y)
 //	sgSetVec3(nrm, 0.0<, 0.7, 0.0);
 	
 	float d = sgScalarProductVec3(lightDir, nrm);
-//	d += 0.5;
+	d += 0.5;
 	if (d<0)
 		d = 0.0;
 	if (d>1.0)

@@ -101,7 +101,7 @@ Overlay::draw()
 {
   frames++;
 
-  if (inp_command != CMD_LOGIN)
+  if (inp_command != Protocol::CMD_LOGIN)
     {
       sprintf (fps_text, "%1.1f", (float) 1/(read_time_of_day() - start_time));
       start_time = read_time_of_day();
