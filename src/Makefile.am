@@ -11,4 +11,4 @@ LDADD = -L/usr/X11R6/lib -L/usr/local/lib \
 -lX11 -lXext -lXmu -lXt -lXi -lSDL -lMesaGL -lSDL -lICE -lglut -lMesaGLU \
 -lpthread -ldl -lm
 toilet  :
-	@-wc `find ../../ -regex .*[.][ch]+`
+	@-wc *.cpp *.hpp
