@@ -53,6 +53,7 @@ Protocol::parseCommand(char *input)
   int command;
   int found = 0, id;
   int map_x, map_y, map_level;
+  int direction;
   float x, y, h;
   Object *ob = NULL;
   char file_name[80], data[1024];
@@ -65,6 +66,23 @@ Protocol::parseCommand(char *input)
   
   switch (command)
     {
+    case CMD_MOVE_DIRECTION:
+      if (sscanf(data, "%d %d", &id, &direction) < 2)
+	{
+	  error->put (ERROR_WARNING, "Invalid parameters to protocol " \
+		      "command CMD_MOVE_DIRECTION.");
+	  break;
+	}
+      ob = Object::first;
+      while (ob != NULL)
+	{
+	  ob->moveTo(ob->getPos().xyz[0]+direction,
+		     ob->getPos().xyz[1]+direction,
+		     ob->getPos().xyz[2]);
+	  break;
+	}
+      ob = ob->getNext();  
+      break;
     case CMD_MOVE:
       if (sscanf(data, "%d %f %f %f", &id, &x, &y, &h) < 4)
 	{
@@ -271,10 +289,12 @@ Protocol::parseCommand(char *input)
       if (sscanf (data, "%f %f %f %f", &heading, &pitch, &luminance,
 		  &turbidity) == 4)
 	{
+	  printf ("CMD_SUN_POS %f %f %f %f\n", heading, pitch, luminance, turbidity);
 	  mc_sky->setLuminanceFactor(luminance);
 	  mc_sky->setSunPosition(heading, pitch); 
 	  mc_sky->setTurbidity(turbidity);
-	  scene->sky_entity = mc_sky->Draw();
+	  scene->redrawSky();
+	  //scene->sky_entity = mc_sky->Draw();
 	}
       else
 	{

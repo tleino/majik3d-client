@@ -76,6 +76,26 @@ Scene::addSpecial(float x, float y, char *model, bool cutout)
 }
 
 void
+Scene::redrawSky()
+{
+  printf ("redrawSky begin.\n");
+  if (sky_dome != NULL) {
+    printf ("sky_dome deRef.\n");
+    sky_dome->deRef();
+    delete sky_dome;
+  }
+
+  sky_dome = new ssgTransform ();
+  sky_entity = mc_sky->Draw();
+  sky_dome->addKid (sky_entity);
+  ssgFlatten (sky_entity);
+  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
+  scene_root->addKid (sky_dome);
+
+  printf ("redrawSky end.\n");
+}
+
+void
 Scene::init()
 {
    sgCoord crd;
@@ -87,13 +107,6 @@ Scene::init()
   
   ssgModelPath   ("data");
   ssgTexturePath ("data");
-  
-  sky_dome = new ssgTransform ();
-  sky_entity = mc_sky->Draw();
-  sky_dome->addKid (sky_entity);
-  ssgFlatten (sky_entity);
-  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
-  scene_root->addKid (sky_dome);
 
   landscape->init(scene_root);
         

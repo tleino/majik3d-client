@@ -98,9 +98,12 @@ Display::openScreen()
   glutDisplayFunc(updateScreen);
   glutKeyboardFunc(input->keyDown);
   glutSpecialFunc(input->specialDown);
+  glutSpecialUpFunc(input->specialUp);
   glutMouseFunc(input->mouseDown);
   glutPassiveMotionFunc(input->mouseMotion);
   glutMotionFunc(input->mouseMotion);
+
+  glutIgnoreKeyRepeat(1);
   
   if (config->nomousetrap != 1)
     glutWarpPointer (width/2, height/2);

@@ -33,6 +33,8 @@ public:
   /** This method is called when a special key-press has been detected,
       for example when using arrow keys. */
   static void specialDown(int special_key, int x, int y);
+  /// This method is called when a special key is released.
+  static void specialUp(int special_key, int x, int y);
   /// This method is called when a mouse-press has been detected.
   static void mouseDown(int button, int updown, int x, int y);
   /// This method is called when a '\n' has been detected on input prompt.

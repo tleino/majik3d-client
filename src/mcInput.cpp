@@ -190,6 +190,20 @@ Input::keyDown(unsigned char k, int x, int y)
     }
 }
 
+void
+Input::specialUp(int key, int x, int y)
+{
+  puKeyboard (key + PU_KEY_GLUT_SPECIAL_OFFSET, PU_UP);
+
+  switch (key)
+    {
+    case GLUT_KEY_UP:
+    case GLUT_KEY_DOWN:
+      sock->writePacket ("59 0");
+      break;
+    }
+}
+
 void 
 Input::specialDown(int key, int x, int y)
 {
@@ -216,7 +230,12 @@ Input::specialDown(int key, int x, int y)
     case GLUT_KEY_F12:
       captureScreen();
       break;
-      
+    case GLUT_KEY_UP:
+      sock->writePacket("57 1");
+      break;
+    case GLUT_KEY_DOWN:
+      sock->writePacket("57 -1");
+      break;
     default:
       error->put(ERROR_WARNING, "Unsupported special key received: %d at " \
 		 "(%d,%d)", key, x, y);

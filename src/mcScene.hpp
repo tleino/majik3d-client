@@ -52,6 +52,8 @@ public:
   void init();
   /// Draw the chat-string to screen.
   void drawText(Object *, sgVec3);
+  /// A kludge.
+  void redrawSky();
   /// Get Height of Terrain of (x,y).
   float getHOT( float x, float y);
   /// A pointer to scene's root node.
