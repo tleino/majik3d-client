@@ -285,7 +285,7 @@ void Landscape::drawLandscape()
    
    glPopMatrix();
    
-   angle += 2;
+   // angle += 2;
 }
 
 void Landscape::setViewport(int x, int y, int w, int h)

@@ -6,9 +6,8 @@ class Keyboard
  public:
    Keyboard();
    ~Keyboard();
-   void keyPressed(unsigned char);
+   void keyDown(unsigned char, int, int);
+   void specialDown(int, int, int);
 };
 
 #endif
-   
-   

@@ -3,11 +3,11 @@
 
 #define DEBUG
 
-#include "SDL/SDL.h"
-#include "GL/osmesa.h"
-#include "GL/gl.h"
-#include "GL/glu.h"
-#include "SDLMesa.hpp"
+#include <GL/osmesa.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+
 #include "Detail.hpp"
 #include "Display.hpp"
 #include "Object.hpp"
@@ -28,7 +28,6 @@ extern Display *display;
 extern Socket *sock;
 extern Landscape *landscape;
 extern Keyboard *keyboard;
-extern SDL_Event event;
 extern bool quit;
 
 #endif

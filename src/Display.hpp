@@ -12,8 +12,9 @@ class Display
    void openScreen();
    void closeScreen();
    void updateScreen();
+ private:
+   void idle();
  public: 
-   SDLMesaContext *sdlmesactx;
    int width, height, bpp;
 };
    

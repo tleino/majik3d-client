@@ -69,8 +69,9 @@ class Landscape
    
    
    
-   
+ public:
    float angle;
+ private:
    GLubyte *texture;
 };
 
