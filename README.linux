@@ -1,0 +1,31 @@
+To run this binary you'll need:
+
+- Mesa (or any other suitable OpenGL implementation) and GLUT (in MesaDemos package)
+  libraries installed
+    ftp://ftp.mesa3d.org/mesa/MesaLib-3.0.tar.gz
+    ftp://ftp.mesa3d.org/mesa/MesaDemos-3.0.tar.gz
+- PLIB installed
+    http://www.woodsoup.org/~sbaker/plib/dist/plib-1.0.13.tar.gz
+- X Window System
+- Linux/i386 operating system
+
+Optionally you can also install GLIDE from http://www.3dfx.com. You need
+to install it if you are going to use 3DFX-card such as Voodoo Graphics.
+To use fullscreen mode (and thus enable hardware acceleration, if available)
+you need to do this:
+
+  $ xhost +
+  $ su
+  # export MESA_GLX_FX="fullscreen"
+  # ./majik
+  # exit
+  $ xhost -
+
+If using Mesa, you also need to link your libMesaGL.so to libGL.so. For
+example, if your libraries are in /usr/local/lib/, you would do this:
+
+  $ su
+  # cd /usr/local/lib/
+  # ln -s libMesaGL.so.3.0 libGL.so
+  # ldconfig
+  # exit
