@@ -110,6 +110,9 @@ main(int argc, char **argv)
    delete landscape;
    delete input;
    delete config;
+   delete menu;
+   delete scene;
+   delete perlin;
    
    // Exit program
    return 0;
