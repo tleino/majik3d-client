@@ -22,13 +22,18 @@
 class Texture
 {
  public:
-   Texture(char *);
+   Texture();
    ~Texture();
+   void loadTexture(char *);
+   void * getPixels();
+ private:
+   void errorPNG();
+   void loadPNG(char *);
  public:
    unsigned int width;
    unsigned int height;
    unsigned int textureId;
- private:
+   void *pixels; /* FIXME: Should be private */
 };
 
 #endif /* __TEXTURE_HPP__ */

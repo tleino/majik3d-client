@@ -20,14 +20,14 @@
 #include <stdlib.h>
 
 #include "Cursor.hpp"
+#include "Texture.hpp"
 #include "Majik.hpp"
 
 #define IMAGE_WIDTH   32
-#define IMAGE_FILE    "gfx/cursor.bmp"
+#define IMAGE_FILE    "gfx/cursor.png"
 
 Cursor::Cursor()
 {
-   SDL_Init(SDL_INIT_VIDEO);
    #ifdef DEBUG
 	 debug->put("Cursor constructor");
    #endif
@@ -43,14 +43,12 @@ Cursor::~Cursor()
 void
 Cursor::init()
 {
-   /* Kludged until we get the png-reader */
-
-   //   SDL_Surface *picture;
+   Texture *picture = new Texture();
    int i, k, c;
    
    tex = new GLubyte[IMAGE_WIDTH*IMAGE_WIDTH*4];
    
-   picture = SDL_LoadBMP(IMAGE_FILE);
+   picture->loadTexture(IMAGE_FILE);
    
    k = 0;
    

@@ -19,7 +19,7 @@
 #ifndef __MAJIK_HPP__
 #define __MAJIK_HPP__
 
-#define DEBUG
+#define DEBUG 1
 
 #include <GL/osmesa.h>
 #include <GL/gl.h>

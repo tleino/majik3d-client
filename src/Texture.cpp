@@ -19,17 +19,21 @@
 #include <png.h>
 #include <pngconf.h>
 #include <errno.h>
+#include <stdlib.h>
 
 #include "Texture.hpp"
 #include "Debug.hpp"
 #include "Majik.hpp"
 
-Texture::Texture(char *nm)
+unsigned int width, height, pitch;
+void *pixels;
+
+Texture::Texture()
 {
    glGenTextures(1, &textureId);
   
 #ifdef DEBUG
-   debug->put("New texture object: %s[%d]",nm, textureId);
+//   debug->put("New texture object: %d",textureId);
 #endif
 }
 
@@ -40,4 +44,102 @@ Texture::~Texture()
 #endif
 }
 
-/* Private Functions */
+void
+Texture::loadTexture(char *fname)
+{
+   loadPNG (fname);
+}
+
+void *
+Texture::getPixels()
+{
+   return pixels;
+}
+
+void
+Texture::loadPNG (char *file_name) {
+   FILE *fp = fopen(file_name, "rb");
+   int is_png, row;
+   png_bytep header;
+   png_structp png_ptr = NULL;
+   png_infop info_ptr = NULL, end_info = NULL;
+   png_bytep *row_pointers = NULL;
+      
+   /* Check if the file exists and is in PNG-format */
+   if (!fp)
+	 {
+		return;
+	 }
+   fread(header, 1, 0, fp);
+   is_png = !png_sig_cmp(header, 0, 0);
+   if (!is_png)
+	 {
+		return;
+	 }
+   
+   /* Allocate internal structures */
+   png_ptr = png_create_read_struct
+	 (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+   if (!png_ptr) {
+	 return;
+   }
+   
+   info_ptr = png_create_info_struct(png_ptr);
+   if (!info_ptr)
+	 {
+		png_destroy_read_struct(&png_ptr,
+								(png_infopp)NULL, (png_infopp)NULL);
+		return;
+	 }
+   
+   end_info = png_create_info_struct(png_ptr);
+   if (!end_info)
+	 {
+		png_destroy_read_struct(&png_ptr, &info_ptr,
+								(png_infopp)NULL);
+		return;
+	 }
+   
+   /* Clean up the structures if an error is caught */
+   if (setjmp(png_ptr->jmpbuf))
+	 {
+		png_destroy_read_struct(&png_ptr, &info_ptr,
+								&end_info);
+		fclose(fp);
+		return;
+	 }
+   
+   /* Feed our fp to PNG's internal kludge system */
+   png_init_io(png_ptr, fp);
+   
+   /* We have read the file a little bit already, so now we must seek back
+	* to the beginning */
+   png_set_sig_bytes(png_ptr, 0);
+      
+   /* Read all the available info from the image to info_ptr */
+   png_read_info(png_ptr, info_ptr);
+   height = png_get_image_height(png_ptr, info_ptr);
+   width = png_get_image_width(png_ptr, info_ptr);
+   pitch = png_get_rowbytes(png_ptr, info_ptr);
+   pixels = (void *) malloc(width * pitch);
+   row_pointers = (png_bytep *) malloc(sizeof(png_bytep) * height);
+   
+   if (pixels == NULL || row_pointers == NULL) {
+	  printf ("out of memory.\n");
+	  return;
+   }
+   
+   printf ("%-25s: textureId=%3d width=%4d height=%4d pitch=%4d\n", file_name, textureId, width, height, pitch);
+   
+   /* Strip the image to 8bpp because our code might not support 16bpp
+	* textures, I think. FIXME: Verify */
+   png_set_strip_16(png_ptr);
+
+   /* Read the image, now for real. Pixels are stored in th erow_pointers
+	* array */
+   for (row = 0; row < height; row++) {
+	  row_pointers[row] = (png_bytep) (unsigned short *) pixels + row*pitch;
+   }
+   
+   png_read_image(png_ptr, row_pointers);
+}

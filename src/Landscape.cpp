@@ -18,6 +18,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "Texture.hpp"
 #include "Majik.hpp"
 
 #define NORTH   0
@@ -193,17 +195,16 @@ void Landscape::init()
    glEnable(GL_CULL_FACE);
    glEndList();
 
-   SDL_Surface *picture;
-   
-   picture = SDL_LoadBMP("gfx/maasto.bmp");
+   Texture *picture = new Texture;
+   picture->loadTexture("gfx/maasto.png");
    
    int i, k;
    
-   groundTex = new GLubyte[picture->w*picture->w*3];
+   groundTex = new GLubyte[picture->width*picture->width*3];
    
    k = 0;
    
-   for (i=0; i < picture->w*picture->w*3 ;)
+   for (i=0; i < picture->width*picture->width*3 ;)
 	 {
 		groundTex[i+2] = (GLubyte) *((GLubyte *)picture->pixels + k++);
 		groundTex[i+1] = (GLubyte) *((GLubyte *)picture->pixels + k++);
@@ -226,17 +227,18 @@ void Landscape::init()
    
    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
    
-   glTexImage2D(GL_TEXTURE_2D, 0, 3, picture->w,
-				picture->w, 0, GL_RGB, GL_UNSIGNED_BYTE,
+   glTexImage2D(GL_TEXTURE_2D, 0, 3, picture->width,
+				picture->width, 0, GL_RGB, GL_UNSIGNED_BYTE,
 				&groundTex[0]);
    
-   picture = SDL_LoadBMP("gfx/ukkelipukkeli.bmp");
+   picture = new Texture;
+   picture->loadTexture("gfx/ukkelipukkeli.png");
    
-   playerTex = new GLubyte[picture->w*picture->w*3];
+   playerTex = new GLubyte[picture->width*picture->width*3];
    
    k = 0;
    
-   for (i=0; i < picture->w*picture->w*3 ;)
+   for (i=0; i < picture->width*picture->width*3 ;)
 	 {
 		playerTex[i+2] = (GLubyte) *((GLubyte *)picture->pixels + k++);
 		playerTex[i+1] = (GLubyte) *((GLubyte *)picture->pixels + k++);
@@ -259,8 +261,8 @@ void Landscape::init()
    
    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
    
-   glTexImage2D(GL_TEXTURE_2D, 0, 3, picture->w,
-				   picture->w, 0, GL_RGB, GL_UNSIGNED_BYTE,
+   glTexImage2D(GL_TEXTURE_2D, 0, 3, picture->width,
+				   picture->width, 0, GL_RGB, GL_UNSIGNED_BYTE,
 				   &playerTex[0]);
    
 }
