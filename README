@@ -22,6 +22,35 @@ announcements of new versions directly to your mailbox. You will not receive
 any other crap by joining -announce, except an occasional call for a
 convention.
 
+Release Notes for 0.4.0pre
+--------------------------
+
+It has been a long time since last release. We all have been quite busy with
+one way or another. The codebase has also been under extensive changes.
+Because this is a 'pre'-release you can expect bugs and/or crashes. Use at
+your own risks.
+
+A brief list of the most important changes since 0.3.0:
+	
+    *   New physical-based sky model (introduced in 0.3.1)
+    *   Rewritten landscape code, for increased performance
+    *   Rewritten server code, now relying even more on python
+    *   1st person mode (introduced in 0.3.1)
+    *   The game seems to be slow (despite the frame rate counter on the
+        lower-left corner) because the current movement code requires
+        transmission to and from server for each movement. Thus, the movement
+        rate is limited by your network connection.
+
+Currently known bugs and features include:
+
+    *   Because of plib, sky is not fully visible unless you disable fog.
+        This should be fixed in forthcoming plib releases.
+    *   Terrain looks blocky because it's always in it's lowest detail level.
+        The error approximation function used to select the LOD level hasn't
+        been coded yet (I didn't feel like start kludging it in christmas eve).
+    *   Win32 version crashes when you press 'ok' in about box.
+    *   New server isn't yet in public use.
+
 Installation
 ------------
 
