@@ -56,34 +56,33 @@ static ssgEntity *kukkaModel = NULL;
 Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 {
 
-  this->parent = parent;
-  this->child1 = NULL;
-  this->child2 = NULL;
-  this->child3 = NULL;
-  this->child4 = NULL;
-  this->level = level;
-  this->top_x = top_x;
-  this->top_y = top_y;
-  this->mapReceived = false;
+  m_parent = parent;
+  m_child1 = NULL;
+  m_child2 = NULL;
+  m_child3 = NULL;
+  m_child4 = NULL;
+  m_level = level;
+  m_mapReceived = false;
+  m_top_x = top_x;
+  m_top_y = top_y;
+  m_mid_x = top_x + quad_sizes[level]/2*32;
+  m_mid_y = top_y + quad_sizes[level]/2*32;
   
-  this->mid_x = top_x + quad_sizes[level]/2*32;
-  this->mid_y = top_y + quad_sizes[level]/2*32;
+  m_refCount = 0;
+  m_mapRequested = 0;
+  m_currentLod = -1;
+
+  m_lodSwitch = new ssgSelector();
+  m_trans = new ssgTransform();
   
-  this->reference_count = 0;
-  this->map_requested = 0;
-  this->current_lod = -1;
-
-  lod_switch = new ssgSelector();
-  trans = new ssgTransform();
-
-	block = NULL;
+  m_block = NULL;
 
   sgVec3 pos;
   pos[0] = (float)top_x;
   pos[1] = (float)top_y;
   pos[2] = 0.0f;
   
-  trans->setTransform( pos );
+  m_trans->setTransform( pos );
 //  lod_switch->select(0);
   
   if (level == NUM_LEVELS - 1)
@@ -92,39 +91,16 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
       for (int i = 0; i < LOD_LEVELS; i++)
 	lod_indices[i] = -2;
     }
-
-  /* kludgetusta  */
-/*
-  if (!state)
-  {
-  		state    = new ssgSimpleState ;
-		state -> setTexture ( "gfx/bumpnoise.rgb") ;
-		state -> enable     ( GL_TEXTURE_2D ) ;
-		state -> enable     ( GL_LIGHTING ) ;
-
-		state -> setShadeModel ( GL_SMOOTH );
-
-		state -> enable ( GL_COLOR_MATERIAL ) ;
-		state -> disable ( GL_CULL_FACE      ) ;
-		state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
-		state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
-		state -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
-		state -> setShininess ( 0 ) ;
-		state -> setOpaque () ;
-		state -> disable ( GL_BLEND ) ;
-
-  }
-  */
 }
 
 Mapquad::~Mapquad()
 {
-  if (parent != NULL)
-    parent->decRef();
+  if (m_parent != NULL)
+    m_parent->decRef();
  
-  delete block;
+  delete m_block;
   
-  if (level == NUM_LEVELS - 1 )
+  if (m_level == NUM_LEVELS - 1 )
     {
       for (int i = 0; i < NUM_VISIBLE_LEVELS; i++)
 	{
@@ -140,24 +116,21 @@ Mapquad::~Mapquad()
 int
 Mapquad::incRef()
 {
-  return reference_count++;
+  return m_refCount++;
 }
 
 int
 Mapquad::decRef()
 {
-  if (--reference_count < 1)
-    {
+  if (--m_refCount < 1)
       this->cleanUp();
-      return 0;
-    }
-  return reference_count;
+  return m_refCount;
 }
 
 void
 Mapquad::cleanUp()
 {
-  if (level != 0)
+  if (m_level != 0)
     delete this;
   else
 	  error->put(mcError::ERROR_WARNING, "mapquad: Refusing to delete root map.");
@@ -166,101 +139,101 @@ Mapquad::cleanUp()
 Mapquad *
 Mapquad::getChild1()
 {
-  if (this->child1 == NULL)
+  if (this->m_child1 == NULL)
     {
-      this->child1 = new Mapquad (this,
-				  this->level + 1,
-				  this->top_x,
-				  this->top_y);
+      this->m_child1 = new Mapquad (this,
+				  this->m_level + 1,
+				  this->m_top_x,
+				  m_top_y);
       this->incRef();
     }
-  return this->child1;
+  return this->m_child1;
 }
 
 Mapquad *
 Mapquad::getChild2()
 {
-  if (this->child2 == NULL)
+  if (this->m_child2 == NULL)
     {
-      this->child2 = new Mapquad (this,
-				  this->level + 1,
-				  this->mid_x,
-				  this->top_y);
+      this->m_child2 = new Mapquad (this,
+				  this->m_level + 1,
+				  m_mid_x,
+				  m_top_y);
       this->incRef();
     }
-  return this->child2;
+  return this->m_child2;
 }
 
 Mapquad *
 Mapquad::getChild3()
 {
-  if (this->child3 == NULL)
+  if (this->m_child3 == NULL)
     {
-      this->child3 = new Mapquad (this,
-				  this->level + 1,
-				  this->top_x,
-				  this->mid_y);
+      this->m_child3 = new Mapquad (this,
+				  this->m_level + 1,
+				  this->m_top_x,
+				  m_mid_y);
       this->incRef();
     }
-  return this->child3;
+  return this->m_child3;
 }
 
 Mapquad *
 Mapquad::getChild4()
 {
-  if (this->child4 == NULL)
+  if (this->m_child4 == NULL)
     {
-      this->child4 = new Mapquad (this,
-				  this->level + 1,
-				  this->mid_x,
-				  this->mid_y);
+      this->m_child4 = new Mapquad (this,
+				  this->m_level + 1,
+				  m_mid_x,
+				  m_mid_y);
       this->incRef();
     }
-  return this->child4;
+  return this->m_child4;
 }
 
 bool
 Mapquad::isMapReceived ()
 {
-  return mapReceived;
+  return m_mapReceived;
 }
 
 Mapquad *
 Mapquad::tryMapquad(int level, int x, int y)
 {
-  if (this->level == level)
+  if (m_level == level)
     return this;
    
-  if (x < this->mid_x)
+  if (x < m_mid_x)
     {
-      if (y < this->mid_y)
+      if (y < m_mid_y)
 	{
-	  if (this->child1 != NULL)
-	    return this->child1->tryMapquad (level, x, y);
+	  if (m_child1 != NULL)
+	    return m_child1->tryMapquad (level, x, y);
 	  else
 	    return NULL;
 	}
       else
 	{
-	  if (this->child3 != NULL)
-	    return this->child3->tryMapquad (level, x, y);
+	  if (m_child3 != NULL)
+	    return m_child3->tryMapquad (level, x, y);
 	  else
 	    return NULL;
 	}
     }
   else
     {
-      if (y < this->mid_y)
+      if (y < m_mid_y)
 	{
-	  if (this->child2 != NULL)
-	    return this->child2->tryMapquad (level, x, y);
+	  if (m_child2 != NULL)
+	    return m_child2->tryMapquad (level, x, y);
 	  else
 	    return NULL;
 	}
       else
 	{
-	  if (this->child4 != NULL)
-	    return this->child4->tryMapquad (level, x, y);
+	  if (m_child4 != NULL)
+	    return m_child4->tryMapquad (level, x, y);
 	  else
 	    return NULL;
 	}
@@ -270,19 +243,19 @@ Mapquad::tryMapquad(int level, int x, int y)
 Mapquad *
 Mapquad::getMapquad(int level, int x, int y)
 {
-  if (this->level == level)
+  if (this->m_level == level)
     return this;
   
-  if (x < this->mid_x)
+  if (x < m_mid_x)
     {
-      if (y < this->mid_y)
+      if (y < m_mid_y)
 	return this->getChild1()->getMapquad (level, x, y);
       else
 	return this->getChild3()->getMapquad (level, x, y);
     }
    else
      {
-       if (y < this->mid_y)
+       if (y < m_mid_y)
 	 return this->getChild2()->getMapquad (level, x, y);
        else
 	 return this->getChild4()->getMapquad (level, x, y);     
@@ -299,7 +272,7 @@ Mapquad::getMap()
 void
 Mapquad::setMap(Map_data terrain_map)
 {  
-  mapReceived = true;
+  m_mapReceived = true;
   //this->terrain_map = terrain_map;
 //  this->setSubMap(NUM_LEVELS - 1 - level, terrain_map);
 }
@@ -350,17 +323,17 @@ Mapquad::setSubMap(int lod, Map_data submap)
 void
 Mapquad::resetBlocks()
 {
-	 if (level == NUM_LEVELS - 1)
+	 if (m_level == NUM_LEVELS - 1)
 	 {
-		 if (block)
-			block->reset();
+		 if (m_block)
+			m_block->reset();
 	 }
 	 else
 	 {
-		if (child1)	child1->resetBlocks();
-		if (child2)	child2->resetBlocks();
-		if (child3)	child3->resetBlocks();
-		if (child4)	child4->resetBlocks();
+		if (m_child1)	m_child1->resetBlocks();
+		if (m_child2)	m_child2->resetBlocks();
+		if (m_child3)	m_child3->resetBlocks();
+		if (m_child4)	m_child4->resetBlocks();
 	 }
 }
 
@@ -368,28 +341,28 @@ Mapquad::resetBlocks()
 void 
 Mapquad::exchangeBorders()
 {
-	 if (level == NUM_LEVELS - 1)
+	 if (m_level == NUM_LEVELS - 1)
 	 {
-		 if (block)
-			 block->exchangeBorderVertices();
+		 if (m_block) 
+			 m_block->exchangeBorderVertices();
 	 }
 	 else
 	 {
-		if (child1) child1->exchangeBorders();
-		if (child2) child2->exchangeBorders();
-		if (child3) child3->exchangeBorders();
-		if (child4) child4->exchangeBorders();
+		if (m_child1) m_child1->exchangeBorders();
+		if (m_child2) m_child2->exchangeBorders();
+		if (m_child3) m_child3->exchangeBorders();
+		if (m_child4) m_child4->exchangeBorders();
 	 }
 }
 
 void
 Mapquad::triangulateBlocks()
 {
-	 if (level == NUM_LEVELS - 1)
+	 if (m_level == NUM_LEVELS - 1)
 	 {
-		 if (block)
+		 if (m_block)
 		 {
-			block->triangulateBlock();
+			m_block->triangulateBlock();
 		 }
 /*
 		 ssgEntity *kid;
@@ -408,38 +381,34 @@ Mapquad::triangulateBlocks()
 	 }
 	 else
 	 {
-		if (child1)
-			child1->triangulateBlocks();
-		if (child2)
-			child2->triangulateBlocks();
-		if (child3)
-			child3->triangulateBlocks();
-		if (child4)
-			child4->triangulateBlocks();
+		if (m_child1)	m_child1->triangulateBlocks();
+		if (m_child2)	m_child2->triangulateBlocks();
+		if (m_child3)	m_child3->triangulateBlocks();
+		if (m_child4)	m_child4->triangulateBlocks();
 	 }
 }
 
 void
 Mapquad::selectLOD(int level, int x, int y)
 {
-	 if (this->level == NUM_LEVELS - 1)
+	 if (m_level == NUM_LEVELS - 1)
 	 {
-		int dist = (int) sqrt( (x-mid_x)*(x-mid_x) + (y-mid_y)*(y-mid_y) );
+		int dist = (int) sqrt( (x-m_mid_x)*(x-m_mid_x) + (y-m_mid_y)*(y-m_mid_y) );
 
 		if (dist<2500)
 		{
 			int newBlock = 0;
-			if (!block)
+			if (!m_block)
 			{
 				newBlock = 1;
-				block = new TerrainBlock (top_x, top_y );
+				m_block = new TerrainBlock (m_top_x, m_top_y );
 
 //				sgSphere sp;
 //				sp.setCenter(mid_x, mid_y, scene->getLandscape()->getHOT(mid_x, mid_y) );
 //				sp.setRadius( sqrt( (mid_x-top_x)*(mid_x-top_x) + (mid_y-top_y)*(mid_y-top_y)) );
 		
 				ssgSimpleState *state    = new ssgSimpleState ;
-				state->setTexture ( scene->getLandscape()->getTextureHandle(level, top_x, top_y) );
+				state->setTexture ( scene->getLandscape()->getTextureHandle(m_level, m_top_x, m_top_y) );
 				state -> enable     ( GL_TEXTURE_2D ) ;
 				state -> enable     ( GL_LIGHTING ) ;
 
@@ -458,16 +427,16 @@ Mapquad::selectLOD(int level, int x, int y)
 				state -> setOpaque () ;
 				state -> disable ( GL_BLEND ) ;
 
-//				block->setState(state);
-//				block->setTraversalMaskBits ( SSGTRAV_CULL );
-//				lod_switch->addKid ( block );
-				trans->addKid ( lod_switch );
-				scene->getLandscape()->getTerrain()->addKid ( trans );
+//				m_block->setState(state);
+//				m_block->setTraversalMaskBits ( SSGTRAV_CULL );
+//				lod_switch->addKid ( m_block );
+				m_trans->addKid ( m_lodSwitch );
+				scene->getLandscape()->getTerrain()->addKid ( m_trans );
 			}
 
-			lod_switch->select(1);
-			block->collectVertices ( level,  dist/2);
-//			block->triangulateBlock();
+			m_lodSwitch->select(1);
+			m_block->collectVertices ( level,  dist/2);
+//			m_block->triangulateBlock();
 
 			if (newBlock)
 				while ((rand() % 10))
@@ -480,7 +449,7 @@ Mapquad::selectLOD(int level, int x, int y)
 
 					tmpPos.xyz[0] = rand() % 512;
 					tmpPos.xyz[1] = rand() % 512;
-					tmpPos.xyz[2] = scene->getHOT(top_x+tmpPos.xyz[0], top_y+tmpPos.xyz[1]);
+					tmpPos.xyz[2] = scene->getHOT(m_top_x+tmpPos.xyz[0], m_top_y+tmpPos.xyz[1]);
 					tmpPos.hpr[1] = 0.0f;
 					tmpPos.hpr[2] = 0.0f;
 
@@ -494,47 +463,58 @@ Mapquad::selectLOD(int level, int x, int y)
 					float ranges[2] = { 0, 2000 };
 					rangeSelect->setRanges ( ranges, 2 );
 					
-					trans->addKid(rangeSelect);
+					m_trans->addKid(rangeSelect);
 				}
 		}
-		else if (block)
+		else if (m_block)
 		{
-			lod_switch->select(0);
+			m_lodSwitch->select(0);
 
-//			trans->removeKid(block);
-//			delete block;
-//			block = NULL;
+//			trans->removeKid(m_block);
+//			delete m_block;
+//			m_block = NULL;
 		}
 
 
 	 }
 	 else
 	 {
-		if (child1)	child1->selectLOD(level, x, y);
-		if (child2)	child2->selectLOD(level, x, y);
-		if (child3)	child3->selectLOD(level, x, y);
-		if (child4)	child4->selectLOD(level, x, y);
+		if (m_child1)	m_child1->selectLOD(level, x, y);
+		if (m_child2)	m_child2->selectLOD(level, x, y);
+		if (m_child3)	m_child3->selectLOD(level, x, y);
+		if (m_child4)	m_child4->selectLOD(level, x, y);
 	 }
 }
 
-void Mapquad::draw(sgVec3 tri)
+void Mapquad::draw()
 {
-	if (	!pointInTriangle(top_x,			top_y, tri)
+/*	if (	!pointInTriangle(top_x,			top_y, tri)
 		&&	!pointInTriangle(top_x+mid_x*2, top_y, tri)
 		&&	!pointInTriangle(top_x+mid_x*2, top_y+mid_y*2, tri)
 		&&	!pointInTriangle(top_x,			top_y+mid_y*2, tri))
 		return;
-
+*/
 	if (m_level == MAX_LEVEL)
 	{
-		m_block->draw();
+		if (m_block)
+		{
+			sgMat4 mtx;
+			m_trans->getTransform(mtx);
+
+			glPushMatrix();
+			glMultMatrixf((float *)mtx);
+
+			m_block->draw();
+
+			glPopMatrix();
+		}
 	}
 	else
 	{
-		if(child1) child1->draw(center, radius);
-		if(child2) child2->draw(center, radius);
-		if(child3) child3->draw(center, radius);
-		if(child4) child4->draw(center, radius);
+		if(m_child1) m_child1->draw();
+		if(m_child2) m_child2->draw();
+		if(m_child3) m_child3->draw();
+		if(m_child4) m_child4->draw();
 	}
 }
 
@@ -544,23 +524,23 @@ Mapquad::selectLOD(int lod)
 //	if (lod != 0)
 //		return;
 
-	if (!block)
+	if (!m_block)
 	{
-		block = new TerrainBlock (top_x, top_y );
-//		lod_switch->addKid ( block );
-		trans->addKid ( lod_switch );
-		scene->getLandscape()->getTerrain()->addKid ( trans );
+		m_block = new TerrainBlock (m_top_x, m_top_y );
+//		lod_switch->addKid ( m_block );
+		m_trans->addKid ( m_lodSwitch );
+		scene->getLandscape()->getTerrain()->addKid ( m_trans );
 	}
 
-	block->reset();
+	m_block->reset();
 	
-	block->collectVertices ( 4, (lod+1)*(lod+1)*(lod+1) );
-	block->collectVertices ( 3, (lod+1)*(lod+1)*(lod+1) );
-	block->collectVertices ( 2, (lod+1)*(lod+1)*(lod+1) );
-	block->collectVertices ( 1, (lod+1)*(lod+1)*(lod+1) );
-	block->collectVertices ( 0, (lod+1)*(lod+1)*(lod+1) );
+	m_block->collectVertices ( 4, (lod+1)*(lod+1)*(lod+1) );
+	m_block->collectVertices ( 3, (lod+1)*(lod+1)*(lod+1) );
+	m_block->collectVertices ( 2, (lod+1)*(lod+1)*(lod+1) );
+	m_block->collectVertices ( 1, (lod+1)*(lod+1)*(lod+1) );
+	m_block->collectVertices ( 0, (lod+1)*(lod+1)*(lod+1) );
 
-	block->triangulateBlock();
+	m_block->triangulateBlock();
 						     
 	/*
    current_lod = lod;
@@ -582,7 +562,7 @@ Mapquad::selectLOD(int lod)
 
   
       for (int i = 0; i < lod; i++)
-	temp = temp->parent;
+	temp = temp->m_parent;
       
       if (temp->map_requested)
 	{
@@ -641,6 +621,7 @@ Mapquad::divideMap(int lod, Map_data& submap, Map_data& submap1, Map_data& subma
 }
 */
 
+/*
 void
 Mapquad::show()
 {
@@ -652,7 +633,7 @@ Mapquad::hide()
 {
   // lod->select(0);
 }
-
+*/
 /*
   void
   Mapquad::printStats()

@@ -166,9 +166,9 @@ private:
 			m_hashSize	= nSize;
 		}
 
-		TerrainBlock **m_hash;							// hash table
-		DWORD		m_hashSize;						// always power of two
-		DWORD		m_nodes;						// number of nodes
+		TerrainBlock **m_hash;
+		DWORD		m_hashSize;
+		DWORD		m_nodes;
 	};
 
 	class VertexBuffer

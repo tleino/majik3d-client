@@ -414,17 +414,20 @@ Scene::drawText(Object *o, sgVec3 object_pos)
 void
 Scene::draw()
 {
-  if (tuxi == NULL)
-    return; // We do not exist yet and thus no draw() needed.
+	if (tuxi == NULL)
+		return; // We do not exist yet and thus no draw() needed.
   
   // Update camera's position in relation to ourself.
-  update();
+	update();
   
   // Draw the stuff to screen.
-  ssgCullAndDraw ( scene_root ) ;
+
+	m_landscape->draw(m_camera);
+
+	ssgCullAndDraw ( scene_root );
   
   // Overlay chat-strings, if any.
-  sgVec3 posit;
+	sgVec3 posit;
   
 	for (Object *ob = Object::getFirst(); ob; ob = ob->getNext())
 	{

@@ -36,6 +36,8 @@ public:
 	void	setPitch	(float p)	{ m_pitch = p; }
 	float	getPitch	()			{ return m_pitch; }
 
+	void	getPosition	(sgCoord& c) { sgCopyVec3(c.xyz, m_position.xyz); sgCopyVec3(c.hpr, m_position.hpr); }
+
 private:
 
 	float			m_pitch;

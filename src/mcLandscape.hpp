@@ -20,6 +20,7 @@
 #define __LANDSCAPE_HPP__
 
 class Object;
+class mcCamera;
 
 #include <ssg.h>
 #include <GL/glu.h>
@@ -39,7 +40,9 @@ public:
   Landscape();
   ~Landscape();
   
-  void Landscape::init(ssgRoot *);
+  void init(ssgRoot *);
+
+  void draw(mcCamera *);
 
   float getHOT		(float x, float y)const;
   float getRealHOT	(float x, float y)const;

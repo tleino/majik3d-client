@@ -9,6 +9,9 @@ extern mcTerrainHeightGen *terraingen;
 
 inline float getHeight(float x, float y)
 {
+	return 0;
+
+
 	return 2000.0f * terraingen->getHeight(x/1280.0, y/1280.0);
 	//return 2000.0f*(float)perlin->perlinNoise_2D(x/1500.0, y/1500.0);
 };
@@ -58,8 +61,6 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 			sgVec3 loc;
 			loc[0] = (float)i/(float)(DIM) * BLOCK_SIZE;
 			loc[1] = (float)j/(float)(DIM) * BLOCK_SIZE;
-//			loc[0] = rand()*1000;
-//			loc[1] = rand()*1000;
 			loc[2] = getHeight(x + (float)i/(DIM) * BLOCK_SIZE,y + (float)j/(DIM) * BLOCK_SIZE);
 
 //				loc /= 10.0;
@@ -68,14 +69,14 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 			
 			vertex& v = m_vertices[i + j * (DIM+1)];
 
-//			sgCopyVec3 (vertices[i + j * (DIM+1)], loc);
+			sgCopyVec3 (m_vertices[i + j * (DIM+1)].coord, loc);
 
 			sgVec2 UV;
 				
 			UV[0] = /*UVBias+*/(float)i/DIM;//*(1.0-UVBias*2);
 			UV[1] = /*UVBias+*/(float)j/DIM;//*(1.0-UVBias*2);
 
-//			sgCopyVec2 (texcoords[i + j * (DIM+1)], UV);
+			sgCopyVec2 (m_vertices[i + j * (DIM+1)].UV, UV);
 
 			v.error = 0;
 			v.marked = false;
@@ -116,22 +117,14 @@ TerrainBlock::~TerrainBlock()
 	blockHash.remove(m_x, m_y);
 }
 
+
 void 
 TerrainBlock::draw()
 {
-	glEnable (GL_VERTEX_ARRAY);
-	glEnable (GL_TEXTURE_COORD_ARRAY);
-
-//	glColor3f(1.0, 1.0, 0.0);
-
 	glVertexPointer(3, GL_FLOAT, sizeof(vertex), &m_vertices[0].coord);
 	glTexCoordPointer(3, GL_FLOAT, sizeof(vertex), &m_vertices[0].UV);
-
-	glDrawElements(GL_TRIANGLE_STRIP, numSelectedVertices, GL_UNSIGNED_SHORT, &list);
-
-	glDisable(GL_VERTEX_ARRAY);
-	glDisable (GL_TEXTURE_COORD_ARRAY);
-		
+	glDrawElements(GL_TRIANGLE_STRIP, numSelectedVertices, GL_UNSIGNED_SHORT, &list);	
+}	
 /*
 
 	glBegin(GL_TRIANGLE_STRIP);
@@ -180,7 +173,8 @@ TerrainBlock::draw()
 	
 	glEnd ();
 */
-}
+
+//}
 
 /*
 void

@@ -37,12 +37,11 @@
 #include "mcPerlin.hpp"
 #include "mcDisplay.hpp"
 #include "mcConfig.hpp"
-#include "mcTerrainBlock.hpp"
 #include "mcTexGen.hpp"
 #include "mcTerrainGen.hpp"
 #include "mcTerrainHeightGen.hpp"
 #include "mcMapquad.hpp"
-
+#include "mcCamera.hpp"
 
 double
 linearInterpolate(double a, double b, double c)
@@ -64,6 +63,71 @@ Landscape::~Landscape()
 
 extern class mcTerrainHeightGen *terraingen;
 
+/*
+  ssgSetFOV     ( 60.0f, 45.0f ) ;
+  ssgSetNearFar ( 0.5f, 10000.0f ) ;
+  
+  float nnear, ffar, top, bottom, left, right, hfov, vfov, v, h;
+  
+  nnear = 0.3f;
+  ffar = 30000.0f;
+  h = 60.0f;
+  v = 45.0f;
+  
+  hfov = ( h <= 0 ) ? ( v * 3.0f / 2.0f ) : h ;
+  vfov = ( v <= 0 ) ? ( h * 2.0f / 3.0f ) : v ;
+  
+  right = nnear * (SGfloat) tan ( hfov * SG_DEGREES_TO_RADIANS / SG_TWO ) ;
+  top   = nnear * (SGfloat) tan ( vfov * SG_DEGREES_TO_RADIANS / SG_TWO ) ;
+  left  = -right ;
+  bottom   = -top   ;
+*/
+
+void
+Landscape::draw(mcCamera *cam)
+{
+	glEnable (GL_VERTEX_ARRAY);
+	glEnable (GL_TEXTURE_COORD_ARRAY);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glFrustum ( -1.0f, 1.0f, -.75f, .75f, 0.5f, 10000.0f ) ;
+	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	sgMat4 mtx, inv;
+
+	sgCoord c;
+	cam->getPosition(c);
+
+	sgMat4 ploo =
+  {
+    {  1.0f,  0.0f,  0.0f,  0.0f },
+    {  0.0f,  0.0f, -1.0f,  0.0f },
+    {  0.0f,  1.0f,  0.0f,  0.0f },
+    {  0.0f,  0.0f,  0.0f,  1.0f }
+  } ;
+  
+
+	sgMakeCoordMat4( mtx, c.xyz, c.hpr );
+	sgTransposeNegateMat4 ( inv, mtx );
+	
+	glLoadMatrixf((float *)ploo);
+	glMultMatrixf((float *)inv);
+
+	m_terrainState->apply();
+
+	Mapquad::root_map->draw();
+
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glDisable(GL_VERTEX_ARRAY);
+	glDisable (GL_TEXTURE_COORD_ARRAY);
+}
+
 float
 Landscape::getHOT(float x, float y)const
 {
@@ -73,6 +137,9 @@ Landscape::getHOT(float x, float y)const
 float
 Landscape::getRealHOT(float x, float y)const
 {
+	return 0;
+
+
 	Mapquad *mq = Mapquad::root_map->getMapquad(Mapquad::MAX_LEVEL, x, y);
 
 	sgVec3 test_vec ;
@@ -88,7 +155,7 @@ Landscape::getRealHOT(float x, float y)const
   test_vec [2] = 100000.0f ;
   
   ssgHit *results ;
-  int num_hits = ssgHOT ( (ssgRoot *)(mq->trans), test_vec, invmat, &results ) ;
+  int num_hits = ssgHOT ( (ssgRoot *)(mq->getTrans()), test_vec, invmat, &results ) ;
   
   float hot = -1000000.0f ;
   
