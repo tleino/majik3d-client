@@ -213,15 +213,28 @@ Scene::removeObject(Object *ob)
 void
 Scene::update()
 {
-  static int frameno = 0 ;   
-  sgVec3 scale;
+   static int frameno = 0 ;   
+   sgVec3 scale;
   
-  frameno++ ;
+   frameno++ ;
   
-  Object *ob = Object::first;
+   Object *ob = Object::first;
   
-  while (ob != NULL)
+   sgCoord tuxpos = tuxi->getPos();
+   
+   while (ob != NULL)
     {
+	   sgCoord pos = ob->getPos();
+	   
+	   if ( abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ||
+		   abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 )
+		 {
+			Object *temp = ob;
+			ob = ob->getNext();
+			delete temp;
+			continue;
+		 }
+	   
 	   scale[0] = 1.0f;
 	   scale[1] = 1.0f;
 	   scale[2] = sin( (float)ob->getMoveCounter() / 2.0 ) / 4 + 1;
@@ -237,9 +250,7 @@ Scene::update()
 	   ob = ob->getNext();
     }
   
-   sgCoord tuxpos = tuxi->getPos();
-   
-   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
+	   sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
    sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
    
    if (config->camera == 0)

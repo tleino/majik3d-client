@@ -21,6 +21,8 @@ nofog=0
 nosmooth=0
 nomenu=0
 fullscreen=0
+# lod should be of values 7+
+lod=7
 
 # Debugging settings.
 debug=0
