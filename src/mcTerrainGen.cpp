@@ -83,7 +83,7 @@ int mcTerrainGen::getPixel(double x, double y)
 	int g = (int) (gb * val + ga * (1.0 - val));
 	int b = (int) (bb * val + ba * (1.0 - val));
 
-	sgVec3 lightDir = { 0.0, 0.7, 0.7 };
+	sgVec3 lightDir = { 0.0, 0.0, 1.0 };
 
 	sgVec3 nrm;
 
@@ -92,7 +92,7 @@ int mcTerrainGen::getPixel(double x, double y)
 //	sgSetVec3(nrm, 0.0<, 0.7, 0.0);
 	
 	float d = sgScalarProductVec3(lightDir, nrm);
-	d += 0.5;
+//	d += 0.5;
 	if (d<0)
 		d = 0.0;
 	if (d>1.0)
@@ -102,9 +102,9 @@ int mcTerrainGen::getPixel(double x, double y)
 
 //	float d = ((int)x % 10) / 10.0;
 
-	r *= (int) d;
-	b *= (int) d;
-	g *= (int) d;
+	r *=  d;
+	b *=  d;
+	g *=  d;
 
 //	r = (int)255.0f*d;
 //	g = (int)255.0f*d;
