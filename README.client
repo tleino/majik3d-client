@@ -11,6 +11,15 @@ To run this binary you'll need:
 
 Optionally you can also install GLIDE from http://www.3dfx.com. You need
 to install it if you are going to use 3DFX-card such as Voodoo Graphics.
+To use fullscreen mode (and thus enable hardware acceleration, if available)
+you need to do this:
+
+  $ xhost +
+  $ su
+  # export MESA_GLX_FX="fullscreen"
+  # ./majik
+  # exit
+  $ xhost -
 
 Please report problems to majik@majik.netti.fi or
                           majik-users@majik.netti.fi (preferable)
