@@ -381,13 +381,19 @@ Scene::draw()
   
   while (ob != NULL)
     {
+      if (!ob->hotFixed) {
+	ob->moveTo(ob->getPos().xyz[0], ob->getPos().xyz[1],
+		   ob->getPos().hpr[0]);
+	ob->hotFixed = true;
+      }
+
       sgCoord obPos = ob->getPos();
       posit[0] = obPos.xyz[0];
       posit[1] = obPos.xyz[1];
       posit[2] = obPos.xyz[2]+ob->getRadius();
       
       drawText( ob, posit);
-      
+
       ob = ob->getNext();
     }
 }
