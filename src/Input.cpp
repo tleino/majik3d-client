@@ -65,9 +65,11 @@ Input::keyDown(unsigned char k, int x, int y)
    
    static int wireframe = 0;
    
+
    if (tuxi != NULL) {
-	  sgCopyVec3 ( temppos.xyz, tuxi->ob_pos.xyz ) ;
-	  sgCopyVec3 ( temppos.hpr, tuxi->ob_pos.hpr ) ;
+	  sgCoord tuxiPos = tuxi->getPos(); // Avoid multiple calls to getPos
+	  sgCopyVec3 ( temppos.xyz, tuxiPos.xyz ) ;
+	  sgCopyVec3 ( temppos.hpr, tuxiPos.hpr ) ;
    }
          
    if (k == '\t') {
@@ -91,75 +93,56 @@ Input::keyDown(unsigned char k, int x, int y)
 		 exit ( 0 ) ;
 		 break;
 	   case '8':
-		 if (tuxi->lock == 1) {
-			
-			break;
-		 }
-/*		 tuxi->ob_pos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-		 tuxi->ob_pos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-		 sock->writePacket(debug->string("50 %d %d %d",
-			 (int) tuxi->ob_pos.xyz[0],
-			 (int) tuxi->ob_pos.xyz[1],
-			 (int) tuxi->ob_pos.hpr[0]));
-*/
-		 tuxi->movecounter++;
-		 temppos.xyz[0] -= sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
-		 temppos.xyz[1] += cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0;;
+		 if (tuxi->lock == 0) {
+			tuxi->movecounter++;
+			temppos.xyz[0] -= sin((temppos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
+			temppos.xyz[1] += cos((temppos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0;;
 				 
-		 sock->writePacket(debug->string("50 %f %f %f",
-										 (float) temppos.xyz[0],
-										 (float) temppos.xyz[1],
-										 (float) temppos.hpr[0]));
-		 tuxi->lock = 1;
+			sock->writePacket(debug->string("50 %f %f %f",
+							 (float) temppos.xyz[0],
+							 (float) temppos.xyz[1],
+							 (float) temppos.hpr[0]));
+			tuxi->lock = 1;
+		 }
 		 break;
 	   case '2':
-/*		 tuxi->ob_pos.xyz[0] += sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-		 tuxi->ob_pos.xyz[1] -= cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-		 sock->writePacket(debug->string("50 %d %d %d",
-										 (int) tuxi->ob_pos.xyz[0],
-										 (int) tuxi->ob_pos.xyz[1],
-										 (int) tuxi->ob_pos.hpr[0]));
-*/		 tuxi->movecounter++;
-		 if (tuxi->lock == 1)
-		   break;
+		 if (tuxi->lock == 0) {
+			tuxi->movecounter++;
+		 	temppos.xyz[0] += sin((temppos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
+		 	temppos.xyz[1] -= cos((temppos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
 		 
-		 temppos.xyz[0] += sin((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
-		 temppos.xyz[1] -= cos((tuxi->ob_pos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS)*10.0f;
-		 
-		 sock->writePacket(debug->string("50 %f %f %f",
-										 (float) temppos.xyz[0],
-										 (float) temppos.xyz[1],
-										 (float) temppos.hpr[0]));
-		 tuxi->lock = 1;
-
+		 	sock->writePacket(debug->string("50 %f %f %f",
+						 (float) temppos.xyz[0],
+						 (float) temppos.xyz[1],
+						 (float) temppos.hpr[0]));
+		 	tuxi->lock = 1;
+		 }
 		 break;
 	   case '6':
-		 if (tuxi->lock == 1)
-		   break;
+		 if (tuxi->lock == 0) {
+		 	temppos.hpr[0] -= 5.0f;
+		 	if (temppos.hpr[0] < 0)
+		   		temppos.hpr[0] += 360.0f;
 		 
-		 temppos.hpr[0] -= 5.0f;
-		 if (temppos.hpr[0] < 0)
-		   temppos.hpr[0] += 360.0f;
-		 
-		 sock->writePacket(debug->string("50 %f %f %f",
-										 (float) temppos.xyz[0],
-										 (float) temppos.xyz[1],
-										 (float) temppos.hpr[0]));
-		 tuxi->lock = 1;
+		 	sock->writePacket(debug->string("50 %f %f %f",
+					 (float) temppos.xyz[0],
+					 (float) temppos.xyz[1],
+					 (float) temppos.hpr[0]));
+		 	tuxi->lock = 1;
+		 }
 		 break;
 	   case '4':
-		 if (tuxi->lock == 1)
-		   break;
+		 if (tuxi->lock == 0) {
+		 	temppos.hpr[0] += 5.0f;
+		 	if (temppos.hpr[0] > 355.0f)
+		   		temppos.hpr[0] = 0.0f;
 		 
-		 temppos.hpr[0] += 5.0f;
-		 if (temppos.hpr[0] > 355.0f)
-		   temppos.hpr[0] = 0.0f;
-		 
-		 sock->writePacket(debug->string("50 %f %f %f",
-										 (float) temppos.xyz[0],
-										 (float) temppos.xyz[1],
-										 (float) temppos.hpr[0]));
-		 tuxi->lock = 1;
+		 	sock->writePacket(debug->string("50 %f %f %f",
+						 (float) temppos.xyz[0],
+						 (float) temppos.xyz[1],
+						 (float) temppos.hpr[0]));
+		 	tuxi->lock = 1;
+		 }
 		 break;
 	   case '+':
 		 display->pitch += 1.0f;

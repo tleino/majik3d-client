@@ -185,14 +185,18 @@ Protocol::parseCommand(char *input)
 	  
 	  ob->init(id, file_name);
 	  
-	  ob->ob_pos.xyz[0] = x;
-	  ob->ob_pos.xyz[1] = y;
+	  sgCoord tmpPos = ob->getPos();
+
+	  tmpPos.xyz[0] = x;
+	  tmpPos.xyz[1] = y;
 	  
-	  ob->ob_pos.hpr[0] = h;
-	  ob->ob_pos.hpr[1] = 0;
-	  ob->ob_pos.hpr[2] = 0;
+	  tmpPos.hpr[0] = h;
+	  tmpPos.hpr[1] = 0;
+	  tmpPos.hpr[2] = 0;
 	  
-	  ob->trans->setTransform( &ob->ob_pos );
+	  ob->moveTo(tmpPos);
+
+	  ob->trans->setTransform( &tmpPos );
 	  break;
 	case CMD_MAP:
 	  char *tmp;

@@ -94,7 +94,6 @@ Object::~Object()
 void
 Object::init(int id, char *file_name)
 {
-
    this->id = id;
    strcpy(this->file_name, file_name);
    
@@ -168,3 +167,13 @@ void Object::moveTo(float x, float y, float h)
 //	cerr << "ID: " << id << " is at pos " << ob_pos.xyz[0] << ", " << ob_pos.xyz[1] << endl;
 }
 
+void Object::moveTo(sgCoord where)
+{
+	moveTo(where.xyz[0], where.xyz[1], where.hpr[0]);
+}
+
+sgCoord Object::getPos()
+{
+	// This may need to be explicitly done using a sgCopyVec3?
+	return ob_pos;
+}

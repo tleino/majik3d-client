@@ -41,7 +41,6 @@ class Object
    Object();
    ~Object();
 
-
    /// Initialize a new object.
    void init(int id , char *file_name);
    /// Called when object moves.
@@ -50,9 +49,12 @@ class Object
    int getCurrentSound();
    /// Move object to a new position.
    void moveTo(float x, float y, float h);
+   /// Move object to a new position.
+   void moveTo(sgCoord where);
 
-   ///
-   sgCoord ob_pos;
+   /// Get the Objects current Position
+   sgCoord getPos();
+
    ///
    ssgTransform *trans;
    ///
@@ -81,7 +83,8 @@ private:
    /* Note from Steve Brown - why is everything else public?? */
    /* Note from Tommi Leino - object oriented programming sucks :) */
    int currentSound;
-
+   ///
+   sgCoord ob_pos;
 };
 
 extern Object *object;
