@@ -104,70 +104,31 @@ Protocol::parseCommand(char *input)
 	  ob = ob->getNext();
 	}
       
-      if (!found)
+    if (!found)
 	{
 	  error->put (ERROR_WARNING, "Object %d not found!", id);
 	  break;
 	}
 	   
-      if (ob == tuxi)
+    if (ob == tuxi)
 	{
 	  int i, j;
 	  ((Player *)tuxi)->unLockMovement();
-//	  Mapquad *temp;
-			
-	  int lod = config->lod;
-	  /*
-	  for (j = -(lod+1); j < lod+1; j++)
-	    for (i = -(lod+1); i < lod+1; i++)
-	      {
-		if ( (j > -(lod+1) && j < lod) && (i > -(lod+1) && i < lod) )
-		  continue;
-		
-		temp = Mapquad::root_map->tryMapquad(12, (int)x +256+ i*512,
-						     (int)y +256+ j*512);
-		if (temp != NULL)
-		  temp->selectLOD(-1);
-	      }
-	  	  	  
-	  for (j = -lod; j < lod; j++)
-	    for (i = -lod; i < lod; i++) 
-	      {
-		Mapquad::root_map->getMapquad(12, (int)x +256+ i*512, (int)
-					      y +256+j*512)->selectLOD(4);  
-	      }
-	  
-	  for (j = -6; j < 6; j++)
-	    for (i = -6; i < 6; i++) 
-	      {
-		Mapquad::root_map->getMapquad(12, (int)x +256+ i*512, (int)
-					      y +256+j*512)->selectLOD(3);  
-	      }
-	  
-	  for (j = -2; j < 2; j++)
-	    for (i = -2; i < 2; i++) 
-	      {
-		Mapquad::root_map->getMapquad(12, (int)x +256+ i*512, (int)
-					      y +256+j*512)->selectLOD(2);  
-	      }
-	  */
 	  for (j= - 2; j < 2; j++)
 	    for (i= - 2; i < 2; i++)
-	      {
-		Mapquad::root_map->getMapquad(12, (int)x + 256+ i*512, (int)
-					      y +256 + j*512);
-
+		{
+			Mapquad::root_map->getMapquad(12, (int)x + 256+ i*512, (int)y +256 + j*512);
 		}
 
-	  Mapquad::root_map->resetBlocks();
+		Mapquad::root_map->resetBlocks();
 
-	Mapquad::root_map->selectLOD(4, x, y);
-	Mapquad::root_map->selectLOD(3, x, y);
-	Mapquad::root_map->selectLOD(2, x, y);
-	Mapquad::root_map->selectLOD(1, x, y);
-	Mapquad::root_map->selectLOD(0, x, y);
+		Mapquad::root_map->selectLOD(4, x, y);
+		Mapquad::root_map->selectLOD(3, x, y);
+		Mapquad::root_map->selectLOD(2, x, y);
+		Mapquad::root_map->selectLOD(1, x, y);
+		Mapquad::root_map->selectLOD(0, x, y);
 
-	  Mapquad::root_map->triangulateBlocks();
+		Mapquad::root_map->triangulateBlocks();
 
 //	      }
 	}  

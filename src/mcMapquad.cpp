@@ -47,9 +47,13 @@ int quad_sizes[NUM_LEVELS] =
   16
 };
 
+//ssgSimpleState *Mapquad::state = NULL;
+
+extern ssgSimpleState *state;
+
 Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 {
-  cout << "new'd: " << this << endl;
+
   this->parent = parent;
   this->child1 = NULL;
   this->child2 = NULL;
@@ -87,27 +91,27 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 	lod_indices[i] = -2;
     }
 
-
-
   /* kludgetusta  */
 
+  if (!state)
+  {
   		state    = new ssgSimpleState ;
-			state -> setTexture ( "gfx/bumpnoise.rgb") ;
-			state -> enable     ( GL_TEXTURE_2D ) ;
-			state -> enable     ( GL_LIGHTING ) ;
+		state -> setTexture ( "gfx/bumpnoise.rgb") ;
+		state -> enable     ( GL_TEXTURE_2D ) ;
+		state -> enable     ( GL_LIGHTING ) ;
 
-			state -> setShadeModel ( GL_SMOOTH );
+		state -> setShadeModel ( GL_SMOOTH );
 
-			state -> enable ( GL_COLOR_MATERIAL ) ;
-			state -> disable ( GL_CULL_FACE      ) ;
-			state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
-			state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
-			state -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
-			state -> setShininess ( 0 ) ;
-			state -> setOpaque () ;
-			state -> disable ( GL_BLEND ) ;
+		state -> enable ( GL_COLOR_MATERIAL ) ;
+		state -> disable ( GL_CULL_FACE      ) ;
+		state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
+		state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
+		state -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
+		state -> setShininess ( 0 ) ;
+		state -> setOpaque () ;
+		state -> disable ( GL_BLEND ) ;
 
-
+  }
 }
 
 Mapquad::~Mapquad()

@@ -6,8 +6,10 @@
 #include <sg.h>
 #include <ssg.h>
 
-typedef unsigned int DWORD;
-typedef unsigned short WORD;
+#pragma inline_recursion(on)
+
+//typedef unsigned int DWORD;
+//typedef unsigned short WORD;
 
 class TerrainBlock : public ssgVTable
 {
@@ -48,7 +50,9 @@ public:
 		DIR_EAST  = (0x1 << 12),
 		DIR_NORTH = (0x2 << 12),
 		DIR_SOUTH = (0x4 << 12),
-		DIR_WEST  = (0x8 << 12)
+		DIR_WEST  = (0x8 << 12),
+
+		DISABLED = 0xffff
 	};
 
 
@@ -105,7 +109,7 @@ public:
 
 		}
 
-		TerrainBlock *get (WORD x, WORD y)
+		inline TerrainBlock *get (WORD x, WORD y)
 		{
 			TerrainBlock* n = m_hash[getHashVal(x,y)&(m_hashSize-1)];
 			if (!n)
@@ -160,8 +164,8 @@ public:
 	public:
 		VertexBuffer()
 		{
-			buf[0] = -1;
-			buf[1] = -1;
+			buf[0] = DISABLED;
+			buf[1] = DISABLED;
 			ptr = 0;
 		}
 
@@ -198,8 +202,8 @@ public:
 
 	inline vertex& getVertexFromNeighbour(Index mask, Index i)
 	{
-		int x = (mask & DIR_WEST ? -1 : 0) + (mask & DIR_EAST ? 1 : 0);
-		int y = (mask & DIR_NORTH ? 1 : 0) + (mask & DIR_SOUTH ? -1 : 0);
+		Index x = (mask & DIR_WEST ? -1 : 0) + (mask & DIR_EAST ? 1 : 0);
+		Index y = (mask & DIR_NORTH ? 1 : 0) + (mask & DIR_SOUTH ? -1 : 0);
 
 		TerrainBlock *b = blockHash.get( m_x + x, m_y + y);
 
@@ -273,14 +277,14 @@ public:
 		}
 
 		if (x<0||x>DIM||y<0||y>DIM)
-			return -1;
+			return DISABLED;
 
 		return x + (DIM+1) * y;
 	}
 
 	inline void makeDeps(Index level, Index x, Index y, int segment, int dir)
 	{
-		const int d = DIM>>(level+1);
+		const Index d = DIM>>(level+1);
 
 		vertex& vN = getVertex(x,	y+d);
 		vertex& vW = getVertex(x-d,	y);
@@ -335,15 +339,15 @@ public:
 		}
 	}
 
-	void calculateErrors();
+	inline void calculateErrors();
 
-	void exchangeBorderVertices(TerrainBlock&, direction);
+	inline void exchangeBorderVertices(TerrainBlock&, direction);
 
 
 	class QSet
 	{
 	public:
-		QSet()
+		inline QSet()
 		{
 			reset();
 
@@ -491,9 +495,9 @@ public:
 	}
 */
 
-	void reset()
+	inline void reset()
 	{
-		calculateErrors();
+//		calculateErrors();
 		set.reset();
 //		for (int k =0;k<(DIM+1)*(DIM+1);k++)
 //			vertices[k].marked = false;
@@ -512,9 +516,10 @@ public:
 			const int inc = DIM>>l;
 			const int res = LEVELS-l;
 
-			for (int j=0;j<DIM+1;j += inc)
+			int j, i;
+			for (j=0;j<DIM+1;j += inc)
 			{
-				for(int i=0;i<DIM+1;i += inc)
+				for(i=0;i<DIM+1;i += inc)
 				{ 
 					if (! ((i>>res) % 2 != 0 || (j>>res) % 2 != 0))
 						continue;
@@ -540,7 +545,7 @@ public:
 				}
 			}
 
-			int j;
+			
 			for (j=0;j<DIM+1;j += inc)
 			{
 				for(int i=0;i<DIM+1;i += inc)
@@ -623,8 +628,8 @@ public:
 private:
 	friend class TerrainBlockHash;
 
-	WORD	m_x;
-	WORD	m_y;
+	Index	m_x;
+	Index	m_y;
 	vertex nullVertex;
 	TerrainBlock	*m_next;
 

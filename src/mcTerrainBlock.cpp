@@ -3,11 +3,10 @@
 #include "mcPerlin.hpp"
 
 
-
-double getHeight(float x, float y)
+inline float getHeight(float x, float y)
 {
 //	return 0.0f;
-	return 300.0*perlin->perlinNoise_2D(x/800.0, y/800.0);
+	return 300.0f*(float)perlin->perlinNoise_2D(x/800.0, y/800.0);
 };
 
 
@@ -94,7 +93,7 @@ TerrainBlock::~TerrainBlock()
 	blockHash.remove(m_x, m_y);
 }
 
-void
+inline void
 TerrainBlock::exchangeBorderVertices(TerrainBlock& b, direction dir)
 {
 	int x = 0;
@@ -158,6 +157,20 @@ void
 TerrainBlock::draw_geometry()
 {
 	int i;
+/*
+	glEnable (GL_VERTEX_ARRAY);
+	glEnable (GL_TEXTURE_COORD_ARRAY);
+
+	glColor3f(0.0, 1.0, 0.0);
+
+	glVertexPointer(3, GL_FLOAT, sizeof(vertex), &vertices[0].coord);
+	glTexCoordPointer(3, GL_FLOAT, sizeof(vertex), &vertices[0].UV);
+
+	glDrawElements(GL_TRIANGLE_STRIP, numSelectedVertices, GL_UNSIGNED_SHORT, &list);
+
+	glDisable(GL_VERTEX_ARRAY);
+*/	
+	
 
 	glBegin(GL_TRIANGLE_STRIP);
 
@@ -205,7 +218,7 @@ TerrainBlock::draw_geometry()
 */
 }
 
-void
+inline void
 TerrainBlock::calculateErrors()
 {
 	for (int i = 0; i < NUM_VERTICES; i++)
@@ -221,6 +234,5 @@ TerrainBlock::calculateErrors()
 			else
 				v.error = 0;
 		}
-
 	}
 }

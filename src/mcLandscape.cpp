@@ -52,6 +52,7 @@ linearInterpolate(double a, double b, double c)
   return ( 1.0 - c ) * a + c * b;
 }
 
+
 ssgSimpleState *state    = NULL ;
 
 ssgTransform   *tilegrid [ TILE_GRID_SIZE ][ TILE_GRID_SIZE ] ;
@@ -103,6 +104,7 @@ Landscape::init( ssgRoot *scene_root)
   state -> disable ( GL_BLEND ) ;
   
   scene_root -> addKid ( terrain ) ;
+  
 }
 
 
@@ -262,7 +264,7 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris,
 				      2 * (ntris+1), vlist, snorms ,
 				      2 * (ntris+1), vlist, tcoords,
 				      2 * (ntris+1), vlist, scolors ) ;
-      gset -> setState ( state ) ;
+//      gset -> setState ( state ) ;
       branch -> addKid ( gset  ) ;
     }
   

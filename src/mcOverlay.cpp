@@ -16,8 +16,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <GL/gl.h>
-#include <pu.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -25,6 +23,10 @@
 #else
 #include <sys/time.h>
 #endif /* WIN32 */
+
+#include <GL/gl.h>
+#include <pu.h>
+
 
 #include "mcDebug.hpp"
 #include "mcOverlay.hpp"
@@ -52,7 +54,7 @@ Overlay::init()
     puShowCursor();
   
   puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
-  puSetDefaultColourScheme (1.0, 1.0, 1.0, 0.6f);
+  puSetDefaultColourScheme (1.0f, 1.0f, 1.0f, 0.6f);
   
   status_text = new puText (5, 5);
   status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);

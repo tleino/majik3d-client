@@ -149,7 +149,7 @@ private:
 
    
    /* kludge */
-	ssgSimpleState *state;
+//	static ssgSimpleState *state;
 
 };
 
