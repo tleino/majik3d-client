@@ -229,8 +229,9 @@ Protocol::parseCommand(char *input)
 	}
 
       FILE *fp;
-      fp = fopen(debug->string("cache/%01x%05x%05x.map", map_level, map_x,
-			       map_y), "w");
+      char buf[80];
+      sprintf (buf, "cache/%01x%05x%05x.map", map_level, map_x, map_y);
+      fp = fopen(buf, "w");
       fprintf (fp, "%s", tmp);
       fclose (fp);
       

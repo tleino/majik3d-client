@@ -36,9 +36,6 @@ public:
   /// Add a new debug message.
   void put(char *fmt, ...);
   
-  /// Allow printf() style formatting in DEBUG() macro.
-  char *string(char *fmt, ...);
-  
   /// File pointer for protocol debug.
   FILE *fp;
 };

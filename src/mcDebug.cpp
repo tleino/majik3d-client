@@ -49,20 +49,6 @@ Debug::~Debug()
     fclose (fp);
 }
 
-char *
-Debug::string(char *fmt, ...)
-{
-  char *buf = new char[1000]; // EORJWPEORJP
-  memset (buf, 0, sizeof (buf));
-  
-  va_list vl;
-  va_start (vl, fmt);
-  vsprintf (buf, fmt, vl);
-  va_end (vl);
-  
-  return buf;
-}
-
 void
 Debug::put(char *fmt, ...)
 {
@@ -74,6 +60,5 @@ Debug::put(char *fmt, ...)
   va_end (vl);
   
   if (config->getDebugLevel() > 0)
-    cerr << "DEBUG: " << buf << endl;
-  
+    cerr << "DEBUG: " << buf << endl;  
 }

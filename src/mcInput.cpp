@@ -127,10 +127,10 @@ Input::keyDown(unsigned char k, int x, int y)
 				SG_DEGREES_TO_RADIANS)*10.0;
 	  
 	  
-	  sock->writePacket(debug->string("50 %f %f %f",
+	  sock->writePacket("50 %f %f %f",
 					  (float) temppos.xyz[0],
 					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0])); 
+					  (float) temppos.hpr[0]); 
 /*	  protocol->parseCommand(debug->string("50 1 %f %f %f",
 			  (float) temppos.xyz[0],
 			  (float) temppos.xyz[1],
@@ -151,10 +151,10 @@ Input::keyDown(unsigned char k, int x, int y)
 	  temppos.xyz[1] += cos((temppos.hpr[0]-180.0f)*
 				SG_DEGREES_TO_RADIANS)*10.0f;
 	  
-	  sock->writePacket(debug->string("50 %f %f %f",
+	  sock->writePacket("50 %f %f %f",
 					  (float) temppos.xyz[0],
 					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]));
+					  (float) temppos.hpr[0]);
 /*	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
 			  (float) temppos.xyz[0],
 			  (float) temppos.xyz[1],
@@ -173,10 +173,10 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (temppos.hpr[0] < 0)
 	    temppos.hpr[0] += 360.0f;
 	  
-	  sock->writePacket(debug->string("50 %f %f %f",
+	  sock->writePacket("50 %f %f %f",
 					  (float) temppos.xyz[0],
 					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]));
+					  (float) temppos.hpr[0]);
 /*	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
 			  (float) temppos.xyz[0],
 			  (float) temppos.xyz[1],
@@ -195,11 +195,11 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (temppos.hpr[0] > 355.0f)
 	    temppos.hpr[0] = 0.0f;
 	  
-	  sock->writePacket(debug->string("50 %f %f %f",
-					  (float) temppos.xyz[0],
-					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]));
-/*	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
+	  sock->writePacket("50 %f %f %f",
+			    (float) temppos.xyz[0],
+			    (float) temppos.xyz[1],
+			    (float) temppos.hpr[0]);
+	  /*	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
 			  (float) temppos.xyz[0],
 			  (float) temppos.xyz[1],
 			  (float) temppos.hpr[0])); 
