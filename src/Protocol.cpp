@@ -147,18 +147,18 @@ Protocol::parseCommand(char *input)
     case CMD_QUIT:
       sscanf(data, "%d", &id);
       
-      ob = Object::first;
-      
-      while (ob != NULL)
-	{
-	  if (ob->getID() == id)
-	    {
-	      delete ob;
-	      break;
-	    }
-	  
-	  ob = ob->getNext();
-	}
+	   ob = Object::first;
+	   
+	   while (ob != NULL)
+		 {
+			if (ob->getID() == id)
+			  {
+				 delete ob;
+				 break;
+			  }
+			
+			ob = ob->getNext();
+		 }
       
       break;
     case CMD_SAY:

@@ -226,8 +226,8 @@ Scene::update()
     {
 	   sgCoord pos = ob->getPos();
 	   
-	   if ( abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ||
-		   abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 )
+	   if ( (abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ||
+		   abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ) && ob->getFileName() == "bee.ac"  ) 
 		 {
 			Object *temp = ob;
 			ob = ob->getNext();
