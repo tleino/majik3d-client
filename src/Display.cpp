@@ -22,7 +22,6 @@
 # include <windows.h>
 # include <time.h>
 #else
-# include <sys/time.h>
 # include <unistd.h>
 #endif
 #include <pu.h>
@@ -38,30 +37,10 @@
 #include "Config.hpp"
 #include "Overlay.hpp"
 
-time_t t = time(NULL);
-int frames = 0;
 int mouse_x, mouse_y;
-double start_time;
 extern Object *tuxi;
 
 bool Display::sceneVisible = false;
-
-double read_time_of_day();
-
-double read_time_of_day ()
-{
-#ifdef WIN32
-  _int64 u, v ;
-  QueryPerformanceCounter   ((LARGE_INTEGER*) &u ) ;
-  QueryPerformanceFrequency ((LARGE_INTEGER*) &v ) ;
-  return (double)u / (double)v ;
-#else
-  timeval tv ;
-  gettimeofday ( &tv, NULL ) ;
-  
-  return (double) tv . tv_sec + (double) tv . tv_usec / 1000000.0 ;
-#endif
-}
 
 Display::Display()
 {

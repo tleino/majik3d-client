@@ -106,6 +106,12 @@ Object::getCenter()
   return bs->getCenter();
 }
 
+float
+Object::getLenY()
+{
+  return lenY;
+}
+
 void
 Object::init(int id, char *file_name)
 {
@@ -125,6 +131,8 @@ Object::init(int id, char *file_name)
   
   puhe = new puText(0, 0);
   puhe->setLabel("");
+  sgSphere *bs = trans->getBSphere();  
+  lenY = bs->getRadius();
 }
 
 void 

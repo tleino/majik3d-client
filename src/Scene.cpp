@@ -244,8 +244,6 @@ Scene::update()
        ob = ob->getNext();
      }
 
-   printf ("%f\n", tuxi->getRadius());
-   
    sgCopyVec3 ( campos.xyz, tuxpos.xyz ) ;
    sgCopyVec3 ( campos.hpr, tuxpos.hpr ) ;
    
@@ -263,8 +261,8 @@ Scene::update()
    else
      {
        // 1st person mode.
-       campos.xyz[0] += 2*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
-       campos.xyz[1] -= 2*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+       campos.xyz[0] += (tuxi->getLenY()*2.01f)*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
+       campos.xyz[1] -= (tuxi->getLenY()*2.01f)*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
        campos.xyz[2] += tuxi->getRadius();
        campos.hpr[1] = tuxi->getRadius() + display->pitch - tuxi->getRadius() * 2.0f;
      }
@@ -329,7 +327,6 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
   else if (textpos[1] > display->height)
     textpos[1] = display->height;
 
-  printf ("slen: %d width: %d x: %f y: %f\n", slen, display->width, textpos[0], textpos[1]);
   text_object->setPosition(textpos[0], textpos[1]);
 }
 

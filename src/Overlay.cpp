@@ -18,6 +18,7 @@
 
 #include <GL/gl.h>
 #include <pu.h>
+#include <sys/time.h>
 
 #include "Debug.hpp"
 #include "Overlay.hpp"
@@ -47,8 +48,9 @@ Overlay::init()
   puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
   puSetDefaultColourScheme (1.0, 1.0, 1.0, 0.6f);
   
-  status_text = new puText (5, 10);
+  status_text = new puText (5, 5);
   status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
+  status_text->setLabel ("[status_text]");
   
   inp = new puInput ( 5, 25, display->width-5, 5+20 ) ;
   inp->setLegend    ( "Legend" ) ;
@@ -62,9 +64,43 @@ Overlay::init()
   menu->init();
 }
 
+// FIXME: Needs to be cleaned.
+
+double start_time = 0;
+time_t t = time(NULL);
+int frames = 0;
+char fps_text[80];
+
+double read_time_of_day(); 
+ 
+double read_time_of_day () 
+{ 
+#ifdef WIN32 
+  _int64 u, v ; 
+  QueryPerformanceCounter   ((LARGE_INTEGER*) &u ) ; 
+  QueryPerformanceFrequency ((LARGE_INTEGER*) &v ) ; 
+  return (double)u / (double)v ; 
+#else 
+  timeval tv ; 
+  gettimeofday ( &tv, NULL ) ; 
+   
+  return (double) tv . tv_sec + (double) tv . tv_usec / 1000000.0 ; 
+#endif 
+} 
+
 void
 Overlay::draw()
 {
+  frames++;
+
+  if (inp_command != CMD_LOGIN)
+    {
+      sprintf (fps_text, "%1.1f", (float) 1/(read_time_of_day() - start_time));
+      start_time = read_time_of_day();
+      // calculate fps
+      status_text->setLabel(fps_text);
+    }
+
   glEnable (GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glAlphaFunc(GL_GREATER, 0.1f);

@@ -254,6 +254,8 @@ Protocol::parseCommand(char *input)
       // The data written to the prompt is handled in the input object's
       // callback function.
       sscanf(data, "%d", &overlay->inp_command);
+      if (overlay->inp_command == CMD_LOGIN)
+	overlay->status_text->setLabel("By what name do you wish to be known?");
       overlay->inp->reveal();
       break;
     case CMD_SUN_POS:

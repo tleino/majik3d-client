@@ -237,6 +237,8 @@ Input::promptDown (puObject *o)
   overlay->inp->acceptInput  () ;
   overlay->inp->setCursor ( 0 ) ;
   overlay->inp->hide();
+  if (overlay->inp_command == CMD_LOGIN)
+    overlay->inp_command = CMD_SAY;
 }
 
 // FIXME: This isn't working and isn't inside a class either.

@@ -75,6 +75,8 @@ public:
   float getRadius();
   /// Bounding sphere center.
   float *getCenter();
+  /// Get Y-length.
+  float getLenY();
 private:
   ssgTransform *trans;
   ssgEntity *obu;
@@ -89,6 +91,7 @@ private:
   int currentSound;
   sgCoord ob_pos;
   float scaleZ;
+  float lenY;
 };
 
 extern Object *object;
