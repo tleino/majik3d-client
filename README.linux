@@ -5,7 +5,7 @@ To run this binary you'll need:
     ftp://ftp.mesa3d.org/mesa/MesaLib-3.0.tar.gz
     ftp://ftp.mesa3d.org/mesa/MesaDemos-3.0.tar.gz
 - PLIB installed
-    http://www.woodsoup.org/~sbaker/plib/dist/plib-1.0.15.tar.gz
+    http://www.woodsoup.org/~sbaker/plib/dist/plib-1.0.17.tar.gz
 - X Window System
 - Linux/i386 operating system
 
