@@ -20,6 +20,7 @@
 #define __DEBUG_HPP__
 
 #include <assert.h>
+#include <string>
 
 
 /** A debugging class. All debug messages should go through this class,

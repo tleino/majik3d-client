@@ -128,6 +128,12 @@ Socket::readPacket()
     }
   
   ReleaseSemaphore(LinesSemaphore,1,NULL);
+
+   if (config->testFlag(mcConfig::PROTOCOL_DEBUG) == true && szRet)
+		 {
+			fprintf (debug->fp, ">> %s", szRet);
+			fflush (debug->fp);
+		 }
   
   return szRet;
   

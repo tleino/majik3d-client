@@ -64,25 +64,54 @@ Protocol::parseCommand(char *input)
   int tmp = strlen(data);
   strcpy(data, &input[tmp+1]);  
   
-  switch (command)
-    {
-    case CMD_MOVE_DIRECTION: // hmmm????
-      if (sscanf(data, "%d %d", &id, &direction) < 2)
+	switch (command)
 	{
-		error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
-		      "command CMD_MOVE_DIRECTION.");
-	  break;
-	}
-
-    for (ob = Object::getFirst(); ob; ob = ob->getNext())
-	{
-	  ob->moveTo(ob->getPos().xyz[0]+direction,
-		     ob->getPos().xyz[1]+direction,
-		     ob->getPos().xyz[2]);
-	  break;
-	}
+	case CMD_MOVE_DIRECTION:
+		if (sscanf(data, "%d %d", &id, &direction) < 2)
+		{
+			error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
+				"command CMD_MOVE_DIRECTION.");
+			break;
+		}
+		
+		ob = Object::getObject(id);
+		if (ob)
+		{
+			switch(direction)
+			{
+			case 1:
+				ob->moveForward();
+				break;
+			case -1:
+				ob->moveBackward();
+				break;
+			case 0:
+				ob->stopMoving();
+				break;
+			default:
+				error->put(	mcError::ERROR_WARNING,
+							"invalid parameter to MOVE_DIRECTION");
+				break;
+			}
+		}
+		// else error object not found
 
       break;
+
+	case CMD_MOVE_HEADING:
+		if (sscanf(data, "%d %f", &id, &h) < 2)
+		{
+			error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
+												"command CMD_MOVE_HEADING.");
+			break;
+		}
+
+		ob = Object::getObject(id);
+		if (ob)
+			ob->setHeading(h);
+
+		break;
+
 	case CMD_MOVE:
 		if (sscanf(data, "%d %f %f %f", &id, &x, &y, &h) < 4)
 		{

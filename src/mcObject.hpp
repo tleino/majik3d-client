@@ -79,12 +79,25 @@ public:
   /// FIXME: A kludge.
   bool hotFixed;
 
+		void	setHeading		(float);
+		void	setMoveSpeed	(float);
+
+  		void	moveForward		();
+		void	moveBackward	();
+		void	stopMoving		();
+		void	turnRight		();
+		void	turnLeft		();
+		void	stopTurning		();
+
+
 virtual void	update		(float);
 
 static	Object	*getObject	(int id);
 static	Object	*getFirst	()			{ return first; }
 
 private:
+	float	m_moveSpeed;
+	float	m_turnSpeed;
 
 	static Object *last;
 	static Object *first;

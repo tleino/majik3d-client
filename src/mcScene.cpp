@@ -45,7 +45,8 @@ ssgTransform  *lumiukko;
 ssgTransform  *sky_dome = NULL;
 
 Scene::Scene()
-{    
+{   
+	m_landscape = new Landscape();
 	m_sky = new mcSky(16, 8);
 	m_playerController = new mcPlayerController();
 	m_cameraController = new mcCameraController();
@@ -113,7 +114,7 @@ Scene::init()
   ssgModelPath   ("data");
   ssgTexturePath ("data");
 
-  landscape->init(scene_root);
+  m_landscape->init(scene_root);
         
   sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
   sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
@@ -218,28 +219,7 @@ Scene::getHOT( float x, float y )
   return hot;
 }
 
-
-/// FIXME: Unimplemented.
-void
-Scene::addObject(Object* ob)
-{
-  
-}
-
-// FIXME: Unimplemented.
-void
-Scene::removeObject(int id)
-{ 
-  
-}
-
-// FIXME: Unimplemented.
-void
-Scene::removeObject(Object *ob)
-{
-  
-}
-
+//kludge
 extern double read_time_of_day ();
 
 void

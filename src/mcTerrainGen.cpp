@@ -4,6 +4,7 @@
 
 #include "mcTerrainGen.hpp"
 #include "mcLandscape.hpp"
+#include "mcScene.hpp"
 #include <sg.h>
 
 //////////////////////////////////////////////////////////////////////
@@ -29,10 +30,10 @@ int mcTerrainGen::getPixel(double x, double y)
 	sgVec3 lightDir = { 0.0, 0.707, 0.707 };
 	sgVec3 nrm;
 	
-	landscape->getNormal(nrm, x, y);
-	nrm[0] *= nrm[0];
-	nrm[1] *= nrm[1];
-	nrm[2] *= nrm[2];
+	scene->getLandscape()->getNormal(nrm, x, y);
+//	nrm[0] *= nrm[0];
+//	nrm[1] *= nrm[1];
+//	nrm[2] *= nrm[2];
 
 
 	float d = sgScalarProductVec3(lightDir, nrm);

@@ -31,7 +31,6 @@
 #include "mcDebug.hpp"
 #include "mcSocket.hpp"
 #include "mcDisplay.hpp"
-#include "mcLandscape.hpp"
 #include "mcInput.hpp"
 #include "mcConfig.hpp"
 #include "mcScene.hpp"
@@ -48,7 +47,6 @@ mcConfig *config = NULL;
 Debug *debug = NULL;
 Socket *sock = NULL;
 Display *display = NULL;
-Landscape *landscape = NULL;
 Input *input = NULL;
 Menu *menu = NULL;
 Scene *scene = NULL;
@@ -74,7 +72,6 @@ main(int argc, char **argv)
   config->readConfig();
   debug = new Debug;
   display = new Display;
-  landscape = new Landscape;
   input = new Input;
   menu = new Menu;
   scene = new Scene;
@@ -120,7 +117,6 @@ main(int argc, char **argv)
   delete debug;
   delete sock;
   delete display;
-  delete landscape;
   delete input;
   delete config;
   delete menu;

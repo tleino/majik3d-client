@@ -31,6 +31,7 @@ public:
 
   /// This method is called when a normal key-press has been detected.
   static void keyDown(unsigned char key, int x, int y);
+  static void keyUp(unsigned char key, int x, int y);
   /** This method is called when a special key-press has been detected,
       for example when using arrow keys. */
   static void specialDown(int special_key, int x, int y);

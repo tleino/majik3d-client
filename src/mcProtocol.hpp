@@ -27,20 +27,21 @@ public:
 
 	enum Command
 	{
-		CMD_MOVE           = 50,
-		CMD_LOGIN          = 51,
-		CMD_OWN_ID         = 52,
-		CMD_QUIT           = 53,
-		CMD_SAY            = 54,
-		CMD_ADD_OBJECT     = 55,
-		CMD_SUN_POS        = 56,
-		CMD_MOVE_DIRECTION = 57,
-		CMD_MOVE_HEADING   = 58,
-		CMD_MOVE_STOP      = 59,
-		CMD_DIALOG         = 100,
-		CMD_MAP            = 189,
-		CMD_PROMPT         = 220,
-		CMD_SAYHIDE        = 223
+		CMD_MOVE			= 50,
+		CMD_LOGIN			= 51,
+		CMD_OWN_ID			= 52,
+		CMD_QUIT			= 53,
+		CMD_SAY				= 54,
+		CMD_ADD_OBJECT		= 55,
+		CMD_SUN_POS			= 56,
+		CMD_MOVE_DIRECTION	= 57,
+		CMD_MOVE_HEADING	= 58,
+		CMD_MOVE_STOP		= 59,
+		CMD_TURN			= 60,
+		CMD_DIALOG			= 100,
+		CMD_MAP				= 189,
+		CMD_PROMPT			= 220,
+		CMD_SAYHIDE			= 223
 	};
 
   Protocol();

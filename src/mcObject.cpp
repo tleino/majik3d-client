@@ -57,8 +57,9 @@ Object::Object()
   ob_pos.hpr[0] = 0;
   ob_pos.hpr[1] = 0;
   ob_pos.hpr[2] = 0;
-  
-  
+
+  m_turnSpeed = 0.0; 
+  m_moveSpeed = 0.0;
 }
 
 Object::~Object()
@@ -106,8 +107,55 @@ Object::~Object()
 void
 Object::update(float t)
 {
-	t = 0;
+	sgCoord tempPos = ob_pos;
+	
+	tempPos.hpr[0] += m_turnSpeed * t;
+
+	tempPos.xyz[0] += sin((tempPos.hpr[0]-180.0f)*
+		SG_DEGREES_TO_RADIANS)*m_moveSpeed*t;
+	tempPos.xyz[1] -= cos((tempPos.hpr[0]-180.0f)* 
+		SG_DEGREES_TO_RADIANS)*m_moveSpeed*t;
+
+	moveTo(tempPos);
 }
+
+
+void
+Object::moveForward()
+{
+	m_moveSpeed = 250.0;
+}
+
+void
+Object::moveBackward()
+{
+	m_moveSpeed = -50.0;
+}
+
+void
+Object::stopMoving()
+{
+	m_moveSpeed = 0.0;
+}
+
+void
+Object::turnLeft()
+{
+	m_turnSpeed = 25.0;
+}
+
+void
+Object::turnRight()
+{
+	m_turnSpeed = - 25.0;
+}
+
+void
+Object::stopTurning()
+{
+	m_turnSpeed = 0.0;
+}
+
 
 Object *
 Object::getObject(int id)
@@ -235,8 +283,15 @@ Object::moveTo(float x, float y, float h)
 void 
 Object::moveTo(sgCoord where)
 {
-  moveTo(where.xyz[0], where.xyz[1], where.hpr[0]);
+	moveTo(where.xyz[0], where.xyz[1], where.hpr[0]);
 }
+
+void
+Object::setHeading(float dir)
+{
+	moveTo(ob_pos.xyz[0], ob_pos.xyz[1], dir);
+}
+
 
 void
 Object::setPos(sgCoord where)

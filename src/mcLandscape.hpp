@@ -44,24 +44,22 @@ public:
   
   void Landscape::init(ssgRoot *);
 
-  float getHOT(float x, float y);
+  float getHOT(float x, float y)const;
 
-  void getNormal(sgVec3& nrm, float x, float y);
+  void getNormal(sgVec3& nrm, float x, float y)const;
 
-  GLuint getTextureHandle ( int level, int x, int y);
+  GLuint getTextureHandle ( int level, int x, int y) const;
 
 //  ssgBranch *createTileLOD (int level, int x, int y, int ntris,
 //			    char *terrain_map);
 
  // ssgBranch *createBlock(int x, int y);
 
-  ssgTransform	*getTerrain()	{ return terrain; }
+  ssgTransform	*getTerrain()const	{ return terrain; }
   
 private:
   ssgRoot *scene_root;
   ssgTransform   *terrain;
 };
-
-extern Landscape *landscape;
 
 #endif /* __LANDSCAPE_HPP__ */

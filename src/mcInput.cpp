@@ -35,8 +35,6 @@
 #include "mcPlayerController.hpp"
 #include "mcCameraController.hpp"
 
-#include <fstream.h>
-
 
 #define DIR_NORTH   0
 #define DIR_EAST    1
@@ -47,9 +45,6 @@
 extern Player       *tuxi;
 int pitch;
 sgCoord temppos;
-
-
-void captureScreen();
 
 Input::Input()
 {
@@ -65,6 +60,29 @@ Input::~Input()
 }
 
 void
+Input::keyUp(unsigned char k, int x, int y)
+{
+	switch(k)
+	{
+	case '8':
+	case '2':
+		//stop moving
+		sock->writePacket("%d %d", Protocol::CMD_MOVE_DIRECTION, 0);		
+		break;
+
+	case '4':
+	case '6':
+		//stop turning
+		sock->writePacket("%d %d", Protocol::CMD_TURN, 0);
+		break;
+
+	default:
+		break;
+
+	};
+}
+
+void
 Input::keyDown(unsigned char k, int x, int y)
 {
 	if (tuxi == NULL && !overlay->inp->isVisible())
@@ -72,15 +90,6 @@ Input::keyDown(unsigned char k, int x, int y)
 
 	puKeyboard (k, PU_DOWN);
   
-//	static int wireframe = 0;
-  
-	if (tuxi != NULL)
-	{
-		sgCoord tuxiPos = tuxi->getPos(); // Avoid multiple calls to getPos
-		sgCopyVec3 ( temppos.xyz, tuxiPos.xyz ) ;
-		sgCopyVec3 ( temppos.hpr, tuxiPos.hpr ) ;
-	}
-
   if (k == '\t')
   {
     if (overlay->inp->isVisible())
@@ -98,135 +107,57 @@ Input::keyDown(unsigned char k, int x, int y)
 	}
   else if (!overlay->inp->isVisible()) 
   {
-	  if (tuxi)
+	  if (tuxi) //FIXME: remove this from somewhere
 		tuxi->unLockMovement();
 
 		switch (k)
 		{
 		case 'w':
 			display->switchWireframe();
-			// Wireframe.
-//			wireframe = ! wireframe ;		 
-//			glPolygonMode ( GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL ) ;
 			break;
 		case 0x03:
+
 		case 'x':
 			// Exit.
-			exit ( 0 ) ;
-			break;
+			exit ( 0 ) ; // FIXME: is there a glutExit function?
+			break;		// because this isn't very nice..
 		case '8':
 			// Move forward.
-			scene->getPlayerController()->moveForward();
-
-//		if (tuxi->isMovementLocked() == true)
-//				return;
-
-	  temppos.xyz[0] += sin((temppos.hpr[0]-180.0f)*
-				SG_DEGREES_TO_RADIANS)*10.0f;
-	  temppos.xyz[1] -= cos((temppos.hpr[0]-180.0f)*
-				SG_DEGREES_TO_RADIANS)*10.0;
-	  
-	  
-	  sock->writePacket("50 %f %f %f",
-					  (float) temppos.xyz[0],
-					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]); 
-/*	  protocol->parseCommand(debug->string("50 1 %f %f %f",
-			  (float) temppos.xyz[0],
-			  (float) temppos.xyz[1],
-			  (float) temppos.hpr[0])); 
-*/			  
-
-//	  tuxi->lockMovement();
-	  break;
-	case '2':
+			sock->writePacket("%d %d", Protocol::CMD_MOVE_DIRECTION, 1);
+			break;
+	
+		case '2':
 	  // Move backward.
-		scene->getPlayerController()->moveBackward();
+			sock->writePacket("%d %d", Protocol::CMD_MOVE_DIRECTION, -1);
+			break;
 
-	  if (tuxi->isMovementLocked() == true)
-	    return;
+		case '6':
+			// turn right
+			sock->writePacket("%d %d", Protocol::CMD_TURN, 1);
+			break;
 
-	  temppos.xyz[0] -= sin((temppos.hpr[0]-180.0f)*
-				SG_DEGREES_TO_RADIANS)*10.0f;
-	  temppos.xyz[1] += cos((temppos.hpr[0]-180.0f)*
-				SG_DEGREES_TO_RADIANS)*10.0f;
-	  
-	  sock->writePacket("50 %f %f %f",
-					  (float) temppos.xyz[0],
-					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]);
-/*	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
-			  (float) temppos.xyz[0],
-			  (float) temppos.xyz[1],
-			  (float) temppos.hpr[0])); 
-*/
-//	  tuxi->lockMovement();
-	  break;
-	case '6':
-	  // Turn right.
-		scene->getPlayerController()->turnRight();
+		case '4':
+		  // Turn left.
+			sock->writePacket("%d %d", Protocol::CMD_TURN, -1);
+			break;
 
-	  if (tuxi->isMovementLocked() == true)
-	    return;
-	  
-	  temppos.hpr[0] -= 10.0f;
-	  if (temppos.hpr[0] < 0)
-	    temppos.hpr[0] += 360.0f;
-	  
-	  sock->writePacket("50 %f %f %f",
-					  (float) temppos.xyz[0],
-					  (float) temppos.xyz[1],
-					  (float) temppos.hpr[0]);
-/*	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
-			  (float) temppos.xyz[0],
-			  (float) temppos.xyz[1],
-			  (float) temppos.hpr[0])); 
-*/
-//	  tuxi->lockMovement();
-	  break;
-	case '4':
-	  // Turn left.
-		scene->getPlayerController()->turnLeft();
+		case '+':
+		  // Look up.
+			scene->getCameraController()->pitchUp(1.0);
+		  break;
 
-	  if (tuxi->isMovementLocked() == true)
-	    return;
-	  
-	  temppos.hpr[0] += 10.0f;
-	  if (temppos.hpr[0] > 355.0f)
-	    temppos.hpr[0] = 0.0f;
-	  
-	  sock->writePacket("50 %f %f %f",
-			    (float) temppos.xyz[0],
-			    (float) temppos.xyz[1],
-			    (float) temppos.hpr[0]);
-	  /*	  	  protocol->parseCommand(debug->string("50 1 %f %f %f",
-			  (float) temppos.xyz[0],
-			  (float) temppos.xyz[1],
-			  (float) temppos.hpr[0])); 
-*/
-//	  tuxi->lockMovement();
-	  break;
-	case '+':
-	  // Look up.
-		scene->getCameraController()->pitchUp(1.0);
-//	  display->pitch += 1.0f;
-//	  if (display->pitch > 75.0f)
-//	    display->pitch = 75.0f;
-	  break;
-	case '-':
-	  // Look down.
-		scene->getCameraController()->pitchDown(1.0);
-//	  display->pitch -= 1.0f;
-//	  if (display->pitch < -75.0f)
-//	    display->pitch = -75.0f;
-	  break;
-	case 13:
-	  break;
-	default:
-		error->put(mcError::ERROR_WARNING, "Unsupported key received: %d at (%d,%d)",
-		     k, x, y);
-	  break;
-	}      
+		case '-':
+		  // Look down.
+			scene->getCameraController()->pitchDown(1.0);
+		  break;
+
+		case 13:
+		  break;
+		default:
+			error->put(mcError::ERROR_WARNING, "Unsupported key received: %d at (%d,%d)",
+				 k, x, y);
+		  break;
+		}      
     }
 }
 
@@ -268,8 +199,8 @@ Input::specialDown(int key, int x, int y)
       config->setCameraMode(0);
       break; 
     case GLUT_KEY_F12:
-      captureScreen();
       break;
+
     case GLUT_KEY_UP:
       sock->writePacket("57 1");
       break;
@@ -346,17 +277,4 @@ Input::promptDown (puObject *o)
   overlay->inp->hide();
   if (overlay->inp_command == Protocol::CMD_LOGIN)
 	  overlay->inp_command = Protocol::CMD_SAY;
-}
-
-// FIXME: This isn't working and isn't inside a class either.
-void
-captureScreen()
-{
-  /*  GLubyte *pixels = new GLubyte[display->width*display->height*3];
-  
-  glReadPixels( 0, 0, display->width, display->height, GL_RGB,
-		GL_UNSIGNED_BYTE, pixels );
-  ofstream to("screenshot.rgb", ios::binary | ios::app | ios::trunc);
-  to.write( pixels, display->width*display->height*3);
-  to.close(); */
 }

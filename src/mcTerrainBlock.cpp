@@ -3,6 +3,8 @@
 #include "mcLandscape.hpp"
 #include "mcTerrainHeightGen.hpp"
 
+#include "mcScene.hpp"
+
 extern mcTerrainHeightGen *terraingen;
 
 inline float getHeight(float x, float y)
@@ -48,7 +50,7 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 	gltype = GL_TRIANGLE_STRIP ;
 	indexed = TRUE ;
 
-	const float UVBias = 1.0/Landscape::TERRAIN_RESOLUTION;
+	const float UVBias = 1.0/(DIM);
 
 	for(int j=0;j<DIM+1;j++)
 		for(int i=0;i<DIM+1;i++)
@@ -70,8 +72,8 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 
 			sgVec2 UV;
 				
-			UV[0] = UVBias+(float)i/(DIM)*(1.0-UVBias*2);
-			UV[1] = UVBias+(float)j/(DIM)*(1.0-UVBias*2);
+			UV[0] = /*UVBias+*/(float)i/DIM;//*(1.0-UVBias*2);
+			UV[1] = /*UVBias+*/(float)j/DIM;//*(1.0-UVBias*2);
 
 			sgCopyVec2 (texcoords[i + j * (DIM+1)], UV);
 
@@ -298,21 +300,24 @@ TerrainBlock::Index TerrainBlock::getVertexIndex (short x, short y, bool border)
 	return x + (DIM+1) * y;
 }
 
+int
+TerrainBlock::getError(float x, float y)
+{
+	float h1, h2, h3;
+
+	h1 = scene->getLandscape()->getHOT(x, y);
+	h2 = scene->getLandscape()->getHOT(x-16, y);
+	h3 = scene->getLandscape()->getHOT(x+16, y);
+
+	return (int)(fabs ((h2+h3)*0.5 - h1)*1000.0); 
+}
+//kludge mika kludge
 void TerrainBlock::calculateErrors()
 {
 	for (int i = 0; i < NUM_VERTICES; i++)
 	{
 		vertex &v = myVertices[i];
-
-		if (v.left == 0xffff || v.right == 0xffff)
-			v.error = rand() % 10;
-		else
-		{
-//			if ((&getVertex(v.left) != &nullVertex) && (&getVertex(v.right) != &nullVertex))
-//				v.error = (unsigned int)fabs(0.5*(getVertex(v.left).coord[2] + getVertex(v.right).coord[2]) - v.coord[2]);
-//			else
-				v.error = rand() % 10;
-		}
+		v.error = getError(vertices[i][0], vertices[i][1]);
 	}
 }
 

@@ -293,6 +293,9 @@ public:
 //	vertex	vertices[DIM*DIM];
 
 private:
+	int getError(float, float);
+	
+
 	friend class TerrainBlockHash;
 
 	Index	m_x;

@@ -28,6 +28,7 @@ class mcPlayerController;
 class mcCameraController;
 class Object;
 class mcSky;
+class Landscape;
 
 /** A scene class. This class handles the 3D scene. */
 
@@ -37,33 +38,22 @@ public:
   Scene();
   ~Scene();
   
-  /// FIXME: Unimplemented.
-  void addObject(Object *);
-  /// FIXME: Unimplemented.
-  void removeObject(int);
-  /// FIXME: Unimplemented.
-  void removeObject(Object *);
-  /// Add a special object that doesn't be in any list, a tree for example.
+
   void addSpecial(float x, float y, char *model, bool cutout);
-  /// Draw the scene to screen.
   void draw();
-  /// Update the scene.
   void update();
-  /// Initialize the scene.
   void init();
-  /// Draw the chat-string to screen.
   void drawText(Object *, sgVec3);
-  /// A kludge.
   void redrawSky();
-  /// Get Height of Terrain of (x,y).
-  float getHOT( float x, float y);
-  /// A pointer to scene's root node.
+  float getHOT(float x, float y);
 
   mcPlayerController	*getPlayerController() { return m_playerController; }
   mcCameraController	*getCameraController() { return m_cameraController; }
   mcSky	*getSky()	{ return m_sky; }
 
   ssgRoot	*getSceneRoot	()	{ return scene_root; }
+
+  const Landscape *getLandscape	()	{ return m_landscape; }
 
 private:
 	mcCameraController *m_cameraController;
@@ -72,6 +62,10 @@ private:
 	ssgRoot *scene_root;
 	ssgEntity *sky_entity;
 	mcSky	*m_sky;
+
+	Landscape	*m_landscape;
+
+	ssgEntity	*m_camera;
 };
 
 extern Scene *scene; 

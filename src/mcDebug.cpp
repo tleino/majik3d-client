@@ -18,12 +18,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <iostream.h>
+#include <iostream>
+#include <string>
 #include <stdarg.h>
 
 #include "mcConfig.hpp"
 #include "mcDebug.hpp"
+
+using namespace std;
 
 Debug::Debug()
 {
@@ -60,5 +62,5 @@ Debug::put(char *fmt, ...)
   va_end (vl);
   
   if (config->getDebugLevel() > 0)
-    cerr << "DEBUG: " << buf << endl;  
+	  cerr  << buf << endl;  
 }

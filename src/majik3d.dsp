@@ -177,6 +177,10 @@ SOURCE=.\mcTerrainGen.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\mcTerrainHeightGen.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\mcTexGen.cpp
 # End Source File
 # End Group
@@ -266,6 +270,10 @@ SOURCE=.\mcTerrainblock.hpp
 # Begin Source File
 
 SOURCE=.\mcTerrainGen.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mcTerrainHeightGen.hpp
 # End Source File
 # Begin Source File
 

@@ -63,8 +63,7 @@ Display::Display(int w, int h, int b)
   m_initialHeight = h; 
   m_bpp = b;
   
-  debug->put("Display constructor: width=%d height=%d bpp=%d", m_width, m_height,
-	     m_bpp);
+ debug->put("Display constructor: width=%d height=%d bpp=%d", m_width, m_height, m_bpp);
 }
 
 Display::~Display()
@@ -100,13 +99,14 @@ Display::openScreen()
   glutReshapeFunc(resizeScreen);
   glutDisplayFunc(updateScreen);
   glutKeyboardFunc(input->keyDown);
+  glutKeyboardUpFunc(input->keyUp);
   glutSpecialFunc(input->specialDown);
  // glutSpecialUpFunc(input->specialUp);
   glutMouseFunc(input->mouseDown);
   glutPassiveMotionFunc(input->mouseMotion);
   glutMotionFunc(input->mouseMotion);
 
-//  glutIgnoreKeyRepeat(1);
+  glutIgnoreKeyRepeat(1);
   
   if (config->testFlag(mcConfig::MOUSE_TRAP) )
     glutWarpPointer (m_width/2, m_height/2);

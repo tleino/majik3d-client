@@ -20,5 +20,5 @@
 
 double mcTerrainHeightGen::getHeight(double x, double y)
 {
-	return hperlin(x, y);
+	return hperlin(x, y) + hperlin(x*0.231, y*0.223);
 }	

@@ -79,13 +79,13 @@ Landscape::~Landscape()
 extern class mcTerrainHeightGen *terraingen;
 
 float
-Landscape::getHOT(float x, float y)
+Landscape::getHOT(float x, float y)const
 {
 	return 2000.0f * terraingen->getHeight(x/1280.0, y/1280.0);
 };
 
 void 
-Landscape::getNormal(sgVec3& nrm, float x, float y)
+Landscape::getNormal(sgVec3& nrm, float x, float y)const
 {
 	sgVec3 a, b;
 	float h = getHOT(x, y);
@@ -111,7 +111,7 @@ Landscape::init( ssgRoot *scene_root)
   terrain  = new ssgTransform ;
   state    = new ssgSimpleState ;
   state -> enable     ( GL_TEXTURE_2D ) ;
-  state -> enable     ( GL_LIGHTING ) ;
+  state -> disable     ( GL_LIGHTING ) ;
   
   if (config->testFlag(mcConfig::SMOOTH))
     state -> setShadeModel ( GL_SMOOTH ) ;
@@ -292,7 +292,7 @@ Landscape::createTileLOD ( int level, int x, int y, int ntris,
 }
 */
 GLuint
-Landscape::getTextureHandle ( int level, int x, int y)
+Landscape::getTextureHandle ( int level, int x, int y)const
 {
 	GLuint handle;
 	
@@ -321,10 +321,10 @@ Landscape::getTextureHandle ( int level, int x, int y)
 */
 
 	glTexEnvi ( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ) ;
-	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ) ;
-	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT ) ;
-	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT ) ;
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) ;
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) ;
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP ) ;
+	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP ) ;
 	glBindTexture (GL_TEXTURE_2D, 0);
 
 	return handle;

@@ -23,6 +23,7 @@
 #include "mcDebug.hpp"
 #include "mcError.hpp"
 #include "mcTerrainBlock.hpp"
+#include "mcScene.hpp"
 
 #include <iostream.h>
 
@@ -446,12 +447,12 @@ Mapquad::selectLOD(int level, int x, int y)
 				newBlock = 1;
 				block = new TerrainBlock (top_x, top_y );
 
-				sgSphere sp;
-				sp.setCenter(mid_x, mid_y, landscape->getHOT(mid_x, mid_y) );
-				sp.setRadius( sqrt( (mid_x-top_x)*(mid_x-top_x) + (mid_y-top_y)*(mid_y-top_y)) );
+//				sgSphere sp;
+//				sp.setCenter(mid_x, mid_y, scene->getLandscape()->getHOT(mid_x, mid_y) );
+//				sp.setRadius( sqrt( (mid_x-top_x)*(mid_x-top_x) + (mid_y-top_y)*(mid_y-top_y)) );
 		
 				ssgSimpleState *state    = new ssgSimpleState ;
-				state->setTexture ( landscape->getTextureHandle(level, top_x, top_y) );
+				state->setTexture ( scene->getLandscape()->getTextureHandle(level, top_x, top_y) );
 				state -> enable     ( GL_TEXTURE_2D ) ;
 				state -> enable     ( GL_LIGHTING ) ;
 
@@ -463,7 +464,7 @@ Mapquad::selectLOD(int level, int x, int y)
 				state -> enable ( GL_COLOR_MATERIAL ) ;
 				state -> enable ( GL_CULL_FACE      ) ;
 				state -> disable ( GL_LIGHTING );
-				state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
+				state -> setColourMaterial ( GL_NONE ) ;
 				state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
 				state -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
 				state -> setShininess ( 0 ) ;
@@ -474,11 +475,11 @@ Mapquad::selectLOD(int level, int x, int y)
 //				block->setTraversalMaskBits ( SSGTRAV_CULL );
 				lod_switch->addKid ( block );
 				trans->addKid ( lod_switch );
-				landscape->getTerrain()->addKid ( trans );
+				scene->getLandscape()->getTerrain()->addKid ( trans );
 			}
 
 			lod_switch->select(1);
-			block->collectVertices ( level,  dist/40);
+			block->collectVertices ( level,  dist/2);
 //			block->triangulateBlock();
 
 			if (newBlock)
@@ -492,7 +493,7 @@ Mapquad::selectLOD(int level, int x, int y)
 
 					tmpPos.xyz[0] = rand() % 512;
 					tmpPos.xyz[1] = rand() % 512;
-					tmpPos.xyz[2] = landscape->getHOT(top_x+tmpPos.xyz[0], top_y+tmpPos.xyz[1]);
+					tmpPos.xyz[2] = scene->getHOT(top_x+tmpPos.xyz[0], top_y+tmpPos.xyz[1]);
 					tmpPos.hpr[1] = 0.0f;
 					tmpPos.hpr[2] = 0.0f;
 
@@ -544,7 +545,7 @@ Mapquad::selectLOD(int lod)
 		block = new TerrainBlock (top_x, top_y );
 		lod_switch->addKid ( block );
 		trans->addKid ( lod_switch );
-		landscape->getTerrain()->addKid ( trans );
+		scene->getLandscape()->getTerrain()->addKid ( trans );
 	}
 
 	block->reset();
