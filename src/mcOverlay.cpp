@@ -56,6 +56,9 @@ Overlay::init()
   puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
   puSetDefaultColourScheme (1.0f, 1.0f, 1.0f, 0.6f);
   
+  status_frame = new puFrame (5, 7, 60, 25);
+  status_frame->setColour (PUCOL_FOREGROUND, 0.0, 0.0, 0.0);
+
   status_text = new puText (5, 5);
   status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
   status_text->setLabel ("[status_text]");
