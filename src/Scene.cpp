@@ -343,7 +343,7 @@ void
 Scene::drawText(puText *text_object, sgVec3 object_pos)
 {
    sgMat4 ploo =
-	 {
+ 	 {
 		  {  1.0f,  0.0f,  0.0f,  0.0f },
 		  {  0.0f,  0.0f, -1.0f,  0.0f },
 		  {  0.0f,  1.0f,  0.0f,  0.0f },
@@ -367,26 +367,31 @@ Scene::drawText(puText *text_object, sgVec3 object_pos)
    
    sgFullXformPnt3 (temppos, viewmat);
    
-   textpos[0] = temppos[0];
-   textpos[1] = temppos[1];
-   textpos[2] = temppos[2];
-   textpos[3] = 1.0f;
+//   textpos[0] = temppos[0];
+//   textpos[1] = temppos[1];
+//   textpos[2] = temppos[2];
+//   textpos[3] = 1.0f;
   
 //   cout << "textpos xform jalk: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << endl;
    
-   textpos[0] = frustumi[0][0] * textpos[0] +  frustumi[1][0] * textpos[1] + frustumi[2][0] * textpos[2] +  frustumi[3][0] * textpos[3];
-   textpos[1] = frustumi[0][1] * textpos[0] +  frustumi[1][1] * textpos[1] + frustumi[2][1] * textpos[2] +  frustumi[3][1] * textpos[3];
-   textpos[2] = frustumi[0][2] * textpos[0] +  frustumi[1][2] * textpos[1] + frustumi[2][2] * textpos[2] +  frustumi[3][2] * textpos[3];
-   textpos[3] = frustumi[0][3] * textpos[0] +  frustumi[1][3] * textpos[1] + frustumi[2][3] * textpos[2] +  frustumi[3][3] * textpos[3];
+   textpos[0] = frustumi[0][0] * temppos[0] +  frustumi[1][0] * temppos[1] + frustumi[2][0] * temppos[2] +  frustumi[3][0];
+   textpos[1] = frustumi[0][1] * temppos[0] +  frustumi[1][1] * temppos[1] + frustumi[2][1] * temppos[2] +  frustumi[3][1];
+   textpos[2] = frustumi[0][2] * temppos[0] +  frustumi[1][2] * temppos[1] + frustumi[2][2] * temppos[2] +  frustumi[3][2];
+   textpos[3] = frustumi[0][3] * temppos[0] +  frustumi[1][3] * temppos[1] + frustumi[2][3] * temppos[2] +  frustumi[3][3];
    
-   textpos[0] /= -textpos[3];
-   textpos[1] /= -textpos[3];
-   textpos[2] /= -textpos[3];
+   textpos[0] /= textpos[3];
+   textpos[1] /= textpos[3];
+//   textpos[2] /= textpos[3];       // mhmhmmh
 
-//   cout << "textpos frustum jalk.: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << endl;
+//   cout << "textpos frustum jalk.: " << textpos[0] << " " << textpos[1] << " " << textpos[2] << " " << textpos[3] << endl;
    
    textpos[0] *= display->width/2;
    textpos[1] *= display->height/2;
+   
+   if (textpos[2] < 0 || textpos[2] > 250)
+	 text_object->hide();
+   else
+	 text_object->reveal();
    
 //   cout << "textpos proj. jalk.: " << textpos[0] + display->width/2 << " " << textpos[1] + display->height/2 << " " << textpos[2] << endl;
    
