@@ -11,28 +11,32 @@
 Majik FAQ (Frequently Asked Questions)
 
    1. This file.
-          1.1. [14]What is the purpose of this file?
-          1.2. [15]What does 'FAQ' stand for?
-          1.3. [16]Who is the maintainer of this file?
-          1.4. [17]How can I contribute to the FAQ?
+          1.01. [14]What is the purpose of this file?
+          1.02. [15]What does 'FAQ' stand for?
+          1.03. [16]Who is the maintainer of this file?
+          1.04. [17]How can I contribute to the FAQ?
           
    2. General information on Majik MURPE.
-          2.1. [18]What is Majik?
-          2.2. [19]What is a MURPE?
-          2.3. [20]What is Majik 3D?
-          2.4. [21]When will Majik 3D be open to the public?
-          2.5. [22]Who are the developers of Majik 3D?
-          2.6. [23]Does Majik have a homepage?
-          2.7. [24]Do you need my help?
-          2.8. [25]What is the difference between WorldForge (former
+          2.01. [18]What is Majik?
+          2.02. [19]What is a MURPE?
+          2.03. [20]What is Majik 3D?
+          2.04. [21]When will Majik 3D be open to the public?
+          2.05. [22]Who are the developers of Majik 3D?
+          2.06. [23]Does Majik have a homepage?
+          2.07. [24]Do you need my help?
+          2.08. [25]What is the difference between WorldForge (former
           Altima) and Majik?
-          2.9. [26]How much will Majik cost to play, or will it be free?
+          2.09. [26]How much will Majik cost to play, or will it be free?
+          2.10. [27]Why did you chose 3D, aren't there easier
+          alternatives?
+          2.11. [28]Why make Majik when other, similar projects are
+          already underway?
           
    3. Majik client.
-          3.1. [27]Where can I get the client?
-          3.2. [28]What platforms does the client support?
-          3.3. [29]Is the client source available?
-          3.4. [30]Does the client have any special hardware
+          3.01. [29]Where can I get the client?
+          3.02. [30]What platforms does the client support?
+          3.03. [31]Is the client's source code available?
+          3.04. [32]Does the client have any special hardware
           requirements?
        ______________________________________________________________
      
@@ -56,54 +60,50 @@ Majik FAQ (Frequently Asked Questions)
    1.4. How can I contribute to the FAQ?
           If you have a question to ask, and you feel like the question
           is so common and important that it should be included in this
-          FAQ, just send mail to [31]majik@majik.netti.fi and ask the
+          FAQ, just send mail to [33]majik@majik.netti.fi and ask the
           question.
        ______________________________________________________________
      
    2.1. What is Majik?
-          Majik is an Internet-based role-playing environment. It is
-          essentially unique in it's genre, as it is more influenced by
-          fantasy literature and real-life role-playing games such as
-          AD&D and Rolemaster than typical multiplayer games such as MUDs
-          or Roguelikes. Majik has gone through almost every possible
-          cosmetic appearance, it has been telnet based, a Roguelike,
-          briefly 2D graphical, and now, finally, 3D.
+          Majik is a project to create an online role-playing environment
+          set in a complete and ever-evolving medieval fantasy world with
+          help of modern 3D-technology.
           
    2.2. What is a MURPE?
           MURPE stands for Multi-User Role-Playing Environment.
           
    2.3. What is Majik 3D?
           Majik 3D is the fifth, and hopefully final, distinguishable
-          incarnation of Majik. All of Majik's [32]predecessors have been
-          essentially MUDs, Majik4 being a roguelike, but Majik 3D is a
-          real 3-dimensional rpg that uses a real 3D engine. At the
-          moment Majik 3D is under heavy development.
+          incarnation of Majik. All of Majik's [34]predecessors have been
+          essentially MUDs, the fourth being a roguelike, but Majik 3D is
+          a 3-dimensional RPG, that uses a real hardware-accelerated 3D
+          engine. At the moment Majik 3D is under heavy development.
           
    2.4. When will Majik 3D be open to the public?
           Unknown. It will probably take months, even years. Look at our
-          [33]milestone plan to get some idea where we are going and
+          [35]milestone plan to get some idea where we are going and
           where we are within next few months.
           
    2.5. Who are the developers of Majik 3D?
           The people responsible for the base code of Majik 3D are listed
           below:
           
-          [34]Tommi "Namhas" Leino ([35]namhas@majik.netti.fi)
-          [36]Jari "Dazzt" Saukkonen ([37]dazzt@majik.netti.fi)
-          [38]Atte "Yorkaturr" Koivula ([39]yorkaturr@majik.netti.fi)
-          [40]Otso "Harum" Mäkinen ([41]harum@majik.netti.fi)
+          [36]Tommi "Namhas" Leino ([37]namhas@majik.netti.fi)
+          [38]Jari "Dazzt" Saukkonen ([39]dazzt@majik.netti.fi)
+          [40]Atte "Yorkaturr" Koivula ([41]yorkaturr@majik.netti.fi)
+          [42]Otso "Harum" Mäkinen ([43]harum@majik.netti.fi)
           
-          There are also [42]numerous designers who are designing the
+          There are also [44]numerous designers who are designing the
           world among other things, and doing miscellanious things apart
           from coding.
           
    2.6. Does Majik 3D have a homepage?
-          Yes, the URL for Majik's homepage is: [43]http://majik.netti.fi
+          Yes, the URL for Majik's homepage is: [45]http://majik.netti.fi
           
    2.7. Do you need my help?
           Most of you who imagine that Majik is just like any other MUD
           are frequently asking if we accept more wizards or builders.
-          The answer is simply: we do not. One of [44]Majik3's worst
+          The answer is simply: we do not. One of [46]Majik3's worst
           mistakes was that we had just too much developers in relation
           to coordination and we will not repeat that mistake. It is
           easier to organize a project worked on by a handful of active
@@ -129,51 +129,62 @@ Majik FAQ (Frequently Asked Questions)
           week has passed already.
           
           The address for offering help is the usual,
-          [45]majik@majik.netti.fi.
+          [47]majik@majik.netti.fi.
           
    2.8. What is the difference between WorldForge (former Altima) and
           Majik?
-          WorldForge: The WorldForge Project germinated via Slashdot 10
-          months ago with an idea to create a roleplaying game system,
-          focusing on freedom and playability. It wouldn't be just a 2D
-          or 3D game; it could be playable using with various frontends
-          from 2D text-based to true 3D frontend. Anyone could start a
-          server and in fact there would actually be many servers, each
-          with unique maps, histories, creatures, rulesets and legends.
-          Shortly: The WorldForge is a project to create a base system
-          for roleplaying games, which enables anyone to create new
-          worlds on new servers offering various kinds of 2D and 3D
-          frontends. You could say it is a net-RPG-toolkit, not a
-          net-RPG.
+          WorldForge: WorldForge's approach is not to create a single
+          game, but instead a flexible framework that can support a
+          variety of different kinds of servers, clients, rule sets,
+          worlds, and graphical "looks".
           
-          Majik: The Majik Project began in 1995 with an idea to create
-          an online roleplaying world, focusing on realism, credibility
-          and most of all: roleplayability. The project begun its journey
-          as a simple text-based MUD and tried all the possible frontends
-          before discovering true 3D frontend as the best choice. All of
-          the previously tried frontends were inadequate. The 3D wasn't
-          selected because of it would be beautiful, it was selected
-          because it was not as restrictive as the others. How could one
-          see for miles from a top of a mountain if only using a 2D-based
-          client? Also, in the Majik there could be only one server, with
-          one large, well-designed and dynamic world, where the players
-          themselves could modify the rules for their liking. There are
-          no restrictions. For example, if player killing becomes a
-          nuisance, the players could group together and punish all the
-          player killers. Not only by allowing players to modify rules
-          they could change the world and its history by merely
-          roleplaying their character. If one burns a house in a city, it
-          will remain burned. If one kills an NPC, it will remain dead
-          and if one builds a city it will be there until destroyed by
-          someone. Shortly: The Majik Project strives to create not a
-          system for creating roleplaying worlds, which is what
-          WorldForge aims at, but is a concentrated effort to create one
-          complete and evolving roleplaying world.
+          Majik: The Majik Project strives to create not a system for
+          creating roleplaying worlds, which is what WorldForge aims at,
+          but is a concentrated effort to create one complete and
+          evolving roleplaying world.
           
    2.9. How much will Majik cost to play, or will it be free?
           Majik is totally free of charge until it is so big that we must
           distribute it using CDs and at that point the medium will be
           the only factor determining the price.
+          
+   2.10. Why did you chose 3D, aren't there easier alternatives?
+          A very common question. It seems almost everyone thinks that
+          making a complete 3D world is much more difficult and
+          time-consuming task than making a 2D world, but in fact it is
+          quite the opposite. In a 2D client, every tile, character, etc.
+          needs to be drawn by a graphic artist, and the code for LOS
+          (line of sight) and other such things can get rather
+          complicated while they are a matter of course in a 3D world.
+          Majik's 3D client doesn't even need excessive graphics, most of
+          them is done by the code itself. The screenshots available of
+          the current client program are all done without any aid of a
+          graphic artist. Now, after you see that a 3D world can survive
+          without a horde of graphic artists and is generally easier to
+          implement, consider the possibilities and limitations, which
+          one do you prefer: to climb up a mountain, turn to face
+          whatever direction and see for miles or to see a flat world
+          from an constant isometric angle? :)
+          
+   2.11. Why make Majik when other, similar projects are already
+          underway?
+          You should rather be asking why have other projects been
+          started when Majik was already being developed? The development
+          of Majik begun in 1995, its only competitors then being
+          text-based MUDs. The developers started the project because
+          they wanted to make something with more depth and purpose than
+          mindless monster-killing that goes on in most MUDs even today.
+          The purpose of Majik has always been to provide an actual,
+          working roleplaying enviroment that would be completely
+          player-controlled and self-sustaining, without the need of
+          outside administration and control. The actions of players can
+          cause significant changes in the history, enviroment and even
+          geography of various areas and races, unlike in most MUDs where
+          only the "gods" and implementors can make changes to the world.
+          When Majik begun there were no similar projects (and is not yet
+          either), if there would have been one, we would have joined the
+          project to avoid reinventing the wheel which seems so popular
+          habit in Open Source world nowadays, waste of resouces I say.
        ______________________________________________________________
      
    3.1. Where can I get the client?
@@ -181,35 +192,29 @@ Majik FAQ (Frequently Asked Questions)
           However, if you want to participate bug-testing,
           portability-fixing, even the development or just want to see
           how it looks right now, you can download the client from our
-          [46]download page.
+          [48]download page.
           
    3.2. What platforms does the client support?
           The client is primarily developed under Linux and it is ported
-          to Windows (95/98/NT) and in the future will be hopefully
-          ported to all the architectures and operating systems supported
-          by [47]The Mesa 3-D graphics library.
+          to Win32 (95/98/NT) and Solaris. In the future it will be
+          hopefully ported to all the architectures and operating systems
+          supported by [49]The Mesa 3-D graphics library.
           
-   3.3. Is the client source available?
-          Yes and no. The Majik 3D client's source code is now GPL'ed and
-          is available for public download from our [48]ftp server.
-          However, the server's source code will not be available
-          because:
+   3.3. Is the client's source code available?
+          Yes, it is available under the GNU Public License from our FTP
+          server. To us it seems beneficial that other people are able to
+          port the client freely to all systems and make small changes
+          and corrections without our constant intervention. The server's
+          source code, on the other hand, is not, and will not be,
+          available to the public, because having it available without
+          control wouldn't have any apparent gain (unlike with the
+          client) and it would, with a time, lead into unnecessary
+          fragmentation and thus making it harder to maintain centralized
+          development with a clear, consistent goal. This arrangement
+          doesn't restrict you in any way, if you want to play with the
+          source, you just have to send us mail, join the development
+          team and you have full access to our CVS tree.
           
-         1. There is no apparent gain for opening the server's source,
-            unlike with the client.
-         2. We wouldn't want to see people taking the source and starting
-            up customized servers for their friends. We see this as waste
-            of resources. Actually if they would have the source, they
-            would of course like to start their own servers just to test
-            the thing and without even having to open their network
-            connection. This would lead in a situation where there is 100
-            Majik servers up and running when they could all be forced to
-            be in an one big server. I think it is better to have 1000
-            users on one server than 10 users per server.
-         3. We believe in centralized development more than distributed
-            in a project such as this. We are doing a consistent world
-            more than a generic game engine for everyone's use.
-            
    3.4. Does the client have any special hardware requirements?
           If you want to use the best detail level you will need a 3D
           card, otherwise the graphics will be just too slow. However, it
@@ -219,7 +224,7 @@ Majik FAQ (Frequently Asked Questions)
             __________________________________________________________
           
                            Majik Development Team
-                          [49]majik@majik.netti.fi
+                          [50]majik@majik.netti.fi
 
 References
 
@@ -249,26 +254,27 @@ References
   24. http://majik.netti.fi/faq.html#2.7
   25. http://majik.netti.fi/faq.html#2.8
   26. http://majik.netti.fi/faq.html#2.9
-  27. http://majik.netti.fi/faq.html#3.1
-  28. http://majik.netti.fi/faq.html#3.2
-  29. http://majik.netti.fi/faq.html#3.3
-  30. http://majik.netti.fi/faq.html#3.4
-  31. mailto:majik@majik.netti.fi
-  32. http://majik.netti.fi/history.html
-  33. http://majik.netti.fi/milestones.txt
-  34. http://majik.netti.fi/~namhas
-  35. mailto:namhas@majik.netti.fi
-  36. http://majik.netti.fi/~dazzt
-  37. mailto:dazzt@majik.netti.fi
-  38. http://majik.netti.fi/~yorkaturr
-  39. mailto:yorkaturr@majik.netti.fi
-  40. http://majik.netti.fi/~harum
-  41. mailto:harum@majik.netti.fi
-  42. http://majik.netti.fi/team.html
-  43. http://majik.netti.fi/
-  44. http://majik.netti.fi/majik3.html
-  45. mailto:majik@majik.netti.fi
-  46. http://majik.netti.fi/download.html
-  47. http://www.mesa3d.org/
-  48. ftp://majik.netti.fi/pub/majik3d/client/source/
-  49. mailto:majik@majik.netti.fi
+  27. http://majik.netti.fi/faq.html#2.10
+  28. http://majik.netti.fi/faq.html#2.11
+  29. http://majik.netti.fi/faq.html#3.1
+  30. http://majik.netti.fi/faq.html#3.2
+  31. http://majik.netti.fi/faq.html#3.3
+  32. http://majik.netti.fi/faq.html#3.4
+  33. mailto:majik@majik.netti.fi
+  34. http://majik.netti.fi/history.html
+  35. http://majik.netti.fi/milestones.html
+  36. http://majik.netti.fi/~namhas
+  37. mailto:namhas@majik.netti.fi
+  38. http://majik.netti.fi/~dazzt
+  39. mailto:dazzt@majik.netti.fi
+  40. http://majik.netti.fi/~yorkaturr
+  41. mailto:yorkaturr@majik.netti.fi
+  42. http://majik.netti.fi/~harum
+  43. mailto:harum@majik.netti.fi
+  44. http://majik.netti.fi/team.html
+  45. http://majik.netti.fi/
+  46. http://majik.netti.fi/majik3.html
+  47. mailto:majik@majik.netti.fi
+  48. http://majik.netti.fi/download.html
+  49. http://www.mesa3d.org/
+  50. mailto:majik@majik.netti.fi
