@@ -101,7 +101,7 @@ Display::openScreen()
   glutKeyboardFunc(input->keyDown);
   glutKeyboardUpFunc(input->keyUp);
   glutSpecialFunc(input->specialDown);
- // glutSpecialUpFunc(input->specialUp);
+  glutSpecialUpFunc(input->specialUp);
   glutMouseFunc(input->mouseDown);
   glutPassiveMotionFunc(input->mouseMotion);
   glutMotionFunc(input->mouseMotion);
