@@ -75,7 +75,7 @@ float
 Landscape::getHOT(float x, float y)
 {
 //	return 0.0f;
-	return 300.0*perlin->perlinNoise_2D(x/800.0, y/800.0);
+	return 2000.0f*(float)perlin->perlinNoise_2D(x/1500.0, y/1500.0);
 };
 
 void 

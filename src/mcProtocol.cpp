@@ -114,8 +114,8 @@ Protocol::parseCommand(char *input)
 	{
 	  int i, j;
 	  ((Player *)tuxi)->unLockMovement();
-	  for (j= - 2; j < 2; j++)
-	    for (i= - 2; i < 2; i++)
+	  for (j= - 4; j < 4; j++)
+	    for (i= - 4; i < 4; i++)
 		{
 			Mapquad::root_map->getMapquad(12, (int)x + 256+ i*512, (int)y +256 + j*512);
 		}

@@ -92,7 +92,7 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
     }
 
   /* kludgetusta  */
-
+/*
   if (!state)
   {
   		state    = new ssgSimpleState ;
@@ -112,6 +112,7 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 		state -> disable ( GL_BLEND ) ;
 
   }
+  */
 }
 
 Mapquad::~Mapquad()
@@ -394,7 +395,7 @@ Mapquad::selectLOD(int level, int x, int y)
 	 {
 		int dist = sqrt( (x-mid_x)*(x-mid_x) + (y-mid_y)*(y-mid_y) );
 
-		if (dist<1500)
+		if (dist<2500)
 		{
 			if (!block)
 			{
