@@ -76,20 +76,21 @@ Scene::addSpecial(float x, float y, char *model, bool cutout)
   trans->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
   
   trans->setTransform (&tmpPos);
-  scene_root->addKid (trans);
+  scene_root->addKid (trans); 
 }
 
 void
 Scene::redrawSky()
 {
-  if (sky_dome != NULL) {
-    sky_dome->print();
+  if (sky_dome == NULL) {
+		// Create entity for sky when drawing first time
+	sky_dome = new ssgTransform ();
+    sky_entity = m_sky->Draw();
+    sky_dome->addKid (sky_entity);
+    scene_root->addKid (sky_dome);
   }
-  
-  sky_dome = new ssgTransform ();
-  sky_entity = m_sky->Draw();
-  sky_dome->addKid (sky_entity);
-  scene_root->addKid (sky_dome);
+  else
+	m_sky->Draw();	// Update vertex colors only 
 }
 
 void
