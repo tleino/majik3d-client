@@ -48,6 +48,7 @@ Object::Object()
     debug->put("Object parent: %d", prev->id);
   
   movecounter = 0;
+  hotFixed = false;
 }
 
 Object::~Object()

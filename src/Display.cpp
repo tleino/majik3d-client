@@ -134,7 +134,7 @@ Display::closeScreen()
   debug->put("Screen closed.");
 }
 
-bool mapFound, hotFixed;
+bool mapFound;
 
 void
 Display::updateScreen()
@@ -157,13 +157,6 @@ Display::updateScreen()
  
   if (mapFound)
     {
-      if (!hotFixed)
-	{
-	  // FIXME: A kludge to move player to correct Z.
-	  sgCoord tuxPos = tuxi->getPos();
-	  tuxi->moveTo (tuxPos.xyz[0], tuxPos.xyz[1], tuxPos.hpr[0]);
-	  hotFixed = true;
-	}
       scene->draw();
     }
   else if (tuxi != NULL)

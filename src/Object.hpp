@@ -77,6 +77,8 @@ public:
   float *getCenter();
   /// Get Y-length.
   float getLenY();
+  /// FIXME: A kludge.
+  bool hotFixed;
 private:
   ssgTransform *trans;
   ssgEntity *obu;
