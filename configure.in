@@ -104,7 +104,7 @@ AM_CONDITIONAL(ENABLE_AUDIO, \
     -o -r /usr/include/linux/soundcard.h \
     -o -r /usr/include/machine/soundcard.h \
     -o -r /usr/include/audio.h \
-    -o -r /usr/include/sys/audioio.h
+    -o -r /usr/include/sys/audioio.h \
     -o "x$ac_cv_header_windows_h" = "xyes" )
 
 AM_CONDITIONAL(ENABLE_IRIX_AUDIO, test -r /usr/include/audio.h)
