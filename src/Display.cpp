@@ -31,24 +31,36 @@ int mouse_x, mouse_y;
 void exit_cb(puObject *);
 void flat_cb(puObject *);
 void smooth_cb(puObject *);
-void lighting_cb(puObject *);
-void nolighting_cb(puObject *);
+void wireframe_cb(puObject *);
+void nowireframe_cb(puObject *);
 void fog_cb(puObject *);
 void nofog_cb(puObject *);
 
-char *majik_submenu[] = { "Exit", "========", "Smooth", "Flat", "Lighting", "No Lighting", "Fog", "No Fog", NULL };
-puCallback majik_submenu_cb[] = { exit_cb, NULL, smooth_cb, flat_cb, lighting_cb, nolighting_cb, fog_cb, nofog_cb, NULL };
+char *effects_submenu[] = { "Smooth", "Flat", "Fog", "No Fog", "Wireframe", "No Wireframe", NULL };
+char *majik_submenu[] = { "Exit", NULL };
+puCallback effects_submenu_cb[] = { smooth_cb, flat_cb, fog_cb, nofog_cb, wireframe_cb, nowireframe_cb, NULL };
+puCallback majik_submenu_cb[] = { exit_cb, NULL };
 
 void
-lighting_cb(puObject *)
+wireframe_cb(puObject *)
 {
-   glEnable(GL_LIGHTING);
+   glDisable(GL_LIGHTING);
+   glDisable(GL_FOG);
+   glDisable(GL_LIGHT0);
+   glDisable(GL_DEPTH_TEST);   
+   glShadeModel(GL_FLAT);
+   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void
-nolighting_cb(puObject *)
+nowireframe_cb(puObject *)
 {
-   glDisable(GL_LIGHTING);
+   glEnable(GL_LIGHTING);
+   glEnable(GL_FOG);
+   glEnable(GL_LIGHT0);
+   glEnable(GL_DEPTH_TEST);
+   glShadeModel(GL_SMOOTH);
+   glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void
@@ -148,9 +160,9 @@ Display::openScreen()
    
    /* PLIB: Font Library */
    fntTexFont *fnt = new fntTexFont;
-   fnt->load ("gfx/sorority.txf");
-   puFont sorority (fnt, 12);
-   puSetDefaultFonts (sorority, PUFONT_8_BY_13);
+   // fnt->load ("gfx/sorority.txf");
+   // puFont sorority (fnt, 12);
+   // puSetDefaultFonts (sorority, PUFONT_8_BY_13);
    puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
    puSetDefaultColourScheme (1.0, 1.0, 1.0, 0.6f);
    
@@ -160,6 +172,7 @@ Display::openScreen()
    main_menu_bar = new puMenuBar();
      {
 	main_menu_bar->add_submenu ("Majik", majik_submenu, majik_submenu_cb);
+	main_menu_bar->add_submenu ("Effects", effects_submenu, effects_submenu_cb);
      }
    main_menu_bar->close();
    

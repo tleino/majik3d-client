@@ -143,7 +143,7 @@ void Landscape::init()
 		glFogfv(GL_FOG_COLOR, fogColor);
 		glFogf(GL_FOG_DENSITY, 0.005);
 		glHint(GL_FOG_HINT, GL_DONT_CARE);
-		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClearColor(0.0, 0.0, 1.0, 1.0);
 	 }
    
    glFogf(GL_FOG_START, 400.0);
