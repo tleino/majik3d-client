@@ -77,7 +77,7 @@ Landscape::init( ssgRoot *scene_root)
    else
 	 state -> setShadeModel ( GL_SMOOTH );
    
-   state -> enable ( GL_COLOR_MATERIAL ) ;
+   state -> disable ( GL_COLOR_MATERIAL ) ;
    state -> enable ( GL_CULL_FACE      ) ;
    state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
    state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;

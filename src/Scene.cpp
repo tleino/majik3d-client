@@ -256,20 +256,12 @@ Scene::update()
 	  campos.hpr[1] = display->pitch;
    }
    
-   ssgSetCamera ( & campos ) ;
-
-   
-   /*
-   if (strcmp(tuxi->file_name, "tuxedo.ac"))
+   if (strcmp(tuxi->getFileName(), "tuxedo.ac"))
 	 {
-		poo = tuxi->getPos();
-		// This may need a variant of moveTo to work properly...
-		poo.hpr[0] += 180.0f;
-		tuxi->trans->setTransform(&poo, 1.0f, 1.0f, (sin((float)tuxi->movecounter/2.0))/4+1);
-		
+		tuxi->rotateX( 180.0f );
 	 }
 
-	*/
+   ssgSetCamera ( & campos ) ;
 }
 
 void
