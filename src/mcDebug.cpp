@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 #include <iostream.h>
 #include <stdarg.h>
 
-#include "Config.hpp"
-#include "Debug.hpp"
+#include "mcConfig.hpp"
+#include "mcDebug.hpp"
 
 Debug::Debug()
 {

@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,15 +20,15 @@
 #include <pu.h>
 #include <sys/time.h>
 
-#include "Debug.hpp"
-#include "Overlay.hpp"
-#include "Protocol.hpp"
-#include "Input.hpp"
-#include "Display.hpp"
-#include "Socket.hpp"
-#include "Scene.hpp"
-#include "Config.hpp"
-#include "Menu.hpp"
+#include "mcDebug.hpp"
+#include "mcOverlay.hpp"
+#include "mcProtocol.hpp"
+#include "mcInput.hpp"
+#include "mcDisplay.hpp"
+#include "mcSocket.hpp"
+#include "mcScene.hpp"
+#include "mcConfig.hpp"
+#include "mcMenu.hpp"
 
 Overlay::Overlay()
 {

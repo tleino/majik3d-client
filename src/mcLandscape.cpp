@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,11 +30,11 @@
 #include <GL/glut.h>
 #include <iostream.h>
 
-#include "Landscape.hpp"
-#include "Debug.hpp"
-#include "Perlin.hpp"
-#include "Display.hpp"
-#include "Config.hpp"
+#include "mcLandscape.hpp"
+#include "mcDebug.hpp"
+#include "mcPerlin.hpp"
+#include "mcDisplay.hpp"
+#include "mcConfig.hpp"
 
 #define TILE_SIZE                 512.0f      /* cubits */
 #define LAMBDA                    (TILE_SIZE/16.0f)

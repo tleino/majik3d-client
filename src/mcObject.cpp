@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 #include <stdio.h>
 #include <iostream.h>
 
-#include "Debug.hpp"
-#include "Object.hpp"
-#include "Display.hpp"
+#include "mcDebug.hpp"
+#include "mcObject.hpp"
+#include "mcDisplay.hpp"
 
 Object *Object::first = NULL;
 Object *Object::last = NULL;

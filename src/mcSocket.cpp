@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "Socket.hpp"
-#include "Debug.hpp"
-#include "Error.hpp"
-#include "Config.hpp"
+#include "mcSocket.hpp"
+#include "mcDebug.hpp"
+#include "mcError.hpp"
+#include "mcConfig.hpp"
 
 #ifdef WIN32	
 #include <winsock.h>

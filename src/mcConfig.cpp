@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "Error.hpp"
-#include "Debug.hpp"
-#include "Config.hpp"
-#include "Menu.hpp"
-#include "Display.hpp"
+#include "mcError.hpp"
+#include "mcDebug.hpp"
+#include "mcConfig.hpp"
+#include "mcMenu.hpp"
+#include "mcDisplay.hpp"
 
 Config::Config()
 {
@@ -204,6 +204,8 @@ Config::readOptions(char *filename)
     sprintf(file, "%s/%s", getenv("HOME"), ".majikrc");
   else
     strcpy(file, filename);
+
+  printf ("Reading configuration from: %s\n", file);
   
   fp = fopen(file, "r");
   if(fp == NULL)

@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "Debug.hpp"
-#include "Error.hpp"
-#include "Perlin.hpp"
+#include "mcDebug.hpp"
+#include "mcError.hpp"
+#include "mcPerlin.hpp"
 
 #define PERSISTENCE              0.6
 #define OCTAVES                  1

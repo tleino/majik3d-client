@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,19 +23,19 @@
 #include <stdarg.h>
 #include <string.h>
 
-#include "Menu.hpp"
-#include "Error.hpp"
-#include "Debug.hpp"
-#include "Socket.hpp"
-#include "Display.hpp"
-#include "Landscape.hpp"
-#include "Input.hpp"
-#include "Config.hpp"
-#include "Scene.hpp"
-#include "Overlay.hpp"
-#include "Protocol.hpp"
-#include "Perlin.hpp"
-#include "Mapquad.hpp"
+#include "mcMenu.hpp"
+#include "mcError.hpp"
+#include "mcDebug.hpp"
+#include "mcSocket.hpp"
+#include "mcDisplay.hpp"
+#include "mcLandscape.hpp"
+#include "mcInput.hpp"
+#include "mcConfig.hpp"
+#include "mcScene.hpp"
+#include "mcOverlay.hpp"
+#include "mcProtocol.hpp"
+#include "mcPerlin.hpp"
+#include "mcMapquad.hpp"
 
 bool quit = false;
 Error *error = NULL;
@@ -54,7 +54,12 @@ Mapquad *Mapquad::root_map = NULL;
 
 int
 main(int argc, char **argv)
-{      
+{
+#ifndef WIN32
+  printf ("Majik 3D client " VERSION " / " CPU_VENDOR_OS " ("__DATE__")\n");
+  printf ("Copyright (C) 1999 Majik Development Team <majik@majik3d.org>\n\n");
+#endif /* WIN32 */
+
   // Initialize the necessary global variables as proper objects
   error = new Error;
   config = new Config;

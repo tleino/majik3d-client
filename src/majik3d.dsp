@@ -86,27 +86,27 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\Config.cpp
+SOURCE=.\mcConfig.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Debug.cpp
+SOURCE=.\mcDebug.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display.cpp
+SOURCE=.\mcDisplay.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Error.cpp
+SOURCE=.\mcError.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Input.cpp
+SOURCE=.\mcInput.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Landscape.cpp
+SOURCE=.\mcLandscape.cpp
 # End Source File
 # Begin Source File
 
@@ -114,31 +114,31 @@ SOURCE=.\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Mapquad.cpp
+SOURCE=.\mcMapquad.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Menu.cpp
+SOURCE=.\mcMenu.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Object.cpp
+SOURCE=.\mcObject.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Perlin.cpp
+SOURCE=.\mcPerlin.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Protocol.cpp
+SOURCE=.\mcProtocol.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Scene.cpp
+SOURCE=.\mcScene.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Socket.cpp
+SOURCE=.\mcSocket.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -146,63 +146,63 @@ SOURCE=.\Socket.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\Config.hpp
+SOURCE=.\mcConfig.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Debug.hpp
+SOURCE=.\mcDebug.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Detail.hpp
+SOURCE=.\mcDetail.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display.hpp
+SOURCE=.\mcDisplay.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Error.hpp
+SOURCE=.\mcError.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Input.hpp
+SOURCE=.\mcInput.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Landscape.hpp
+SOURCE=.\mcLandscape.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Mapquad.hpp
+SOURCE=.\mcMapquad.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Material.hpp
+SOURCE=.\mcMaterial.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Menu.hpp
+SOURCE=.\mcMenu.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Object.hpp
+SOURCE=.\mcObject.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Perlin.hpp
+SOURCE=.\mcPerlin.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Protocol.hpp
+SOURCE=.\mcProtocol.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Scene.hpp
+SOURCE=.\mcScene.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Socket.hpp
+SOURCE=.\mcSocket.hpp
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -4,7 +4,7 @@ dnl file is quite directly taken from PLIB sources.
 AC_INIT(src/main.cpp)
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED(CPU_VENDOR_OS, "$host")
-AM_INIT_AUTOMAKE(majik3d, M3)
+AM_INIT_AUTOMAKE(majik3d, 0.3.1)
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -13,7 +13,7 @@ AC_PROG_CXX
 AC_PROG_CXXCPP
 AC_PROG_INSTALL
 
-plib_suffix="-L/usr/local/plib/lib -lsl -lsm -lssg -lpu -lfnt -lsg"
+plib_suffix="-L/usr/local/plib/lib -lssg -lpu -lfnt -lsg"
 
 dnl Checks for library functions.
 dnl check for OpenGL related libraries

@@ -1,4 +1,14 @@
-M3 (the clean up milestone) changes are:
+Version 0.3.1 changes are:
+
+  - changed the IP-address in the default config file to the correct one
+  - adopted a new version numbering scheme that allows quick bug fix releases
+  - filenames in the source distribution have been prefixed by "mc"
+  - fixed a bug that caused players to end up below the landscape
+  - portability fixes for the IRIX release
+  - the spoken strings are now wrapped according to the screen width
+  - README files have been updated and reorganized
+	
+Version 0.3.0 changes are:
 
   - initial support for sky, night/day changes by color
   - general code clean up for both client and server
@@ -16,4 +26,4 @@ M3 (the clean up milestone) changes are:
   - the amount of lod levels is now configurable
   - win32 version integrated to unix version's cvs tree
 
-For more information see http://majik.netti.fi/milestones.html.
+For more information see http://www.majik3d.org/milestones.html.

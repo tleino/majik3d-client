@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,16 +20,16 @@
 #include <stdlib.h>
 #include <pu.h>
 
-#include "Menu.hpp"
-#include "Display.hpp"
-#include "Debug.hpp"
-#include "Error.hpp"
-#include "Input.hpp"
-#include "Scene.hpp"
-#include "Socket.hpp"
-#include "Config.hpp"
-#include "Overlay.hpp"
-#include "Protocol.hpp"
+#include "mcMenu.hpp"
+#include "mcDisplay.hpp"
+#include "mcDebug.hpp"
+#include "mcError.hpp"
+#include "mcInput.hpp"
+#include "mcScene.hpp"
+#include "mcSocket.hpp"
+#include "mcConfig.hpp"
+#include "mcOverlay.hpp"
+#include "mcProtocol.hpp"
 
 #include <fstream.h>
 

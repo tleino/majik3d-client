@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,16 +19,16 @@
 #include <iostream.h>
 #include <sg.h>
 
-#include "Protocol.hpp"
-#include "Menu.hpp"
-#include "Socket.hpp"
-#include "Debug.hpp"
-#include "Object.hpp"
-#include "Error.hpp"
-#include "Mapquad.hpp"
-#include "Display.hpp"
-#include "Overlay.hpp"
-#include "Config.hpp"
+#include "mcProtocol.hpp"
+#include "mcMenu.hpp"
+#include "mcSocket.hpp"
+#include "mcDebug.hpp"
+#include "mcObject.hpp"
+#include "mcError.hpp"
+#include "mcMapquad.hpp"
+#include "mcDisplay.hpp"
+#include "mcOverlay.hpp"
+#include "mcConfig.hpp"
 
 extern sgCoord tuxpos;
 extern Player *tuxi;
@@ -48,7 +48,7 @@ void
 Protocol::parseCommand(char *input)
 {
   assert ( input );
-
+  
   int command;
   int found = 0, id;
   int map_x, map_y, map_level;
@@ -86,18 +86,18 @@ Protocol::parseCommand(char *input)
 	}
       
       if (!found)
-		 {
-			error->put (ERROR_WARNING, "Object %d not found!", id);
-			break;
-		 }
+	{
+	  error->put (ERROR_WARNING, "Object %d not found!", id);
+	  break;
+	}
 	   
-	   if (ob == tuxi)
-		 {
-			int i, j;
-			((Player *)tuxi)->unLockMovement();
-			Mapquad *temp;
+      if (ob == tuxi)
+	{
+	  int i, j;
+	  ((Player *)tuxi)->unLockMovement();
+	  Mapquad *temp;
 			
-			int lod = config->lod;
+	  int lod = config->lod;
 	  
 	  for (j = -(lod+1); j < lod+1; j++)
 	    for (i = -(lod+1); i < lod+1; i++)
@@ -139,7 +139,7 @@ Protocol::parseCommand(char *input)
 					      y +256 + j*512)->selectLOD(0);
 	      }
 	}  
-	   break;
+      break;
     case CMD_OWN_ID:
       sscanf(data, "%d", &id);
       
@@ -149,18 +149,18 @@ Protocol::parseCommand(char *input)
     case CMD_QUIT:
       sscanf(data, "%d", &id);
       
-	   ob = Object::first;
+      ob = Object::first;
 	   
-	   while (ob != NULL)
-		 {
-			if (ob->getID() == id)
-			  {
-				 delete ob;
-				 break;
-			  }
+      while (ob != NULL)
+	{
+	  if (ob->getID() == id)
+	    {
+	      delete ob;
+	      break;
+	    }
 			
-			ob = ob->getNext();
-		 }
+	  ob = ob->getNext();
+	}
       
       break;
     case CMD_SAY:

@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "Mapquad.hpp"
-#include "Landscape.hpp"
-#include "Socket.hpp"
-#include "Protocol.hpp"
-#include "Debug.hpp"
-#include "Error.hpp"
+#include "mcMapquad.hpp"
+#include "mcLandscape.hpp"
+#include "mcSocket.hpp"
+#include "mcProtocol.hpp"
+#include "mcDebug.hpp"
+#include "mcError.hpp"
 
 #include <iostream.h>
 

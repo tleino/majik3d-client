@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik.netti.fi>
+ * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,16 +27,16 @@
 #include <pu.h>
 #include <ssg.h>
 
-#include "Menu.hpp"
-#include "Input.hpp"
-#include "Debug.hpp"
-#include "Display.hpp"
-#include "Scene.hpp"
-#include "Socket.hpp"
-#include "Protocol.hpp"
-#include "Config.hpp"
-#include "Overlay.hpp"
-#include "Mapquad.hpp"
+#include "mcMenu.hpp"
+#include "mcInput.hpp"
+#include "mcDebug.hpp"
+#include "mcDisplay.hpp"
+#include "mcScene.hpp"
+#include "mcSocket.hpp"
+#include "mcProtocol.hpp"
+#include "mcConfig.hpp"
+#include "mcOverlay.hpp"
+#include "mcMapquad.hpp"
 
 int mouse_x, mouse_y;
 extern Object *tuxi;

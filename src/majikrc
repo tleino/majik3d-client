@@ -10,7 +10,7 @@
 # to 0, lod to 7, debug and protocol_debug to 0.  Otherwise the default
 # values will do. 
 
-# Majik host configuration (port 4000 for -M3, 4001 for -current testing).
+# Majik host configuration.
 server=majik.majik3d.org
 port=4000
 
