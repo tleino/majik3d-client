@@ -229,11 +229,20 @@ Landscape::init( ssgRoot *scene_root)
 void
 Landscape::draw(mcCamera *cam)
 {
-
 	static sgVec3	lastRedrawLocation = { 0.0, 0.0, 0.0 };
+	static sgVec3	lastCleanupLocation	 = { 0.0, 0.0, 0.0 };
 
 	sgVec2 tri[3];
 	cam->getFOVTri(tri[0], tri[1], tri[2]);
+
+	sgVec3 pos;
+	sgCopyVec3(pos, cam->getPosition().xyz);
+
+	// bleah
+	for (int j=-2;j<2;j++)
+		for (int i=-2;i<2;i++)
+			Mapquad::getRootMap().getMapquad(12, pos[0] + i*256, pos[1] + j*256);
+
 
 	if (sgDistanceSquaredVec3(cam->getPosition().xyz, lastRedrawLocation) > 50.0)
 	{
@@ -241,6 +250,10 @@ Landscape::draw(mcCamera *cam)
 		Mapquad::triangulate(cam->getPosition().xyz[0], cam->getPosition().xyz[1]);
 //		Mapquad::draw(tri);
 	}
+
+// a quick hack
+	if (sgDistanceSquaredVec3(cam->getPosition().xyz, lastCleanupLocation) > 1000.0)
+		Mapquad::clean(cam->getPosition().xyz[0], cam->getPosition().xyz[1]);
 }
 
 GLuint

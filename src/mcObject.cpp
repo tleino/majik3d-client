@@ -129,7 +129,7 @@ Object::update(float t)
 void
 Object::moveForward()
 {
-	m_moveSpeed = 250.0;
+	m_moveSpeed = 50.0;
 }
 
 void

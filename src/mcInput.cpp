@@ -60,12 +60,13 @@ Input::~Input()
 void
 Input::keyUp(unsigned char k, int x, int y)
 {
+	sgCoord pos = scene->getPlayer()->getPos();
 	switch(k)
 	{
 	case '8':
 	case '2':
 		//stop moving
-		sock->writePacket("%d %d", Protocol::CMD_MOVE_DIRECTION, 0);		
+		sock->writePacket("%d %f %f %f %d", Protocol::CMD_MOVE_DIRECTION, pos.xyz[0], pos.xyz[1], pos.hpr[0], 0);
 		break;
 
 	case '4':
@@ -76,7 +77,6 @@ Input::keyUp(unsigned char k, int x, int y)
 
 	default:
 		break;
-
 	};
 }
 
@@ -109,6 +109,9 @@ Input::keyDown(unsigned char k, int x, int y)
 	  if (tuxi) //FIXME: remove this from somewhere
 		tuxi->unLockMovement();
 
+		sgCoord pos;
+		pos = tuxi->getPos();
+
 		switch (k)
 		{
 		case 'w':
@@ -122,12 +125,12 @@ Input::keyDown(unsigned char k, int x, int y)
 			break;		// because this isn't very nice..
 		case '8':
 			// Move forward.
-			sock->writePacket("%d %d", Protocol::CMD_MOVE_DIRECTION, 1);
+			sock->writePacket("%d %f %f %f %d", Protocol::CMD_MOVE_DIRECTION, pos.xyz[0], pos.xyz[1], pos.hpr[0], 1);
 			break;
 	
 		case '2':
 	  // Move backward.
-			sock->writePacket("%d %d", Protocol::CMD_MOVE_DIRECTION, -1);
+			sock->writePacket("%d %f %f %f %d", Protocol::CMD_MOVE_DIRECTION, pos.xyz[0], pos.xyz[1], pos.hpr[0], -1);
 			break;
 
 		case '6':

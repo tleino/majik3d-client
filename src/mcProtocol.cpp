@@ -49,6 +49,8 @@ void
 Protocol::parseCommand(char *input)
 {
   assert ( input );
+
+  cout << input << endl;
   
   int command;
   int found = 0, id;
@@ -67,16 +69,17 @@ Protocol::parseCommand(char *input)
 	switch (command)
 	{
 	case CMD_MOVE_DIRECTION:
-		if (sscanf(data, "%d %d", &id, &direction) < 2)
+		if (sscanf(data, "%d %f %f %f %d", &id, &x, &y, &h, &direction) < 5)
 		{
 			error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
 				"command CMD_MOVE_DIRECTION.");
 			break;
 		}
-		
+
 		ob = Object::getObject(id);
 		if (ob)
 		{
+			ob->moveTo(x, y, h);
 			switch(direction)
 			{
 			case 1:

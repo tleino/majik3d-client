@@ -64,6 +64,7 @@ public:
 
   static void draw(sgVec2 tri[3]);
   static void triangulate(int x, int y);
+  static void clean(int x, int y);
   
   //   static int stats[13];
   // static void printStats();
@@ -73,6 +74,7 @@ private:
   Mapquad(Mapquad *parent, int level, int top_x, int top_y);
 
   void drawRecursive(sgVec2 tri[3]);
+  void cleanRecursive(int x, int y);
 
   void resetBlocks();
   void triangulateBlocks();

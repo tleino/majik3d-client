@@ -67,6 +67,11 @@ Mapquad::triangulate(int x, int y)
 	root_map.triangulateBlocks();
 }
 
+void Mapquad::clean(int x, int y)
+{
+	root_map.cleanRecursive(x, y);
+}
+
 Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 {
 
@@ -103,6 +108,7 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
   
   if (level == NUM_LEVELS - 1)
     {
+	  incRef();
       lod_indices = new int[LOD_LEVELS];
       for (int i = 0; i < LOD_LEVELS; i++)
 	lod_indices[i] = -2;
@@ -134,11 +140,9 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
 
 Mapquad::~Mapquad()
 {
-  if (parent != NULL)
-    parent->decRef();
- 
-  delete block;
-  
+ if (block) 
+  block->deRef();
+/*  
   if (level == NUM_LEVELS - 1 )
     {
       for (int i = 0; i < NUM_VISIBLE_LEVELS; i++)
@@ -150,6 +154,7 @@ Mapquad::~Mapquad()
 	    delete map_data[i].height;
 	}
     }
+	*/
 }
 
 int
@@ -172,6 +177,16 @@ Mapquad::decRef()
 void
 Mapquad::cleanUp()
 {
+  if (parent != NULL)
+  {
+	  if (parent->child1 == this) parent->child1 = NULL;
+	  if (parent->child2 == this) parent->child2 = NULL;
+	  if (parent->child3 == this) parent->child3 = NULL;
+	  if (parent->child4 == this) parent->child4 = NULL;
+
+	  parent->decRef();
+  }
+ 
   if (level != 0)
     delete this;
   else
@@ -601,6 +616,27 @@ bool intersectionTest(sgVec2 tri[3], int x0, int y0, int x1, int y1)
 	if (pointInTriangleTest(tri, x1, y0)) return true;
 */	
 	return false;
+}
+
+//hack
+void Mapquad::cleanRecursive(int x, int y)
+{
+	incRef();
+
+	if (!child1 && !child2 && !child3 && !child4)
+	{
+		if (sqrt((mid_x-x)*(mid_x-x)+(mid_y-y)*(mid_y-y)) > 1000.0)
+		{
+			decRef();
+		}
+	}
+
+	if (child1) child1->cleanRecursive(x, y);
+	if (child2) child2->cleanRecursive(x, y);
+	if (child3) child3->cleanRecursive(x, y);
+	if (child4) child4->cleanRecursive(x, y);
+
+	decRef();
 }
 
 void Mapquad::draw(sgVec2 tri[3])
