@@ -22,8 +22,8 @@
 
 Display::Display()
 {
-   width = 800;
-   height = 600;
+   width = 320;
+   height = 200;
    bpp = 32;
 
    cursor = new Cursor;

@@ -32,6 +32,7 @@
 Socket::Socket()
 {
    ip = NULL;
+   szBuffer = NULL;
    #ifdef DEBUG
 	 debug->put("Socket constructor");
    #endif
@@ -55,9 +56,12 @@ Socket::~Socket()
 		ip = NULL;
 	 }
    
-   if (szBuffer != NULL)
-     free (szBuffer);
-   
+   if(szBuffer != NULL)
+     {
+		free(szBuffer);
+		szBuffer = NULL;
+	 }
+      
    #ifdef DEBUG
 	 debug->put("Socket destructor");
    #endif
@@ -72,16 +76,16 @@ Socket::connectServer()
    
    szBuffer = strdup("");
    
-   if (inet_addr(ip) == INADDR_NONE) {
-      if ((pHostEnt = gethostbyname(ip)) != NULL) {
-	 free(ip);
-	 ip = (char *) malloc (3*4);
-	 sprintf(ip, "%d.%d.%d.%d",
-		 (unsigned char)pHostEnt->h_addr_list[0][0],
-		 (unsigned char)pHostEnt->h_addr_list[0][1],
-		 (unsigned char)pHostEnt->h_addr_list[0][2],
-		 (unsigned char)pHostEnt->h_addr_list[0][3]);
-      }
+   if(inet_addr(ip) == INADDR_NONE) {
+		if((pHostEnt = gethostbyname(ip)) != NULL) {
+		   delete [] ip;
+		   ip = new char [3*4];
+		   sprintf(ip, "%d.%d.%d.%d",
+				   (unsigned char)pHostEnt->h_addr_list[0][0],
+				   (unsigned char)pHostEnt->h_addr_list[0][1],
+				   (unsigned char)pHostEnt->h_addr_list[0][2],
+				   (unsigned char)pHostEnt->h_addr_list[0][3]);
+		}
    }
    
    memset (&ServerAddr, 0, sizeof (ServerAddr));
@@ -101,9 +105,12 @@ Socket::connectServer()
 void 
 Socket::disconnectServer()
 {
-   if (szBuffer != NULL)
-     free (szBuffer);
-   
+   if(szBuffer != NULL)
+     {
+		free(szBuffer);
+		szBuffer = NULL;
+	 }
+      
    // close (nSocket);
 }
 
@@ -139,7 +146,7 @@ Socket::readPacket()
       szRet = strdup(szBuffer);
       // Remove new lines
       if (*szReturn == '\n')
-	szReturn++;
+		szReturn++;
       memmove(szBuffer,szReturn,strlen(szReturn)+1);
       
       return szRet;
