@@ -24,7 +24,7 @@
 /* tux */
 ssgTransform   *penguin  = NULL ;
 
-ssgTransform  **trees = NULL;
+ssgTransform  *trees[100];
 
 ssgKeyFlier keyflier;
 
@@ -71,6 +71,7 @@ Scene::init()
    ssgModelPath   ("data");
    ssgTexturePath ("data");
 
+   landscape->init(scene_root);
       
    /* tux */
    penguin  = new ssgTransform ;
@@ -82,38 +83,39 @@ Scene::init()
    scene_root -> addKid ( penguin ) ;
    /* ... */
    
-   trees = new (ssgTransform *)[100];
-   
-   ssgEntity *tree_obj = ssgLoadAC ("tree.ac" );
-   ssgFlatten         ( tree_obj );
-   
-   int tempx, tempy;
-   
-   for (int i=0; i<100; i++)
+    ssgEntity *tree_obj = ssgLoadAC ("tree.ac" );
+   //   ssgFlatten         ( tree_obj );
+      
+      float tempx, tempy;
+      
+      for (int i=0; i<100; i++)
 	 {
-
+		
 		trees[i] = new ssgTransform;
 		trees[i] -> addKid( tree_obj );
 		ssgStripify ( trees[i] );
 		trees[i] -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
-		scene_root -> addKid ( trees[i] );
+		
 		
 		sgCoord treepos;
-		tempx = random() % 1000;
-		tempy = random() % 1000;
+		tempx = -500 + random() % 1000;
+		tempy = -500 + random() % 1000;
 		
 		treepos.xyz[0] = tempx;
 		treepos.xyz[1] = tempy;
 		treepos.xyz[2] = getHOT(tempx, tempy);
+		treepos.hpr[0] = 0.0f;
+		treepos.hpr[1] = 0.0f;
+		treepos.hpr[2] = 0.0f;
 		
 		trees[i] -> setTransform ( & treepos );
-				
-	 }
 		
-				
+		
+		scene_root -> addKid ( trees[i] );
+		   
+	 }
    
-   landscape->init(scene_root);
-   
+      
    sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
    sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
    
