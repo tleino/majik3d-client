@@ -20,6 +20,7 @@
 #define __SKY_HPP__
 
 #include <sg.h>
+#include <ssg.h>
 
 struct SKYPOINT
 {
@@ -32,49 +33,54 @@ struct SKYPOINT
 
 class mcSky
 {
-private:
-  sgVec3 zenith;
+ private:
+   sgVec3 	zenith;
+   
+   bool 	sky_ok;			/* Has sky been calculated? */
+   float 	turbidity;
+   float 	luminancefactor;
+   sgVec3 	sun;			/* Vector to sun */
+   
+   float 	a_sunzenith;	/* Angle between sun and zenith */
   
-  bool sky_ok;			/* Has sky been calculated? */
-  float turbidity;
-  sgVec3 sun;			/* Vector to sun */
+   int 		cskypoints,
+	 		sky_width,		/* Number of horizontal segments */
+	 		sky_height;		/* Number of vertical segments */
+   SKYPOINT* sky;			/* Sky coordinate data */
+   
+   float   	perez_Y[5],		/* Perez-function parameters */
+	 		perez_x[5],
+	 		perez_y[5];
   
-  float a_sunzenith;	/* Angle between sun and zenith */
-  
-  int cskypoints,
-    sky_width,		/* Number of horizontal segments */
-    sky_height;		/* Number of vertical segments */
-  SKYPOINT*	sky;			/* Sky coordinate data */
-  
-  float		perez_Y[5],		/* Perez-function parameters */
-    perez_x[5],
-    perez_y[5];
-  
-  // Light intensity and colour at zenith
-  float	zenith_Y, zenith_x, zenith_y;
+   // Light intensity and colour at zenith
+   float	zenith_Y, zenith_x, zenith_y;
+   
+   sgVec4 *	scolors;
+   sgVec3 *	scoords;
   
   /* Private methods */
   
-  void 		createSGVec(sgVec3 &v, float heading, float pitch);
-  void        createSphere(int x_segs, int y_segs);
-  void 		calculateSunAngles();
-  void		calculatePerezCoeffs();
-  void		calculateZenithValues();
-  float		perez(float *params, float a_viewzenith, float a_sunview);
-  void		calculateSkyColors();
-  void 		createSkyPoint(SKYPOINT *v, float heading, float pitch);
-  void		xyYtoRGB(SKYPOINT *v, float x, float y, float Y);
+   void    	createSGVec(sgVec3 &v, float heading, float pitch);
+   void     createSphere(int x_segs, int y_segs);
+   void 	calculateSunAngles();
+   void		calculatePerezCoeffs();
+   void		calculateZenithValues();
+   float	perez(float *params, float a_viewzenith, float a_sunview, float a_sunzenith);
+   void		calculateSkyColors();
+   void    	createSkyPoint(SKYPOINT *v, float heading, float pitch);
+   void		xyYtoRGB(SKYPOINT *v, float x, float y, float Y);
   
-public:
-  mcSky();
-  mcSky(int x_segs, int y_segs);
-  ~mcSky();
+ public:
+   mcSky();
+   mcSky(int x_segs, int y_segs);
+   ~mcSky();
+   
+   void		setLuminanceFactor(float f);
+   void		setTurbidity(float t);
+   void    	setSunPosition(sgVec3 &v);
+   void		setSunPosition(float heading, float elevation);
   
-  void 		setTurbidity(float t);
-  void 		setSunPosition(sgVec3 &v);
-  void 		setSunPosition(float heading, float elevation);
-  
-  ssgBranch *		Draw();
+   ssgBranch * Draw();
 };
 
 extern mcSky *mc_sky;

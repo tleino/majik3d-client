@@ -78,36 +78,43 @@ Scene::addSpecial(float x, float y, char *model, bool cutout)
 void
 Scene::init()
 {
+   sgCoord crd;
+   
+   sgSetVec3(crd.xyz, 0, 0, 0);
+   sgSetVec3(crd.hpr, 0, 0, 0);
+   
   scene_root = new ssgRoot;
   
   ssgModelPath   ("data");
   ssgTexturePath ("data");
   
-  landscape->init(scene_root);
-  
   // FIXME: I want better sky, the dynamic one, please. :)
   // sky_dome = new ssgTransform ();
   sky_dome = new ssgTransform ();
+   sky_dome->setTransform(&crd, 100.0, 100.0, 100.0);
   ssgBranch *entity = mc_sky->Draw();
   sky_dome->addKid (entity);
   scene_root->addKid (sky_dome);
   // ssgEntity *entity = ssgLoadAC ("skydome.ac");
-  
+
+  landscape->init(scene_root);
+//   printf("%d\n", entity->getNumTriangles());
+        
   // sky_dome->addKid (entity);
   // scene_root->addKid (sky_dome);
 
   sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
   sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
-  
+	  
   glEnable ( GL_DEPTH_TEST ) ;
   
   /* Set up the viewing parameters */
   ssgSetFOV     ( 90.0f, 60.0f ) ;
-  ssgSetNearFar ( 1.0f, 30000.0f ) ;
+  ssgSetNearFar ( 0.5f, 30000.0f ) ;
   
   float nnear, ffar, top, bottom, left, right, hfov, vfov, v, h;
   
-  nnear = 1.0f;
+  nnear = 0.3f;
   ffar = 30000.0f;
   h = 90.0f;
   v = 60.0f;
@@ -276,7 +283,7 @@ Scene::update()
      }
    
    ssgSetCamera ( & campos ) ;
-   sky_dome->setTransform (  campos.xyz );
+   sky_dome->setTransform ( &campos, 100.0, 100.0, 100.0);
 }
 
 void
