@@ -1,2 +1,2 @@
 SUBDIRS = src
-EXTRA_DIST = template/* src/gfx/*
+EXTRA_DIST = template/* src/gfx/* README.client
