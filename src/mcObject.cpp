@@ -104,7 +104,7 @@ float *
 Object::getCenter()
 {
   sgSphere *bs = trans->getBSphere();
-  return bs->getCenter();
+  return (float *) bs->getCenter();
 }
 
 float
