@@ -28,11 +28,23 @@
 
 Config::Config()
 {
-   server_ip = NULL;
-   server_port = 0;
    screen_width = 0;
    screen_height = 0;
    bpp = 0;
+   mousetrap = 0;
+   nomousetrap = 0;
+   noTexture = 0;
+   wireframe = 0;
+   nomouse = 0;
+   nofog = 0;
+   nosmooth = 0;
+   nomenu = 0;
+   camera = 0;
+   fullscreen = 0;
+   server_ip = NULL;
+   server_port = 0;
+   debug_level = 0;
+   protocol_debug = 0;
 }
 
 Config::~Config()
@@ -90,7 +102,7 @@ Config::parseOption(char *option, char *value)
 	 }
    if (strcmp(option, "nosmooth") == 0)
 	 {
-		display->nosmooth = atoi(value);
+		this->nosmooth = atoi(value);
 	 }
    if (strcmp(option, "nofog") == 0)
 	 {
@@ -103,19 +115,27 @@ Config::parseOption(char *option, char *value)
 	 {
 		if (atoi(value) == 1)
 		  {
-			 display->nomenu = 1;
+			 this->nomenu = 1;
 		  }
 	 }
    if (strcmp(option, "camera") == 0)
 	 {
-		display->camera = atoi(value);
+		this->camera = atoi(value);
 	 }
    if (strcmp(option, "fullscreen") == 0)
 	 {
 		if (atoi(value) == 1)
-		  display->fullscreen = 2;
+		  this->fullscreen = 2;
 		else
-		  display->fullscreen = 0;
+		  this->fullscreen = 0;
+	 }
+   if (strcmp(option, "debug") == 0)
+	 {
+		debug_level = atoi(value);
+	 }
+   if (strcmp(option, "protocol_debug") == 0)
+	 {
+		protocol_debug = atoi(value);
 	 }
 }
 
@@ -170,7 +190,7 @@ Config::parseLine(char *strbuf, int line)
    
    memcpy(&value[0], &strbuf[vstart], vend - vstart);
    
-   DEBUG (debug->string("option: '%s' = '%s'", option, value));
+   // debug->put("option: '%s' = '%s'", option, value));
    parseOption(&option[0], &value[0]);
 }
 

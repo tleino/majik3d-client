@@ -40,12 +40,12 @@
 
 bool quit = false;
 Error *error = NULL;
+Config *config = NULL;
 Debug *debug = NULL;
 Socket *sock = NULL;
 Display *display = NULL;
 Landscape *landscape = NULL;
 Input *input = NULL;
-Config *config = NULL;
 Menu *menu = NULL;
 Scene *scene = NULL;
 Protocol *protocol = NULL;
@@ -58,8 +58,9 @@ main(int argc, char **argv)
 {      
    // Initialize the necessary global variables as proper objects
    error = new Error;
-   debug = new Debug;
    config = new Config;
+   config->readConfig();
+   debug = new Debug;
    display = new Display;
    landscape = new Landscape;
    input = new Input;
@@ -69,8 +70,6 @@ main(int argc, char **argv)
    perlin = new Perlin;
    Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
    
-   config->readConfig();
-      
    // Check the config object for ip / port settings and create the socket accordingly
    if(config->server_ip != NULL || config->server_port)
 	 sock = new Socket(config->server_ip, config->server_port);

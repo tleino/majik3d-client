@@ -32,7 +32,7 @@
 
 Perlin::Perlin()
 {
-   DEBUG ("Perlin constructor");
+   debug->put("Perlin constructor");
    
    // Create interpolation table
    interpolation_table = new double[INTERPOLATION_TABLE_SIZE];
@@ -46,7 +46,7 @@ Perlin::Perlin()
 
 Perlin::~Perlin()
 {
-   DEBUG ("Perlin destructor");
+   debug->put("Perlin destructor");
    
    delete interpolation_table;
 }

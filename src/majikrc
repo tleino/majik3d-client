@@ -4,16 +4,24 @@
 # usually located at ~/.majikrc, but it is also searched from /etc and
 # the current directory.
 
+# Majik host configuration.
+server=195.197.61.60
+port=4001
+
 # Screen initialization.
-screen_width=320
-screen_height=240
-bpp=32
+screen_width=640
+screen_height=480
+bpp=16
 
 # Level of detail parameters.
-notexture=1
-nomouse=1
-nomousetrap=1
-nofog=1
+notexture=0
+nomouse=0
+nomousetrap=0
+nofog=0
 nosmooth=0
 nomenu=0
 fullscreen=0
+
+# Debugging settings.
+debug=0
+protocol_debug=0

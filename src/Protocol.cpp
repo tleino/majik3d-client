@@ -56,7 +56,6 @@ Protocol::parseCommand(char *input)
    sscanf(input, "%s\n", data);
    command = atoi(data);
    
-   printf ("%s\n", input);
    int tmp = strlen(data);
    strcpy(data, &input[tmp+1]);  
 

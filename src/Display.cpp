@@ -36,6 +36,7 @@
 #include "Scene.hpp"
 #include "Socket.hpp"
 #include "Protocol.hpp"
+#include "Config.hpp"
 
 time_t t = time(NULL);
 int frames = 0;
@@ -64,7 +65,7 @@ void inputCB (puObject *o)
 {
    char *val = NULL;
    o->getValue (&val);
-   printf ("got val: %s\n", val);
+   debug->put ("got val: %s", val);
    if (strlen(val) < 3) {
 	  return;
    }
@@ -77,7 +78,7 @@ void inputCB (puObject *o)
 	  sock->writePacket ("%d %s", display->inp_command, val);
 	  display->inp_command = CMD_SAY;
 	  o->setSize(display->width-5, 5+20);
-	  if (display->nomenu == 0)
+	  if (config->nomenu == 0)
 	    menu->menuBar->reveal();
 	  
 	  memset (display->stxt, 0, sizeof(display->stxt));
@@ -107,7 +108,7 @@ Display::Display()
 
    // cursor = new Cursor;
    
-   DEBUG("Display constructor");
+   debug->put("Display constructor");
 }
 
 Display::Display(int w, int h, int b)
@@ -121,7 +122,7 @@ Display::Display(int w, int h, int b)
 
    // cursor = new Cursor;
    
-   DEBUG (debug->string("Display constructor: width=%d height=%d bpp=%d", width, height, bpp));
+   debug->put("Display constructor: width=%d height=%d bpp=%d", width, height, bpp);
 }
 
 Display::~Display()
@@ -131,7 +132,7 @@ Display::~Display()
    if (inp != NULL)
 	 delete inp;
    
-   DEBUG ("Display destructor");
+   debug->put("Display destructor");
 }
 
 void
@@ -140,12 +141,12 @@ Display::openScreen()
    //unsigned long flags;
    //GLenum format;
    
-   DEBUG ("Opening screen...");
-   if (display->nomousetrap != 0)
-	 mousetrap = 1;
+   debug->put("Opening screen...");
+   if (config->nomousetrap != 0)
+	 config->mousetrap = 1;
    
    display->state = 0; /* PRELOAD */
-   display->camera = 0;
+   config->camera = 0;
    display->pitch = 0;
    
    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -162,17 +163,17 @@ Display::openScreen()
    glutMotionFunc(mouseMotion);
    //glutIdleFunc(idle);
       
-   if (display->nomousetrap != 1)
+   if (config->nomousetrap != 1)
 	 glutWarpPointer (width/2, height/2);
       
    /* PLIB: Simple Scene Graph */
-   DEBUG ("ssgInit");
+   debug->put("ssgInit");
    ssgInit();
    // initMaterials();
    
    /* PLIB: Picoscopic User Interface */
    puInit();
-   if (display->nomouse != 1)
+   if (config->nomouse != 1)
 	 puShowCursor();
    
    /* PLIB: Font Library */
@@ -199,14 +200,14 @@ Display::openScreen()
    
    glEnable ( GL_DEPTH_TEST);
    
-   if (display->nofog)
+   if (config->nofog)
 	 glDisable (GL_FOG);
-   if (display->nosmooth)
+   if (config->nosmooth)
 	 glShadeModel (GL_FLAT);
    else
 	 glShadeModel (GL_SMOOTH);
    
-   DEBUG ("Screen opened.");
+   debug->put("Screen opened.");
 }
 
 void
@@ -220,8 +221,8 @@ Display::mouseMotion(int x, int y)
 void 
 Display::closeScreen()
 {
-   DEBUG ("Closing screen...");
-   DEBUG ("Screen closed.");
+   debug->put("Closing screen...");
+   debug->put("Screen closed.");
 }
 
 void 
@@ -233,7 +234,7 @@ Display::updateScreen()
 
    frames++;
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+   
   if (scene->initialized == 0) {
 	 display->status_text->setPosition(5, display->height-25);
 	 menu->menuBar->hide();
@@ -270,7 +271,7 @@ Display::updateScreen()
    if (tuxi == NULL)
 	 goto end_update;
 	   
-   if (display->noTexture)
+   if (config->noTexture)
 	 ssgOverrideTexture (1);
    
    scene->update();
@@ -280,16 +281,16 @@ Display::updateScreen()
    
    /* Trap the mouse */
       
-   if (display->nomousetrap == 0) 
+   if (config->nomousetrap == 0) 
 	 {
-		if (mouse_x < 1 && display->mousetrap) {
+		if (mouse_x < 1 && config->mousetrap) {
 		   mouse_x = 2; warp = TRUE;
-		} else if (mouse_x > display->width-1 && display->mousetrap) {
+		} else if (mouse_x > display->width-1 && config->mousetrap) {
 		   mouse_x = display->width-2; warp = TRUE;
 		}
-		if (mouse_y < 1 && display->mousetrap) {
+		if (mouse_y < 1 && config->mousetrap) {
 		   mouse_y = 2; warp = TRUE;
-		} else if (mouse_y > display->height-1 && display->mousetrap) {
+		} else if (mouse_y > display->height-1 && config->mousetrap) {
 		   mouse_y = display->height-2; warp = TRUE;
 		}
 		
@@ -310,7 +311,7 @@ Display::updateScreen()
    // display->cursor->draw();
    
    end_update:   
-   if (display->wireframe)
+   if (config->wireframe)
 	 display->status_text->setColour (PUCOL_LABEL, 0.0, 0.0, 0.0);
    else
 	 display->status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
@@ -327,9 +328,9 @@ Display::updateScreen()
    glutPostRedisplay();
    
    /* A kludge to avoid fullscreen before window is open for real when it is enabled from rc file. */
-   if (display->fullscreen == 2) {
+   if (config->fullscreen == 2) {
 	  glutFullScreen();
-	  display->fullscreen = 1;
+	  config->fullscreen = 1;
    }
 }
 

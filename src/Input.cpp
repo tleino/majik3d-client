@@ -28,6 +28,8 @@
 #include "Input.hpp"
 #include "Scene.hpp"
 #include "Socket.hpp"
+#include "Config.hpp"
+
 #include <fstream.h>
 
 
@@ -46,12 +48,12 @@ void captureScreen();
 
 Input::Input()
 {
-   DEBUG ("Input constructor");
+   debug->put ("Input constructor");
 }
 
 Input::~Input()
 {
-   DEBUG ("Input destructor");
+   debug->put ("Input destructor");
 }
 
 void
@@ -194,10 +196,10 @@ Input::specialDown(int key, int x, int y)
       menu->menuBar->reveal();
       break;
 	case GLUT_KEY_F2:
-	  display->camera = 1;
+	  config->camera = 1;
 	  break;
 	case GLUT_KEY_F1:
-	  display->camera = 0;
+	  config->camera = 0;
 	  break;	 
 	case GLUT_KEY_F12:
 	  captureScreen();
@@ -213,7 +215,7 @@ void
 Input::mouseDown(int button, int updown, int x, int y)
 {
       puMouse (button, updown, x, y);
-      DEBUG (debug->string("mouseDown: %d %d %d %d", button, updown, x, y));
+      debug->put("mouseDown: %d %d %d %d", button, updown, x, y);
       glutPostRedisplay();
 }
 

@@ -23,6 +23,7 @@
 #include "Socket.hpp"
 #include "Debug.hpp"
 #include "Error.hpp"
+#include "Config.hpp"
 
 #ifdef WIN32	
 #include <winsock.h>
@@ -301,7 +302,7 @@ Socket::Socket(char *addr, int nport)
    ip = new char[strlen(addr)+1];
    strcpy(ip, addr);
    port = nport;
-   DEBUG (debug->string("Socket constructor: ip=%s port=%d", ip, port));
+   debug->put("Socket constructor: ip=%s port=%d", ip, port);
 
 }
 
@@ -309,8 +310,7 @@ Socket::~Socket()
 {
 	szBuffer = NULL;
 	 
-   
-   DEBUG ("Socket destructor");
+   debug->put("Socket destructor");
 
 }
 
@@ -362,17 +362,21 @@ Socket::readPacket()
    do {
       ioctl (nSocket, FIONREAD, &nLen);
       if (nLen != 0) {
-	 char szData[1024*10];
-	 long nReceived;
-	 if ((nReceived = recv(nSocket,(char *)&szData,sizeof(szData)-1,0)) == -1)
-	   error->put(ERROR_FATAL, "Connection closed: %s", strerror (errno));
-	 
-	 szData[nReceived] = 0;
-	 
-	 // Resize the buffer
-	 szBuffer = (char *) realloc(szBuffer,strlen(szData)+strlen(szBuffer)+1);
-	 // Copy the new data
-	 strcat(szBuffer,szData);
+		 char szData[1024*10];
+		 long nReceived;
+		 if ((nReceived = recv(nSocket,(char *)&szData,sizeof(szData)-1,0)) == -1)
+		   error->put(ERROR_FATAL, "Connection closed: %s", strerror (errno));
+		 
+		 szData[nReceived] = 0;
+		 
+		 if (config->protocol_debug) {
+			fprintf (debug->fp, ">> %s", szData);
+		 }
+		 
+		 // Resize the buffer
+		 szBuffer = (char *) realloc(szBuffer,strlen(szData)+strlen(szBuffer)+1);
+		 // Copy the new data
+		 strcat(szBuffer,szData);
       }
    } while (nLen != 0);
    
@@ -406,6 +410,10 @@ Socket::writePacket(char *szFmt, ...)
    va_end (vl);
    
    sprintf (szData, "%s\r\n", szData);
+   
+   if (config->protocol_debug) {
+	  fprintf (debug->fp, "<< %s", szData);
+   }
    
    if (send(nSocket, szData,strlen(szData),0) == -1)
      error->put(ERROR_FATAL, "Could not send data: %s", strerror (errno));

@@ -39,6 +39,7 @@
 #include "Debug.hpp"
 #include "Perlin.hpp"
 #include "Display.hpp"
+#include "Config.hpp"
 
 #define TILE_SIZE                 256.0f      /* cubits */
 #define LAMBDA                   (TILE_SIZE/16.0f)
@@ -56,13 +57,13 @@ Landscape::Landscape()
 {
    terrain  = NULL ;
    
-   DEBUG("Landscape constructor");
+   debug->put("Landscape constructor");
 
 }
 
 Landscape::~Landscape()
 {      
-   DEBUG ("Landscape destructor.");
+   debug->put("Landscape destructor.");
 }
 
 void 
@@ -76,7 +77,7 @@ Landscape::init( ssgRoot *scene_root)
    state -> enable     ( GL_TEXTURE_2D ) ;
    state -> enable     ( GL_LIGHTING ) ;
    
-   if (display->nosmooth)
+   if (config->nosmooth)
 	 state -> setShadeModel ( GL_FLAT ) ;
    else
 	 state -> setShadeModel ( GL_SMOOTH );

@@ -38,7 +38,34 @@ class Config
  public:
    char *server_ip;
    int server_port;
-   int screen_height, screen_width, bpp;
+   int debug_level, protocol_debug;
+   ///
+   int screen_width;
+   ///
+   int screen_height;
+   ///
+   int bpp;
+   ///
+   int mousetrap;
+   ///
+   int nomousetrap;
+   ///
+   int noTexture;
+   ///
+   int wireframe;
+   ///
+   int nomouse;
+   ///
+   int nofog;
+   ///
+   int nosmooth;
+   ///
+   int nomenu;
+   ///
+   int camera;
+   ///
+   int fullscreen;
+   ///
 };
 
 extern Config *config;

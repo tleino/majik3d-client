@@ -22,17 +22,28 @@
 #include <iostream.h>
 #include <stdarg.h>
 
+#include "Config.hpp"
 #include "Debug.hpp"
-
 
 Debug::Debug()
 {
-   DEBUG("Debug constructor");
+   put("Debug constructor");
+   
+   if (config->protocol_debug > 0) {
+	  fp = fopen("protocol.debug", "w");
+	  if (!fp) {
+		 put("Couldn't open protocol.debug for write, protocol debug disabled.");
+		 config->protocol_debug = 0;
+	  } else {
+		 put("Debugging protocol debug to protocol.debug.");
+	  }
+   }
 }
 
 Debug::~Debug()
 {
-   
+   if (fp)
+	 fclose (fp);
 }
 
 char *
@@ -52,13 +63,15 @@ Debug::string(char *fmt, ...)
 void
 Debug::put(char *fmt, ...)
 {
-   char *buf = new char[80];
+   char *buf = new char[256];
    memset(buf, 0, sizeof(buf));
    va_list vl;
    va_start (vl, fmt);
    vsprintf (buf, fmt, vl);
    va_end (vl);
    
-   cerr << buf << endl;
+   if (config->debug_level > 0)
+	 cerr << "DEBUG: " << buf << endl;
+   
    delete buf;
 }

@@ -26,6 +26,7 @@
 #include "Landscape.hpp"
 #include "Socket.hpp"
 #include "Object.hpp"
+#include "Config.hpp"
 
 #define random()	rand()
 
@@ -39,7 +40,8 @@ ssgTransform  *lumiukko;
 
 Scene::Scene()
 {    
-   DEBUG("Scene constructor");
+   initialized = 0;
+   debug->put("Scene constructor");
 }
 
 Scene::~Scene()
@@ -47,7 +49,7 @@ Scene::~Scene()
    if (scene_root != NULL)
 	 delete scene_root; // hmmm
          
-   DEBUG("Scene destructor");
+   debug->put("Scene destructor");
 }
 
 void
@@ -107,29 +109,30 @@ Scene::init()
    left  = -right ;
    bottom   = -top   ;
    
-   cout << "near: " << nnear;
-   cout << "far: " << ffar;
-   cout << "left: " << left;
-   cout << "right: " << right;
-   cout << "bottom: " << bottom;
-   cout << "top: " << top << endl;
-   
-   cout << (frustumi[0][0] = (2*nnear)/(right-left)) << " ";
-   cout << (frustumi[1][0] = 0.0f) << " ";
-   cout << (frustumi[2][0] = (right+left)/(right-left)) << " ";
-   cout << (frustumi[3][0] = 0.0f) << " " << endl;
-   cout << (frustumi[0][1] = 0.0f) << " ";
-   cout << (frustumi[1][1] = (2*nnear)/(top-bottom)) << " ";
-   cout << (frustumi[2][1] = (top+bottom)/(top-bottom)) << " ";
-   cout << (frustumi[3][1] = 0.0f) << " " << endl;
-   cout << (frustumi[0][2] = 0.0f) << " ";
-   cout << (frustumi[1][2] = 0.0f) << " ";
-   cout << (frustumi[2][2] = -(ffar+nnear)/(ffar-nnear)) << " ";
-   cout << (frustumi[3][2] = (-2*ffar*nnear)/(ffar-nnear)) << " " << endl;
-   cout << (frustumi[0][3] = 0.0f) << " ";
-   cout << (frustumi[1][3] = 0.0f) << " ";
-   cout << (frustumi[2][3] = -1.0f) << " ";
-   cout << (frustumi[3][3] = 0.0f) << " " << endl;
+   debug->put ("near: %f far: %f", nnear, ffar);
+   debug->put ("left: %f right: %f", left, right);
+   debug->put ("bottom: %f top: %f", bottom, top);
+
+   debug->put ("%f %f %f %f", 
+			   (frustumi[0][0] = (2*nnear)/(right-left)),
+			   (frustumi[1][0] = 0.0f),
+			   (frustumi[2][0] = (right+left)/(right-left)),
+			   (frustumi[3][0] = 0.0f));
+   debug->put ("%f %f %f %f",
+			   (frustumi[0][1] = 0.0f),
+			   (frustumi[1][1] = (2*nnear)/(top-bottom)),
+			   (frustumi[2][1] = (top+bottom)/(top-bottom)));
+   debug->put ("%f %f %f %f",
+			   (frustumi[3][1] = 0.0f),
+			   (frustumi[0][2] = 0.0f),
+			   (frustumi[1][2] = 0.0f),
+			   (frustumi[2][2] = -(ffar+nnear)/(ffar-nnear)));
+   debug->put ("%f %f %f %f",
+			   (frustumi[3][2] = (-2*ffar*nnear)/(ffar-nnear)),
+			   (frustumi[0][3] = 0.0f),
+			   (frustumi[1][3] = 0.0f),
+			   (frustumi[2][3] = -1.0f),
+			   (frustumi[3][3] = 0.0f));
    
    /* Set up some fog */
    glFogf ( GL_FOG_DENSITY, 0.035f / 100.0f ) ;
@@ -237,7 +240,7 @@ Scene::update()
    
    campos.hpr[0] += 180.0f;
    
-   if (display->camera == 0) {
+   if (config->camera == 0) {
 	  campos.xyz[0] -= 20*sin((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);
 	  campos.xyz[1] += 20*cos((campos.hpr[0]-180.0f)*SG_DEGREES_TO_RADIANS);  
 	  

@@ -46,35 +46,15 @@ class Display
    static void idle();
  public: 
    ///
+   int bpp;
+   ///
    int width;
    ///
    int height;
    ///
-   int bpp;
-   ///
    int initialWidth;
    ///
    int initialHeight;
-   ///
-   int mousetrap;
-   ///
-   int nomousetrap;
-   ///
-   int noTexture;
-   ///
-   int wireframe;
-   ///
-   int nomouse;
-   ///
-   int nofog;
-   ///
-   int nosmooth;
-   ///
-   int nomenu;
-   ///
-   int camera;
-   ///
-   int fullscreen;
    ///
    int state;
    ///

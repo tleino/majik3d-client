@@ -34,17 +34,10 @@ class Debug
    /// Allow printf() style formatting in DEBUG() macro.
    char *string(char *, ...);
 
+   /// File pointer for protocol debug.
+   FILE *fp;
 };
 
 extern Debug *debug;
-
-
-#if 0
-/// Use this macro to add all the unnecessary information to your debug messages.
-# define DEBUG(x) debug->put("%-17s: debug: %s", debug->string("%s:%d", __FILE__, __LINE__), x);
-#else
-# define DEBUG(x)
-#endif /* 0 */
-
 
 #endif /* __DEBUG_HPP__ */

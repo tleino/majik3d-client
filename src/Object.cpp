@@ -28,6 +28,8 @@ Object *Object::last = NULL;
 
 Object::Object()
 {
+   debug->put("Object constructor");
+   
    if (first == NULL)
 	 first = this;
    
@@ -43,14 +45,15 @@ Object::Object()
    next = NULL;
 
    if (prev != NULL)
-	 printf("Object parent: %d\n", prev->id);
+	 debug->put("Object parent: %d", prev->id);
    
-   DEBUG (debug->string("Object constructor"));
    lock = 0;
 }
 
 Object::~Object()
 {
+   debug->put("Object destructor");
+   
    if (prev != NULL)
 	 {
 		if (next != NULL)
@@ -87,8 +90,6 @@ Object::~Object()
    
    delete trans;
    delete puhe;
-   
-   DEBUG (debug->string("Object destructor"));
 }
 
 void

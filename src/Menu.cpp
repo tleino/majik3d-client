@@ -22,6 +22,7 @@
 #include "Display.hpp"
 #include "Debug.hpp"
 #include "Menu.hpp"
+#include "Config.hpp"
 
 char *helpSubmenu[] = {
    "About...",
@@ -80,12 +81,12 @@ puOneShot *dialogBoxButton;
 
 Menu::Menu()
 {
-   DEBUG("Menu constructor");
+   debug->put("Menu constructor");
 }
 
 Menu::~Menu()
 {
-   DEBUG("Menu destructor");
+   debug->put("Menu destructor");
 }
 
 void
@@ -99,7 +100,7 @@ Menu::init()
 	 }
    menuBar->close();
 
-   if (display->nomenu)
+   if (config->nomenu)
 	 menuBar->hide();
 }
 
@@ -108,14 +109,14 @@ Menu::init()
 void
 Menu::fullscreenCB(puObject *)
 {
-   if (display->fullscreen == 1) {
+   if (config->fullscreen == 1) {
 	  glutReshapeWindow(display->initialWidth, display->initialHeight);
 	  glutPositionWindow(0, 0);
-	  display->fullscreen = 0;
+	  config->fullscreen = 0;
 	  //glutPostRedisplay();
    } else {
 	  glutFullScreen();
-	  display->fullscreen = 1;
+	  config->fullscreen = 1;
    }
 }
 
@@ -123,14 +124,14 @@ void
 Menu::textureCB(puObject *)
 {
    ssgOverrideTexture (0);
-   display->noTexture = 0;
+   config->noTexture = 0;
 }
 
 void
 Menu::noTextureCB(puObject *)
 {
    ssgOverrideTexture (1);
-   display->noTexture = 1;
+   config->noTexture = 1;
 }
 
 void
@@ -165,29 +166,29 @@ Menu::aboutCB(puObject *)
 void
 Menu::mouseCB(puObject *)
 {
-   display->nomouse = 0;
+   config->nomouse = 0;
    puShowCursor();
 }
 
 void
 Menu::noMouseCB(puObject *)
 {
-   display->nomouse = 1;
+   config->nomouse = 1;
    puHideCursor();
 }
 
 void
 Menu::mousetrapCB(puObject *)
 {
-   display->nomousetrap = 0;
-   display->mousetrap = 1;
+   config->nomousetrap = 0;
+   config->mousetrap = 1;
 }
 
 void
 Menu::noMousetrapCB(puObject *)
 {
-   display->nomousetrap = 1;
-   display->mousetrap = 0;
+   config->nomousetrap = 1;
+   config->mousetrap = 0;
 }
 
 void
@@ -199,7 +200,7 @@ Menu::wireframeCB(puObject *)
    glDisable(GL_LIGHT0);
    glShadeModel(GL_FLAT);
    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-   display->wireframe = 1;
+   config->wireframe = 1;
 }
 
 void
@@ -211,7 +212,7 @@ Menu::noWireframeCB(puObject *)
    glEnable(GL_LIGHT0);
    glShadeModel(GL_SMOOTH);
    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-   display->wireframe = 0;
+   config->wireframe = 0;
 }
 
 void
@@ -223,26 +224,26 @@ Menu::fogCB(puObject *)
 void
 Menu::noFogCB(puObject *)
 {
-   display->nofog = 1;
+   config->nofog = 1;
    glDisable(GL_FOG);
 }
 void
 Menu::flatCB(puObject *)
 {
-   display->nosmooth = 1;
+   config->nosmooth = 1;
    glShadeModel(GL_FLAT);
 }
 
 void
 Menu::smoothCB(puObject *)
 {
-   display->nosmooth = 0;
+   config->nosmooth = 0;
    glShadeModel(GL_SMOOTH);
 }
 
 void
 Menu::exitCB(puObject *)
 {
-   DEBUG ("Exit selected from menu");
+   debug->put("Exit selected from menu");
    exit(0);
 }
