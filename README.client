@@ -34,8 +34,8 @@ page down   = zoom out
 insert      = insert menu bar
 end         = remove menu bar
 home        = reset to the starting position
-,           = decrease light
-.           = increase light
+,           = move the light
+.           = move the light opposite way
 esc         = exit
 
 Please report problems to majik@majik.netti.fi or
