@@ -22,90 +22,69 @@
 #include <stdio.h>
 #include <ssg.h>
 #include <pu.h>
-
 #include <iostream.h>
 
 #include "Scene.hpp"
 
-// class Scene;
-
-///
-#define NO_SOUND 0
-///
-#define MOVEMENT_SOUND 1
-
 /** An object class linked-list. This class contains an interactive object and
-handles all things like moving and removing it. */
+    handles all things like moving and removing it. */
 
 class Object
 {
- public:
-   Object();
-   ~Object();
-
-   /// Initialize a new object.
-   void init(int id , char *file_name);
-   /// Called when object moves.
-   void makeSound(int); 
-   /// For client to get sound made.
-   int getCurrentSound();
-   /// Move object to a new position.
-   void moveTo(float x, float y, float h);
-   /// Move object to a new position.
-   void moveTo(sgCoord where);
-
-   /// Get the Objects current Position
-   sgCoord getPos();
-
-   void setScale( sgVec3 );
-   
-   void rotateX ( double );
-
-   int getMoveCounter();
-   
-   ///
-   static Object *last;
-   ///
-   static Object *first;
-   
-   Object *getNext();
-   
-   int getID();
-
-   puText *getTextObject() { return puhe; } // a kludge
-   
-   char *getFileName();
-   
-   void setSayString(char *);
-   void revealSayString();
-   void hideSayString();
-   
- private:
-   ///
-   ssgTransform *trans;
-   ///
-   ssgEntity *obu;
-   ///
-   puText *puhe;
-
-   ///
-   char file_name[80];
-   ///
-   int movecounter;
-   ///
-   int id;
-   ///
-
-   Object *prev;
-   ///
-   Object *next;
-
-   /* Note from Steve Brown - why is everything else public?? */
-   /* Note from Tommi Leino - object oriented programming sucks :) */
+public:
+  Object();
+  ~Object();
   
-   int currentSound;
-   ///
-   sgCoord ob_pos;
+  /// Initialize a new object.
+  void init(int id , char *file_name);
+  /// Called when object moves.
+  void makeSound(int); 
+  /// For client to get sound made.
+  int getCurrentSound();
+  /// Move object to a new position.
+  void moveTo(float x, float y, float h);
+  /// Move object to a new position.
+  void moveTo(sgCoord where);
+  /// Get the Objects current Position
+  sgCoord getPos();
+  /// Set the object's scale.
+  void setScale( sgVec3 );
+  /// Rotate the object X-axis.
+  void rotateX ( double );
+  /// Return the amount of moves made, used for animation kludge.
+  int getMoveCounter();
+  /// A pointer to last object.
+  static Object *last;
+  /// A pointer to first object.
+  static Object *first;
+  /// A pointer to next object.
+  Object *getNext();
+  /// Return the Object ID, OID.
+  int getID();
+  /// Return the say string object.
+  puText *getTextObject() { return puhe; } // a kludge
+  /// Return the object's model filename.
+  char *getFileName();
+  /// Set the object's say string-
+  void setSayString(char *);
+  /// Reveal the say string.
+  void revealSayString();
+  /// Hide the say string.
+  void hideSayString();  
+private:
+  ssgTransform *trans;
+  ssgEntity *obu;
+  puText *puhe;
+  
+  char file_name[80];
+  int movecounter;
+  int id;
+  
+  Object *prev;
+  Object *next;
+  
+  int currentSound;
+  sgCoord ob_pos;
 };
 
 extern Object *object;
@@ -114,19 +93,18 @@ extern Object *object;
 
 class Player : public Object
 {
- public:
-   Player()    { movementLock = 0; }
-   ~Player();
-   
-   void lockMovement()  { movementLock = 1; }
-   void unLockMovement() { movementLock = 0; }
+public:
+  Player()    { movementLock = false; }
+  ~Player();
   
-   int isMovementLocked()   { return movementLock; }
-   
- private:
-   
-   int movementLock;
+  /// Lock the movement.
+  void lockMovement()  { movementLock = true; }
+  /// Release the movement lock, done when the server has acknowledged it.
+  void unLockMovement() { movementLock = false; }
+  ///
+  bool isMovementLocked()   { return movementLock; }
+private:  
+  int movementLock;
 };
-
 
 #endif /* __OBJECT_HPP__ */

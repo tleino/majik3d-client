@@ -21,18 +21,27 @@
 
 #include <pu.h>
 
+/** An overlay class. This class draws all "overlaying" stuff to the
+    screen after others has been done. This includes drawing menus, fps
+    calculator, prompts, dialogs etc. */
+
 class Overlay
 {
- public:
-   Overlay();
-   ~Overlay();
-   
-   void init();
-   void draw();
-   
-   puText *status_text;
-   puInput *inp;
-   int inp_command;
+public:
+  Overlay();
+  ~Overlay();
+  
+  /// Initialize the class.
+  void init();
+  /// Draw the stuff to the screen.
+  void draw();
+  
+  /// Pointer to status bar.
+  puText *status_text;
+  /// Pointer to input prompt.
+  puInput *inp;
+  /// The command executed after input prompt has received '\n'.
+  int inp_command;
 };
 
 extern Overlay *overlay;

@@ -46,13 +46,13 @@
 
 class Protocol
 {
- public:
-   Protocol();
-   ~Protocol();
-
-   /** Parse a command sent by the server. */
-
-   void parseCommand(char *buf);
+public:
+  Protocol();
+  ~Protocol();
+  
+  /** Parse a command sent by the server. */
+  
+  void parseCommand(char *buf);
 };
 
 extern Protocol *protocol;

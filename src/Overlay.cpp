@@ -29,23 +29,6 @@
 #include "Config.hpp"
 #include "Menu.hpp"
 
-void inputCB (puObject *o)
-{
-   char *val = NULL;
-   o->getValue (&val);
-   debug->put ("got val: %s", val);
-   if (strlen(val) < 3) {
-	  return;
-   }
-   
-   sock->writePacket ("%d %s", overlay->inp_command, val);
-   overlay->inp->setValue ("");
-   overlay->inp->setLabel ("");
-   overlay->inp->acceptInput  () ;
-   overlay->inp->setCursor ( 0 ) ;
-   overlay->inp->hide();
-}
-
 Overlay::Overlay()
 {
 }
@@ -57,34 +40,34 @@ Overlay::~Overlay()
 void
 Overlay::init()
 {
-   puInit();
-   if (config->nomouse != 1)
-	 puShowCursor();
-   
-   puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
-   puSetDefaultColourScheme (1.0, 1.0, 1.0, 0.6f);
-   
-   status_text = new puText (5, 10);
-   status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
-   
-   inp = new puInput ( 5, 25, display->width-5, 5+20 ) ;
-   inp->setLegend    ( "Legend" ) ;
-   inp->setValue ("");
-   inp->setLabel ("");
-   inp->acceptInput  () ;
-   inp->setCursor ( 0 ) ;
-   inp->setCallback (inputCB);
-   inp->hide();
-   
-   menu->init();
+  puInit();
+  if (config->nomouse != 1)
+    puShowCursor();
+  
+  puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
+  puSetDefaultColourScheme (1.0, 1.0, 1.0, 0.6f);
+  
+  status_text = new puText (5, 10);
+  status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
+  
+  inp = new puInput ( 5, 25, display->width-5, 5+20 ) ;
+  inp->setLegend    ( "Legend" ) ;
+  inp->setValue ("");
+  inp->setLabel ("");
+  inp->acceptInput  () ;
+  inp->setCursor ( 0 ) ;
+  inp->setCallback (Input::promptDown);
+  inp->hide();
+  
+  menu->init();
 }
 
 void
 Overlay::draw()
 {
-   glEnable (GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-   glAlphaFunc(GL_GREATER, 0.1f);
-   puDisplay();
-   glDisable (GL_BLEND);
+  glEnable (GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glAlphaFunc(GL_GREATER, 0.1f);
+  puDisplay();
+  glDisable (GL_BLEND);
 }

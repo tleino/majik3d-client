@@ -27,17 +27,17 @@
 
 class Debug
 {
- public:
-	Debug();
-	~Debug();
-   /// Add a new debug message.
-   void put(char *, ...);
-
-   /// Allow printf() style formatting in DEBUG() macro.
-   char *string(char *, ...);
-
-   /// File pointer for protocol debug.
-   FILE *fp;
+public:
+  Debug();
+  ~Debug();
+  /// Add a new debug message.
+  void put(char *fmt, ...);
+  
+  /// Allow printf() style formatting in DEBUG() macro.
+  char *string(char *fmt, ...);
+  
+  /// File pointer for protocol debug.
+  FILE *fp;
 };
 
 extern Debug *debug;

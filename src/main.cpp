@@ -37,7 +37,6 @@
 #include "Perlin.hpp"
 #include "Mapquad.hpp"
 
-
 bool quit = false;
 Error *error = NULL;
 Config *config = NULL;
@@ -53,67 +52,65 @@ Perlin *perlin = NULL;
 Overlay *overlay = NULL;
 Mapquad *Mapquad::root_map = NULL;
 
-
 int
 main(int argc, char **argv)
 {      
-   // Initialize the necessary global variables as proper objects
-   error = new Error;
-   config = new Config;
-   config->readConfig();
-   debug = new Debug;
-   display = new Display;
-   landscape = new Landscape;
-   input = new Input;
-   menu = new Menu;
-   scene = new Scene;
-   protocol = new Protocol;
-   perlin = new Perlin;
-   overlay = new Overlay;
-   Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
-   
-   // Check the config object for ip / port settings and create the socket accordingly
-   if(config->server_ip != NULL || config->server_port)
-	 sock = new Socket(config->server_ip, config->server_port);
-   else
-	 sock = new Socket("127.0.0.1", 4001); // majik.netti.fi 
-
-   glutInit(&argc, argv);
-
-   // Assign proper width / height 
-   if(config->screen_width && config->screen_height && config->bpp)
-	 {
-		display->width = config->screen_width;
-		display->height = config->screen_height;
-		display->bpp = config->bpp;
-	 }
+  // Initialize the necessary global variables as proper objects
+  error = new Error;
+  config = new Config;
+  config->readConfig();
+  debug = new Debug;
+  display = new Display;
+  landscape = new Landscape;
+  input = new Input;
+  menu = new Menu;
+  scene = new Scene;
+  protocol = new Protocol;
+  perlin = new Perlin;
+  overlay = new Overlay;
+  Mapquad::root_map = new Mapquad (NULL, 0, 0, 0);
   
-  // sock->connectServer();
+  // Check the config object for ip / port settings and create the socket
+  // accordingly.
+  if(config->server_ip != NULL || config->server_port)
+    sock = new Socket(config->server_ip, config->server_port);
+  else
+    sock = new Socket("195.197.61.60", 4001);
+  
+  glutInit(&argc, argv);
+  
+  // Assign proper width / height 
+  if(config->screen_width && config->screen_height && config->bpp)
+    {
+      display->width = config->screen_width;
+      display->height = config->screen_height;
+      display->bpp = config->bpp;
+    }
+  
 #ifndef WIN32
-   sock->connectServer();
+  sock->connectServer();
 #endif   
-      
-   // Open the screen
-   display->openScreen();
-   
-//   Mapquad::root_map->getMapquad(12,0,0);
-   glutMainLoop();
-   
-   // Call ending functions
-   display->closeScreen();
-   
-   // Clean up
-   delete error;
-   delete debug;
-   delete sock;
-   delete display;
-   delete landscape;
-   delete input;
-   delete config;
-   delete menu;
-   delete scene;
-   delete perlin;
-   
-   // Exit program
-   return 0;
+  
+  // Open the screen
+  display->openScreen();
+  
+  glutMainLoop();
+  
+  // Call ending functions
+  display->closeScreen();
+  
+  // Clean up
+  delete error;
+  delete debug;
+  delete sock;
+  delete display;
+  delete landscape;
+  delete input;
+  delete config;
+  delete menu;
+  delete scene;
+  delete perlin;
+  
+  // Exit program
+  return 0;
 }

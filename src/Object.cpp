@@ -28,210 +28,209 @@ Object *Object::last = NULL;
 
 Object::Object()
 {
-   debug->put("Object constructor");
-   
-   if (first == NULL)
-	 first = this;
-   
-   if (last != NULL)
-	 prev = last;
-   else
-	 prev = NULL;
-   
-   if (prev != NULL)
-	 prev->next = this;
-   
-   last = this;
-   next = NULL;
-
-   if (prev != NULL)
-	 debug->put("Object parent: %d", prev->id);
-   
-   movecounter = 0;
+  debug->put("Object constructor");
+  
+  if (first == NULL)
+    first = this;
+  
+  if (last != NULL)
+    prev = last;
+  else
+    prev = NULL;
+  
+  if (prev != NULL)
+    prev->next = this;
+  
+  last = this;
+  next = NULL;
+  
+  if (prev != NULL)
+    debug->put("Object parent: %d", prev->id);
+  
+  movecounter = 0;
 }
 
 Object::~Object()
 {
-   debug->put("Object destructor");
-   
-   if (prev != NULL)
-	 {
-		if (next != NULL)
-		  prev->next = next;
-		else
-		  prev->next = NULL;
-	 }
-   
-   if (next != NULL)
-	 {
-		if (prev != NULL)
-		  next->prev = prev;
-		else
-		  next->prev = NULL;
-	 }
-		
-   if (this == last)
-	 {
-		if (prev != NULL)
-		  last = prev;
-		else
-		  last = NULL;
-	 }
-		
-   if (this == first)
-	 {
-		if (next != NULL)
-		  first = next;
-		else 
-		  first = NULL;
-	 }
-
-   scene->scene_root->removeKid( trans );
-   
-   delete trans;
-   delete puhe;
+  debug->put("Object destructor");
+  
+  if (prev != NULL)
+    {
+      if (next != NULL)
+	prev->next = next;
+      else
+	prev->next = NULL;
+    }
+  
+  if (next != NULL)
+    {
+      if (prev != NULL)
+	next->prev = prev;
+      else
+	next->prev = NULL;
+    }
+  
+  if (this == last)
+    {
+      if (prev != NULL)
+	last = prev;
+      else
+	last = NULL;
+    }
+  
+  if (this == first)
+    {
+      if (next != NULL)
+	first = next;
+      else 
+	first = NULL;
+    }
+  
+  scene->scene_root->removeKid( trans );
+  
+  delete trans;
+  delete puhe;
 }
 
 void
 Object::init(int id, char *file_name)
 {
-   this->id = id;
-   strcpy(this->file_name, file_name);
-   
-   trans = new ssgTransform;
-   
-   ssgEntity *pengu = ssgLoadAC(file_name);
-   
-   trans  -> addKid ( pengu  ) ;
-   ssgFlatten         ( pengu  ) ;
-   ssgStripify        ( trans  ) ;
-   trans  -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
-   
-   scene->scene_root -> addKid ( trans ) ;
-
-   puhe = new puText(0, 0);
-   puhe->setLabel("");
+  this->id = id;
+  strcpy(this->file_name, file_name);
+  
+  trans = new ssgTransform;
+  
+  ssgEntity *pengu = ssgLoadAC(file_name);
+  
+  trans  -> addKid ( pengu  ) ;
+  ssgFlatten         ( pengu  ) ;
+  ssgStripify        ( trans  ) ;
+  trans  -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
+  
+  scene->scene_root -> addKid ( trans ) ;
+  
+  puhe = new puText(0, 0);
+  puhe->setLabel("");
 }
 
 void 
 Object::moveTo(float x, float y, float h)
 {
-   // Smooth the movement from point a to point b.
-   float old_x, old_y, old_h;
-   float dif_x, dif_y, dif_h;
-   int counter = 0;
-   
-   old_x = ob_pos.xyz[0];
-   old_y = ob_pos.xyz[1];
-   old_h = ob_pos.hpr[0];
-   dif_x = x-old_x; dif_y = y-old_y; dif_h = h-old_h;
-   
-   // Disabled for a while.
-   while (0) {
-	  counter++;
-	  
-	  if (dif_h) {
-		 old_h += dif_h/5.0f;
-		 ob_pos.hpr[0] = old_h;
-	  }
-	  if (dif_x) {
-		 old_x += dif_x/5.0f;
-		 ob_pos.xyz[0] = old_x;
-	  }
-	  if (dif_y) {
-		 old_y += dif_y/5.0f;
-		 ob_pos.xyz[1] = old_y;
-	  }
-	  
-	  if (counter == 5) {
-		 ob_pos.xyz[0] = x;
-		 ob_pos.xyz[1] = y;
-		 ob_pos.hpr[0] = h;
-		 break;
-	  }
-	  else {
-		 movecounter++;
-	  }
-   } 
-   
-   ob_pos.xyz[0] = x;
-   ob_pos.xyz[1] = y;
-   ob_pos.hpr[0] = h;
-
-   ob_pos.xyz [ 2 ] = scene->getHOT(ob_pos.xyz [ 0 ],
-					  ob_pos.xyz [ 1 ] ) + 0.1f;
-   ob_pos.hpr [ 1 ] = 0.0f ;
-   ob_pos.hpr [ 2 ] = 0.0f ;
-
-   movecounter++;
-//	cerr << "ID: " << id << " is at pos " << ob_pos.xyz[0] << ", " << ob_pos.xyz[1] << endl;
+  // Smooth the movement from point a to point b.
+  float old_x, old_y, old_h;
+  float dif_x, dif_y, dif_h;
+  int counter = 0;
+  
+  old_x = ob_pos.xyz[0];
+  old_y = ob_pos.xyz[1];
+  old_h = ob_pos.hpr[0];
+  dif_x = x-old_x; dif_y = y-old_y; dif_h = h-old_h;
+  
+  // Disabled for a while.
+  while (false) {
+    counter++;
+    
+    if (dif_h) {
+      old_h += dif_h/5.0f;
+      ob_pos.hpr[0] = old_h;
+    }
+    if (dif_x) {
+      old_x += dif_x/5.0f;
+      ob_pos.xyz[0] = old_x;
+    }
+    if (dif_y) {
+      old_y += dif_y/5.0f;
+      ob_pos.xyz[1] = old_y;
+    }
+    
+    if (counter == 5) {
+      ob_pos.xyz[0] = x;
+      ob_pos.xyz[1] = y;
+      ob_pos.hpr[0] = h;
+      break;
+    }
+    else {
+      movecounter++;
+    }
+  } 
+  
+  ob_pos.xyz[0] = x;
+  ob_pos.xyz[1] = y;
+  ob_pos.hpr[0] = h;
+  
+  ob_pos.xyz [ 2 ] = scene->getHOT(ob_pos.xyz [ 0 ],
+				   ob_pos.xyz [ 1 ] ) + 0.1f;
+  ob_pos.hpr [ 1 ] = 0.0f ;
+  ob_pos.hpr [ 2 ] = 0.0f ;
+  
+  movecounter++;
 }
 
 void 
 Object::moveTo(sgCoord where)
 {
-	moveTo(where.xyz[0], where.xyz[1], where.hpr[0]);
+  moveTo(where.xyz[0], where.xyz[1], where.hpr[0]);
 }
 
 sgCoord 
 Object::getPos()
 {
-	// This may need to be explicitly done using a sgCopyVec3?
-	return ob_pos;
+  // This may need to be explicitly done using a sgCopyVec3?
+  return ob_pos;
 }
 
 void
 Object::setScale( sgVec3 scale )
 {
-   sgCoord temp = getPos();
-   
-   trans->setTransform( &temp, scale[0], scale[1], scale[2] );
+  sgCoord temp = getPos();
+  
+  trans->setTransform( &temp, scale[0], scale[1], scale[2] );
 }
 
 void
 Object::rotateX( double a )
 {
-   ob_pos.hpr[0] += a;
+  ob_pos.hpr[0] += a;
 }
 
 int
 Object::getMoveCounter()
 {
-   return movecounter;
+  return movecounter;
 }
 
 int
 Object::getID()
 {
-   return id;
+  return id;
 }
 
 Object *
 Object::getNext()
 {
-   return next;
+  return next;
 }
 
 void
 Object::setSayString(char *str)
 {
-   puhe->setLabel(str);
+  puhe->setLabel(str);
 }
 
 void
 Object::revealSayString()
 {
-   puhe->reveal();
+  puhe->reveal();
 }
 
 void
 Object::hideSayString()
 {
-   puhe->hide();
+  puhe->hide();
 }
 
 char *
 Object::getFileName()
 {
-   return file_name;
+  return file_name;
 }

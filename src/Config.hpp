@@ -26,46 +26,46 @@
 
 class Config
 {
- public:
-   Config();
-   ~Config();
-   /// Try to read user configuration from configuration files.
-   void readConfig();
- private:
-   void parseLine(char *, int);
-   void parseOption(char *, char *);
-   bool readOptions(char *);
- public:
-   char *server_ip;
-   int server_port;
-   int debug_level, protocol_debug;
-   ///
-   int screen_width;
-   ///
-   int screen_height;
-   ///
-   int bpp;
-   ///
-   int mousetrap;
-   ///
-   int nomousetrap;
-   ///
-   int noTexture;
-   ///
-   int wireframe;
-   ///
-   int nomouse;
-   ///
-   int nofog;
-   ///
-   int nosmooth;
-   ///
-   int nomenu;
-   ///
-   int camera;
-   ///
-   int fullscreen;
-   ///
+public:
+  Config();
+  ~Config();
+  /// Try to read user configuration from configuration files.
+  void readConfig();
+private:
+  void parseLine(char *strbuf, int line);
+  void parseOption(char *option, char *value);
+  bool readOptions(char *filename);
+public:
+  char *server_ip;
+  int server_port;
+  int debug_level, protocol_debug;
+  ///
+  int screen_width;
+  ///
+  int screen_height;
+  ///
+  int bpp;
+  ///
+  int mousetrap;
+  ///
+  int nomousetrap;
+  ///
+  int noTexture;
+  ///
+  int wireframe;
+  ///
+  int nomouse;
+  ///
+  int nofog;
+  ///
+  int nosmooth;
+  ///
+  int nomenu;
+  ///
+  int camera;
+  ///
+  int fullscreen;
+  ///
 };
 
 extern Config *config;

@@ -26,43 +26,43 @@
 
 class Display
 {
- public:
-   Display();
-   /// Init the display using width, height and bpp as arguments.
-   Display(int width, int height, int bpp);
-   ~Display();
-   ///
-   void openScreen();
-   ///
-   void closeScreen();
-   ///
-   static void updateScreen();
-   ///
-   static void resizeScreen(int width, int height);
-   ///
-   static void mouseMotion(int x,int y);
- private:
-   static void idle();
- public: 
-   ///
-   int bpp;
-   ///
-   int width;
-   ///
-   int height;
-   ///
-   int initialWidth;
-   ///
-   int initialHeight;
-   ///
-   int state;
-   ///
-   float pitch;
-   ///
-   float sun_x, sun_y, sun_z;
-   char stxt[8192*3];
-
-   static bool sceneVisible;
+public:
+  Display();
+  /// Init the display using width, height and bpp as arguments.
+  Display(int width, int height, int bpp);
+  ~Display();
+  ///
+  void openScreen();
+  ///
+  void closeScreen();
+  ///
+  static void updateScreen();
+  ///
+  static void resizeScreen(int width, int height);
+  ///
+  static void mouseMotion(int x,int y);
+private:
+  static void idle();
+public: 
+  ///
+  int bpp;
+  ///
+  int width;
+  ///
+  int height;
+  ///
+  int initialWidth;
+  ///
+  int initialHeight;
+  ///
+  int state;
+  ///
+  float pitch;
+  ///
+  float sun_x, sun_y, sun_z;
+  char stxt[8192*3];
+  
+  static bool sceneVisible;
 };
 
 extern Display *display;

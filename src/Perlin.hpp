@@ -21,27 +21,27 @@
 
 /** A perlin noise algorithm. Note that this code is ported straight from the
     pseudo code at http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
-	and needs some serious optimization and tuning. */
+    and needs some serious optimization and tuning. */
 
 class Perlin
 {
- public:
-   Perlin();
-   ~Perlin();
-
-   /** Generate some noise by x and y. 
-	   @return A double within range of -1 and 1. */
-   double perlinNoise_2D(double x, double y);
-
- private:
-
-   double *interpolation_table;
-   
-   double noise(int octave, int x, int y);
-   double cosine_Interpolate(double a, double b, double x);
-   double smoothedNoise(int octave, double x, double y);
-   double interpolatedNoise(int octave, double x, double y);
-
+public:
+  Perlin();
+  ~Perlin();
+  
+  /** Generate some noise by x and y. 
+      @return A double within range of -1 and 1. */
+  double perlinNoise_2D(double x, double y);
+  
+private:
+  
+  double *interpolation_table;
+  
+  double noise(int octave, int x, int y);
+  double cosine_Interpolate(double a, double b, double x);
+  double smoothedNoise(int octave, double x, double y);
+  double interpolatedNoise(int octave, double x, double y);
+  
 };
 
 extern Perlin *perlin;

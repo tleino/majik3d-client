@@ -31,43 +31,30 @@ class Object;
 
 class Scene
 {
- public:
-   Scene();
-   ~Scene();
-   
-   ///
-   void addObject(Object *);
-   ///
-   void removeObject(int);
-   ///
-   void removeObject(Object *);
-   ///
-   void addSpecial(float x, float y, char *model, bool cutout);
-
-   /// Draw the scene to screen.
-   void draw();
-   /// Update the scene.
-   void update();
-   /// Initialize the scene.
-   void init();
-
-   ///
-   void drawText(puText *, sgVec3);
-   
-   ///
-
-   float getHOT( float, float );
-   
-
-//   list<Object*> object_list;
-   
-   ///
-   ssgRoot *scene_root;
-
-   ///
-   int initialized;
-
-   
+public:
+  Scene();
+  ~Scene();
+  
+  /// FIXME: Unimplemented.
+  void addObject(Object *);
+  /// FIXME: Unimplemented.
+  void removeObject(int);
+  /// FIXME: Unimplemented.
+  void removeObject(Object *);
+  /// Add a special object that doesn't be in any list, a tree for example.
+  void addSpecial(float x, float y, char *model, bool cutout);
+  /// Draw the scene to screen.
+  void draw();
+  /// Update the scene.
+  void update();
+  /// Initialize the scene.
+  void init();
+  /// Draw the chat-string to screen.
+  void drawText(puText *, sgVec3);
+  /// Get Height of Terrain of (x,y).
+  float getHOT( float x, float y);
+  /// A pointer to scene's root node.
+  ssgRoot *scene_root;
 };
 
 extern Scene *scene; 

@@ -22,9 +22,9 @@
 #include <errno.h>
 
 /// Highest severity of an error; exits the program.
-#define ERROR_FATAL	   -1
+#define ERROR_FATAL   -1
 /// Lowest severity of an error; displays the error and continues.
-#define ERROR_WARNING	1
+#define ERROR_WARNING  1
 
 /** An error message handling class. All the error messages should
     go through this class to ensure consistency and handling of
@@ -32,13 +32,13 @@
 
 class Error
 {
- public:
-   Error();
-   ~Error();
-   /// Adds a new error message.
-   void put(const int severity, const char *error_message, ...);
- private:
-   char *buf;
+public:
+  Error();
+  ~Error();
+  /// Adds a new error message.
+  void put(const int severity, const char *error_message, ...);
+private:
+  char *buf;
 };
 
 extern Error *error;

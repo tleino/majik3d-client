@@ -6,60 +6,76 @@
 #include <windows.h>
 
 /** A socket class. Handles the connecting, disconnecting, reading
-    and writing packets with the server. */
+    and writing packets with the server. A win32 version. */
+
 class Socket
 {
-
 public:
-	Socket(char *szHost,int nPort);					// Connect to a host.
-	virtual ~Socket();
-	void	Thread();									// The new thread.
+  /// Connect to a host.
+  Socket(char *szHost,int nPort);
+  virtual ~Socket();
+  /// The new thread.
+  void	Thread();
 public:
-	virtual char *readPacket();					// Reads a line of data, returns NULL if there is no line ready. (The tailing \r is removed)
-	virtual void writePacket(char *szFmt,...);	// Writes data.
-
-	void	Dispatch(char *szString);
+  /// Reads a line of data, returns NULL if there is no line ready.
+  virtual char *readPacket();
+  /// Sends data to the server.
+  virtual void writePacket(char *szFmt,...);
+  ///
+  void	Dispatch(char *szString);
 public:
-	char	*szHost;
-	int		nPort;
-	int		nSocket;
-	char	*szBuffer;
-	HANDLE	hWait;	// The wait handle.
-	HANDLE	NetThread;
-	HANDLE	LinesSemaphore;	// We need a semaphore to be sure that the linked list of lines recived is ok.
-	struct LinkedList_s {
-		char *szText;
-		struct LinkedList_s *pNext;
-	};
-	struct LinkedList_s *pFirstLine;
+  ///
+  char *szHost;
+  ///
+  int nPort;
+  ///
+  int nSocket;
+  ///
+  char *szBuffer;
+  /// The wait handle.
+  HANDLE hWait;
+  ///
+  HANDLE NetThread;
+  /** We need a semaphore to be sure that the linked list of lines is
+      received is ok. */
+  HANDLE LinesSemaphore;
+  struct LinkedList_s {
+    char *szText;
+    struct LinkedList_s *pNext;
+  };
+  struct LinkedList_s *pFirstLine;
 };
 
 #else
 
+/** A socket class. Handles the connecting, disconnecting, reading
+    and writing packets with the server. An UNIX version. */
+
 class Socket
 {
- public:
-   Socket();
-   Socket(char *ip, int port);
-   ~Socket();
-   /// Connect to the server.
-   void connectServer();
-   /// Disconnect the server.
-   void disconnectServer();
-   /** Read the packet sent by the server if there is any.
-       @returns The packet sent by the server. */
-   char *readPacket();
-   /// Write packet to the server.
-   void writePacket(char *buf, ...);
- public:
-   /// IP address if the server.
-   char *ip;
-   /// Port of the server.
-   int port;
- private:
-   int nSocket;
-   char *szBuffer;
-
+public:
+  ///
+  Socket();
+  ///
+  Socket(char *ip, int port);
+  ~Socket();
+  /// Connect to the server.
+  void connectServer();
+  /// Disconnect the server.
+  void disconnectServer();
+  /** Read the packet sent by the server if there is any.
+      @returns The packet sent by the server. */
+  char *readPacket();
+  /// Write packet to the server.
+  void writePacket(char *buf, ...);
+public:
+  /// IP address if the server.
+  char *ip;
+  /// Port of the server.
+  int port;
+private:
+  int nSocket;
+  char *szBuffer;
 };
 
 
@@ -68,4 +84,3 @@ class Socket
 extern Socket *sock;
 
 #endif /* __SOCKET_HPP__ */
-
