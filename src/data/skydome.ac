@@ -1,11 +1,9 @@
 AC3Db
-MATERIAL "" rgb 1 1 1  amb 0.2 0.2 0.2  emis 0 0 0  spec 0.5 0.5 0.5  shi 10  trans 0
+MATERIAL "" rgb 1 0 0  amb 0.2 0.2 0.2  emis 0 0 0  spec 0.5 0.5 0.5  shi 10  trans 0
 OBJECT world
 kids 1
 OBJECT poly
 name "sphere"
-texture "../gfx/planet.rgb"
-texrep 10 10
 numvert 25
 558 230.888 0
 483.242 -37.738 0
