@@ -18,6 +18,7 @@
 #include "Keyboard.hpp"
 #include "Matrix.hpp"
 #include "P3D.hpp"
+#include "Perlin.hpp"
 
 extern Display *display;
 extern Socket *sock;
