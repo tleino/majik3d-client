@@ -60,3 +60,9 @@ void Display::closeScreen()
    if(ctx != NULL)
 	 delete ctx;
 }
+
+void Display::updateScreen()
+{
+   landscape->drawLandscape();
+   SDL_Flip(ctx->surface);
+}

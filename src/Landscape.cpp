@@ -21,6 +21,18 @@ Landscape::~Landscape()
    #endif
 }
 
+void Landscape::drawLandscape()
+{
+}
+
+void Landscape::setViewport(int x, int y, int w, int h)
+{
+   viewport_x = x;
+   viewport_y = y;
+   viewport_w = w;
+   viewport_h = h;
+}
+
 void Landscape::addObject(int oid)
 {
 }

@@ -11,6 +11,7 @@ class Display
    ~Display();
    void openScreen();
    void closeScreen();
+   void updateScreen();
  public: 
    SDLMesaContext *ctx;
    int width, height, bpp;
