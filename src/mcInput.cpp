@@ -68,7 +68,7 @@ Input::keyDown(unsigned char k, int x, int y)
 
 	puKeyboard (k, PU_DOWN);
   
-	static int wireframe = 0;
+//	static int wireframe = 0;
   
 	if (tuxi != NULL)
 	{

@@ -45,17 +45,17 @@ int mcTerrainGen::getPixel(double x, double y)
 
 
 
-	int ra = (r1 * val + r2 * (1.0 - val));
+	int ra = (int) (r1 * val + r2 * (1.0 - val));
 
-	int ga = (g1 * val + g2 * (1.0 - val));
+	int ga = (int) (g1 * val + g2 * (1.0 - val));
 
-	int ba = (b1 * val + b2 * (1.0 - val));
+	int ba = (int) (b1 * val + b2 * (1.0 - val));
 
-	int rb = (r3 * val + r4 * (1.0 - val));
+	int rb = (int) (r3 * val + r4 * (1.0 - val));
 
-	int gb = (g3 * val + g4 * (1.0 - val));
+	int gb = (int) (g3 * val + g4 * (1.0 - val));
 
-	int bb = (b3 * val + b4 * (1.0 - val));
+	int bb = (int) (b3 * val + b4 * (1.0 - val));
 
 
 	selectPerlinOctave(1);
@@ -79,9 +79,9 @@ int mcTerrainGen::getPixel(double x, double y)
 
 	val = gain(val, 0.9);
 
-	int r = (rb * val + ra * (1.0 - val));
-	int g = (gb * val + ga * (1.0 - val));
-	int b = (bb * val + ba * (1.0 - val));
+	int r = (int) (rb * val + ra * (1.0 - val));
+	int g = (int) (gb * val + ga * (1.0 - val));
+	int b = (int) (bb * val + ba * (1.0 - val));
 
 	sgVec3 lightDir = { 0.0, 0.7, 0.7 };
 
@@ -102,9 +102,9 @@ int mcTerrainGen::getPixel(double x, double y)
 
 //	float d = ((int)x % 10) / 10.0;
 
-	r *= d;
-	b *= d;
-	g *= d;
+	r *= (int) d;
+	b *= (int) d;
+	g *= (int) d;
 
 //	r = (int)255.0f*d;
 //	g = (int)255.0f*d;

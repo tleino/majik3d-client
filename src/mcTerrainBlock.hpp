@@ -359,7 +359,7 @@ exchangeBorderVertices()
 {
 	TerrainBlock *b;
 	
-	if (b = blockHash.get(m_x+1, m_y) )
+	if ((b = blockHash.get(m_x+1, m_y)) )
 	{
 		for (int i = 0; i < DIM+1; i++)
 		{
@@ -373,7 +373,7 @@ exchangeBorderVertices()
 		}	
 	}
 
-	if (b = blockHash.get(m_x, m_y+1) )
+	if ((b = blockHash.get(m_x, m_y+1)) )
 	{
 		for (int i = 0; i < DIM+1; i++)
 		{
