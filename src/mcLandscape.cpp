@@ -40,6 +40,7 @@
 #include "mcTerrainBlock.hpp"
 #include "mcTexGen.hpp"
 #include "mcTerrainGen.hpp"
+#include "mcTerrainHeightGen.hpp"
 
 #define TILE_SIZE                 512.0f      /* cubits */
 #define LAMBDA                    (TILE_SIZE/16.0f)
@@ -75,27 +76,30 @@ Landscape::~Landscape()
   debug->put("Landscape destructor.");
 }
 
+extern class mcTerrainHeightGen *terraingen;
+
 float
 Landscape::getHOT(float x, float y)
 {
-	return 2000.0f*(float)perlin->perlinNoise_2D(x/1500.0, y/1500.0);
+	return 2000.0f * terraingen->getHeight(x/1280.0, y/1280.0);
 };
 
 void 
 Landscape::getNormal(sgVec3& nrm, float x, float y)
 {
 	sgVec3 a, b;
+	float h = getHOT(x, y);
+	const float d = 32.0f;
 	
-	a [0] = 32.0f;
+	a [0] = d;
 	a [1] = 0;
-	a [2] = getHOT(x, y) - getHOT(x+32.0f, y);
+	a [2] = getHOT(x+d, y) - h;
 	
 	b [0] = 0; 
-	b [1] = 32.0f;
-	b [2] = getHOT(x, y) - getHOT(x, y+32.0f);
+	b [1] = d;
+	b [2] = getHOT(x, y+d) - h;
 	
 	sgVectorProductVec3 (nrm, a, b);
-	
 	sgNormalizeVec3( nrm );
 }
 
@@ -297,7 +301,7 @@ Landscape::getTextureHandle ( int level, int x, int y)
 
 	mcTexGen *tgen = new mcTerrainGen();
 
-	tgen->getPixels(image, x-32, y-32, (x+BLOCK_WIDTH+32), (y+BLOCK_WIDTH+32), TERRAIN_RESOLUTION, TERRAIN_RESOLUTION);
+	tgen->getPixels(image, x, y, (x+BLOCK_WIDTH+32), (y+BLOCK_WIDTH+32), TERRAIN_RESOLUTION, TERRAIN_RESOLUTION);
 
 	glGenTextures (1, &handle);
 	glBindTexture (GL_TEXTURE_2D, handle);
