@@ -3,6 +3,9 @@ To run this binary you'll need:
  - Mesa and GLUT (in MesaDemos package) libraries installed
      ftp://ftp.mesa3d.org/mesa/MesaLib-3.0.tar.gz
      ftp://ftp.mesa3d.org/mesa/MesaDemos-3.0.tar.gz
+ - libpng and zlib installed
+     ftp://ftp.uu.net/graphics/png/libpng-1.0.3.tar.gz
+     ftp://ftp.uu.net/graphics/png/zlib-1.1.3.tar.gz
  - X Window System
  - Linux/i386 operating system
 
