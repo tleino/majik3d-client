@@ -13,7 +13,7 @@ AC_PROG_CXX
 AC_PROG_CXXCPP
 AC_PROG_INSTALL
 
-plib_suffix="-L/usr/local/plib/lib -lsl -lssg -lpu -lfnt -lsg"
+plib_suffix="-L/usr/local/plib/lib -lsl -lsm -lssg -lpu -lfnt -lsg"
 
 dnl Checks for library functions.
 dnl check for OpenGL related libraries
