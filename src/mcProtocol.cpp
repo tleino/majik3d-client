@@ -330,54 +330,22 @@ Protocol::parseCommand(char *input)
       overlay->inp->reveal();
       break;
 	case CMD_SUN_POS:
-		break;
 	
       float heading, pitch, luminance, turbidity;
       if (sscanf (data, "%f %f %f %f", &heading, &pitch, &luminance,
 		  &turbidity) == 4)
 	{
-	  printf ("CMD_SUN_POS %f %f %f %f\n", heading, pitch, luminance, turbidity);
+	  //printf ("CMD_SUN_POS %f %f %f %f\n", heading, pitch, luminance,
+	  //	  turbidity);
 
 	  scene->getSky()->setLuminanceFactor(luminance);
 	  scene->getSky()->setSunPosition(heading, pitch); 
 	  scene->getSky()->setTurbidity(turbidity);
 	  scene->redrawSky();
-	 //scene->sky_entity = mc_sky->Draw();
 	}
       else
-	{
-//	  mc_sky->setLuminanceFactor(1.0);
-//	  mc_sky->setSunPosition(1.0, 1.0); 
-//	  mc_sky->setTurbidity(2.5);
-//	  scene->redrawSky();
-
-	  error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
-		      "command CMD_SUN_POS.");
-	}
-      /*
-	  
-      sgVec4 sunamb  ;
-      sgSetVec3 ( sunposn, -1.0f+(float) mod/10.0f, 0.0f, 0.1f ) ;
-      sgSetVec4 ( sunamb , 1.0f, 1.0f, 1.0f, 1.0f ) ;
-      ssgGetLight ( 0 ) -> setPosition ( sunposn ) ;
-      ssgGetLight ( 0 ) -> setColour ( GL_AMBIENT_AND_DIFFUSE, sunamb ) ;
-      r_add = (float) mod/20.0f;
-      g_add = (float) mod/20.0f;
-      b_add = (float) mod/20.0f;
-      r_add = r_add/1.6f;
-      g_add = g_add/1.3f;
-      b_add = b_add;
-      if (r_add > 0.4f)
-	r_add = 0.4f;
-      if (g_add > 0.7f)
-	g_add = 0.7f;
-      if (b_add > 1.0f)
-	b_add = 1.0f;
-      sgVec4 skycol ;
-      sgSetVec4 ( skycol, 0.1f+r_add, 0.1f+g_add, 0.1f+b_add, 1.0f ) ;
-      glFogfv( GL_FOG_COLOR  , skycol    ) ;
-      glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
-      */
+	error->put (mcError::ERROR_WARNING, "Invalid parameters to protocol " \
+		    "command CMD_SUN_POS.");
       break;
     default:
       error->put (mcError::ERROR_WARNING, "Unknown protocol command received: 0x%X",

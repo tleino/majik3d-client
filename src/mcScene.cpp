@@ -82,18 +82,13 @@ Scene::addSpecial(float x, float y, char *model, bool cutout)
 void
 Scene::redrawSky()
 {
-  if (sky_dome != NULL) 
-    {
-      sky_dome->deRef();
-  //    delete sky_dome; // FIXME: might bug? remove child needed?
-	  
-    }
+  if (sky_dome != NULL) {
+    sky_dome->print();
+  }
   
   sky_dome = new ssgTransform ();
   sky_entity = m_sky->Draw();
   sky_dome->addKid (sky_entity);
-//  ssgFlatten (sky_entity);
-//  sky_dome->clrTraversalMaskBits (SSGTRAV_ISECT|SSGTRAV_HOT);
   scene_root->addKid (sky_dome);
 }
 
