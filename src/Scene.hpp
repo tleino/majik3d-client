@@ -19,7 +19,6 @@
 #ifndef __SCENE_HPP__
 #define __SCENE_HPP__
 
-#include <stl.h>
 #include <stdio.h>
 #include <ssg.h>
 #include <sg.h>
