@@ -4,7 +4,7 @@ OBJECT world
 kids 1
 OBJECT poly
 name "sphere"
-texture "../images/clouds.rgb"
+texture "../gfx/planet.rgb"
 texrep 10 10
 numvert 25
 558 230.888 0
