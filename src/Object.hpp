@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <ssg.h>
+#include <pu.h>
 
 #include "Scene.hpp"
 
@@ -32,8 +33,21 @@ class Object
    Object();
    ~Object();
 
-   ssgTransform *plop;
-     
+   void init(int, char*);
+   
+   sgCoord ob_pos;
+   
+   ssgTransform *trans;
+   ssgEntity *obu;
+   puText *puhe;
+
+   char file_name[80];
+   int movecounter;
+   int id;
+   Object *prev;
+   Object *next;
+   static Object *last;
+   static Object *first;
 };
 
 extern Object *object;

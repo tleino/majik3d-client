@@ -36,14 +36,14 @@ Debug::~Debug()
 const char *
 Debug::string(char *fmt, ...)
 {
-   char *buf;
-   buf = new char[10000];
-   memset(buf, 0, sizeof(buf));
+   char *buf = new char[80];
+   memset (buf, 0, sizeof (buf));
+   
    va_list vl;
    va_start (vl, fmt);
    vsprintf (buf, fmt, vl);
    va_end (vl);
-   
+  
    return buf;
 }
 
@@ -51,7 +51,7 @@ void
 Debug::put(char *fmt, ...)
 {
    char *buf;
-   buf = new char[10000];
+   buf = new char[80];
    memset(buf, 0, sizeof(buf));
    va_list vl;
    va_start (vl, fmt);

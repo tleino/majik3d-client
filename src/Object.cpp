@@ -21,38 +21,90 @@
 #include "Debug.hpp"
 #include "Object.hpp"
 
+Object *Object::first = NULL;
+Object *Object::last = NULL;
 
 Object::Object()
 {
-   plop = new ssgTransform;
+   if (first == NULL)
+	 first = this;
    
-   ssgEntity *tux_obj = ssgLoadAC ( "tuxedo.ac"   ) ;
-   plop->addKid (tux_obj);
+   if (last != NULL)
+	 prev = last;
+   else
+	 prev = NULL;
+   
+   if (prev != NULL)
+	 prev->next = this;
+   
+   last = this;
+   next = NULL;
 
-     ssgFlatten         ( tux_obj  ) ;
-     ssgStripify        ( plop  ) ;
+   if (prev != NULL)
+	 printf("Object parent: %d\n", prev->id);
    
-   
-   sgCoord tuxpos ;
-   sgSetCoord ( & tuxpos, (random() % 10 ) - 7,  random() % 100, random() % 10, 0, 0.0f, 0.0f ) ;
-   
-   plop -> setTransform ( &tuxpos );
-   
-//   scene->addObject(this);
-      
    DEBUG (debug->string("Object constructor"));
 }
 
 Object::~Object()
 {
-//   scene->removeObject(this);
+   if (prev != NULL)
+	 {
+		if (next != NULL)
+		  prev->next = next;
+		else
+		  prev->next = NULL;
+	 }
+   
+   if (next != NULL)
+	 {
+		if (prev != NULL)
+		  next->prev = prev;
+		else
+		  next->prev = NULL;
+	 }
+		
+   if (this == last)
+	 {
+		if (prev != NULL)
+		  last = prev;
+		else
+		  last = NULL;
+	 }
+		
+   if (this == first)
+	 {
+		if (next != NULL)
+		  first = next;
+		else 
+		  first = NULL;
+	 }
+
+   scene->scene_root->removeKid( trans );
+   
+   delete trans;
+   delete puhe;
+   
    DEBUG (debug->string("Object destructor"));
 }
 
-/*
-Object::draw()
+void
+Object::init(int id, char *file_name)
 {
+   this->id = id;
+   strcpy(this->file_name, file_name);
+  
+   trans = new ssgTransform;
+   
+   ssgEntity *pengu = ssgLoadAC(file_name);
+   
+   trans  -> addKid ( pengu  ) ;
+   ssgFlatten         ( pengu  ) ;
+   ssgStripify        ( trans  ) ;
+   trans  -> clrTraversalMaskBits ( SSGTRAV_HOT ) ;
+   
+   scene->scene_root -> addKid ( trans ) ;
 
-
+   puhe = new puText(0, 0);
+   puhe->setLabel("");
 }
-*/

@@ -35,12 +35,15 @@
 #include "Debug.hpp"
 #include "Display.hpp"
 #include "Scene.hpp"
+#include "Socket.hpp"
+#include "Protocol.hpp"
 
 puText *status_text;
 time_t t = time(NULL);
 int frames = 0;
 int mouse_x, mouse_y;
 double start_time;
+extern Object *tuxi;
 
 double read_time_of_day();
 
@@ -57,6 +60,18 @@ double read_time_of_day ()
    
    return (double) tv . tv_sec + (double) tv . tv_usec / 1000000.0 ;
 #endif
+}
+
+void inputCB (puObject *o)
+{
+   char *val = NULL;
+   o->getValue (&val);
+   if (strlen(val) < 3)
+	 return;
+   sock->writePacket ("54 %s", val);
+   printf ("value: %s\n", val);
+   o->setValue(" ");
+   o->hide();
 }
 
 Display::Display()
@@ -95,7 +110,8 @@ Display::openScreen()
    GLenum format;
    
    DEBUG ("Opening screen...");
-   mousetrap = 1;
+   if (display->nomousetrap != 0)
+	 mousetrap = 1;
    
    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
    glutInitWindowSize(width, height);
@@ -112,7 +128,8 @@ Display::openScreen()
    glutMotionFunc(mouseMotion);
    //glutIdleFunc(idle);
    
-   glutWarpPointer (width/2, height/2);
+   if (display->nomousetrap != 1)
+	 glutWarpPointer (width/2, height/2);
       
    /* PLIB: Simple Scene Graph */
    DEBUG ("ssgInit");
@@ -121,7 +138,8 @@ Display::openScreen()
    
    /* PLIB: Picoscopic User Interface */
    puInit();
-   puShowCursor();
+   if (display->nomouse != 1)
+	 puShowCursor();
    
    /* PLIB: Font Library */
    fntTexFont *fnt = new fntTexFont;
@@ -134,10 +152,26 @@ Display::openScreen()
    status_text = new puText (5, 10);
    status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
    
+   inp = new puInput ( 5, 5, width-5, 5+20 ) ;
+   inp->setLegend    ( "Legend" ) ;
+   inp->setValue (" ");
+   inp->setLabel ( " " );
+   inp->acceptInput  () ;
+   inp->setCursor ( 0 ) ;
+   inp->setCallback (inputCB);
+   inp->hide();
+   
    menu->init();   
    scene->init();
 
    glEnable ( GL_DEPTH_TEST);
+   
+   if (display->nofog)
+	 glDisable (GL_FOG);
+   if (display->nosmooth)
+	 glShadeModel (GL_FLAT);
+   else
+	 glShadeModel (GL_SMOOTH);
    
    DEBUG ("Screen opened.");
 }
@@ -163,29 +197,45 @@ Display::updateScreen()
    int t2 = (int) (time(NULL) - t), warp = 0;
    frames++;
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  
+   char *tmp = sock->readPacket();
    
+   while (tmp != NULL)
+	 {
+		protocol->parseCommand(tmp);
+		tmp = sock->readPacket();
+	 }
+     
+   if (display->noTexture)
+	 ssgOverrideTexture (1);
+
    scene->update();
    
-   scene->draw();
+   if (tuxi != NULL)
+	 scene->draw();
    
    /* Trap the mouse */
       
-   if (mouse_x < 1 && display->mousetrap) {
-	  mouse_x = 2; warp = TRUE;
-   } else if (mouse_x > display->width-1 && display->mousetrap) {
-	  mouse_x = display->width-2; warp = TRUE;
-   }
-   if (mouse_y < 1 && display->mousetrap) {
-	  mouse_y = 2; warp = TRUE;
-   } else if (mouse_y > display->height-1 && display->mousetrap) {
-	  mouse_y = display->height-2; warp = TRUE;
-   }
-
-   if (warp) {
-	  glutWarpPointer (mouse_x, mouse_y);
-	  warp = 0;
-   }
-	  
+   if (display->nomousetrap == 0) 
+	 {
+		if (mouse_x < 1 && display->mousetrap) {
+		   mouse_x = 2; warp = TRUE;
+		} else if (mouse_x > display->width-1 && display->mousetrap) {
+		   mouse_x = display->width-2; warp = TRUE;
+		}
+		if (mouse_y < 1 && display->mousetrap) {
+		   mouse_y = 2; warp = TRUE;
+		} else if (mouse_y > display->height-1 && display->mousetrap) {
+		   mouse_y = display->height-2; warp = TRUE;
+		}
+		
+		if (warp) {
+		   glutWarpPointer (mouse_x, mouse_y);
+		   warp = 0;
+		}
+	 }
+   
    /* Draw menus etc using PUI (part of PLIB) */
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -216,6 +266,6 @@ Display::resizeScreen(int w,int h)
 {
    display->width = w;
    display->height = h;
-/* set viewport... */
+   glViewport(0, 0, w, h);
    glutPostRedisplay();
 }

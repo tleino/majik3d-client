@@ -22,6 +22,8 @@
 #include <stl.h>
 #include <stdio.h>
 #include <ssg.h>
+#include <sg.h>
+#include <pu.h>
 #include "Object.hpp"
 
 class Object;
@@ -41,14 +43,14 @@ class Scene
    void draw();
    void update();
    void init();
-
+   void drawText(puText *, sgVec3);
+   
    float getHOT( float, float );
    
- private:
-   list<Object*> object_list;
+
+//   list<Object*> object_list;
    
    ssgRoot *scene_root;
-   ssgBranch *object_branch;
    
 };
 

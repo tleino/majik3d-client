@@ -20,14 +20,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-/*
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
 #include <errno.h>
-*/
+
 #include "Debug.hpp"
 #include "Error.hpp"
 #include "Socket.hpp"
@@ -66,7 +66,7 @@ Socket::~Socket()
 
 void 
 Socket::connectServer()
-{/*
+{
    struct hostent *pHostEnt;
    unsigned long nAddr;
    struct sockaddr_in ServerAddr;
@@ -97,7 +97,7 @@ Socket::connectServer()
    
    if (connect (nSocket, (struct sockaddr *) &ServerAddr, sizeof (ServerAddr)) < 0)
       error->put(ERROR_FATAL, "Unable to connect to remote host: %s", strerror (errno));
-  */
+  
 }
 
 void 
@@ -114,7 +114,7 @@ Socket::disconnectServer()
 
 char *
 Socket::readPacket()
-{/*
+{
    unsigned long nLen = 0;
    
    do {
@@ -135,7 +135,7 @@ Socket::readPacket()
    } while (nLen != 0);
    
    // Split the data into lines
-   char *szReturn;
+   char *szReturn = NULL;
    while ((szReturn = strchr(szBuffer,'\r')) != NULL) {
       char *szRet = NULL;
       // Terminate the string
@@ -150,12 +150,12 @@ Socket::readPacket()
       return szRet;
    }
    return NULL;
-  */
+  
 }
 
 void 
 Socket::writePacket(char *szFmt,...)
-{/*
+{
    va_list vl;
    char szData[1024*10];
    
@@ -163,7 +163,9 @@ Socket::writePacket(char *szFmt,...)
    vsprintf (szData, szFmt, vl);
    va_end (vl);
    
+   sprintf (szData, "%s\r\n", szData);
+   
    if (send(nSocket, szData,strlen(szData),0) == -1)
      error->put(ERROR_FATAL, "Could not send data: %s", strerror (errno));
-  */
+  
 }

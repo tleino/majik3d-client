@@ -96,6 +96,9 @@ Menu::init()
 		menuBar->add_submenu ("Help", helpSubmenu, helpSubmenuCB);
 	 }
    menuBar->close();
+
+   if (display->nomenu)
+	 menuBar->hide();
 }
 
 /* Menu callbacks */
@@ -146,24 +149,28 @@ Menu::aboutCB(puObject *)
 void
 Menu::mouseCB(puObject *)
 {
+   display->nomouse = 0;
    puShowCursor();
 }
 
 void
 Menu::noMouseCB(puObject *)
 {
+   display->nomouse = 1;
    puHideCursor();
 }
 
 void
 Menu::mousetrapCB(puObject *)
 {
+   display->nomousetrap = 0;
    display->mousetrap = 1;
 }
 
 void
 Menu::noMousetrapCB(puObject *)
 {
+   display->nomousetrap = 1;
    display->mousetrap = 0;
 }
 
@@ -200,17 +207,20 @@ Menu::fogCB(puObject *)
 void
 Menu::noFogCB(puObject *)
 {
+   display->nofog = 1;
    glDisable(GL_FOG);
 }
 void
 Menu::flatCB(puObject *)
 {
+   display->nosmooth = 1;
    glShadeModel(GL_FLAT);
 }
 
 void
 Menu::smoothCB(puObject *)
 {
+   display->nosmooth = 0;
    glShadeModel(GL_SMOOTH);
 }
 

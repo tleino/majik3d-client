@@ -21,7 +21,6 @@
 
 #include "Object.hpp"
 #include "Detail.hpp"
-#include "P3D.hpp"
 #include <ssg.h>
 #include <GL/glu.h>
 

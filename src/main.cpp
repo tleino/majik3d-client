@@ -33,6 +33,8 @@
 #include "Input.hpp"
 #include "Config.hpp"
 #include "Scene.hpp"
+#include "Protocol.hpp"
+#include "Perlin.hpp"
 
 bool quit = false;
 Error *error = NULL;
@@ -44,6 +46,8 @@ Input *input = NULL;
 Config *config = NULL;
 Menu *menu = NULL;
 Scene *scene = NULL;
+Protocol *protocol = NULL;
+Perlin *perlin = NULL;
 
 int
 main(int argc, char **argv)
@@ -53,13 +57,17 @@ main(int argc, char **argv)
    // Initialize the necessary global variables as proper objects
    error = new Error;
    debug = new Debug;
-   sock = new Socket;
+   sock = new Socket("195.197.61.60", 4000);
+//   sock= new Socket();
    display = new Display;
    landscape = new Landscape;
    input = new Input;
    config = new Config;
    menu = new Menu;
    scene = new Scene;
+   protocol = new Protocol;
+   perlin = new Perlin;
+   
    
    glutInit(&argc, argv);
    config->readConfig(argc, argv);
@@ -124,9 +132,12 @@ main(int argc, char **argv)
 		display->bpp = config->bpp;
 	 }
    
+   sock->connectServer();
+   sock->writePacket("51\r\n");
+
    // Open the screen
-   display->openScreen();
-   
+   display->openScreen();   
+  
    glutMainLoop();
    
    // Call ending functions

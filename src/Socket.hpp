@@ -37,4 +37,6 @@ class Socket
    char *szBuffer;
 };
 
+extern Socket *sock;
+
 #endif /* __SOCKET_HPP__ */

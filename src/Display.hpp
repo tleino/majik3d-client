@@ -37,7 +37,9 @@ class Display
    static void idle();
  public: 
    int width, height, bpp;
-   int mousetrap, noTexture, wireframe;
+   int mousetrap, nomousetrap, noTexture, wireframe, nomouse, nofog, nosmooth,
+   nomenu;
+   puInput *inp;
 };
 
 extern Display *display;

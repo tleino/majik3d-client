@@ -22,6 +22,7 @@
  */
 
 #include <math.h>
+#include <stdio.h>
 
 #include "Debug.hpp"
 #include "Error.hpp"
@@ -30,25 +31,41 @@
 #define PERSISTENCE 0.6
 #define OCTAVES       3
 
+#define INTERPOLATION_TABLE_SIZE	256
+
+
 Perlin::Perlin()
 {
    DEBUG ("Perlin constructor");
+   
+   // Create interpolation table
+   interpolation_table = new double[INTERPOLATION_TABLE_SIZE];
+   
+   for (int i = 0; i < INTERPOLATION_TABLE_SIZE; i++)
+	 {
+ 	    interpolation_table[i] = (1 - cos(((double)i/INTERPOLATION_TABLE_SIZE) * 3.1415927)) * .5;
+	 }
+   
 }
 
 Perlin::~Perlin()
 {
    DEBUG ("Perlin destructor");
+   
+   delete interpolation_table;
 }
 
 double
 Perlin::cosine_Interpolate(double a, double b, double x)
 {
-   double ft, f;
+   double f = interpolation_table[(int)(x*256)];
+   return a*(1-f) + b*f;
+//   double ft, f;
    
-   ft = x * 3.1415927;
-   f = (1 - cos(ft)) * .5;
+//   ft = x * 3.1415927;
+//   f = (1 - cos(ft)) * .5;
 	 
-   return  a*(1-f) + b*f;
+//   return  a*(1-f) + b*f;
 }
 
 double

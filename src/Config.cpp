@@ -24,6 +24,8 @@
 #include "Error.hpp"
 #include "Debug.hpp"
 #include "Config.hpp"
+#include "Menu.hpp"
+#include "Display.hpp"
 
 Config::Config()
 {
@@ -44,7 +46,7 @@ Config::~Config()
 
 void
 Config::parseOption(char *option, char *value)
-{
+{   
    if(strcmp(option, "server") == 0)
 	 {
 		server_ip = new char [strlen(value)];
@@ -70,6 +72,45 @@ Config::parseOption(char *option, char *value)
 	 {
 		sscanf(value, "%d", &bpp);
 		return;
+	 }
+   if(strcmp(option, "notexture") == 0)
+	 {
+		if (atoi(value) == 1) {
+		   menu->noTextureCB(NULL);
+		}
+	 }
+   if (strcmp(option, "nomousetrap") == 0)
+	 {
+		if (atoi(value) == 1) {
+		   menu->noMousetrapCB(NULL);
+		}
+	 }
+   if (strcmp(option, "nomouse") == 0)
+	 {
+		if (atoi(value) == 1)  {
+		   menu->noMouseCB(NULL);
+		}
+	 }
+   if (strcmp(option, "nosmooth") == 0)
+	 {
+		if (atoi(value) == 1) 
+		  {
+			 menu->flatCB(NULL);
+		  }
+	 }
+   if (strcmp(option, "nofog") == 0)
+	 {
+		if (atoi(value) == 1)
+		  {
+			 menu->noFogCB(NULL);
+		  }
+	 }
+   if (strcmp(option, "nomenu") == 0)
+	 {
+		if (atoi(value) == 1)
+		  {
+			 display->nomenu = 1;
+		  }
 	 }
 }
 

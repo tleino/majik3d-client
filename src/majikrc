@@ -1,12 +1,9 @@
-# This is a sample majikrc file. 
-#
-# It's usually located at ~/.majikrc, but can also be installed system-wide
-
-# Majik host configuration. 
-# server=195.16.192.88
-# port=7680
-
-# Screen width, height and bits per pixel
-screen_width=640
-screen_height=480
-bpp=32
+screen_width=320
+screen_height=200
+bpp=16
+notexture=1
+nomouse=1
+nomousetrap=1
+nofog=1
+nosmooth=1
+nomenu=1

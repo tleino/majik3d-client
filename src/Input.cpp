@@ -50,6 +50,8 @@ Input::~Input()
 void
 Input::keyDown(unsigned char key, int x, int y)
 {
+   puKeyboard (key, PU_DOWN);
+   
    switch (key) {
   	default:
 	  error->put(ERROR_WARNING, "Unsupported key received: %d at (%d,%d)", key, x, y);
@@ -62,13 +64,15 @@ Input::keyDown(unsigned char key, int x, int y)
 void 
 Input::specialDown(int key, int x, int y)
 {
+   puKeyboard (key + PU_KEY_GLUT_SPECIAL_OFFSET, PU_DOWN);
+   
    switch(key) {
     case GLUT_KEY_INSERT:
+	  if (menu->menuBar->isVisible())
+		menu->menuBar->hide();
+	  else
       menu->menuBar->reveal();
       break;
-    case GLUT_KEY_END:
-      menu->menuBar->hide();
-	  break;
 	case GLUT_KEY_F12:
 	  captureScreen();
 	  break;
