@@ -71,7 +71,7 @@ void Landscape::init()
    float light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
    float light_diffuse[] = { 0.6, 0.6, 0.6, 1.0 };
    float light_specular[] = { 0.3, 0.3, 0.3, 1.0 };
-   float lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+   float lmodel_ambient[] = { 0.05, 0.05, 0.05, 1.0 };
    
    glLightfv (GL_LIGHT0, GL_AMBIENT, light_ambient);
    glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -406,7 +406,7 @@ void Landscape::drawLandscape()
    
    glPushMatrix();
    glTranslatef(0.0, 0.0, getHeight(map1_x + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2, map1_y + (MAP1_WIDTH*MAP1_GRID_WIDTH)/2)-2.5);
-   glRotatef( Perlin::perlinNoise_2D(0, counter/5)*10, 1.0, 0.0, 0.0);
+   glRotatef( Perlin::perlinNoise_2D(0, counter/5)*50, 1.0, 0.0, 0.0);
    glCallList(playerId);
    glPopMatrix();
    
