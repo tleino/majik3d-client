@@ -102,7 +102,7 @@ kids 0
 OBJECT poly
 name "tuxbody"
 loc 0.0124385 0.107258 -0.188333
-texture "Penguin_body.rgb"
+texture "../gfx/Penguin_body.rgb"
 numvert 115
 0.097524 1.07 -0.0756895
 -0.0202512 1.11 0
@@ -1528,7 +1528,7 @@ kids 0
 OBJECT poly
 name "tuxbeak"
 loc -0.0328128 0.372259 0.086667
-texture "Penguin_beak.rgb"
+texture "../gfx/Penguin_beak.rgb"
 numvert 17
 0.0565685 0.514 0.1
 1.11759e-08 0.5 0.125

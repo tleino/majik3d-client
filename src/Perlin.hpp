@@ -24,12 +24,12 @@ class Perlin
  public:
    Perlin();
    ~Perlin();
-   static float perlinNoise_2D(float, float);
+   static double perlinNoise_2D(double, double);
  private:
-   static float noise(int, int, int);
-   static float cosine_Interpolate(float, float, float);
-   static float smoothedNoise(int, float, float);
-   static float interpolatedNoise(int, float, float);
+   static double noise(int, int, int);
+   static double cosine_Interpolate(double, double, double);
+   static double smoothedNoise(int, double, double);
+   static double interpolatedNoise(int, double, double);
 };
 
 extern Perlin *perlin;

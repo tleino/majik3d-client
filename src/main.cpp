@@ -44,6 +44,7 @@ Input *input = NULL;
 Config *config = NULL;
 Menu *menu = NULL;
 Scene *scene = NULL;
+
 int
 main(int argc, char **argv)
 {

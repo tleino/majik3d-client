@@ -33,12 +33,7 @@ class Object
    ~Object();
 
    ssgTransform *plop;
-   
- private:
-   draw();
-
-   friend Scene draw();
-   
+     
 };
 
 extern Object *object;

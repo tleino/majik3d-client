@@ -26,20 +26,24 @@
 
 class Object;
 
+void keyboard ( unsigned char, int, int );
+
 class Scene
 {
  public:
    Scene();
    ~Scene();
    
-   addObject(Object *);
-   removeObject(int);
-   removeObject(Object *);
+   void addObject(Object *);
+   void removeObject(int);
+   void removeObject(Object *);
 
-   draw();
-   update();
-   init();
+   void draw();
+   void update();
+   void init();
 
+   float getHOT( float, float );
+   
  private:
    list<Object*> object_list;
    

@@ -30,7 +30,7 @@
 
 #include "Material.hpp"
 #include "Menu.hpp"
-#include "Landscape.hpp"
+//#include "Landscape.hpp"
 #include "Input.hpp"
 #include "Debug.hpp"
 #include "Display.hpp"
@@ -104,7 +104,8 @@ Display::openScreen()
    
    glutReshapeFunc(resizeScreen);
    glutDisplayFunc(updateScreen);
-   glutKeyboardFunc(input->keyDown);
+//   glutKeyboardFunc(input->keyDown);
+   glutKeyboardFunc(keyboard);
    glutSpecialFunc(input->specialDown);
    glutMouseFunc(input->mouseDown);
    glutPassiveMotionFunc(mouseMotion);
@@ -134,7 +135,6 @@ Display::openScreen()
    status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
    
    menu->init();   
-   landscape->init();
    scene->init();
 
    glEnable ( GL_DEPTH_TEST);
@@ -163,6 +163,8 @@ Display::updateScreen()
    int t2 = (int) (time(NULL) - t), warp = 0;
    frames++;
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   
+   scene->update();
    
    scene->draw();
    

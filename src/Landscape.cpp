@@ -10,1323 +10,184 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- *  Note that much of this file is experimental code and thus yet quite uncommented. 
- */
-
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-
-#include "Material.hpp"
-#include "Error.hpp"
-#include "Display.hpp"
-#include "Debug.hpp"
-#include "Perlin.hpp"
 #include "Landscape.hpp"
 
-/* These should be moved into headers */
-#define DIR_NORTH   0
-#define DIR_EAST    1
-#define DIR_SOUTH   2
-#define DIR_WEST    3
 
-#define MAP1_WIDTH       20
-#define MAP1_GRID_WIDTH   2
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+#include <math.h>
+#include <ssg.h>
+#include <ssgKeyFlier.h>
+#include <GL/glut.h>
 
-#define MAP2_WIDTH       20
-#define MAP2_GAP          4
-#define MAP2_RATIO        5
-#define MAP2_GRID_WIDTH  ( MAP2_RATIO*MAP1_GRID_WIDTH )  
+#include "Debug.hpp"
+#include "Perlin.hpp"
 
-#define MAP3_WIDTH       20
-#define MAP3_GAP          4
-#define MAP3_RATIO        5
-#define MAP3_GRID_WIDTH  ( MAP3_RATIO*MAP2_GRID_WIDTH )  
+#define TILE_SIZE                 2000.0f      /* cubits */
+#define LAMBDA                   (TILE_SIZE/48.0f)
+#define TILE_GRID_SIZE            20          /* Even number please! */
+#define TRIANGLE_GRID_SIZE        12          /* Num vertices */
+#define ELEVATION_SCALE           4.0f
+#define ONLINE_TERRAIN_RANGE ((float)(TILE_GRID_SIZE/2  )* TILE_SIZE ) /* cubits */
+#define VISUAL_RANGE         ((float)(TILE_GRID_SIZE/2-1)* TILE_SIZE ) /* cubits */
 
-#define VectMul(X1,Y1,Z1,X2,Y2,Z2) (Y1)*(Z2)-(Z1)*(Y2),(Z1)*(X2)-(X1)*(Z2),(X1)*(Y2)-(Y1)*(X2)
+ssgSimpleState *state    = NULL ;
 
-#define MAP1(x, y) map_1[(y) * MAP1_WIDTH + (x)]
-#define MAP2(x, y) map_2[(y) * MAP2_WIDTH + (x)]
-#define MAP3(x, y) map_3[(y) * MAP3_WIDTH + (x)]
+ssgTransform   *terrain  = NULL ;
+ssgTransform   *tilegrid [ TILE_GRID_SIZE ][ TILE_GRID_SIZE ] ;
 
+//ssgKeyFlier keyflier ;
+
+//ssgSGIHeader *material  ;
+//ssgSGIHeader *elevation ;
+
+#include "image_map.h"
 
 Landscape::Landscape()
 {
-   DEBUG("Landscape constructor");
+      DEBUG("Landscape constructor");
 }
 
 Landscape::~Landscape()
-{   
-   DEBUG ("Landscape destructor");
-}
-
-void Landscape::init()
 {
-   map1_branch = new ssgBranch;
-   map2_branch = new ssgBranch;
-   map3_branch = new ssgBranch;
-      
-   map_1Mesh.numVertices = (MAP1_WIDTH+1)*(MAP1_WIDTH+1);
-   map_1Mesh.vertices  =  new double[3*map_1Mesh.numVertices];
-   map_1Mesh.face_normals = new P3D[(MAP1_WIDTH)*(MAP1_WIDTH)*2];
-   map_1Mesh.normals = new double[3*map_1Mesh.numVertices];
-
-   map_2Mesh.numVertices = (MAP2_WIDTH+1)*(MAP2_WIDTH+1);
-   map_2Mesh.vertices  =  new double[3*map_2Mesh.numVertices];
-   map_2Mesh.face_normals = new P3D[(MAP2_WIDTH)*(MAP2_WIDTH)*2];
-   map_2Mesh.normals = new double[3*map_2Mesh.numVertices];
-   
-   map_3Mesh.numVertices = (MAP3_WIDTH+1)*(MAP3_WIDTH+1);
-   map_3Mesh.vertices  =  new double[3*map_2Mesh.numVertices];
-   map_3Mesh.face_normals = new P3D[(MAP3_WIDTH)*(MAP3_WIDTH)*2];
-   map_3Mesh.normals = new double[3*map_3Mesh.numVertices];
-
-   zmap_1 = new double[(MAP1_WIDTH+1)*(MAP1_WIDTH+1)];
-   zmap_2 = new double[(MAP2_WIDTH+1)*(MAP2_WIDTH+1)];
-   zmap_3 = new double[(MAP3_WIDTH+1)*(MAP3_WIDTH+1)];
-   
-   map1_x = map1_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP1_WIDTH*(MAP1_GRID_WIDTH/2);
-   map2_x = map2_y = MAP3_WIDTH*(MAP3_GRID_WIDTH/2) - MAP2_WIDTH*(MAP2_GRID_WIDTH/2);
-   map3_x = map3_y = 0;
-   
-   listId_1 = -1;
-   listId_2 = -1;
-   listId_3 = -1;
-   listId_4 = -1;
-
-   map1_shift_x = 0;
-   map1_shift_y = 0;
-   map2_shift_x = 0;
-   map2_shift_y = 0;
-
-   makeHeightMaps();
-   
-   initMap_1Mesh();
-//   makeMap_1();
-
-   initMap_2Mesh();
-  // makeMap_2();
-   
-   initMap_3Mesh();
- //  makeMap_3();
-   
-}
-
-/* This should be cut into several smaller functions */
-void Landscape::makeHeightMaps()
-{
-   int i, j;
-   double *temp;
-   Perlin *perl = new Perlin;
-   
-   temp = zmap_3;
-   
-   for (j = 0; j <= MAP3_WIDTH; j++) 
-	 {
-		for (i = 0; i <= MAP3_WIDTH; i++)
-		  {
-			 *(temp++) = perl->perlinNoise_2D((double)(map3_x+i*MAP3_GRID_WIDTH)/300, 
-											  (double)(map3_y+j*MAP3_GRID_WIDTH)/300)*200;
-		  } 
-	 }
-   
-   temp = zmap_2;
-   for (i = 0; i <= MAP2_WIDTH; i++)
-	 {
-		*(temp++) = getHeight( map2_x + i*MAP2_GRID_WIDTH, map2_y);
-	 }
-   
-   for (j = 1; j < MAP2_WIDTH; j++)
-	 {
-		*(temp++) = getHeight( map2_x, map2_y + j*MAP2_GRID_WIDTH);
-		
-		for (i = 1; i < MAP2_WIDTH; i++)
-		  {
-			 *(temp++) = perl->perlinNoise_2D((double)(map2_x+i*MAP2_GRID_WIDTH)/300, 
-											  (double)(map2_y+j*MAP2_GRID_WIDTH)/300)*200;
-		  } 
-		
-		*(temp++) = getHeight( map2_x + MAP2_GRID_WIDTH*MAP2_WIDTH, map2_y + j*MAP2_GRID_WIDTH);
-	 }
-   for (i = 0; i <= MAP2_WIDTH; i++)
-	 {
-		*(temp++) = getHeight( map2_x + i*MAP2_GRID_WIDTH, map2_y + MAP2_GRID_WIDTH*MAP2_WIDTH);
-	 }
-   
-   double temp2;
-   temp = zmap_1;
-   for (i = 0; i <= MAP1_WIDTH; i++)
-	 {
-		*(temp++) = getHeight( map1_x + i*MAP1_GRID_WIDTH, map1_y);
-	 }
-   
-   for (j = 1; j < MAP1_WIDTH; j++)
-	 {
-		*(temp++) = getHeight( map1_x, map1_y + j*MAP1_GRID_WIDTH);
-		
-		for (i = 1; i < MAP1_WIDTH; i++)
-		  {
-			 *(temp++) = perl->perlinNoise_2D((double)(map1_x+i*MAP1_GRID_WIDTH)/300,
-											  (double)(map1_y+j*MAP1_GRID_WIDTH)/300)*200;
-		  }
-		
-		*(temp++) = getHeight( map1_x + MAP1_GRID_WIDTH*MAP1_WIDTH, map1_y + j*MAP1_GRID_WIDTH);
-	 }
-   for (i = 0; i <= MAP1_WIDTH; i++)
-	 {
-		*(temp++) = getHeight( map1_x + i*MAP1_GRID_WIDTH, map1_y + MAP1_GRID_WIDTH*MAP1_WIDTH);
-	 }
-   
-   delete(perl);
+      DEBUG ("Landscape destructor.");
 }
 
 
-void Landscape::draw()
+void 
+Landscape::init( ssgRoot *scene_root)
 {
-   drawMap_1();
-}
-
-double interpolate(double a, double b, double x)
-{
-   return (1-x)*a + x*b;
-}
-
-/* Gives z coordinate at given (x, y) */
-double Landscape::getHeight(int x, int y) 
-{
-   int tempx, tempy;
+   terrain  = new ssgTransform ;
+   state    = new ssgSimpleState ;
+   state -> setTexture ( "gfx/bumpnoise.rgb" ) ;
+   state -> enable     ( GL_TEXTURE_2D ) ;
+   state -> enable     ( GL_LIGHTING ) ;
+   state -> setShadeModel ( GL_SMOOTH ) ;
+   state -> enable ( GL_COLOR_MATERIAL ) ;
+   state -> enable ( GL_CULL_FACE      ) ;
+   state -> setColourMaterial ( GL_AMBIENT_AND_DIFFUSE ) ;
+   state -> setMaterial ( GL_EMISSION, 0, 0, 0, 1 ) ;
+   state -> setMaterial ( GL_SPECULAR, 0, 0, 0, 1 ) ;
+   state -> setShininess ( 0 ) ;
+   state -> setOpaque () ;
+   state -> disable ( GL_BLEND ) ;
    
-//   debug->put("%d %d", x, y);
-   tempx = x - map1_x;
-   tempy = y - map1_y;
-	 
-   if (tempx > 0 && tempx < MAP1_WIDTH*MAP1_GRID_WIDTH && 
-	   tempy > 0 && tempy < MAP1_WIDTH*MAP1_GRID_WIDTH)
-	 {           
-		int ax = tempx / MAP1_GRID_WIDTH;
-		int fx = tempx % MAP1_GRID_WIDTH;
-		int ay = tempy / MAP1_GRID_WIDTH;
-		int fy = tempy % MAP1_GRID_WIDTH;
-		double x1, x2;
-		
-		if (fx == 0)
-		  x1 = zmap_1[ay*(MAP1_WIDTH+1) + ax];
-		else
-		  {
-			 int bx = ax + 1;
-			 x1 = interpolate(zmap_1[ay*(MAP1_WIDTH+1) + ax],
-							  zmap_1[ay*(MAP1_WIDTH+1) + bx],
-							  (double)fx / MAP1_GRID_WIDTH);
-		  }
-		
-		if (fy == 0)
-		  return x1;
-		else
-		  {
-			 int by = ay +1;
-			 if (fx == 0)
-			   x2 = zmap_1[by*(MAP1_WIDTH+1) + ax];
-			 else
-			   {
-				  int bx = ax + 1;
-				  x2 = interpolate(zmap_1[by*(MAP1_WIDTH+1) + ax],
-								   zmap_1[by*(MAP1_WIDTH+1) + bx],
-								   (double)fx / MAP1_GRID_WIDTH);
-			   }
-			 return interpolate(x1, x2, (double)fy / MAP1_GRID_WIDTH);
-		  }
-	 }
-   else 
+   
+   for ( int i = 0 ; i < TILE_GRID_SIZE ; i++ )
+	 for ( int j = 0 ; j < TILE_GRID_SIZE ; j++ )
 	 {
-		tempx = x - map2_x;
-		tempy = y - map2_y;
+		tilegrid [ i ][ j ] = new ssgTransform ;
 		
-		   if (tempx > 0 && tempx < MAP2_WIDTH*MAP2_GRID_WIDTH &&
-			   tempy > 0 && tempy < MAP2_WIDTH*MAP2_GRID_WIDTH)
-		  {
-
-			 int ax = tempx / MAP2_GRID_WIDTH;
-			 int fx = tempx % MAP2_GRID_WIDTH;
-			 int ay = tempy / MAP2_GRID_WIDTH;
-			 int fy = tempy % MAP2_GRID_WIDTH;
-			 double x1, x2;
-			 
-			 if (fx == 0)
-			   x1 = zmap_2[ay*(MAP2_WIDTH+1) + ax];
-			 else
-			   {
-				  int bx = ax + 1;
-				  x1 = interpolate(zmap_2[ay*(MAP2_WIDTH+1) + ax], 
-								   zmap_2[ay*(MAP2_WIDTH+1) + bx], 
-								   (double)fx / MAP2_GRID_WIDTH);
-			   }
-			 
-			 if (fy == 0)
-			   return x1;
-			 else
-			   {
-				  int by = ay +1;
-				  if (fx == 0)
-					x2 = zmap_2[by*(MAP2_WIDTH+1) + ax];
-				  else
-					{
-					   int bx = ax + 1;
-					   x2 = interpolate(zmap_2[by*(MAP2_WIDTH+1) + ax],
-										zmap_2[by*(MAP2_WIDTH+1) + bx],
-										(double)fx / MAP2_GRID_WIDTH);
-					}
-				  return interpolate(x1, x2, (double)fy / MAP2_GRID_WIDTH);
-			   }
-		  }
-		else
-		  {
-			 tempx = x - map3_x;
-			 tempy = y - map3_y;
-//			 debug->put("%d %d", tempx, tempy);
-			 
-			 if (tempx >= 0 && tempx <= MAP3_WIDTH*MAP3_GRID_WIDTH &&
-				 tempy >= 0 && tempy <= MAP3_WIDTH*MAP3_GRID_WIDTH)
-			   {
-//				  debug->put("%d %d", tempx, MAP3_GRID_WIDTH);
-				  int ax = tempx / MAP3_GRID_WIDTH;
-				  int fx = tempx % MAP3_GRID_WIDTH;
-				  int ay = tempy / MAP3_GRID_WIDTH;
-				  int fy = tempy % MAP3_GRID_WIDTH;
-				  double x1, x2;
-				  
-//				  debug->put("%d %d %d %d %d %d", x, y, ax, fx, ay, fy);
-				  if (fx == 0)
-					x1 = zmap_3[ay*(MAP3_WIDTH+1) + ax];
-				  else
-					{
-					   int bx = ax + 1;
-					   x1 = interpolate(zmap_3[ay*(MAP3_WIDTH+1) + ax],
-										zmap_3[ay*(MAP3_WIDTH+1) + bx],
-										(double)fx / MAP3_GRID_WIDTH);
-					}
-				  if (fy == 0)
-					{
-//					   debug->put("%f", x1);
-					   return x1;
-					}
-				  else
-					{
-					   int by = ay +1;
-					   if (fx == 0)
-						 x2 = zmap_3[by*(MAP3_WIDTH+1) + ax];
-					   else
-						 {
-							int bx = ax + 1;
-							x2 = interpolate(zmap_3[by*(MAP3_WIDTH+1) + ax],
-											 zmap_3[by*(MAP3_WIDTH+1) + bx],
-											 (double)fx / MAP3_GRID_WIDTH);
-						 }
-					   return interpolate(x1, x2, (double)fy / MAP3_GRID_WIDTH);
-					}
-			   }
-			 else
-			   {
-				  error->put(ERROR_WARNING, "getHeight() values out of range");
-				  return 0;
-			   }
-		  }
-	 }
-}
-   
-/* The following functions calculate the vertices and normals */
-void Landscape::initMap_1Mesh()
-{
-   double *temp;
-   int k = 0;
-   
-   int tempx, tempy;
-   temp = map_1Mesh.vertices;
-   for (int j= - MAP1_WIDTH/2, tempy = 0; j<=MAP1_WIDTH/2; j++, tempy++) {
-	  for (int i= - MAP1_WIDTH/2, tempx = 0; i<=MAP1_WIDTH/2; i++, tempx++)
-		{
-		   *(temp++) = i*MAP1_GRID_WIDTH;
-		   *(temp++) = j*MAP1_GRID_WIDTH;
-		   *(temp++) = zmap_1[tempy*(MAP1_WIDTH+1) + tempx];
-//		   *(temp++) = random() % 20;
-		}
-   }
-   
-   temp = map_1Mesh.vertices;
-   for (int j = 0; j < MAP1_WIDTH; j++) { 
-	  for (int i = 0; i < MAP1_WIDTH; i++)
-		{
-		   /* This is somewhat optimized way to calculate normals for tris with two constant
-			* sides. If the constant sides are A, normal = ( A(Z3-Z1), A(Z2-Z1), A*A )
-			*/
-		   map_1Mesh.face_normals[k++].set(-MAP1_GRID_WIDTH*(*(temp+5) - *(temp+2)),
-										   -MAP1_GRID_WIDTH*(*(temp+(MAP1_WIDTH+1)*3+2) - *(temp+2)),
-										   MAP1_GRID_WIDTH*MAP1_GRID_WIDTH);
-
-		   map_1Mesh.face_normals[k++].set(MAP1_GRID_WIDTH*(*(temp+(MAP1_WIDTH+1)*3+2) - *(temp+(MAP1_WIDTH+1)*3+5)),
-										   MAP1_GRID_WIDTH*(*(temp+5) - *(temp+(MAP1_WIDTH+1)*3+5)),
-										   MAP1_GRID_WIDTH*MAP1_GRID_WIDTH);
-		   temp += 3;
-
-		}
-	  temp += 3;
-   }
-   
-   temp = map_1Mesh.normals;
-   
-   k = 0;
-   
-   *(temp++) = map_1Mesh.face_normals[0].x;
-   *(temp++) = map_1Mesh.face_normals[0].y;
-   *(temp++) = map_1Mesh.face_normals[0].z;
-   
-   for (int i = 1; i < MAP1_WIDTH; i++)
-	 {
-		*(temp++) = map_1Mesh.face_normals[i*2-2].x + 
-		  map_1Mesh.face_normals[i*2-1].x + 
-		  map_1Mesh.face_normals[i*2].x;
-		*(temp++) = map_1Mesh.face_normals[i*2-2].y + 
-		  map_1Mesh.face_normals[i*2-1].y + 
-		  map_1Mesh.face_normals[i*2].y;
-		*(temp++) = map_1Mesh.face_normals[i*2-2].z + 
-		  map_1Mesh.face_normals[i*2-1].z + 
-		  map_1Mesh.face_normals[i*2].z;
-		//      Debug("%f %f %f", map_1Mesh.normals[k-1].x, map_1Mesh.normals[k-1].y, map_1Mesh.normals[k-1].z);
+		terrain -> addKid ( tilegrid [ i ][ j ] ) ;
+		
+		sgVec3 tilepos ;
+		sgSetVec3 ( tilepos, (float)i * TILE_SIZE - ONLINE_TERRAIN_RANGE,
+				   (float)j * TILE_SIZE - ONLINE_TERRAIN_RANGE, 0.0f ) ;
+		
+		tilegrid [ i ][ j ] -> setTransform ( tilepos ) ;
+		createTile ( tilegrid [ i ][ j ], i, j, state ) ;
 	 }
    
-   *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2-2].x + map_1Mesh.face_normals[MAP1_WIDTH*2-1].x;
-   *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2-2].y + map_1Mesh.face_normals[MAP1_WIDTH*2-1].y;
-   *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2-2].z + map_1Mesh.face_normals[MAP1_WIDTH*2-1].z;
-   
-   
-   for (int j = 1; j < MAP1_WIDTH; j++)
-	 {
-		
-		*(temp++) = map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)].x +
-		  map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)+1].x +
-		  map_1Mesh.face_normals[(j)*(MAP1_WIDTH*2)].x;
-		*(temp++) = map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)].y +
-		  map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)+1].y +
-		  map_1Mesh.face_normals[(j)*(MAP1_WIDTH*2)].y;
-		
-		*(temp++) = map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)].z +
-		  map_1Mesh.face_normals[(j-1)*(MAP1_WIDTH*2)+1].z +
-		  map_1Mesh.face_normals[(j)*(MAP1_WIDTH*2)].z;
-		
-		for (int i = 1; i < MAP1_WIDTH; i++)
-		  {
-			 
-			 *(temp++) = map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2-1)].x +
-			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2)].x +
-			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2+1)].x +
-			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-2)].x +
-			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-1)].x +
-			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2)].x;
-			 
-			 *(temp++) = map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2-1)].y +
-			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2)].y +
-			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2+1)].y +
-			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-2)].y +
-			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-1)].y +
-			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2)].y;
-			 
-			 *(temp++) = map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2-1)].z +
-			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2)].z +
-			   map_1Mesh.face_normals[(j-1)*MAP1_WIDTH*2 + (i*2+1)].z +
-			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-2)].z +
-			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2-1)].z +
-			   map_1Mesh.face_normals[(j)*MAP1_WIDTH*2 + (i*2)].z;
-		  }
-		
-		*(temp++) = map_1Mesh.face_normals[(j)*MAP1_WIDTH*2-1].x +
-		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-2].x +
-		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-1].x;
-		
-		*(temp++) = map_1Mesh.face_normals[(j)*MAP1_WIDTH*2-1].y +
-		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-2].y +
-		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-1].y;
-		
-		*(temp++) = map_1Mesh.face_normals[(j)*MAP1_WIDTH*2-1].z +
-		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-2].z +
-		  map_1Mesh.face_normals[(j+1)*MAP1_WIDTH*2-1].z;
-		
-	 }
-   
-   *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)].x +
-	 map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+1].x;
-   
-   *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)].y +
-	 map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+1].y;
-   
-   *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)].z +
-	 map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+1].z;
-   
-   for (int i = 1; i < MAP1_WIDTH; i++)
-	 {
-		*(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2-1)].x +
-		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2)].x +
-		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2+1)].x;
-		*(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2-1)].y +
-		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2)].y +
-		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2+1)].y;
-		
-		*(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2-1)].z +
-		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2)].z +
-		  map_1Mesh.face_normals[MAP1_WIDTH*2*(MAP1_WIDTH-1)+(i*2+1)].z;
-		
-	 }
-   
-   *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*(MAP1_WIDTH*2)-1].x;
-   *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*(MAP1_WIDTH*2)-1].y;
-   *(temp++) = map_1Mesh.face_normals[MAP1_WIDTH*(MAP1_WIDTH*2)-1].z;
-   
-
-   double length;
-   
-   for (int i=0; i<map_1Mesh.numVertices*3; )
-	 {
-		length = sqrt(map_1Mesh.normals[i]*map_1Mesh.normals[i] + 
-					  map_1Mesh.normals[i+1]*map_1Mesh.normals[i+1] +
-					  map_1Mesh.normals[i+2]*map_1Mesh.normals[i+2]);
-		map_1Mesh.normals[i++] /= length;
-		map_1Mesh.normals[i++] /= length;
-		map_1Mesh.normals[i++] /= length;
-		
-//		Debug("%f %f %f", map_1Mesh.normals[i-3], map_1Mesh.normals[i-2], map_1Mesh.normals[i-1]);
-		
-	 }
-   
-}
-
-void Landscape::initMap_2Mesh()
-{
-   double *temp;
-   int tempx, tempy;
-   
-   temp = map_2Mesh.vertices;
-   for (int j= - MAP2_WIDTH/2, tempy = 0; j<=MAP2_WIDTH/2; j++, tempy++) {
-	  for (int i= - MAP2_WIDTH/2, tempx = 0; i<=MAP2_WIDTH/2; i++, tempx++)
-		{
-		   *(temp++) = i*MAP2_GRID_WIDTH;
-		   *(temp++) = j*MAP2_GRID_WIDTH;
-//		   *(temp++) = perl->perlinNoise_2D((double)i/4, (double)j/4)*500;
-		   *(temp++) = zmap_2[tempy*(MAP2_WIDTH+1) + tempx];
-		}
-   }
-   
-   
-   int k = 0;
-   
-   temp = map_2Mesh.vertices;
-   for (int j = 0; j < MAP2_WIDTH; j++) {
-	  for (int i = 0; i < MAP2_WIDTH; i++)
-		{
-		   map_2Mesh.face_normals[k++].set(-MAP2_GRID_WIDTH*(*(temp+5) - *(temp+2)),
-										   -MAP2_GRID_WIDTH*(*(temp+(MAP2_WIDTH+1)*3+2) - *(temp+2)),
-										   MAP2_GRID_WIDTH*MAP2_GRID_WIDTH);
-
-//		   debug->put("%f %f %f", map_2Mesh.face_normals[k-1].x, map_2Mesh.face_normals[k-1].y, map_2Mesh.face_normals[k-1].z);
-		   map_2Mesh.face_normals[k++].set(MAP2_GRID_WIDTH*(*(temp+(MAP2_WIDTH+1)*3+2) - *(temp+(MAP2_WIDTH+1)*3+5)),
-										   MAP2_GRID_WIDTH*(*(temp+5) - *(temp+(MAP2_WIDTH+1)*3+5)),
-										   MAP2_GRID_WIDTH*MAP2_GRID_WIDTH);
-		   temp += 3;
-//		   debug->put("%f %f %f", map_2Mesh.face_normals[k-1].x, map_2Mesh.face_normals[k-1].y, map_2Mesh.face_normals[k-1].z);
-
-		}
-	  temp += 3;
-   }
-   
-   temp = map_2Mesh.normals;
-   
-   k = 0;
-   
-   *(temp++) = map_2Mesh.face_normals[0].x;
-   *(temp++) = map_2Mesh.face_normals[0].y;
-   *(temp++) = map_2Mesh.face_normals[0].z;
-   
-   for (int i = 1; i < MAP2_WIDTH; i++)
-	 {
-		*(temp++) = map_2Mesh.face_normals[i*2-2].x + 
-		  map_2Mesh.face_normals[i*2-1].x + 
-		  map_2Mesh.face_normals[i*2].x;
-		*(temp++) = map_2Mesh.face_normals[i*2-2].y + 
-		  map_2Mesh.face_normals[i*2-1].y + 
-		  map_2Mesh.face_normals[i*2].y;
-		*(temp++) = map_2Mesh.face_normals[i*2-2].z + 
-		  map_2Mesh.face_normals[i*2-1].z + 
-		  map_2Mesh.face_normals[i*2].z;
-		//      Debug("%f %f %f", map_2Mesh.normals[k-1].x, map_2Mesh.normals[k-1].y, map_2Mesh.normals[k-1].z);
-	 }
-   
-   *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2-2].x + map_2Mesh.face_normals[MAP2_WIDTH*2-1].x;
-   *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2-2].y + map_2Mesh.face_normals[MAP2_WIDTH*2-1].y;
-   *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2-2].z + map_2Mesh.face_normals[MAP2_WIDTH*2-1].z;
-   
-   
-   for (int j = 1; j < MAP2_WIDTH; j++)
-	 {
-		
-		*(temp++) = map_2Mesh.face_normals[(j-1)*(MAP2_WIDTH*2)].x +
-		  map_2Mesh.face_normals[(j-1)*(MAP2_WIDTH*2)+1].x +
-		  map_2Mesh.face_normals[(j)*(MAP2_WIDTH*2)].x;
-		*(temp++) = map_2Mesh.face_normals[(j-1)*(MAP2_WIDTH*2)].y +
-		  map_2Mesh.face_normals[(j-1)*(MAP2_WIDTH*2)+1].y +
-		  map_2Mesh.face_normals[(j)*(MAP2_WIDTH*2)].y;
-		
-		*(temp++) = map_2Mesh.face_normals[(j-1)*(MAP2_WIDTH*2)].z +
-		  map_2Mesh.face_normals[(j-1)*(MAP2_WIDTH*2)+1].z +
-		  map_2Mesh.face_normals[(j)*(MAP2_WIDTH*2)].z;
-		
-		for (int i = 1; i < MAP2_WIDTH; i++)
-		  {
-			 
-			 *(temp++) = map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2-1)].x +
-			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2)].x +
-			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2+1)].x +
-			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-2)].x +
-			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-1)].x +
-			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2)].x;
-			 
-			 *(temp++) = map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2-1)].y +
-			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2)].y +
-			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2+1)].y +
-			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-2)].y +
-			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-1)].y +
-			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2)].y;
-			 
-			 *(temp++) = map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2-1)].z +
-			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2)].z +
-			   map_2Mesh.face_normals[(j-1)*MAP2_WIDTH*2 + (i*2+1)].z +
-			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-2)].z +
-			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2-1)].z +
-			   map_2Mesh.face_normals[(j)*MAP2_WIDTH*2 + (i*2)].z;
-		  }
-		
-		*(temp++) = map_2Mesh.face_normals[(j)*MAP2_WIDTH*2-1].x +
-		  map_2Mesh.face_normals[(j+1)*MAP2_WIDTH*2-2].x +
-		  map_2Mesh.face_normals[(j+1)*MAP2_WIDTH*2-1].x;
-		
-		*(temp++) = map_2Mesh.face_normals[(j)*MAP2_WIDTH*2-1].y +
-		  map_2Mesh.face_normals[(j+1)*MAP2_WIDTH*2-2].y +
-		  map_2Mesh.face_normals[(j+1)*MAP2_WIDTH*2-1].y;
-		
-		*(temp++) = map_2Mesh.face_normals[(j)*MAP2_WIDTH*2-1].z +
-		  map_2Mesh.face_normals[(j+1)*MAP2_WIDTH*2-2].z +
-		  map_2Mesh.face_normals[(j+1)*MAP2_WIDTH*2-1].z;
-		
-	 }
-   
-   *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)].x +
-	 map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+1].x;
-   
-   *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)].y +
-	 map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+1].y;
-   
-   *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)].z +
-	 map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+1].z;
-   
-   for (int i = 1; i < MAP2_WIDTH; i++)
-	 {
-		*(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2-1)].x +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2)].x +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2+1)].x;
-		*(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2-1)].y +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2)].y +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2+1)].y;
-		
-		*(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2-1)].z +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2)].z +
-		  map_2Mesh.face_normals[MAP2_WIDTH*2*(MAP2_WIDTH-1)+(i*2+1)].z;
-		
-	 }
-   
-   *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*(MAP2_WIDTH*2)-1].x;
-   *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*(MAP2_WIDTH*2)-1].y;
-   *(temp++) = map_2Mesh.face_normals[MAP2_WIDTH*(MAP2_WIDTH*2)-1].z;
-   
-   
-   double length;
-   
-   for (int i=0; i<map_2Mesh.numVertices*3; )
-	 {
-		length = sqrt(map_2Mesh.normals[i]*map_2Mesh.normals[i] +
-					  map_2Mesh.normals[i+1]*map_2Mesh.normals[i+1] +
-					  map_2Mesh.normals[i+2]*map_2Mesh.normals[i+2]);
-		map_2Mesh.normals[i++] /= length;
-		map_2Mesh.normals[i++] /= length;
-		map_2Mesh.normals[i++] /= length;
-		
-		//      Debug("%f %f %f", map_2Mesh.normals[i-3], map_2Mesh.normals[i-2], map_2Mesh.normals[i-1]);
-		
-	 }
-   
+     scene_root -> addKid ( terrain ) ;
 }
 
 
-void Landscape::initMap_3Mesh()
+ssgBranch *
+Landscape::createTileLOD ( int x, int y, ssgSimpleState *state, int ntris, float z_off ) 
 {
-   double *temp;
-   int tempx, tempy;
-   
-   temp = map_3Mesh.vertices;
-   for (int j= - MAP3_WIDTH/2, tempy = 0; j<=MAP3_WIDTH/2; j++, tempy++) {
-	  for (int i= - MAP3_WIDTH/2, tempx = 0; i<=MAP3_WIDTH/2; i++, tempx++)
-		{
-		   *(temp++) = i*MAP3_GRID_WIDTH;
-		   *(temp++) = j*MAP3_GRID_WIDTH;
-		   *(temp++) = zmap_3[tempy*(MAP3_WIDTH+1) + tempx];
-		}
-   }
-   
-   
-   int k = 0;
-   
-   temp = map_3Mesh.vertices;
-   for (int j = 0; j < MAP3_WIDTH; j++) {
-	  for (int i = 0; i < MAP3_WIDTH; i++)
-		{
-		   map_3Mesh.face_normals[k++].set(-MAP3_GRID_WIDTH*(*(temp+5) - *(temp+2)),
-										   -MAP3_GRID_WIDTH*(*(temp+(MAP3_WIDTH+1)*3+2) - *(temp+2)),
-										   MAP3_GRID_WIDTH*MAP3_GRID_WIDTH);
+  sgVec4 *scolors = new sgVec4 [ (ntris+1) * (ntris+1) ] ;
+  sgVec2 *tcoords = new sgVec2 [ (ntris+1) * (ntris+1) ] ;
+  sgVec3 *snorms  = new sgVec3 [ (ntris+1) * (ntris+1) ] ;
+  sgVec3 *scoords = new sgVec3 [ (ntris+1) * (ntris+1) ] ;
 
-//		   debug->put("%f %f %f", map_3Mesh.face_normals[k-1].x, map_3Mesh.face_normals[k-1].y, map_3Mesh.face_normals[k-1].z);
-		   map_3Mesh.face_normals[k++].set(MAP3_GRID_WIDTH*(*(temp+(MAP3_WIDTH+1)*3+2) - *(temp+(MAP3_WIDTH+1)*3+5)),
-										   MAP3_GRID_WIDTH*(*(temp+5) - *(temp+(MAP3_WIDTH+1)*3+5)),
-										   MAP3_GRID_WIDTH*MAP3_GRID_WIDTH);
-		   temp += 3;
-//		   debug->put("%f %f %f", map_3Mesh.face_normals[k-1].x, map_3Mesh.face_normals[k-1].y, map_3Mesh.face_normals[k-1].z);
+  for ( int j = 0 ; j < (ntris+1) ; j++ )
+    for ( int i = 0 ; i < (ntris+1) ; i++ )
+    {
+      int address  =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)      ) % 256  +
+                     ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)      ) % 256 ) * 256 ;
+      int addressN =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)      ) % 256  +
+                     ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)+1.0f ) % 256 ) * 256 ;
+      int addressE =  (int)floor( 12.0f * ((float)x + (float)i / (float)ntris)+1.0f ) % 256  +
+                     ((int)floor( 12.0f * ((float)y + (float)j / (float)ntris)      ) % 256 ) * 256 ;
+/*
+      float zz  = (float) elevation_map [ address  ] * ELEVATION_SCALE;// + z_off ;
+      float zzN = (float) elevation_map [ addressN ] * ELEVATION_SCALE;// + z_off ;
+      float zzE = (float) elevation_map [ addressE ] * ELEVATION_SCALE;// + z_off ;
+*/	   
+	   float zz =  900*Perlin::perlinNoise_2D((x + (float)i/(float)ntris),
+											  (y + (float)j/(float)ntris));
+	   float zzN = 900*Perlin::perlinNoise_2D((x + (float)i/(float)ntris),     
+											  (y + (float)j/(float)ntris + 1));
+	   float zzE = 900*Perlin::perlinNoise_2D((x + (float)i/(float)ntris + 1), 
+											  (y + (float)j/(float)ntris));
+	   
+	   float rr = (float) image_map [ address * 3 + 0 ] / 255.0f ;
+      float gg = (float) image_map [ address * 3 + 1 ] / 255.0f ;
+      float bb = (float) image_map [ address * 3 + 2 ] / 255.0f ;
 
-		}
-	  temp += 3;
-   }
-   
-   temp = map_3Mesh.normals;
-   
-   k = 0;
-   
-   *(temp++) = map_3Mesh.face_normals[0].x;
-   *(temp++) = map_3Mesh.face_normals[0].y;
-   *(temp++) = map_3Mesh.face_normals[0].z;
-   
-   for (int i = 1; i < MAP3_WIDTH; i++)
-	 {
-		*(temp++) = map_3Mesh.face_normals[i*2-2].x + 
-		  map_3Mesh.face_normals[i*2-1].x + 
-		  map_3Mesh.face_normals[i*2].x;
-		*(temp++) = map_3Mesh.face_normals[i*2-2].y + 
-		  map_3Mesh.face_normals[i*2-1].y + 
-		  map_3Mesh.face_normals[i*2].y;
-		*(temp++) = map_3Mesh.face_normals[i*2-2].z + 
-		  map_3Mesh.face_normals[i*2-1].z + 
-		  map_3Mesh.face_normals[i*2].z;
-		//      Debug("%f %f %f", map_3Mesh.normals[k-1].x, map_3Mesh.normals[k-1].y, map_3Mesh.normals[k-1].z);
-	 }
-   
-   *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2-2].x + map_3Mesh.face_normals[MAP3_WIDTH*2-1].x;
-   *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2-2].y + map_3Mesh.face_normals[MAP3_WIDTH*2-1].y;
-   *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2-2].z + map_3Mesh.face_normals[MAP3_WIDTH*2-1].z;
-   
-   
-   for (int j = 1; j < MAP3_WIDTH; j++)
-	 {
-		
-		*(temp++) = map_3Mesh.face_normals[(j-1)*(MAP3_WIDTH*2)].x +
-		  map_3Mesh.face_normals[(j-1)*(MAP3_WIDTH*2)+1].x +
-		  map_3Mesh.face_normals[(j)*(MAP3_WIDTH*2)].x;
-		*(temp++) = map_3Mesh.face_normals[(j-1)*(MAP3_WIDTH*2)].y +
-		  map_3Mesh.face_normals[(j-1)*(MAP3_WIDTH*2)+1].y +
-		  map_3Mesh.face_normals[(j)*(MAP3_WIDTH*2)].y;
-		
-		*(temp++) = map_3Mesh.face_normals[(j-1)*(MAP3_WIDTH*2)].z +
-		  map_3Mesh.face_normals[(j-1)*(MAP3_WIDTH*2)+1].z +
-		  map_3Mesh.face_normals[(j)*(MAP3_WIDTH*2)].z;
-		
-		for (int i = 1; i < MAP3_WIDTH; i++)
-		  {
-			 
-			 *(temp++) = map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2-1)].x +
-			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2)].x +
-			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2+1)].x +
-			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-2)].x +
-			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-1)].x +
-			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2)].x;
-			 
-			 *(temp++) = map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2-1)].y +
-			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2)].y +
-			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2+1)].y +
-			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-2)].y +
-			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-1)].y +
-			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2)].y;
-			 
-			 *(temp++) = map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2-1)].z +
-			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2)].z +
-			   map_3Mesh.face_normals[(j-1)*MAP3_WIDTH*2 + (i*2+1)].z +
-			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-2)].z +
-			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2-1)].z +
-			   map_3Mesh.face_normals[(j)*MAP3_WIDTH*2 + (i*2)].z;
-		  }
-		
-		*(temp++) = map_3Mesh.face_normals[(j)*MAP3_WIDTH*2-1].x +
-		  map_3Mesh.face_normals[(j+1)*MAP3_WIDTH*2-2].x +
-		  map_3Mesh.face_normals[(j+1)*MAP3_WIDTH*2-1].x;
-		
-		*(temp++) = map_3Mesh.face_normals[(j)*MAP3_WIDTH*2-1].y +
-		  map_3Mesh.face_normals[(j+1)*MAP3_WIDTH*2-2].y +
-		  map_3Mesh.face_normals[(j+1)*MAP3_WIDTH*2-1].y;
-		
-		*(temp++) = map_3Mesh.face_normals[(j)*MAP3_WIDTH*2-1].z +
-		  map_3Mesh.face_normals[(j+1)*MAP3_WIDTH*2-2].z +
-		  map_3Mesh.face_normals[(j+1)*MAP3_WIDTH*2-1].z;
-		
-	 }
-   
-   *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)].x +
-	 map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+1].x;
-   
-   *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)].y +
-	 map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+1].y;
-   
-   *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)].z +
-	 map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+1].z;
-   
-   for (int i = 1; i < MAP3_WIDTH; i++)
-	 {
-		*(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2-1)].x +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2)].x +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2+1)].x;
-		*(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2-1)].y +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2)].y +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2+1)].y;
-		
-		*(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2-1)].z +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2)].z +
-		  map_3Mesh.face_normals[MAP3_WIDTH*2*(MAP3_WIDTH-1)+(i*2+1)].z;
-		
-	 }
-   
-   *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*(MAP3_WIDTH*2)-1].x;
-   *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*(MAP3_WIDTH*2)-1].y;
-   *(temp++) = map_3Mesh.face_normals[MAP3_WIDTH*(MAP3_WIDTH*2)-1].z;
-   
-   double length;
-   
-   for (int i=0; i<map_3Mesh.numVertices*3; )
-	 {
-		length = sqrt(map_3Mesh.normals[i]*map_3Mesh.normals[i] +
-					  map_3Mesh.normals[i+1]*map_3Mesh.normals[i+1] +
-					  map_3Mesh.normals[i+2]*map_3Mesh.normals[i+2]);
-		map_3Mesh.normals[i++] /= length;
-		map_3Mesh.normals[i++] /= length;
-		map_3Mesh.normals[i++] /= length;
-		
-//		debug->put("%f %f %f", map_3Mesh.normals[i-3], map_3Mesh.normals[i-2], map_3Mesh.normals[i-1]);
-		
-	 }
-   
-}
+      float xx = (float) i * (TILE_SIZE/(float)ntris) ;
+      float yy = (float) j * (TILE_SIZE/(float)ntris) ;
 
-void Landscape::drawMap_1()
-{
-   int mat_index;
+      sgVec3 nrm ;
 
-   glVertexPointer(3, GL_DOUBLE, 0, map_1Mesh.vertices);
-   glNormalPointer(GL_DOUBLE, 0, map_1Mesh.normals);
-      
-   glEnableClientState( GL_VERTEX_ARRAY );
-   glEnableClientState( GL_NORMAL_ARRAY );
-      
-   for (int j = 0; j < MAP1_WIDTH;j++)
-	 {
-		for (int i = 0; i < MAP1_WIDTH+1;) 
-		  {
-//			 MATERIAL[ mat_index = MAP1(i,j) ] -> apply();
+      nrm [ 0 ] = (zz - zzE) / (TILE_SIZE/12.0f) ;
+      nrm [ 1 ] = (zz - zzN) / (TILE_SIZE/12.0f) ;
+      nrm [ 2 ] = sqrt ( nrm[0] * nrm[0] + nrm[1] * nrm[1] ) ;
 
-//			 grass_gst->apply();
+      sgCopyVec3( snorms  [i+j*(ntris+1)], nrm ) ;
+      sgSetVec2 ( tcoords [i+j*(ntris+1)], xx/LAMBDA, yy/LAMBDA ) ;
+      sgSetVec4 ( scolors [i+j*(ntris+1)], rr, gg, bb, 1.0f ) ;
+      sgSetVec3 ( scoords [i+j*(ntris+1)], xx, yy, zz ) ;
+    }
 
-			 
-			 glBegin (GL_TRIANGLE_STRIP);
-				  
-			 glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP1_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP1_WIDTH+1) + i);
-			 			 
-			 i++;
-			 glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP1_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP1_WIDTH+1) + i);
+  ssgBranch *branch = new ssgBranch () ;
 
-			 
-			 while( (i < MAP1_WIDTH) )//&& (mat_index == MAP(i, j)) )
-			   {
-				  i++;
-				  glTexCoord2f(i, 0.0);
-				  glArrayElement( (j)*(MAP1_WIDTH+1) + i);
-				  glTexCoord2f(i, 1.0);
-				  glArrayElement( (j+1)*(MAP1_WIDTH+1) + i);
-				  
-			   }
-			 
-			 glEnd();
-		  }
-	 }
+  for ( int i = 0 ; i < ntris ; i++ )
+  {
+    unsigned short *vlist = new unsigned short [ 2 * (ntris+1) ] ;
 
-   glDisableClientState(GL_VERTEX_ARRAY);
-   glDisableClientState(GL_NORMAL_ARRAY);
+    for ( int j = 0 ; j < (ntris+1) ; j++ )
+	   {
+	   vlist [   j + j   ] = j + (i+1) * (ntris+1) ;
+      vlist [ j + j + 1 ] = j +   i   * (ntris+1) ;
+    }
 
+    ssgLeaf *gset = new ssgVTable ( GL_TRIANGLE_STRIP,
+                     2 * (ntris+1), vlist, scoords,
+                     2 * (ntris+1), vlist, snorms ,
+                     2 * (ntris+1), vlist, tcoords,
+                     2 * (ntris+1), vlist, scolors ) ;
+    gset -> setState ( state ) ;
+    branch -> addKid ( gset  ) ;
+  }
+
+  return branch ;
 }
 
 
-
-/* These construct the display lists */
-void Landscape::makeMap_1()
+void 
+Landscape::createTile ( ssgTransform *tile, int x, int y, ssgSimpleState *state ) 
 {
-   /* Check for already existing display list */
-   if (listId_1 != -1)
-	 glDeleteLists(listId_1, 1);
+  float rr[] = { 0.0f, 6000.0f, 7000.0f, 12000.0f } ;
+  ssgRangeSelector *lod = new ssgRangeSelector () ;
 
-   glVertexPointer(3, GL_DOUBLE, 0, map_1Mesh.vertices);
-   glNormalPointer(GL_DOUBLE, 0, map_1Mesh.normals);
+  lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE   - 1,    0.0f ) ) ;
+  lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/2 - 1,  -30.0f ) ) ;
+  lod  -> addKid ( createTileLOD ( x, y, state, TRIANGLE_GRID_SIZE/4 - 1, -250.0f ) ) ;
+  lod  -> setRanges ( rr, 4 ) ;
 
-   glEnableClientState( GL_VERTEX_ARRAY );
-   glEnableClientState( GL_NORMAL_ARRAY );
-   
-   /* Generate new list ID */
-   listId_1 = glGenLists(1);
-   glNewList(listId_1, GL_COMPILE);
-
-   for (int j=0;j<MAP1_WIDTH;j++)
-	 {
-		glBegin(GL_TRIANGLE_STRIP);
-		
-		for (int i=0;i<MAP1_WIDTH+1;i++)
-		  {
-			 glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP1_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP1_WIDTH+1) + i);
-		  }
-		glEnd();
-	 }
-   
-   glEndList();
-
-   glDisableClientState(GL_VERTEX_ARRAY);
-   glDisableClientState(GL_NORMAL_ARRAY);
-   
-}
-
-void Landscape::makeMap_2()
-{
-   
-   /* Check for already existing display list */
-   if (listId_2 != -1)
-	 glDeleteLists(listId_2, 1);
-   
-   glVertexPointer(3, GL_DOUBLE, 0, map_2Mesh.vertices);
-   glNormalPointer(GL_DOUBLE, 0, map_2Mesh.normals);
-   
-   glEnableClientState( GL_VERTEX_ARRAY );
-   glEnableClientState( GL_NORMAL_ARRAY );
-   
-   /* Generate new list ID */
-   listId_2 = glGenLists(1);
-   glNewList(listId_2, GL_COMPILE);
-   
-   int j, i, north = 0, south = 0, west = 0, east = 0;
-   
-   if (map1_shift_x > 0)
-	 east = 1;
-   else if (map1_shift_x < 0)
-	 west = 1;
-   
-   if (map1_shift_y > 0)
-	 north = 1;
-   else if (map1_shift_y < 0)
-	 south = 1;
-   
-   for (j=0;j<(MAP2_WIDTH/2 - MAP2_GAP/2)-north;j++)
-	 {
-		glBegin(GL_TRIANGLE_STRIP);
-		
-		for (i=0;i<MAP2_WIDTH+1;i++)
-		  {
-             glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP2_WIDTH+1) + i);
-		  }
-		glEnd();
-	 }
-   
-   for (;j<(MAP2_WIDTH/2 - MAP2_GAP/2 + MAP2_GAP)+south;j++)
-	 {
-		glBegin(GL_TRIANGLE_STRIP);
-		
-		for (i=0;i<(MAP2_WIDTH/2 - MAP2_GAP/2)+1-west;i++)
-		  {
-             glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
-             glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP2_WIDTH+1) + i);
-		  }
-		glEnd();
-		
-		glBegin(GL_TRIANGLE_STRIP);
-		
-		for (i += MAP2_GAP-1+east+west;i<MAP2_WIDTH+1;i++)
-		  {
-			 glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP2_WIDTH+1) + i);
-		  }
-		glEnd();
-		
-	 }
-
-   for (;j<MAP2_WIDTH;j++)
-	 {
-		glBegin(GL_TRIANGLE_STRIP);
-		
-		for (i=0;i<MAP2_WIDTH+1;i++)
-		  {
-			 glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP2_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP2_WIDTH+1) + i);
-		  }
-		glEnd();
-	 }
-   glEndList();
-   
-   glDisableClientState(GL_VERTEX_ARRAY);
-   glDisableClientState(GL_NORMAL_ARRAY);
-
-}
-
-void Landscape::makeMap_3()
-{
-   
-   /* Check for already existing display list */
-   if (listId_3 != -1)
-	 glDeleteLists(listId_3, 1);
-   
-   glVertexPointer(3, GL_DOUBLE, 0, map_3Mesh.vertices);
-   glNormalPointer(GL_DOUBLE, 0, map_3Mesh.normals);
-   
-   glEnableClientState( GL_VERTEX_ARRAY );
-   glEnableClientState( GL_NORMAL_ARRAY );
-   
-   /* Generate new list ID */
-   listId_3 = glGenLists(1);
-   glNewList(listId_3, GL_COMPILE);
-
-   
-   int j, i, north = 0, south = 0, west = 0, east = 0;
-   
-   if (map2_shift_x > 0)
-	 east = 1;
-   else if (map2_shift_x < 0)
-	 west = 1;
-   
-   if (map2_shift_y > 0)
-	 north = 1;
-   else if (map2_shift_y < 0)
-	 south = 1;
-   
-   for (j=0;j<(MAP3_WIDTH/2 - MAP3_GAP/2)-north;j++)
-	 {
-		glBegin(GL_TRIANGLE_STRIP);
-		
-		for (i=0;i<MAP3_WIDTH+1;i++)
-		  {
-			 glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP3_WIDTH+1) + i);
-		  }
-		glEnd();
-	 }
-   
-   for (;j<(MAP3_WIDTH/2 - MAP3_GAP/2 + MAP3_GAP)+south;j++)
-	 {
-		glBegin(GL_TRIANGLE_STRIP);
-		
-		for (i=0;i<(MAP3_WIDTH/2 - MAP3_GAP/2)+1-west;i++)
-		  {
-			 glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP3_WIDTH+1) + i);
-		  }
-		glEnd();
-		
-		glBegin(GL_TRIANGLE_STRIP);
-		
-		for (i += MAP3_GAP-1+east+west;i<MAP3_WIDTH+1;i++)
-		  {
-			 glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP3_WIDTH+1) + i);
-		  }
-		glEnd();
-		
-	 }
-   
-   for (;j<MAP3_WIDTH;j++)
-	 {
-		glBegin(GL_TRIANGLE_STRIP);
-		
-		for (i=0;i<MAP3_WIDTH+1;i++)
-		  {
-			 glTexCoord2f(i, 0.0);
-			 glArrayElement( (j)*(MAP3_WIDTH+1) + i);
-			 glTexCoord2f(i, 1.0);
-			 glArrayElement( (j+1)*(MAP3_WIDTH+1) + i);
-		  }
-		glEnd();
-	 }
-   
-   glEndList();
-   
-   glDisableClientState(GL_VERTEX_ARRAY);
-   glDisableClientState(GL_NORMAL_ARRAY);
-}
-   
-   
-void Landscape::makeMap_4()
-{
-}
-
-void
-Landscape::setMap_1(char *map)
-{
-   
-}
-
-void
-Landscape::setMap_2(char *map)
-{
-   
-}
-
-void
-Landscape::setMap_3(char *map)
-{
-   
-}
-
-/* Some initial bugs for moving around (shifting the maps) */
-void
-Landscape::shiftMap_1(int side)
-{
-   int x, y;
-   
-   switch (side)
-	 {
-	  case DIR_NORTH:
-		map1_y += MAP1_GRID_WIDTH;
-		map1_shift_y++;
-		if (map1_shift_y == 5)
-		  {
-			 map1_shift_y = 0;
-			 shiftMap_2(side);
-		  }
-			 
-		for (y = 0; y < MAP1_WIDTH-1; y++)
-		  for (x = 0; x < MAP1_WIDTH; x++)
-			{
-//			   MAP1(x, y) = MAP1(x, y+1);
-			}
-//		for (x = 0; x < MAP1_WIDTH; x++)
-//		  MAP1(x, 0) = slice[x];
-		break;
-		
-	  case DIR_EAST:
-		map1_x += MAP1_GRID_WIDTH;
-		map1_shift_x++;
-		if (map1_shift_x == 5)
-		  {
-			 map1_shift_x = 0;
-			 shiftMap_2(side);
-		  }
-		
-		for (x = 0; x < MAP1_WIDTH-1; x++)
-		  for (y = 0; y < MAP1_WIDTH; y++)
-			{
-//			   MAP1(x, y) = MAP1(x+1, y);
-			}
-//		for (y = 0; y < MAP1_WIDTH; y++)
-//		  MAP1(MAP1_WIDTH-1, y) = slice[y];
-		break;
-		
-	  case DIR_SOUTH:
-		map1_y -= MAP1_GRID_WIDTH;
-		map1_shift_y--;
-		if (map1_shift_y == -5)
-		  {
-			 map1_shift_y = 0;
-			 shiftMap_2(side);
-		  }
-			 
-        for (y = MAP1_WIDTH-1; y > 0; y--)
-		  for (x = 0; x < MAP1_WIDTH; x++)
-		  {
-//			 MAP1(x, y) = MAP1(x, y+1);
-		  }
-//		for (x = 0; x < MAP1_WIDTH; x++)
-//		  MAP1(x, MAP1_WIDTH-1) = slice[x];
-		break;
-		
-	  case DIR_WEST:
-		map1_x -= MAP1_GRID_WIDTH;
-		map1_shift_x--;
-		if (map1_shift_x == -5)
-		  {
-			 map1_shift_x = 0;
-			 shiftMap_2(side);
-		  }
-			 
-		for (x = MAP1_WIDTH-1; x > 0; x--)
-		  for (y = 0; y < MAP1_WIDTH; y++)
-			{
-//			   MAP1(x, y) = MAP1(x-1, y);
-			}
-//		for (y = 0; y < MAP1_WIDTH; y++)
-//		  MAP1(0, y) = slice[y];
-		break;
-
-	  default:
-		error->put(ERROR_FATAL, "invalid first argument to updateMap_1Slice()");
-		break;
-	 }
-
-   makeHeightMaps();
-   initMap_1Mesh();
-   makeMap_1();
-   makeMap_2();
-}
-
-void
-Landscape::shiftMap_2(int side)
-{
-   int x, y;
-   
-   switch (side)
-	 {
-	  case DIR_NORTH:
-		map2_y += MAP2_GRID_WIDTH;
-		map2_shift_y++;
-		if (map2_shift_y == 5)
-		  {
-			 map2_shift_y = 0;
-			 shiftMap_3(side);
-		  }
-			 
-		for (y = 0; y < MAP2_WIDTH-1; y++)
-		  for (x = 0; x < MAP2_WIDTH; x++)
-			{
-//			   MAP2(x, y) = MAP2(x, y+1);
-			}
-//		for (x = 0; x < MAP2_WIDTH; x++)
-//		  MAP2(x, 0) = slice[x];
-		break;
-		
-	  case DIR_EAST:
-		map2_x += MAP2_GRID_WIDTH;
-		map2_shift_x++;
-		if (map2_shift_x == 5)
-		  {
-			 map2_shift_x = 0;
-			 shiftMap_3(side);
-		  }
-		
-		for (x = 0; x < MAP2_WIDTH-1; x++)
-		  for (y = 0; y < MAP2_WIDTH; y++)
-			{
-//			   MAP2(x, y) = MAP2(x+1, y);
-			}
-//		for (y = 0; y < MAP2_WIDTH; y++)
-//		  MAP2(MAP2_WIDTH-1, y) = slice[y];
-		break;
-		
-	  case DIR_SOUTH:
-		map2_y -= MAP2_GRID_WIDTH;
-		map2_shift_y--;
-		if (map2_shift_y == -5)
-		  {
-			 map2_shift_y = 0;
-			 shiftMap_3(side);
-		  }
-			 
-        for (y = MAP2_WIDTH-1; y > 0; y--)
-		  for (x = 0; x < MAP2_WIDTH; x++)
-		  {
-//			 MAP2(x, y) = MAP2(x, y+1);
-		  }
-//		for (x = 0; x < MAP2_WIDTH; x++)
-//		  MAP2(x, MAP2_WIDTH-1) = slice[x];
-		break;
-		
-	  case DIR_WEST:
-		map2_x -= MAP2_GRID_WIDTH;
-		map2_shift_x--;
-		if (map2_shift_x == -5)
-		  {
-			 map2_shift_x = 0;
-			 shiftMap_3(side);
-		  }
-			 
-		for (x = MAP2_WIDTH-1; x > 0; x--)
-		  for (y = 0; y < MAP2_WIDTH; y++)
-			{
-//			   MAP2(x, y) = MAP2(x-1, y);
-			}
-//		for (y = 0; y < MAP2_WIDTH; y++)
-//		  MAP2y(0, y) = slice[y];
-		break;
-
-	  default:
-		error->put(ERROR_FATAL, "invalid first argument to updateMap_1Slice()");
-		break;
-	 }
-
-   makeHeightMaps();
-   initMap_2Mesh();
-   makeMap_2();
-   makeMap_3();
-   
-}
-
-void
-Landscape::shiftMap_3(int side)
-{
-   switch (side)
-	 {
-	  case DIR_NORTH:
-		map3_y += MAP3_GRID_WIDTH;
-		break;
-	  case DIR_SOUTH:
-		map3_y -= MAP3_GRID_WIDTH;
-		break;
-	  case DIR_EAST:
-		map3_x += MAP3_GRID_WIDTH;
-		break;
-	  case DIR_WEST:
-		map3_x -= MAP3_GRID_WIDTH;
-		break;
-	 }
-
-   makeHeightMaps();
-   initMap_3Mesh();
-   makeMap_3();
+  tile -> addKid ( lod ) ;
 }

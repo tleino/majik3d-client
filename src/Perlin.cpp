@@ -27,8 +27,8 @@
 #include "Error.hpp"
 #include "Perlin.hpp"
 
-#define PERSISTENCE 0.4
-#define OCTAVES       3
+#define PERSISTENCE 0.6
+#define OCTAVES       5
 
 Perlin::Perlin()
 {
@@ -40,10 +40,10 @@ Perlin::~Perlin()
    DEBUG ("Perlin destructor");
 }
 
-float
-Perlin::cosine_Interpolate(float a, float b, float x)
+double
+Perlin::cosine_Interpolate(double a, double b, double x)
 {
-   float ft, f;
+   double ft, f;
    
    ft = x * 3.1415927;
    f = (1 - cos(ft)) * .5;
@@ -51,7 +51,7 @@ Perlin::cosine_Interpolate(float a, float b, float x)
    return  a*(1-f) + b*f;
 }
 
-float
+double
 Perlin::noise(int octave, int x, int y)
 {
    int n;
@@ -81,10 +81,10 @@ Perlin::noise(int octave, int x, int y)
 	 }
 }
 
-float
-Perlin::smoothedNoise(int octave, float x, float y)
+double
+Perlin::smoothedNoise(int octave, double x, double y)
 {
-   float corners, sides, center;
+   double corners, sides, center;
    
    corners = ( noise(octave, x-1, y-1)+noise(octave, x+1, y-1)+noise(octave, x-1, y+1)+noise(octave, x+1, y+1) ) / 16;
    sides   = ( noise(octave, x-1, y)  +noise(octave, x+1, y)  +noise(octave, x, y-1)  +noise(octave, x, y+1) ) /  8;
@@ -92,12 +92,12 @@ Perlin::smoothedNoise(int octave, float x, float y)
    return corners + sides + center;
 }
 
-float
-Perlin::interpolatedNoise(int octave, float x, float y)
+double
+Perlin::interpolatedNoise(int octave, double x, double y)
 {
    int integer_X, integer_Y;
-   float fractional_X, fractional_Y;
-   float v1, v2, v3, v4, i1, i2;
+   double fractional_X, fractional_Y;
+   double v1, v2, v3, v4, i1, i2;
    
    integer_X    = (int) x;
    fractional_X = x - integer_X;
@@ -117,11 +117,11 @@ Perlin::interpolatedNoise(int octave, float x, float y)
 
 }
 
-float
-Perlin::perlinNoise_2D(float x, float y)
+double
+Perlin::perlinNoise_2D(double x, double y)
 {
    int i, n;
-   float p, amplitude, frequency, total = 0;
+   double p, amplitude, frequency, total = 0;
  
    p = PERSISTENCE;
    n = OCTAVES;
