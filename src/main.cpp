@@ -60,9 +60,8 @@ main(int argc, char *argv[])
    // Start main loop
    while(quit == false)
 	 {
-		// Wait for events
-		if(SDL_WaitEvent(&event) < 0)
-		  Error(ERROR_FATAL, "Unable to wait for events");
+		// Poll events
+		SDL_PollEvent(&event);
 		
 		// Act according to event type
 		switch(event.type)

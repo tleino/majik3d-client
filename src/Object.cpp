@@ -16,7 +16,6 @@ Object::~Object()
 {
    if(next != NULL)
 	 {
-		free(next);
 		next = NULL;
 	 }
    #ifdef DEBUG
