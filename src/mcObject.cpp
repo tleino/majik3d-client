@@ -103,10 +103,10 @@ Object::~Object()
 	first = NULL;
     }
   
-	scene->getSceneRoot()->removeKid( trans );
+	m_selector->removeKid( trans );
+	scene->getSceneRoot()->removeKid( m_selector );
   
-//  delete trans;
-  delete puhe;
+	delete puhe;
 }
 
 void
