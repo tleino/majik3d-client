@@ -19,6 +19,11 @@ class Landscape
    int viewport_w;
    int viewport_h;
    unsigned long detail;
+   char *map_1;
+   char *map_2;
+   char *map_3;
+   char *map_4;
+   int *zmap;
    Object *first;
 };
 
