@@ -29,6 +29,9 @@ class Landscape
    Object *first;
  private:
    void initMap_1Mesh();
+   void initMap_2Mesh();
+   void initMap_3Mesh();
+   void initMap_4Mesh();
    void makeMap_1();    /* These construct the display lists for maps */
    void makeMap_2();
    void makeMap_3();
