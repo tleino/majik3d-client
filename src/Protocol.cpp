@@ -209,8 +209,11 @@ Protocol::parseCommand(char *input)
 		   break;
 		}
 	  //	  cout << "got map, level: " << map_level << " (" << map_x << "," << map_y << "): " << tmp << endl;
+	  FILE *fp;
+	  fp = fopen(debug->string("cache/%01x%05x%05x.map", map_level, map_x, map_y), "w");
+	  fprintf (fp, "%s", tmp);
+	  fclose (fp);
 	  Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(tmp);
-	  
 	  break;
 	default:
 	  error->put (ERROR_WARNING, "Unknown protocol command received: 0x%X", command);

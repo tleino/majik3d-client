@@ -20,6 +20,7 @@
 #include "Landscape.hpp"
 #include "Socket.hpp"
 #include "Protocol.hpp"
+#include "Debug.hpp"
 
 #include <iostream.h>
 
@@ -356,7 +357,16 @@ Mapquad::selectLOD(int lod)
 //		   cout << "..requesting map for level: " << level - lod << " xy: " << top_x << "," << top_y << endl;
 //		   lod_indices[lod] = -1;
 		   temp->map_requested = 1;
-		   sock->writePacket( "%d %d %d %d", CMD_MAP, level - lod, top_x, top_y );
+		   FILE *fp;
+		   char buf[256];
+		   fp = fopen(debug->string("cache/%01x%05x%05x.map", level-lod, top_x, top_y), "r");
+		   if (fp) {
+			  fgets (buf, 256, fp);
+			  fclose (fp);
+			  Mapquad::root_map->getMapquad(level-lod, top_x, top_y)->setMap(buf);
+		   } else {
+			  sock->writePacket( "%d %d %d %d", CMD_MAP, level - lod, top_x, top_y );
+		   }
 		}
    }
 }
