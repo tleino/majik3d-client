@@ -19,6 +19,7 @@
 #ifndef __DISPLAY_HPP__
 #define __DISPLAY_HPP__
 
+#include <pu.h>
 #include "Cursor.hpp"
 #include "Majik.hpp"
 
@@ -40,6 +41,7 @@ class Display
    int width, height, bpp;
    int flat; /* FIXME: Temporary kludge to test one feature */
    Cursor *cursor;
+   puMenuBar *main_menu_bar;
 };
    
 #endif /* __DISPLAY_HPP__ */

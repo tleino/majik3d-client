@@ -80,8 +80,12 @@ Input::specialDown(int key, int x, int y)
 	  landscape->tilt = 15;
 	  landscape->distance = -20;
 	  break;
-	case GLUT_KEY_END:
-	  break;
+    case GLUT_KEY_INSERT:
+      display->main_menu_bar->reveal();
+      break;
+    case GLUT_KEY_END:
+      display->main_menu_bar->hide();
+      break;
 	default:
 	  error->put(ERROR_WARNING, "Unsupported special key received: %d at (%d,%d)", key, x, y);
 	  break;
