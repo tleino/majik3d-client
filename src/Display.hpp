@@ -80,6 +80,8 @@ class Display
    ///
    float pitch;
    ///
+   int inp_command;
+   ///
    puInput *inp;
    ///
    float sun_x, sun_y, sun_z;

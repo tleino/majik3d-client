@@ -217,8 +217,10 @@ Protocol::parseCommand(char *input)
 	  Mapquad::root_map->getMapquad(map_level, map_x, map_y)->setMap(tmp);	  
 	  break;
 	case CMD_PROMPT:
-	  display->inp->reveal();
-	  break;
+	  sscanf(data, "%d", &display->inp_command);
+	  display->inp->reveal(); ///The data written to the prompt is handled in
+	                          ///the input object's callback function
+   	  break;
 	case CMD_SUN_POS:
 	  int mod;
 	  float r_add, g_add, b_add;

@@ -74,7 +74,7 @@ void inputCB (puObject *o)
 	  glClearColor ( skycol[0], skycol[1], skycol[2], skycol[3] ) ;
 	  
 	  scene->initialized = 4;
-	  sock->writePacket ("51 %s", val);
+	  sock->writePacket ("%d %s", display->inp_command, val);
 	  o->setSize(display->width-5, 5+20 ) ;
 	  if (display->nomenu == 0)
 	    menu->menuBar->reveal();
@@ -82,7 +82,7 @@ void inputCB (puObject *o)
 	  memset (display->stxt, 0, sizeof(display->stxt));
 	  display->status_text->setPosition(5, 10);
    } else {
-   sock->writePacket ("54 %s", val);
+   sock->writePacket ("%d %s", display->inp_command, val);
    }
    delete display->inp;
    display->inp = new puInput ( 5, 5, display->width-5, 5+20 ) ;
