@@ -33,27 +33,40 @@ Socket *sock = NULL;
 Display *display = NULL;
 Landscape *landscape = NULL;
 Input *input = NULL;
- 
+Config *config = NULL;
+
 void
 main(int argc, char **argv)
 {
    int c;
 
+   // Initialize the necessary global variables as proper objects
+   error = new Error;
+   debug = new Debug;
+   sock = new Socket;
+   display = new Display;
+   landscape = new Landscape;
+   input = new Input;
+   config = new Config;
+   
    glutInit(&argc, argv);
-      
+   
+   // Read majikrc
+   config->readOptions("majikrc");
+   
    // Read the command line arguments 
    while(1)
 	 {
 		int this_option_optind = optind ? optind : 1;
 		int option_index = 0;
-	  
+		
 		static struct option long_options[] = {
-			   { "version", 0, 0, 'V' },
-			   { "help", 0, 0, 'h' },
-		           { "host", 0, 0, 'H' },
-		           { "port", 0, 0, 'p' },
-			   { 0, 0, 0, 0 },
-		  };
+			 { "version", 0, 0, 'V' },
+			 { "help", 0, 0, 'h' },
+			 { "host", 0, 0, 'H' },
+			 { "port", 0, 0, 'p' },
+			 { 0, 0, 0, 0 },
+		};
 		
 		c = getopt_long(argc, argv, "hVH:p:", long_options, &option_index);
 		if(c == -1)
@@ -65,11 +78,11 @@ main(int argc, char **argv)
 			 printf("%s-%s.%s\n", PACKAGE, VERSION, CPU_VENDOR_OS);
 			 exit(0);
 		   case 'H':
-		     printf ("HOST = %s\n", optarg);
-		     break;
+			 printf ("HOST = %s\n", optarg);
+			 break;
 		   case 'p':
-		     printf ("PORT = %s\n", optarg);
-		     break;
+			 printf ("PORT = %s\n", optarg);
+			 break;
 		   case '?':
 		   case 'h':
 			 printf("Usage: %s [option(s)]\n\n  -V, --version  display version information\n  -h, --help     display this text\n", argv[0]);
@@ -77,18 +90,17 @@ main(int argc, char **argv)
 		  }
 	 }
 
- 
-   // Initialize the necessary global variables as proper objects
-   error = new Error;
-   debug = new Debug;
-   sock = new Socket;
-   display = new Display;
-   landscape = new Landscape;
-   input = new Input;
-         
+   // Assign proper width / height 
+   if(config->screen_width && config->screen_height && config->bpp)
+	 {
+		display->width = config->screen_width;
+		display->height = config->screen_height;
+		display->bpp = config->bpp;
+	 }
+   
    // Open the screen
    display->openScreen();
-
+   
    glutMainLoop();
    
    // Call ending functions
@@ -101,6 +113,7 @@ main(int argc, char **argv)
    delete display;
    delete landscape;
    delete input;
+   delete config;
    
    // Exit program
    exit(0);

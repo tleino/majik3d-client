@@ -39,6 +39,8 @@ Display::Display(int w, int h, int b)
    height = h;
    bpp = b;
 
+   cursor = new Cursor;
+   
    #ifdef DEBUG
 	 debug->put("Display constructor: width=%d height=%d bpp=%d", width, height, bpp);
    #endif	 

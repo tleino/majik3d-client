@@ -25,6 +25,13 @@ class Config
    Config();
    ~Config();
    void readOptions(char *);
+ private:
+   void parseLine(char *, int);
+   void parseOption(char *, char *);
+ public:
+   char *server_ip;
+   int server_port;
+   int screen_height, screen_width, bpp;
 };
 
 #endif /* __CONFIG_HPP__ */

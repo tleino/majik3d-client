@@ -47,6 +47,7 @@ extern Display *display;
 extern Socket *sock;
 extern Landscape *landscape;
 extern Input *input;
+extern Config *config;
 extern bool quit;
 
 #endif /* __MAJIK_HPP__ */
