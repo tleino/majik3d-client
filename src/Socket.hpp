@@ -25,13 +25,16 @@ class Socket
    Socket();
    Socket(char *, int);
    ~Socket();
-   void connect();
-   void disconnect();
-   void readPacket();
-   void writePacket();
+   void connectServer();
+   void disconnectServer();
+   char *readPacket();
+   void writePacket(char *,...);
  public:
    char *ip;
    int port;
+ private:
+   int nSocket;
+   char *szBuffer;
 };
 
 #endif /* __SOCKET_HPP__ */

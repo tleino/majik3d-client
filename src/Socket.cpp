@@ -25,6 +25,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
+#include <errno.h>
+
 #include "Majik.hpp"
 
 Socket::Socket()
@@ -52,27 +54,109 @@ Socket::~Socket()
 		delete [] ip;
 		ip = NULL;
 	 }
+   
+   if (szBuffer != NULL)
+     free (szBuffer);
+   
    #ifdef DEBUG
 	 debug->put("Socket destructor");
    #endif
 }
 
 void 
-Socket::connect()
+Socket::connectServer()
 {
+   struct hostent *pHostEnt;
+   unsigned long nAddr;
+   struct sockaddr_in ServerAddr;
+   
+   szBuffer = strdup("");
+   
+   if (inet_addr(ip) == INADDR_NONE) {
+      if ((pHostEnt = gethostbyname(ip)) != NULL) {
+	 free(ip);
+	 ip = (char *) malloc (3*4);
+	 sprintf(ip, "%d.%d.%d.%d",
+		 (unsigned char)pHostEnt->h_addr_list[0][0],
+		 (unsigned char)pHostEnt->h_addr_list[0][1],
+		 (unsigned char)pHostEnt->h_addr_list[0][2],
+		 (unsigned char)pHostEnt->h_addr_list[0][3]);
+      }
+   }
+   
+   memset (&ServerAddr, 0, sizeof (ServerAddr));
+   ServerAddr.sin_family = AF_INET;
+   ServerAddr.sin_port = htons (port);
+   
+   if (inet_aton(ip,&ServerAddr.sin_addr) <= 0)
+     error->put(ERROR_FATAL, "%s: Unknown host", ip);
+   
+   if ((nSocket = socket (AF_INET, SOCK_STREAM, 0)) < 0)
+     error->put(ERROR_FATAL, "Could not create a socket: %s", strerror (errno));
+   
+   if (connect (nSocket, (struct sockaddr *) &ServerAddr, sizeof (ServerAddr)) < 0)
+      error->put(ERROR_FATAL, "Unable to connect to remote host: %s", strerror (errno));
 }
 
 void 
-Socket::disconnect()
+Socket::disconnectServer()
 {
+   if (szBuffer != NULL)
+     free (szBuffer);
+   
+   // close (nSocket);
 }
 
-void 
+char *
 Socket::readPacket()
 {
+   unsigned long nLen = 0;
+   
+   do {
+      ioctl (nSocket, FIONREAD, &nLen);
+      if (nLen != 0) {
+	 char szData[1024*10];
+	 long nReceived;
+	 if ((nReceived = recv(nSocket,(char *)&szData,sizeof(szData)-1,0)) == -1)
+	   error->put(ERROR_FATAL, "Connection closed: %s", strerror (errno));
+	 
+	 szData[nReceived] = 0;
+	 
+	 // Resize the buffer
+	 szBuffer = (char *) realloc(szBuffer,strlen(szData)+strlen(szBuffer)+1);
+	 // Copy the new data
+	 strcat(szBuffer,szData);
+      }
+   } while (nLen != 0);
+   
+   // Split the data into lines
+   char *szReturn;
+   while ((szReturn = strchr(szBuffer,'\r')) != NULL) {
+      char *szRet = NULL;
+      // Terminate the string
+      *(szReturn++) = '\0';
+      // Dispatch a new string
+      szRet = strdup(szBuffer);
+      // Remove new lines
+      if (*szReturn == '\n')
+	szReturn++;
+      memmove(szBuffer,szReturn,strlen(szReturn)+1);
+      
+      return szRet;
+   }
+   return NULL;
 }
 
 void 
-Socket::writePacket()
+Socket::writePacket(char *szFmt,...)
 {
+   va_list vl;
+   char szData[1024*10];
+   
+   va_start (vl, szFmt);
+   vsprintf (szData, szFmt, vl);
+   va_end (vl);
+   
+   if (send(nSocket, szData,strlen(szData),0) == -1)
+     error->put(ERROR_FATAL, "Could not send data: %s", strerror (errno));
 }

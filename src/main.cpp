@@ -48,11 +48,13 @@ main(int argc, char **argv)
 	  
 		static struct option long_options[] = {
 			   { "version", 0, 0, 'V' },
-			   { "help", 0,0, 'h' },
+			   { "help", 0, 0, 'h' },
+		           { "host", 0, 0, 'H' },
+		           { "port", 0, 0, 'p' },
 			   { 0, 0, 0, 0 },
 		  };
 		
-		c = getopt_long(argc, argv, "hV", long_options, &option_index);
+		c = getopt_long(argc, argv, "hVH:p:", long_options, &option_index);
 		if(c == -1)
 		  break;
 		
@@ -61,6 +63,12 @@ main(int argc, char **argv)
 		   case 'V':
 			 printf("%s-%s.%s\n", PACKAGE, VERSION, CPU_VENDOR_OS);
 			 exit(0);
+		   case 'H':
+		     printf ("HOST = %s\n", optarg);
+		     break;
+		   case 'p':
+		     printf ("PORT = %s\n", optarg);
+		     break;
 		   case '?':
 		   case 'h':
 			 printf("Usage: %s [option(s)]\n\n  -V, --version  display version information\n  -h, --help     display this text\n", argv[0]);
