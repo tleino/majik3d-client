@@ -109,9 +109,6 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 		exchangeBorderVertices(*b, DIR_NORTH);
 */
 
-
-	
-
 };
 
 

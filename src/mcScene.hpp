@@ -19,13 +19,10 @@
 #ifndef __SCENE_HPP__
 #define __SCENE_HPP__
 
-#include <stdio.h>
 #include <ssg.h>
 #include <sg.h>
 #include <pu.h>
 
-class mcPlayerController;
-class mcCameraController;
 class Object;
 class mcSky;
 class mcCamera;
@@ -36,41 +33,29 @@ class Landscape;
 class Scene
 {
 public:
-  Scene();
-  ~Scene();
-  
-
-  void addSpecial(float x, float y, char *model, bool cutout);
-  void draw();
-  void update();
-  void init();
-  void drawText(Object *, sgVec3);
-  void redrawSky();
-  float getHOT(float x, float y);
-
-  mcPlayerController	*getPlayerController() { return m_playerController; }
-  mcCameraController	*getCameraController() { return m_cameraController; }
-  mcSky	*getSky()	{ return m_sky; }
-
-  ssgRoot	*getSceneRoot	()	{ return scene_root; }
-
-  const Landscape *getLandscape	()	{ return m_landscape; }
+					Scene			();
+					~Scene			();
+		void		addSpecial		(float x, float y, char *model, bool cutout);
+		void		draw			();
+		void		update			();
+		void		init			();
+		void		drawText		(Object *, sgVec3);
+		void		redrawSky		();
+		float		getHOT			(float x, float y);
+		mcCamera*	getCamera		()	{ return m_camera; }
+		mcSky*		getSky			()	{ return m_sky; }
+		ssgRoot*	getSceneRoot	()	{ return scene_root; }
+  const Landscape*	getLandscape	()	{ return m_landscape; }
 
 private:
-	mcCameraController *m_cameraController;
-	mcPlayerController *m_playerController;
 
-	ssgRoot *scene_root;
-	ssgEntity *sky_entity;
-	mcSky	*m_sky;
-
-	Landscape	*m_landscape;
-
-	mcCamera	*m_camera;
+	ssgRoot*	scene_root;
+	ssgEntity*	sky_entity;
+	mcSky*		m_sky;
+	Landscape*	m_landscape;
+	mcCamera*	m_camera;
 };
 
 extern Scene *scene; 
 
 #endif /* __SCENE_HPP__ */
-
-

@@ -26,8 +26,6 @@ class Object;
 
 double interpolate(double, double, double);
 
-/** A landscape class. This class creates the landscape. */
-
 class Landscape
 {
 public:
@@ -38,28 +36,23 @@ public:
 		BLOCK_WIDTH = 512
 	};
 
-
   Landscape();
   ~Landscape();
   
   void Landscape::init(ssgRoot *);
 
-  float getHOT(float x, float y)const;
+  float getHOT		(float x, float y)const;
+  float getRealHOT	(float x, float y)const;
 
   void getNormal(sgVec3& nrm, float x, float y)const;
 
   GLuint getTextureHandle ( int level, int x, int y) const;
 
-//  ssgBranch *createTileLOD (int level, int x, int y, int ntris,
-//			    char *terrain_map);
-
- // ssgBranch *createBlock(int x, int y);
-
   ssgTransform	*getTerrain()const	{ return terrain; }
   
 private:
-  ssgRoot *scene_root;
-  ssgTransform   *terrain;
+  ssgRoot			*scene_root;
+  ssgTransform		*terrain;
 };
 
 #endif /* __LANDSCAPE_HPP__ */

@@ -253,7 +253,7 @@ Protocol::parseCommand(char *input)
       
       if (id == ownId)
 	{
-	  ob = tuxi = new Player();	   
+	  ob = tuxi = new Player();
 	}
       else
 	ob = new Object();

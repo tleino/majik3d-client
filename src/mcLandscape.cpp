@@ -41,6 +41,7 @@
 #include "mcTexGen.hpp"
 #include "mcTerrainGen.hpp"
 #include "mcTerrainHeightGen.hpp"
+#include "mcMapquad.hpp"
 
 #define TILE_SIZE                 512.0f      /* cubits */
 #define LAMBDA                    (TILE_SIZE/16.0f)
@@ -82,6 +83,42 @@ float
 Landscape::getHOT(float x, float y)const
 {
 	return 2000.0f * terraingen->getHeight(x/1280.0, y/1280.0);
+}
+
+
+float
+Landscape::getRealHOT(float x, float y)const
+{
+	Mapquad *mq = Mapquad::root_map->getMapquad(Mapquad::MAX_LEVEL, x, y);
+
+	sgVec3 test_vec ;
+  sgMat4 invmat ;
+  sgMakeIdentMat4 ( invmat ) ;
+  
+  invmat[3][0] = -x ;
+  invmat[3][1] = -y ;
+  invmat[3][2] =  0.0f ;
+  
+  test_vec [0] = 0.0f ;
+  test_vec [1] = 0.0f ;
+  test_vec [2] = 100000.0f ;
+  
+  ssgHit *results ;
+  int num_hits = ssgHOT ( (ssgRoot *)(mq->trans), test_vec, invmat, &results ) ;
+  
+  float hot = -1000000.0f ;
+  
+  for ( int i = 0 ; i < num_hits ; i++ )
+    {
+      ssgHit *h = &results [ i ] ;
+      
+      float hgt = - h->plane[3] / h->plane[2] ;
+      
+      if ( hgt >= hot )
+	hot = hgt ;
+    }
+  
+  return hot;
 };
 
 void 
@@ -131,166 +168,6 @@ Landscape::init( ssgRoot *scene_root)
   
 }
 
-/*
-ssgBranch *
-Landscape::createBlock(int x, int y)
-{
-	ssgBranch *branch = new ssgBranch();
-	TerrainBlock *block = new TerrainBlock(x, y);
-
-//	block->collectVertices (0);
-
-	branch->addKid (block);
-	
-	return branch;
-}
-*/
-/*
-ssgBranch *
-Landscape::createTileLOD ( int level, int x, int y, int ntris,
-			   char *terrain_map ) 
-{
-  assert ( terrain_map );
-
-  sgVec4 *scolors = new sgVec4 [ (ntris+1) * (ntris+1) ] ;
-  sgVec2 *tcoords = new sgVec2 [ (ntris+1) * (ntris+1) ] ;
-  sgVec3 *snorms  = new sgVec3 [ (ntris+1) * (ntris+1) ] ;
-  sgVec3 *scoords = new sgVec3 [ (ntris+1) * (ntris+1) ] ;
-
-  float zz, zzN, zzE;
-  
-  for ( int j = 0 ; j < (ntris+1) ; j++ )
-    for ( int i = 0 ; i < (ntris+1) ; i++ )
-      {
-	if (j == 0 || j == ntris && level == 0) 
-	  {
-	    if (i % 2)
-	      zz = linearInterpolate( 1500*perlin->perlinNoise_2D((x + (float)(i-1)/(float)ntris*
-								   TILE_SIZE)/1000.0,
-								  (y + (float)j/(float)ntris*
-								   TILE_SIZE)/1000.0 ),
-				      1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)ntris*
-								   TILE_SIZE)/1000.0,
-								  (y + (float)j/(float)ntris*
-								   TILE_SIZE)/1000.0 ),
-				      0.5 );
-	    else
-	      zz = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
-						      TILE_SIZE)/1000.0,
-						     (y + (float)j/(float)ntris*
-						      TILE_SIZE)/1000.0 );
-
-	    zzN = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
-						     TILE_SIZE)/1000,
-						    (y + (float)(j+1)/
-						     (float)ntris*TILE_SIZE)/1000
-						    );
-	    
-	    zzE = 1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)
-						     ntris*TILE_SIZE)/1000,
-						    (y + (float)j/(float)ntris*
-						     TILE_SIZE)/1000 );
-	  }
-	
-	else if (i == 0 || i == ntris) 
-	  {  
-	    zz = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
-						    TILE_SIZE)/1000,
-						   (y + (float)j/(float)ntris*
-						    TILE_SIZE)/1000 );
-	
-	    zzN = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
-						     TILE_SIZE)/1000,
-						    (y + (float)(j+1)/
-						     (float)ntris*TILE_SIZE)/1000
-						    );
-	    
-	    zzE = 1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)
-						     ntris*TILE_SIZE)/1000,
-						    (y + (float)j/(float)ntris*
-						     TILE_SIZE)/1000 );
-	  }
-	else
-	  {
-	    zz = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
-						    TILE_SIZE)/1000,
-						   (y + (float)j/(float)ntris*
-						    TILE_SIZE)/1000 );
-	
-	    zzN = 1500*perlin->perlinNoise_2D((x + (float)i/(float)ntris*
-						     TILE_SIZE)/1000,
-						    (y + (float)(j+1)/
-						     (float)ntris*TILE_SIZE)/1000
-						    );
-	    
-	    zzE = 1500*perlin->perlinNoise_2D((x + (float)(i+1)/(float)
-						     ntris*TILE_SIZE)/1000,
-						    (y + (float)j/(float)ntris*
-						     TILE_SIZE)/1000 );
-	    
-
-
-	  }
-
-	float rr = (float) 0.2 ;
-	float gg;
-	float bb = (perlin->perlinNoise_2D((x + (float)i/(float)ntris*
-					    TILE_SIZE)/200,
-					   (y + (float)j/(float)ntris*
-					    TILE_SIZE)/200) + 1) / 2.0f;
-	
-	bb = pow (bb, 2);
-	gg = 1 - bb;
-	
-	float xx = (float) i * (TILE_SIZE/(float)ntris) ;
-	float yy = (float) j * (TILE_SIZE/(float)ntris) ;
-	
-	sgVec3 a, b;
-	
-	a [0] = TILE_SIZE/ntris;
-	a [1] = 0;
-	a [2] = zz - zzE;
-	
-	b [0] = 0; 
-	b [1] = TILE_SIZE/ntris;
-	b [2] = zz - zzN;
-	
-	sgVec3 nrm ;
-	
-	sgVectorProductVec3 (nrm, a, b);
-	
-	sgNormalizeVec3( nrm );
-	
-	sgCopyVec3( snorms  [i+j*(ntris+1)], nrm ) ;
-	sgSetVec2 ( tcoords [i+j*(ntris+1)], xx/LAMBDA, yy/LAMBDA ) ;
-	sgSetVec4 ( scolors [i+j*(ntris+1)], rr, gg, bb, 1.0f ) ;
-	sgSetVec3 ( scoords [i+j*(ntris+1)], xx, yy, zz ) ;
-      }
-  
-  ssgBranch *branch = new ssgBranch () ;
-  
-  for ( int i = 0 ; i < ntris ; i++ )
-    {
-      unsigned short *vlist = new unsigned short [ 2 * (ntris+1) ] ;
-      
-      for ( int j = 0 ; j < (ntris+1) ; j++ )
-	{
-	  vlist [   j + j   ] = j + (i+1) * (ntris+1) ;
-	  vlist [ j + j + 1 ] = j +   i   * (ntris+1) ;
-	}
-      
-      ssgLeaf *gset = new ssgVTable ( GL_TRIANGLE_STRIP,
-				      2 * (ntris+1), vlist, scoords,
-				      2 * (ntris+1), vlist, snorms ,
-				      2 * (ntris+1), vlist, tcoords,
-				      2 * (ntris+1), vlist, scolors ) ;
-//      gset -> setState ( state ) ;
-      branch -> addKid ( gset  ) ;
-    }
-  
-  return branch ;
-}
-*/
 GLuint
 Landscape::getTextureHandle ( int level, int x, int y)const
 {
@@ -313,12 +190,6 @@ Landscape::getTextureHandle ( int level, int x, int y)const
 						GL_RGB,
 						GL_UNSIGNED_BYTE,
 						(GLvoid *) &image[0] );
-
-/*	glTexImage2D  ( GL_TEXTURE_2D,
-                 0, 3, TERRAIN_RESOLUTION, TERRAIN_RESOLUTION, 0,
-                        GL_RGB,
-                        GL_UNSIGNED_BYTE, (GLvoid *) &image[0] ) ;
-*/
 
 	glTexEnvi ( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) ;

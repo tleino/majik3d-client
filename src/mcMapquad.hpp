@@ -34,6 +34,12 @@ class Mapquad
 {
 public:
 
+	enum Treesize
+	{
+		MAX_LEVEL = 12
+	};
+
+
   struct Map_data
   {
     char *terrain;
@@ -112,9 +118,9 @@ public:
   ///
   Mapquad *getChild4();
   ///
-  Mapquad *getMapquad(int, int, int);
+  Mapquad *getMapquad(int level, int x, int y);
   ///
-  Mapquad *tryMapquad(int, int, int);
+  Mapquad *tryMapquad(int level, int x, int y);
   ///
   char *getMap ();
   ///

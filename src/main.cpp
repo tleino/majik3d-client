@@ -71,7 +71,7 @@ main(int argc, char **argv)
   config = new mcConfig;
   config->readConfig();
   debug = new Debug;
-  display = new Display;
+  display = new Display; 
   input = new Input;
   menu = new Menu;
   scene = new Scene;

@@ -32,8 +32,7 @@
 #include "mcProtocol.hpp"
 #include "mcPlayer.hpp"
 
-#include "mcPlayerController.hpp"
-#include "mcCameraController.hpp"
+#include "mcCamera.hpp"
 
 
 #define DIR_NORTH   0
@@ -143,12 +142,12 @@ Input::keyDown(unsigned char k, int x, int y)
 
 		case '+':
 		  // Look up.
-			scene->getCameraController()->pitchUp(1.0);
+			scene->getCamera()->pitchUp(1.0);
 		  break;
 
 		case '-':
 		  // Look down.
-			scene->getCameraController()->pitchDown(1.0);
+			scene->getCamera()->pitchDown(1.0);
 		  break;
 
 		case 13:
@@ -199,11 +198,13 @@ Input::specialDown(int key, int x, int y)
     case GLUT_KEY_F2:
       glutSetCursor (GLUT_CURSOR_NONE);
       glutWarpPointer (display->getWidth()/2, display->getHeight()/2);
+	  scene->getCamera()->setMode(mcCamera::FIRSTPERSON);
       config->setCameraMode(1);
       break;
     case GLUT_KEY_F1:
       glutSetCursor (GLUT_CURSOR_INHERIT);
       glutWarpPointer (display->getWidth()/2, display->getHeight()/2);
+	  scene->getCamera()->setMode(mcCamera::BEHIND);
       config->setCameraMode(0);
       break; 
     case GLUT_KEY_F12:
@@ -247,7 +248,7 @@ Input::mouseMotion(int x, int y)
     {
       sgCoord temppos = tuxi->getPos();
       temppos.hpr[0] += diff_x;
-      scene->getCameraController()->pitchUp(diff_y);
+      scene->getCamera()->pitchUp(diff_y);
       
       if (temppos.hpr[0] > 355.0f)
 	temppos.hpr[0] = 0.0f;

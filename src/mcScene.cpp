@@ -50,9 +50,8 @@ Scene::Scene()
 	m_landscape = new Landscape();
 	m_sky = new mcSky(16, 8);
 	m_camera = new mcCamera();
-	m_playerController = new mcPlayerController();
-	m_cameraController = new mcCameraController();
-  debug->put("Scene constructor");
+
+	debug->put("Scene constructor");
 }
 
 Scene::~Scene()
@@ -124,15 +123,15 @@ Scene::init()
   glEnable ( GL_DEPTH_TEST ) ;
   
   /* Set up the viewing parameters */
-  ssgSetFOV     ( 90.0f, 60.0f ) ;
-  ssgSetNearFar ( 0.5f, 30000.0f ) ;
+  ssgSetFOV     ( 60.0f, 45.0f ) ;
+  ssgSetNearFar ( 0.5f, 10000.0f ) ;
   
   float nnear, ffar, top, bottom, left, right, hfov, vfov, v, h;
   
   nnear = 0.3f;
   ffar = 30000.0f;
-  h = 90.0f;
-  v = 60.0f;
+  h = 60.0f;
+  v = 45.0f;
   
   hfov = ( h <= 0 ) ? ( v * 3.0f / 2.0f ) : h ;
   vfov = ( v <= 0 ) ? ( h * 2.0f / 3.0f ) : v ;
@@ -184,13 +183,15 @@ Scene::init()
   ssgGetLight ( 0 ) -> setColour ( GL_AMBIENT, sunamb ) ;
 
   redrawSky();
+
+	m_camera->setMode (mcCamera::BEHIND);
 }
 
 float
 Scene::getHOT( float x, float y )
 {
-//	return landscape->getHOT(x, y)+1.0f;
-
+	return m_landscape->getRealHOT(x, y);
+/*
   sgVec3 test_vec ;
   sgMat4 invmat ;
   sgMakeIdentMat4 ( invmat ) ;
@@ -219,6 +220,7 @@ Scene::getHOT( float x, float y )
     }
   
   return hot;
+  */
 }
 
 //kludge
@@ -238,8 +240,7 @@ Scene::update()
 	for (Object *o = Object::getFirst(); o; o = o->getNext())
 		o->update(frameTime);
 
-	m_camera->setTarget(tuxi);
-	m_camera->setMode (mcCamera::BEHIND);
+	 m_camera->setTarget(tuxi);
 
 	m_camera->update(frameTime);
 
@@ -301,7 +302,7 @@ Scene::update()
 						    SG_DEGREES_TO_RADIANS);
        campos.xyz[2] += tuxi->getRadius();
 	   
-       campos.hpr[1] = tuxi->getRadius()+scene->getCameraController()->getPitch()-tuxi->getRadius()*2.0f;
+       campos.hpr[1] = tuxi->getRadius()+scene->getCamera()->getPitch()-tuxi->getRadius()*2.0f;
 	   
      }
    

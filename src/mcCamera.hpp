@@ -31,10 +31,16 @@ public:
 	void	update		(float);
 	void	setMode		(Mode);
 
+	void	pitchUp		(float p)	{ m_pitch += p; }
+	void	pitchDown	(float p)	{ m_pitch -= p; }
+	void	setPitch	(float p)	{ m_pitch = p; }
+	float	getPitch	()			{ return m_pitch; }
+
 private:
 
+	float			m_pitch;
 	sgCoord			m_position;
-	Object			*m_target;
+	Object*			m_target;
 	Mode			m_mode;
 };
 
