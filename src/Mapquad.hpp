@@ -130,7 +130,9 @@ public:
   
   // static void printStats();
 private:
-  bool mapReceived;
+   bool mapReceived;
+   int current_lod;
+   
 };
 
 

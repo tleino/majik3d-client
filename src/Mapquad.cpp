@@ -64,7 +64,8 @@ Mapquad::Mapquad(Mapquad *parent, int level, int top_x, int top_y)
   
   this->reference_count = 0;
   this->map_requested = 0;
-  
+   this->current_lod = -1;
+   
   terrain_map = NULL;
   
   lod_switch = new ssgSelector() ;
@@ -291,6 +292,10 @@ Mapquad::setSubMap(int lod, char *submap)
 	  trans->addKid ( lod_switch );
 	  
 	}
+	   
+	   if (lod == current_lod)
+		 lod_switch->selectStep ( lod_indices[lod] );
+	   
       
       /* Add some trees */
   /*  horrible kludge  
@@ -322,12 +327,14 @@ Mapquad::setSubMap(int lod, char *submap)
 void
 Mapquad::selectLOD(int lod)
 {  
+   current_lod = lod;
+   
   if (lod == -1)
     {
       lod_switch->select(0);
       return;
     }
-  
+   
   if ( lod_indices[lod] > -1 )
     {
       lod_switch->selectStep ( lod_indices[lod] );
