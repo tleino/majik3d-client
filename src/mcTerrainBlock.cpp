@@ -73,8 +73,8 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 
 			v.error = 0;
 			v.marked = false;
-			v.left = -1;
-			v.right = -1;
+			v.left = 0 - 1;
+			v.right = 0 -1;
 
 			list[i + j * (DIM+1)] = i + j * (DIM+1);
 		}

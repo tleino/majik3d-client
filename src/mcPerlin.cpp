@@ -99,11 +99,11 @@ Perlin::smoothedNoise(int octave, double x, double y)
 {
   double corners, sides, center;
   
-  corners = ( noise(octave, x-1, y-1)+noise(octave, x+1, y-1)+
-	      noise(octave,x-1, y+1)+noise(octave, x+1, y+1) ) / 16;
-  sides   = ( noise(octave, x-1, y)  +noise(octave, x+1, y)  +
-	      noise(octave, x, y-1)  +noise(octave, x, y+1) ) /  8;
-  center  =  noise(octave, x, y) / 4;
+  corners = ( noise(octave, (int)x-1, (int)y-1)+noise(octave, (int)x+1, (int)y-1)+
+	      noise(octave,(int)x-1, (int)y+1)+noise(octave, (int)x+1, (int)y+1) ) / 16;
+  sides   = ( noise(octave, (int)x-1, (int)y)  +noise(octave, (int)x+1, (int)y)  +
+	      noise(octave, (int)x, (int)y-1)  +noise(octave, (int)x, (int)y+1) ) /  8;
+  center  =  noise(octave, (int)x, (int)y) / 4;
   return corners + sides + center;
 }
 
