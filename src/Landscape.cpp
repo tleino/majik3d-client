@@ -71,7 +71,7 @@ void Landscape::init()
    float light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
    float light_diffuse[] = { 0.6, 0.6, 0.6, 1.0 };
    float light_specular[] = { 0.3, 0.3, 0.3, 1.0 };
-   float lmodel_ambient[] = { 0.05, 0.05, 0.05, 1.0 };
+   float lmodel_ambient[] = { 0.075, 0.075, 0.075, 1.0 };
    
    glLightfv (GL_LIGHT0, GL_AMBIENT, light_ambient);
    glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -410,7 +410,7 @@ void Landscape::drawLandscape()
    glCallList(playerId);
    glPopMatrix();
    
-      glDisable(GL_TEXTURE_2D);
+   glDisable(GL_TEXTURE_2D);
    
    glPopMatrix();
    
