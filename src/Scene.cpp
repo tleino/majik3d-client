@@ -82,12 +82,12 @@ Scene::init()
   
   landscape->init(scene_root);
   
-  sky_dome = new ssgTransform ();
-  ssgEntity *entity = ssgLoadAC ("skydome.ac");
-    
-   sky_dome->addKid (entity);
-
-  //scene_root->addKid (sky_dome);
+  // FIXME: I want better sky, the dynamic one, please. :)
+  // sky_dome = new ssgTransform ();
+  // ssgEntity *entity = ssgLoadAC ("skydome.ac");
+  
+  // sky_dome->addKid (entity);
+  // scene_root->addKid (sky_dome);
 
   sgVec4 skycol ; sgSetVec4 ( skycol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
   sgVec4 fogcol ; sgSetVec4 ( fogcol, 0.4f, 0.7f, 1.0f, 1.0f ) ;
@@ -226,8 +226,8 @@ Scene::update()
      {
        sgCoord pos = ob->getPos();
        
-       if ((abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ||
-	    abs(pos.xyz[0] - tuxpos.xyz[0]) > 500 ) && 
+       if ((abs((int) (pos.xyz[0] - tuxpos.xyz[0])) > 500 ||
+	    abs((int) (pos.xyz[0] - tuxpos.xyz[0])) > 500 ) && 
 	   ob->getFileName() == "bee.ac"  ) 
 	 {
 	   Object *temp = ob;
@@ -268,7 +268,7 @@ Scene::update()
      }
    
    ssgSetCamera ( & campos ) ;
-   sky_dome->setTransform (  campos.xyz );
+   // sky_dome->setTransform (  campos.xyz );
 }
 
 void
