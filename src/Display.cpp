@@ -27,7 +27,7 @@
 #include "Debug.hpp"
 #include "Display.hpp"
 
-puText *fps_text;
+puText *status_text;
 time_t t = time(NULL);
 int frames = 0;
 int mouse_x, mouse_y;
@@ -115,8 +115,8 @@ Display::openScreen()
    puSetDefaultStyle (PUSTYLE_SMALL_SHADED);
    puSetDefaultColourScheme (1.0, 1.0, 1.0, 0.6f);
    
-   fps_text = new puText (5, 10);
-   fps_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
+   status_text = new puText (5, 10);
+   status_text->setColour (PUCOL_LABEL, 1.0, 1.0, 1.0);
    
    menu->init();   
    landscape->init();
@@ -144,7 +144,6 @@ Display::updateScreen()
 {
    int t2 = (int) (time(NULL) - t), warp = 0;
    frames++;
-   char fps[80];
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
    landscape->draw();
@@ -171,9 +170,10 @@ Display::updateScreen()
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
    glAlphaFunc(GL_GREATER,0.1f);
-
-   sprintf (fps, "fps: %f", (float) 1/(read_time_of_day() - start_time));
-   fps_text->setLabel (fps);
+   
+   status_text->setLabel ((char *) debug->string("fps: %.1f angle: %.1f tilt: %.1f distance: %.1f",
+										(float) 1/(read_time_of_day() - start_time),
+										landscape->angle, landscape->tilt, landscape->distance));
    start_time = read_time_of_day();
    
    puDisplay();
