@@ -79,6 +79,7 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 
 	calculateErrors();
 
+//	recalcBSphere();
 	/*
 	TerrainBlock *b;
 

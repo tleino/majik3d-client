@@ -406,7 +406,7 @@ Mapquad::selectLOD(int level, int x, int y)
 				sp.setRadius( sqrt( (mid_x-top_x)*(mid_x-top_x) + (mid_y-top_y)*(mid_y-top_y)) );
 		
 				block->setState(state);
-				block->setTraversalMaskBits ( SSGTRAV_CULL );
+//				block->setTraversalMaskBits ( SSGTRAV_CULL );
 				lod_switch->addKid ( block );
 				trans->addKid ( lod_switch );
 				landscape->terrain->addKid ( trans );

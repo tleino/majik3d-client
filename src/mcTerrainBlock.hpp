@@ -463,6 +463,8 @@ public:
 		numSelectedVertices = listCounter;
 		num_vertices = listCounter;
 		num_texcoords = listCounter;
+
+		recalcBSphere();
 	}
 
 	inline void triangulateQuadrant(Index iL, Index iT, Index iR, Index level)
