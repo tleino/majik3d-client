@@ -1,5 +1,5 @@
 /* Majik 3D client
- * Copyright (C) 1999  Majik Development Team <majik@majik3d.org>
+ * Copyright (C) 1999-2000  Majik Development Team <majik@majik3d.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ main(int argc, char **argv)
 {
 #ifndef WIN32
   printf ("Majik 3D client " VERSION " / " CPU_VENDOR_OS " ("__DATE__")\n");
-  printf ("Copyright (C) 1999 Majik Development Team <majik@majik3d.org>\n\n");
+  printf ("Copyright (C) 1999-2000 Majik Development Team <majik@majik3d.org>\n\n");
 #endif /* WIN32 */
 
   // Initialize the necessary global variables as proper objects
