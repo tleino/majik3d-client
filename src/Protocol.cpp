@@ -46,9 +46,6 @@ Protocol::parseCommand(char *input)
    int found, id;
    int map_x, map_y, map_level;
    float x, y, h;
-   float new_x, new_y, new_h;
-   float old_x, old_y, old_h;
-   float dif_x, dif_y, dif_h;
    Object *ob = NULL;
    char file_name[80], data[1024];
       
@@ -72,54 +69,8 @@ Protocol::parseCommand(char *input)
 	  
 	  while (ob != NULL) {		 
 		 if (ob->id == id) {
-			/*
-			new_x = x;
-			new_y = y;
-			new_h = h;
-			old_x = ob->ob_pos.xyz[0];
-			old_y = ob->ob_pos.xyz[1];
-			old_h = ob->ob_pos.hpr[0];
-			dif_x = new_x-old_x;
-			dif_y = new_y-old_y;
-			dif_h = new_h-old_h;
-			
-			int counter = 0;
-			
-			while (1) {
-			   counter++;
-			   			   
-			   if (dif_h) {
-				  old_h += dif_h/5.0f;
-				  ob->ob_pos.hpr[0] = old_h;
-			   }
-			   if (dif_x) {
-				  old_x += dif_x/5.0f;
-				  ob->ob_pos.xyz[0] = old_x;
-			   }
-			   if (dif_y) {
-				  old_y += dif_y/5.0f;
-				  ob->ob_pos.xyz[1] = old_y;
-			   }
-			   
-			   if (counter == 5) {
-				  ob->ob_pos.xyz[0] = x;
-				  ob->ob_pos.xyz[1] = y;
-				  ob->ob_pos.hpr[0] = h;
-				  break;
-			   }
-~			   else {
-				  ob->movecounter++;
-				  glutPostRedisplay();
-				  //display->updateScreen();
-			   }
-			}
-*/
-			ob->ob_pos.xyz[0] = x;
-			ob->ob_pos.xyz[1] = y;
-			ob->ob_pos.hpr[0] = h;
-			ob->movecounter++;
+			ob->moveTo(x, y, h);
 			found = 1;
-			ob->lock = 0;
 			break;
 		 }
 			 
