@@ -33,7 +33,8 @@ Display::~Display()
    #endif
 }
 
-void Display::openScreen()
+void
+Display::openScreen()
 {
    unsigned long flags;
    GLenum format;
@@ -65,7 +66,8 @@ void Display::openScreen()
    #endif
 }
 
-void Display::closeScreen()
+void 
+Display::closeScreen()
 {
    #ifdef DEBUG
 	 Debug("Closing screen...");
@@ -82,7 +84,8 @@ void Display::closeScreen()
    #endif
 }
 
-void Display::updateScreen()
+void 
+Display::updateScreen()
 {
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    

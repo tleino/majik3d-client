@@ -18,12 +18,14 @@ P3D::~P3D()
 {
 }
 
-const void P3D::print(FILE *fp)
+const void 
+P3D::print(FILE *fp)
 {
    fprintf(fp, "%f %f %f\n\n", x, y, z);
 }
 
-P3D P3D::negate()
+P3D 
+P3D::negate()
 {
    x = -x;
    y = -y;
@@ -31,22 +33,26 @@ P3D P3D::negate()
    return *this;
 }
 
-P3D P3D::normalize()
+P3D 
+P3D::normalize()
 {
    return *this /= magnitude();
 }
 
-const double P3D::magnitude()
+const double 
+P3D::magnitude()
 {
    return sqrt(x*x + y*y + z*z);
 }
 
-const double P3D::dotProduct(const P3D &tmp)
+const double 
+P3D::dotProduct(const P3D &tmp)
 {
    return (x*tmp.x + y*tmp.y + z*tmp.z);
 }
 
-const P3D P3D::crossProduct(const P3D &tmp)
+const P3D 
+P3D::crossProduct(const P3D &tmp)
 {
    P3D retp;
    retp.x = y*tmp.z - z*tmp.y;
@@ -55,7 +61,8 @@ const P3D P3D::crossProduct(const P3D &tmp)
    return retp;
 }
 
-P3D P3D::set(const double x1, const double y1, const double z1)
+P3D 
+P3D::set(const double x1, const double y1, const double z1)
 {
    x = x1;
    y = y1;
@@ -63,7 +70,8 @@ P3D P3D::set(const double x1, const double y1, const double z1)
    return *this;
 }
 
-const P3D P3D::operator+(const P3D &tmp)
+const P3D 
+P3D::operator+(const P3D &tmp)
 {
    P3D retp;
    retp.x = x + tmp.x;
@@ -72,7 +80,8 @@ const P3D P3D::operator+(const P3D &tmp)
    return retp;
 }
 
-const P3D P3D::operator-(const P3D &tmp)
+const P3D 
+P3D::operator-(const P3D &tmp)
 {
    P3D retp;
    retp.x = x - tmp.x;
@@ -81,7 +90,8 @@ const P3D P3D::operator-(const P3D &tmp)
    return retp;
 }
 
-const P3D P3D::operator*(const P3D &tmp)
+const P3D 
+P3D::operator*(const P3D &tmp)
 {
    P3D retp;
    retp.x = x * tmp.x;
@@ -90,7 +100,8 @@ const P3D P3D::operator*(const P3D &tmp)
    return retp;
 }
 
-const P3D P3D::operator*(const Matrix &tmp)
+const P3D 
+P3D::operator*(const Matrix &tmp)
 {
    P3D retp;
    retp.x = tmp.mdata[0][0] * x + tmp.mdata[1][0] * y + tmp.mdata[2][0] * z + tmp.mdata[3][0];
@@ -99,7 +110,8 @@ const P3D P3D::operator*(const Matrix &tmp)
    return retp;
 }
 
-const P3D P3D::operator*(const double f)
+const P3D 
+P3D::operator*(const double f)
 {
    P3D retp;
    retp.x *= f;
@@ -108,7 +120,8 @@ const P3D P3D::operator*(const double f)
    return retp;
 }
 
-const P3D P3D::operator/(const P3D &tmp)
+const P3D 
+P3D::operator/(const P3D &tmp)
 {
    P3D retp;
    retp.x = x / tmp.x;
@@ -117,7 +130,8 @@ const P3D P3D::operator/(const P3D &tmp)
    return retp;
 }
 
-const P3D P3D::operator/(const double f)
+const P3D 
+P3D::operator/(const double f)
 {
    P3D retp;
    retp.x = x / f;
@@ -126,7 +140,8 @@ const P3D P3D::operator/(const double f)
    return retp;
 }
 
-P3D P3D::operator+=(const P3D &tmp)
+P3D 
+P3D::operator+=(const P3D &tmp)
 {
    x += tmp.x;
    y += tmp.y;
@@ -134,7 +149,8 @@ P3D P3D::operator+=(const P3D &tmp)
    return *this;
 }
 
-P3D P3D::operator-=(const P3D &tmp)
+P3D 
+P3D::operator-=(const P3D &tmp)
 {
    x -= tmp.x;
    y -= tmp.y;
@@ -142,7 +158,8 @@ P3D P3D::operator-=(const P3D &tmp)
    return *this;
 }
 
-P3D P3D::operator*=(const P3D &tmp)
+P3D 
+P3D::operator*=(const P3D &tmp)
 {
    x *= tmp.x;
    y *= tmp.y;
@@ -150,7 +167,8 @@ P3D P3D::operator*=(const P3D &tmp)
    return *this;
 }
 
-P3D P3D::operator*=(const Matrix &tmp)
+P3D 
+P3D::operator*=(const Matrix &tmp)
 {
    x = tmp.mdata[0][0] * x + tmp.mdata[1][0] * y + tmp.mdata[2][0] * z + tmp.mdata[3][0];
    y = tmp.mdata[0][1] * x + tmp.mdata[1][1] * y + tmp.mdata[2][1] * z + tmp.mdata[3][1];
@@ -158,7 +176,8 @@ P3D P3D::operator*=(const Matrix &tmp)
    return *this;
 }
 
-P3D P3D::operator*=(const double f)
+P3D 
+P3D::operator*=(const double f)
 {
    x *= f;
    y *= f;
@@ -166,7 +185,8 @@ P3D P3D::operator*=(const double f)
    return *this;
 }
 
-P3D P3D::operator/=(const P3D &tmp)
+P3D 
+P3D::operator/=(const P3D &tmp)
 {
    x /= tmp.x;
    y /= tmp.y;
@@ -174,7 +194,8 @@ P3D P3D::operator/=(const P3D &tmp)
    return *this;
 }
 
-P3D P3D::operator/=(const double f)
+P3D 
+P3D::operator/=(const double f)
 {
    x /= f;
    y /= f;
@@ -182,7 +203,8 @@ P3D P3D::operator/=(const double f)
    return *this;
 }
 
-P3D P3D::operator=(const P3D &tmp)
+P3D 
+P3D::operator=(const P3D &tmp)
 {
    x = tmp.x;
    y = tmp.y;
@@ -190,7 +212,8 @@ P3D P3D::operator=(const P3D &tmp)
    return *this;
 }
 
-const bool P3D::operator==(const P3D &tmp)
+const bool 
+P3D::operator==(const P3D &tmp)
 {
    if(x != tmp.x || y != tmp.y || z != tmp.z)
 	 return false;
@@ -198,7 +221,8 @@ const bool P3D::operator==(const P3D &tmp)
 	 return true;
 }
 
-const bool P3D::operator!=(const P3D &tmp)
+const bool 
+P3D::operator!=(const P3D &tmp)
 {
    if(x != tmp.x || y != tmp.y || z != tmp.z)
 	 return true;

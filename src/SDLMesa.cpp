@@ -21,7 +21,8 @@ SDLMesaContext::~SDLMesaContext()
 	 OSMesaDestroyContext(context);
 }
 
-void SDLMesaContext::makeContext(SDL_Surface *buffer)
+void 
+SDLMesaContext::makeContext(SDL_Surface *buffer)
 {
    GLenum format;
    
@@ -72,7 +73,8 @@ void SDLMesaContext::makeContext(SDL_Surface *buffer)
 	 }
 }
 
-void SDLMesaContext::makeCurrent()
+void 
+SDLMesaContext::makeCurrent()
 {
    if(!OSMesaMakeCurrent(context, surface->pixels, GL_UNSIGNED_BYTE, 
 						 surface->w, surface->h))

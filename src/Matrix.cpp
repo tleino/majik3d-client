@@ -11,7 +11,8 @@ Matrix::~Matrix()
 {
 }
 
-const void Matrix::print(FILE *fp)
+const void 
+Matrix::print(FILE *fp)
 {
    fprintf(fp, "%d %d %d %d\n", mdata[0][0], mdata[0][1], mdata[0][2], mdata[0][3]);
    fprintf(fp, "%d %d %d %d\n", mdata[1][0], mdata[1][1], mdata[1][2], mdata[1][3]);
@@ -19,7 +20,8 @@ const void Matrix::print(FILE *fp)
    fprintf(fp, "%d %d %d %d\n\n", mdata[3][0], mdata[3][1], mdata[3][2], mdata[3][3]);
 }
 
-Matrix Matrix::id()
+Matrix 
+Matrix::id()
 {
    mdata[0][0] = 1.0; mdata[1][0] = 0.0; mdata[2][0] = 0.0; mdata[3][0] = 0.0;
    mdata[0][1] = 0.0; mdata[1][1] = 1.0; mdata[2][1] = 0.0; mdata[3][1] = 0.0;
@@ -28,7 +30,8 @@ Matrix Matrix::id()
    return *this;
 }
 
-Matrix Matrix::rotate(const double x, const double y, const double z)
+Matrix 
+Matrix::rotate(const double x, const double y, const double z)
 {
    double cx, cy, cz, sx, sy, sz;
    Matrix tmat;
@@ -66,7 +69,8 @@ Matrix Matrix::rotate(const double x, const double y, const double z)
    return *this *= rmat;
 }
 
-Matrix Matrix::translate(const double x, const double y, const double z)
+Matrix 
+Matrix::translate(const double x, const double y, const double z)
 {
    Matrix tmat;
    tmat.mdata[3][0] = x; 
@@ -75,7 +79,8 @@ Matrix Matrix::translate(const double x, const double y, const double z)
    return *this *= tmat;
 }
 
-Matrix Matrix::scale(const double x, const double y, const double z)
+Matrix 
+Matrix::scale(const double x, const double y, const double z)
 {
    Matrix smat;
    smat.mdata[0][0] = x;
@@ -84,7 +89,8 @@ Matrix Matrix::scale(const double x, const double y, const double z)
    return *this *= smat;
 }
 
-const Matrix Matrix::operator+(const Matrix &tmp)
+const Matrix 
+Matrix::operator+(const Matrix &tmp)
 {
    int i, j;
    Matrix retm;
@@ -95,7 +101,8 @@ const Matrix Matrix::operator+(const Matrix &tmp)
    return retm;
 }
 
-const Matrix Matrix::operator-(const Matrix &tmp)
+const Matrix 
+Matrix::operator-(const Matrix &tmp)
 {
    int i, j;
    Matrix retm;
@@ -106,7 +113,8 @@ const Matrix Matrix::operator-(const Matrix &tmp)
    return retm;
 }
 
-const Matrix Matrix::operator*(const Matrix &tmp)
+const Matrix 
+Matrix::operator*(const Matrix &tmp)
 {
    int i, j;
    Matrix retm;
@@ -119,7 +127,8 @@ const Matrix Matrix::operator*(const Matrix &tmp)
    return retm;
 }
 
-Matrix Matrix::operator=(const Matrix &tmp)
+Matrix 
+Matrix::operator=(const Matrix &tmp)
 {
    int i, j;
    for(i=0;i<4;i++)
@@ -128,7 +137,8 @@ Matrix Matrix::operator=(const Matrix &tmp)
    return *this;
 }
 
-Matrix Matrix::operator+=(const Matrix &tmp)
+Matrix 
+Matrix::operator+=(const Matrix &tmp)
 {
    int i, j;
    for(i=0;i<4;i++)
@@ -137,7 +147,8 @@ Matrix Matrix::operator+=(const Matrix &tmp)
    return *this;
 }
 
-Matrix Matrix::operator-=(const Matrix &tmp)
+Matrix 
+Matrix::operator-=(const Matrix &tmp)
 {
    int i, j;
    for(i=0;i<4;i++)
@@ -146,7 +157,8 @@ Matrix Matrix::operator-=(const Matrix &tmp)
    return *this;
 }
 
-Matrix Matrix::operator*=(const Matrix &tmp)
+Matrix 
+Matrix::operator*=(const Matrix &tmp)
 {
    return *this = *this * tmp;
 }

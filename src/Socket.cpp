@@ -35,18 +35,22 @@ Socket::~Socket()
    #endif
 }
 
-void Socket::connect()
+void 
+Socket::connect()
 {
 }
 
-void Socket::disconnect()
+void 
+Socket::disconnect()
 {
 }
 
-void Socket::readPacket()
+void 
+Socket::readPacket()
 {
 }
 
-void Socket::writePacket()
+void 
+Socket::writePacket()
 {
 }

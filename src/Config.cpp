@@ -11,6 +11,7 @@ Config::~Config()
 {
 }
 
-void Config::readOptions(char *filename)
+void
+Config::readOptions(char *filename)
 {
 }

@@ -1,4 +1,4 @@
-#include "Protocol.hpp"
+#include "Majik.hpp"
 
 Protocol::Protocol()
 {
@@ -8,10 +8,12 @@ Protocol::~Protocol()
 {
 }
 
-void Protocol::parseCommand()
+void 
+Protocol::parseCommand()
 {
 }
 
-void Protocol::sendCommand()
+void 
+Protocol::sendCommand()
 {
 }

@@ -3,9 +3,9 @@
  * and needs some serious optimization and tuning.
  */
 
-#include <math.h>
 #include <stdio.h>
-#include "Perlin.hpp"
+#include <math.h>
+#include "Majik.hpp"
 
 #define PERSISTENCE 0.25
 #define OCTAVES        4
@@ -43,7 +43,7 @@ Perlin::noise(int octave, int x, int y)
    n = x + y * 57;
    n = (n<<13) ^ n;
    
-   switch ( octave )
+   switch(octave)
 	 {
 	  case 0:
 		return ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);    
@@ -111,14 +111,12 @@ Perlin::perlinNoise_2D(float x, float y)
    p = PERSISTENCE;
    n = OCTAVES;
 
-   for (i=0;i<n;i++)
+   for(i=0;i<n;i++)
 	 {
 		frequency = pow(2,i);
 		amplitude = pow(p,i);
 
 		total = total + interpolatedNoise(i, x * frequency, y * frequency) * amplitude;
 	 }
-
    return total;
-
 }

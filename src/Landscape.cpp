@@ -31,7 +31,8 @@ Landscape::~Landscape()
    #endif
 }
 
-void Landscape::drawLandscape()
+void 
+Landscape::drawLandscape()
 {
    glViewport(viewport_x, viewport_y, viewport_w, viewport_h);
    glMatrixMode(GL_PROJECTION);
@@ -59,7 +60,8 @@ void Landscape::drawLandscape()
    /*  - Check for detail settings       */
 }
 
-void Landscape::setViewport(int x, int y, int w, int h)
+void 
+Landscape::setViewport(int x, int y, int w, int h)
 {
    viewport_x = x;
    viewport_y = y;
@@ -68,7 +70,8 @@ void Landscape::setViewport(int x, int y, int w, int h)
    viewport_ratio = h/w;
 }
 
-void Landscape::makeMap_1()
+void 
+Landscape::makeMap_1()
 {
    /* Check for already existing display list */
    if (listId_1 != -1)
@@ -86,22 +89,27 @@ void Landscape::makeMap_1()
    glEndList();
 }
 
-void Landscape::makeMap_2()
+void 
+Landscape::makeMap_2()
 {
 }
 
-void Landscape::makeMap_3()
+void 
+Landscape::makeMap_3()
 {
 }
 
-void Landscape::makeMap_4()
+void 
+Landscape::makeMap_4()
 {
 }
 
-void Landscape::addObject(int oid)
+void 
+Landscape::addObject(int oid)
 {
 }
 
-void Landscape::removeObject(int oid)
+void 
+Landscape::removeObject(int oid)
 {
 }

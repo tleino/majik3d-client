@@ -4,13 +4,20 @@
 
 Keyboard::Keyboard()
 {
+   #ifdef DEBUG
+	 Debug("Keyboard constructor");
+   #endif
 }
 
 Keyboard::~Keyboard()
 {
+   #ifdef DEBUG
+	 Debug("Keyboard destructor");
+   #endif
 }
 
-void Keyboard::keyPressed(unsigned char c)
+void 
+Keyboard::keyPressed(unsigned char c)
 {
    switch(c)
 	 {
