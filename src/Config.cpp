@@ -114,6 +114,13 @@ Config::parseOption(char *option, char *value)
 	 {
 		display->camera = atoi(value);
 	 }
+   if (strcmp(option, "fullscreen") == 0)
+	 {
+		if (atoi(value) == 1)
+		  display->fullscreen = 2;
+		else
+		  display->fullscreen = 0;
+	 }
 }
 
 void

@@ -40,6 +40,7 @@ char *settingsSubmenu[] = {
    "No Mouse",
    "Textures",
    "No Textures",
+   "Toggle Fullscreen",
    NULL 
 };
 char *majikSubmenu[] = {
@@ -63,6 +64,7 @@ puCallback settingsSubmenuCB[] = {
    menu->noMouseCB,
    menu->textureCB,
    menu->noTextureCB,
+   menu->fullscreenCB,
    NULL 
 };
 
@@ -102,6 +104,19 @@ Menu::init()
 }
 
 /* Menu callbacks */
+
+void
+Menu::fullscreenCB(puObject *)
+{
+   if (display->fullscreen == 1) {
+	  glViewport(0, 0, display->initialWidth, display->initialHeight);
+	  glutReshapeWindow(display->initialWidth, display->initialHeight);
+	  display->fullscreen = 0;
+   } else {
+	  glutFullScreen();
+	  display->fullscreen = 1;
+   }
+}
 
 void
 Menu::textureCB(puObject *)

@@ -36,9 +36,9 @@ class Display
  private:
    static void idle();
  public: 
-   int width, height, bpp;
+   int width, height, bpp, initialWidth, initialHeight;
    int mousetrap, nomousetrap, noTexture, wireframe, nomouse, nofog, nosmooth,
-   nomenu, camera;
+   nomenu, camera, fullscreen;
    float pitch;
    puInput *inp;
 };

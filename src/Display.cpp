@@ -76,6 +76,8 @@ Display::Display()
 {
    width = 640;
    height = 480;
+   initialWidth = width;
+   initialHeight = height;
    bpp = 32;
 
    // cursor = new Cursor;
@@ -87,6 +89,9 @@ Display::Display(int w, int h, int b)
 {
    width = w;
    height = h;
+   initialWidth = width;
+   initialHeight = height;
+   
    bpp = b;
 
    // cursor = new Cursor;
@@ -130,7 +135,7 @@ Display::openScreen()
    glutPassiveMotionFunc(mouseMotion);
    glutMotionFunc(mouseMotion);
    //glutIdleFunc(idle);
-   
+      
    if (display->nomousetrap != 1)
 	 glutWarpPointer (width/2, height/2);
       
@@ -263,6 +268,12 @@ Display::updateScreen()
    
    glutSwapBuffers();
    glutPostRedisplay();
+   
+   /* A kludge to avoid fullscreen before window is open for real when it is enabled from rc file. */
+   if (display->fullscreen == 2) {
+	  glutFullScreen();
+	  display->fullscreen = 1;
+   }
 }
 
 void

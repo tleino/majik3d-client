@@ -41,6 +41,7 @@ class Menu {
    static void aboutCB(puObject *);
    static void textureCB(puObject *);
    static void noTextureCB(puObject *);
+   static void fullscreenCB(puObject *);
    
    static void mkDialog(char *);
    static void mkDialogCB(puObject *);
