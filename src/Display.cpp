@@ -135,7 +135,7 @@ Display::openScreen()
    glutSpecialFunc(input->specialDown);
    glutMouseFunc(input->mouseDown);
    glutPassiveMotionFunc(mouseMotion);
-   //glutMotionFunc(mouseMotion);
+   glutMotionFunc(mouseMotion);
    //glutIdleFunc(idle);
    
    /* PLIB: Picoscopic User Interface */
