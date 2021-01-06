@@ -1,3 +1,17 @@
+Foreword
+--------
+
+This is the latest GPL-licensed release of a client program for Majik 3D
+MMORPG server, originally released in 2000-02-15, before the development
+team moved to Taika Technologies, Ltd. to further develop technologies
+originally pioneered in the Majik 3D MMORPG server, and to redevelop the
+client program by leveraging proprietary technologies such as SurRender 3D
+visualization library and SurRender Umbra visibility optimizer developed
+by Hybrid Holding, Ltd.
+
+In other words, this repository contains legacy source code, but may be
+of historical interest to someone.
+
 Introduction
 ------------
 
