@@ -19,7 +19,7 @@
 #ifdef WIN32
 #include <windows.h>
 #endif /* WIN32 */
-#include <iostream.h>
+#include <iostream>
 #include <GL/gl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,7 +55,11 @@ int
 main(int argc, char **argv)
 {
 #ifndef WIN32
-  printf ("Majik 3D client " VERSION " / " CPU_VENDOR_OS " ("__DATE__")\n");
+#ifdef __DATE__
+  printf ("Majik 3D client " VERSION " / " CPU_VENDOR_OS " (%s)\n", __DATE__);
+#else
+  printf ("Majik 3D client " VERSION " / " CPU_VENDOR_OS "\n");
+#endif
   printf ("Copyright (C) 1999-2000 Majik Development Team <majik@majik3d.org>\n\n");
 #endif /* WIN32 */
 

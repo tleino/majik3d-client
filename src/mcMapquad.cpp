@@ -23,7 +23,7 @@
 #include "mcTerrainBlock.hpp"
 #include "mcScene.hpp"
 
-#include <iostream.h>
+#include <iostream>
 
 #define  NUM_LEVELS         13  
 #define  LOD_LEVELS          5

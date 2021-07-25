@@ -41,7 +41,12 @@ TerrainBlock::TerrainBlock(WORD x, WORD y)
 	memset(c_index, 0, sizeof(unsigned short)*1000);
 	num_colours = 1;
 	
-	type |= SSG_TYPE_VTABLE ;
+	/*
+	 * FIXME: This was originally SSG_TYPE_VTABLE, but apparently
+	 * newer Plib version has made these private.
+	 */
+	type |= _SSG_TYPE_VTABLE ;
+
 	gltype = GL_TRIANGLE_STRIP ;
 	indexed = TRUE ;
 

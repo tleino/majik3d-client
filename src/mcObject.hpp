@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <ssg.h>
 #include <pu.h>
-#include <iostream.h>
+#include <iostream>
 
 
 /** An object class. This class contains an interactive object and

@@ -30,7 +30,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
-#include <iostream.h>
+#include <iostream>
 
 #include "mcLandscape.hpp"
 #include "mcDebug.hpp"

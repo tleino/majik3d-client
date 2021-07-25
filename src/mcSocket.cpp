@@ -294,7 +294,7 @@ Socket::Thread()
 #include <netdb.h>
 #include <sys/ioctl.h>
 #include <errno.h>
-#include <iostream.h>
+#include <iostream>
 
 #if defined(__svr4__)
 // For Solaris...

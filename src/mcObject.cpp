@@ -17,7 +17,7 @@
  */
 
 #include <stdio.h>
-#include <iostream.h>
+#include <iostream>
 
 #include "mcDebug.hpp"
 #include "mcObject.hpp"
