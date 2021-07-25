@@ -1,21 +1,29 @@
 Foreword
 --------
 
-This is the latest GPL-licensed release of a client program for Majik 3D
-MMORPG server, originally released in 2000-02-15, before the development
-team moved to Taika Technologies, Ltd. to further develop technologies
-originally pioneered in the Majik 3D MMORPG server, and to redevelop the
-client program by leveraging proprietary technologies such as SurRender 3D
-visualization library and SurRender Umbra visibility optimizer developed
-by Hybrid Holding, Ltd.
+This is a CVS snapshot of 0.4.0 release, the last GPL-licensed release
+of a client program for Majik 3D MMORPG game. The extra files that were
+in the original release tarball, that was released on Feb 15, 2000, are
+merged to this snapshot.
+
+The development of this project continued after the 0.4.0 release, but
+it was no longer GPL-licensed: the development team moved to Taika
+Technologies, Ltd. to further develop technologies originally pioneered
+in the Majik 3D MMORPG server, and to redevelop the client program by
+leveraging proprietary technologies such as SurRender 3D visualization
+library and SurRender Umbra visibility optimizer developed by Hybrid
+Holding, Ltd.
 
 In other words, this repository contains legacy source code, but may be
 of historical interest to someone.
 
-Please note, most of the URLs no longer exist: please use archive.org from
-around year 2000 to access the content. Also, the e-mail addresses no longer
-work. For contacting the original development team, you can try namhas at
-gmail.com.
+Please note, most of the URLs no longer exist: please use archive.org
+from around year 2000 to access the content. Also, the e-mail addresses
+no longer work. For contacting the original development team, you can
+try namhas at gmail.com.
+
+You can also see https://majik3d-legacy.org/ for more files and
+information related to the Majik 3D MMORPG project.
 
 Introduction
 ------------
