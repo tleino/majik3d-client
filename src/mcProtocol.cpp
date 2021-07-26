@@ -17,7 +17,7 @@
  */
 
 #include <iostream>
-#include <sg.h>
+#include <plib/sg.h>
 
 #include "mcProtocol.hpp"
 #include "mcObject.hpp"

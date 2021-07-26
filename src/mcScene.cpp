@@ -17,8 +17,8 @@
  */
 
 #include <iostream>
-#include <pu.h>
-#include <sg.h>
+#include <plib/pu.h>
+#include <plib/sg.h>
 
 #include "mcScene.hpp"
 #include "mcDisplay.hpp"

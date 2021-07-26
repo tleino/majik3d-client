@@ -19,7 +19,7 @@
 #ifndef __DISPLAY_HPP__
 #define __DISPLAY_HPP__
 
-#include <pu.h>
+#include <plib/pu.h>
 
 /** A display class. This class handles all the things to do with the
     display, opening window, reshaping, updating and so on. */

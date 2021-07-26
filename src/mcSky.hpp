@@ -20,8 +20,8 @@
 #define __SKY_HPP__
 
 #include <vector>
-#include <sg.h>
-#include <ssg.h>
+#include <plib/sg.h>
+#include <plib/ssg.h>
 
 
 struct SKYPOINT;

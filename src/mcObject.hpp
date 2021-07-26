@@ -20,8 +20,8 @@
 #define __OBJECT_HPP__
 
 #include <stdio.h>
-#include <ssg.h>
-#include <pu.h>
+#include <plib/ssg.h>
+#include <plib/pu.h>
 #include <iostream>
 
 

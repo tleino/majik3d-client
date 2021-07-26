@@ -19,9 +19,9 @@
 #ifndef __SCENE_HPP__
 #define __SCENE_HPP__
 
-#include <ssg.h>
-#include <sg.h>
-#include <pu.h>
+#include <plib/ssg.h>
+#include <plib/sg.h>
+#include <plib/pu.h>
 
 class Object;
 class Player;

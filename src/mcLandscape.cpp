@@ -26,7 +26,7 @@
 #include <unistd.h>
 #endif
 #include <math.h>
-#include <ssg.h>
+#include <plib/ssg.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>

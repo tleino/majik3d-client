@@ -4,7 +4,7 @@
 
 #include "mcPlayerController.hpp"
 
-#include <sg.h>
+#include <plib/sg.h>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

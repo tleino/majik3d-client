@@ -25,7 +25,7 @@
 #endif /* WIN32 */
 
 #include <GL/gl.h>
-#include <pu.h>
+#include <plib/pu.h>
 
 
 #include "mcDebug.hpp"

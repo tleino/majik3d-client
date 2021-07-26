@@ -23,7 +23,7 @@ class Object;
 class mcCamera;
 class mcTerrainHeightGen;
 
-#include <ssg.h>
+#include <plib/ssg.h>
 #include <GL/glu.h>
 
 double interpolate(double, double, double);

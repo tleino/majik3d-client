@@ -24,8 +24,8 @@
 #else
 # include <unistd.h>
 #endif
-#include <pu.h>
-#include <ssg.h>
+#include <plib/pu.h>
+#include <plib/ssg.h>
 
 #include "mcInput.hpp"
 #include "mcDebug.hpp"

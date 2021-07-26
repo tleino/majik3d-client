@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <pu.h>
+#include <plib/pu.h>
 
 #include "mcMenu.hpp"
 #include "mcDisplay.hpp"

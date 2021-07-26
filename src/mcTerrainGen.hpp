@@ -15,7 +15,7 @@
 #endif
 #include <GL/glu.h>
 
-#include "sg.h"
+#include <plib/sg.h>
 
 class mcTerrainGen : public mcTexGen  
 {

@@ -1,23 +1,39 @@
-dnl Process this file with autoconf to produce a configure script. This
-dnl file is quite directly taken from PLIB sources.
+dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(src/main.cpp)
+AC_INIT([majik3d], [0.4.0])
+AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED(CPU_VENDOR_OS, "$host")
-AM_INIT_AUTOMAKE(majik3d, 0.4.0)
+AM_INIT_AUTOMAKE
 
 dnl Checks for programs.
+PKG_PROG_PKG_CONFIG
+
+dnl Check dependencies
+PKG_CHECK_MODULES([X11], [x11])
+PKG_CHECK_MODULES([GL], [gl])
+PKG_CHECK_MODULES([GLU], [glu])
+PKG_CHECK_MODULES([GLUT], [freeglut],,
+	[PKG_CHECK_MODULES([GLUT], [glut],,
+			[PKG_CHECK_MODULES([GLUT], [libglut])]
+		)
+	]
+)
+
+dnl Check PLIB, which does not have pkg-config files
+dnl You may need to tweak this manually...
+AC_SUBST([PLIB_CFLAGS])
+AC_SUBST([PLIB_LIBS])
+PLIB_CFLAGS="-I/usr/local/include"
+PLIB_LIBS="-I/usr/local/lib -lplibssg -lplibpu -lplibfnt -lplibsg -lplibul"
+
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
 AC_PROG_CXXCPP
 AC_PROG_INSTALL
 
-plib_suffix="-L/usr/local/plib/lib -lssg -lpu -lfnt -lsg"
-
-dnl Checks for library functions.
-dnl check for OpenGL related libraries
-
+dnl Checks for header files.
 AC_CHECK_HEADER(windows.h, AC_DEFINE(WIN32))
 
 if test "x$ac_cv_header_windows_h" != "xyes" ; then
@@ -72,15 +88,6 @@ if test "x$ac_cv_header_windows_h" != "xyes" ; then
 	LIBS="$plib_suffix $LIBS -lm -lwinmm -lglut32 -lglu32 -lopengl32 -luser32 -lgdi32"
 	fi
 
-dnl Check SGI audio library
-
-AC_CHECK_LIB(audio, ALopenport)
-
-if test "x$ac_cv_lib_audio_ALopenport" = "xyes" ; then
-  dnl this is an SGI machine...
-  LIBS="$LIBS -laudio"
-fi
-
 AC_CHECK_LIB(resolv, inet_aton)
 
 if test "x$ac_cv_lib_resolv_inet_aton" = "xyes" ; then
@@ -88,40 +95,7 @@ if test "x$ac_cv_lib_resolv_inet_aton" = "xyes" ; then
   LIBS="$LIBS -lresolv"
 fi
 
-dnl Checks for header files.
-
-AC_HEADER_STDC
-
-AC_CHECK_HEADERS(GL/gl.h GL/glut.h)
-AC_CHECK_HEADER(windows.h, AC_DEFINE(WIN32))
-AC_CHECK_HEADER(joystick.h, AC_DEFINE(JOYSTICK_IS_PRESENT))
-AC_CHECK_HEADER(linux/joystick.h, AC_DEFINE(LINUX_JOYSTICK_IS_PRESENT))
-
-dnl Check for audio support
-
-AM_CONDITIONAL(ENABLE_AUDIO, \
-  test -r /usr/include/soundcard.h \
-    -o -r /usr/include/linux/soundcard.h \
-    -o -r /usr/include/machine/soundcard.h \
-    -o -r /usr/include/audio.h \
-    -o -r /usr/include/sys/audioio.h \
-    -o "x$ac_cv_header_windows_h" = "xyes" )
-
-AM_CONDITIONAL(ENABLE_IRIX_AUDIO, test -r /usr/include/audio.h)
-
-AM_CONDITIONAL(ENABLE_WIN32_AUDIO, test "x$ac_cv_header_windows_h" = "xyes")
-
-if test "x$ac_cv_header_windows_h" != "xyes" ; then
-  if test "x$GXX" != "xyes" ; then
-    CFLAGS="$CFLAGS -I/usr/local/include -L/usr/local/lib"
-    CXXFLAGS="$CXXFLAGS -I/usr/local/include -L/usr/local/lib"
-  else
-    CFLAGS="$CFLAGS -O6 -Wall"
-    CXXFLAGS="$CXXFLAGS -O6 -Wall"
-  fi
-else
-  CFLAGS="$CFLAGS -O6 -Wall $MACH -malign-double -I/usr/local/include -L/usr/local/lib"
-  CXXFLAGS="$CXXFLAGS -O6 -Wall $MACH -malign-double -I/usr/local/include -L/usr/local/lib"
-fi
-
-AC_OUTPUT(Makefile src/Makefile)
+AC_CONFIG_FILES([Makefile src/Makefile])
+AC_OUTPUT
+m4_unquote(
+  _m4_defn([_m4_wrap_text])_m4_popdef([_m4_wrap_text]))

@@ -5,7 +5,7 @@
 #include "mcTerrainGen.hpp"
 #include "mcLandscape.hpp"
 #include "mcScene.hpp"
-#include <sg.h>
+#include <plib/sg.h>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

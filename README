@@ -2,9 +2,7 @@ Foreword
 --------
 
 This is a CVS snapshot of 0.4.0 release, the last GPL-licensed release
-of a client program for Majik 3D MMORPG game. The extra files that were
-in the original release tarball, that was released on Feb 15, 2000, are
-merged to this snapshot.
+of a client program for Majik 3D MMORPG game, with minor modifications.
 
 The development of this project continued after the 0.4.0 release, but
 it was no longer GPL-licensed: the development team moved to Taika
@@ -126,6 +124,10 @@ the next chapter and compile the sources by yourself.
 
 Compiling the sources
 ---------------------
+
+If you compile directly from the repository, first run
+
+  ./autogen.sh
 
 You should be able to compile these sources on any platform supported by
 the Mesa 3D library (http://www.mesa3d.org) or OpenGL with minor or no

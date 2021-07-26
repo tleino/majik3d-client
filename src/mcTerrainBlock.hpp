@@ -3,8 +3,8 @@
 
 #include <math.h>
 #include <string.h>
-#include <sg.h>
-#include <ssg.h>
+#include <plib/sg.h>
+#include <plib/ssg.h>
 
 #ifdef WIN32
 #pragma inline_recursion(on)

@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <ssg.h>
+#include <plib/ssg.h>
 
 class Object;
 

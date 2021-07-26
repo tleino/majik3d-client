@@ -19,7 +19,7 @@
 #ifndef __MAPQUAD_HPP__
 #define __MAPQUAD_HPP__
 
-#include <ssg.h>
+#include <plib/ssg.h>
 
 #include "mcCamera.hpp"
 

@@ -19,7 +19,7 @@
 #ifndef __OVERLAY_HPP__
 #define __OVERLAY_HPP__
 
-#include <pu.h>
+#include <plib/pu.h>
 
 /** An overlay class. This class draws all "overlaying" stuff to the
     screen after others has been done. This includes drawing menus, fps

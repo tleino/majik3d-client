@@ -19,7 +19,7 @@
 #ifndef __MENU_HPP__
 #define __MENU_HPP__
 
-#include <pu.h>
+#include <plib/pu.h>
 
 /** A menu class. This class handles the menu system. */
 

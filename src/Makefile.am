@@ -11,8 +11,18 @@ mcCameraController.cpp mcCameraController.hpp mcController.cpp \
 mcController.hpp mcPlayerController.cpp mcPlayerController.hpp \
 mcPlayer.cpp mcPlayer.hpp mcTerrainHeightGen.cpp mcTerrainHeightGen.hpp \
 mcCamera.cpp mcCamera.hpp version.hpp main.cpp
-INCLUDES=-I/usr/local/plib/include
-CFLAGS=-pg
+majik_CXXFLAGS = \
+	$(X11_CFLAGS) \
+	$(GL_CFLAGS) \
+	$(GLU_CFLAGS) \
+	$(GLUT_CFLAGS) \
+	$(PLIB_CFLAGS)
+majik_LDADD = \
+	$(X11_LIBS) \
+	$(GL_LIBS) \
+	$(GLU_LIBS) \
+	$(GLUT_LIBS) \
+	$(PLIB_LIBS)
 CLEANFILES = *.debug *~
 toilet  :
 	@-wc *.cpp *.hpp
